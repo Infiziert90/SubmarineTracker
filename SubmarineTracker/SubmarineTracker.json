@@ -1,0 +1,15 @@
+{
+    "Author": "Infi",
+    "Name": "Submarine Tracker",
+    "Punchline": "Simple Submarine Tracker and Builder",
+    "Description": "Simple Submarine Tracker and Builder, with support for multiple FCs",
+    "InternalName": "SubmarineTracker",
+    "ApplicableVersion": "any",
+    "Tags": [
+        "Submarines",
+        "Tracking",
+        "Builder",
+        "Parts",
+        "Plugins"
+    ]
+}
