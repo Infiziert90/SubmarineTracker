@@ -10,7 +10,7 @@ public static class LootTable
 {
     public record Breakpoints(int T2, int T3, int Normal, int Optimal, int Favor)
     {
-        public static Breakpoints Empty => new Breakpoints(0, 0, 0, 0, 0);
+        public static Breakpoints Empty => new(0, 0, 0, 0, 0);
     };
 
     public static readonly Dictionary<uint, Breakpoints> MapBreakpoints = new()

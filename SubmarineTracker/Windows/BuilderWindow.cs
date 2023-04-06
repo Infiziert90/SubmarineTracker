@@ -23,7 +23,7 @@ public class BuilderWindow : Window, IDisposable
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
-    public int SelectSub = 0;
+    public int SelectSub;
     public int SelectedRank = 1;
     public int SelectedHull = 3;
     public int SelectedStern = 4;

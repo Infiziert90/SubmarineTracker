@@ -228,6 +228,7 @@ public static class Submarines
         };
     }
 
+    #region Character Handler
     public static void LoadCharacters()
     {
         foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
@@ -266,8 +267,29 @@ public static class Submarines
         config.Save();
     }
 
-    #region RangeOptimizer
+    public static void DeleteCharacter(ulong id)
+    {
+        if (!KnownSubmarines.ContainsKey(id))
+            return;
 
+        KnownSubmarines.Remove(id);
+        var file = Plugin.PluginInterface.ConfigDirectory.EnumerateFiles().FirstOrDefault(f => f.Name == $"{id}.json");
+        if (file == null)
+            return;
+
+        try
+        {
+            file.Delete();
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error("Error while deleting character save file.");
+            PluginLog.Error(e.Message);
+        }
+    }
+    #endregion
+
+    #region RangeOptimizer
     public static (int Distance, List<uint> Points) CalculateDistance(List<uint> walkingPoints)
     {
         // spin it up?

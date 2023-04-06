@@ -6,12 +6,12 @@ using Dalamud.Plugin;
 using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
-using Dalamud.Game.Gui;
 using Dalamud.Interface.Windowing;
 using EurekaTrackerAutoPopper.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 using SubmarineTracker.Windows;
+
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker
@@ -20,7 +20,6 @@ namespace SubmarineTracker
     {
         [PluginService] public static DataManager Data { get; private set; } = null!;
         [PluginService] public static Framework Framework { get; private set; } = null!;
-        [PluginService] public static GameGui GameGui { get; private set; } = null!;
         [PluginService] public static CommandManager Commands { get; private set; } = null!;
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
@@ -57,6 +56,8 @@ namespace SubmarineTracker
             Submarines.Initialize();
             TexturesCache.Initialize();
 
+            Submarines.LoadCharacters();
+
             Framework.Update += FrameworkUpdate;
         }
 
@@ -78,7 +79,6 @@ namespace SubmarineTracker
         [HelpMessage("Opens the tracker")]
         private void OnCommand(string command, string args)
         {
-            Submarines.LoadCharacters();
             MainWindow.IsOpen = true;
         }
 
@@ -86,7 +86,6 @@ namespace SubmarineTracker
         [HelpMessage("Opens the builder")]
         private void OnBuilderCommand(string command, string args)
         {
-            Submarines.LoadCharacters();
             BuilderWindow.IsOpen = true;
         }
 
