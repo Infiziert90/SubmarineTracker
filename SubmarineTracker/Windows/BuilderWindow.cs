@@ -102,12 +102,12 @@ public class BuilderWindow : Window, IDisposable
                     ImGui.TextUnformatted("Calculated Stats:");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
                     ImGui.SameLine(secondRow);
-                    SelectRequiredColor(breakpoints.T3, build.Surveillance);
+                    SelectRequiredColor(breakpoints.T2, build.Surveillance, breakpoints.T3);
 
                     ImGui.SameLine(thirdRow);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Retrieval");
                     ImGui.SameLine(fourthRow);
-                    SelectRequiredColor(breakpoints.Optimal, build.Retrieval);
+                    SelectRequiredColor(breakpoints.Normal, build.Retrieval, breakpoints.Optimal);
 
                     ImGui.SameLine(sixthRow);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
@@ -307,12 +307,12 @@ public class BuilderWindow : Window, IDisposable
             ImGuiHelpers.ScaledDummy(10.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "How are these breakpoints calculated?");
-            ImGui.TextWrapped("The range breakpoint is calculated using the same method as the game. However all other breakpoints are calculated off of community data gathered from the submarine discord. Credits for the sheets go to the people who create them and the community who provide information leading to discovery.\nSpecial thanks to Mystic Spirit for maintaining the current sheet.");
+            ImGui.TextWrapped("The range breakpoint is calculated using the same method as the game. However all other breakpoints are calculated off of community data gathered from the submarine discord.\nSpecial thanks to Mystic Spirit for maintaining the current sheet.");
             ImGuiHelpers.ScaledDummy(10.0f);
 
             var spacing = ImGui.CalcTextSize("Optimal").X + 20.0f;
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints?");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints:");
             ImGui.TextUnformatted("T2");
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted("Surveillance required for a chance to get loot from Tier 2");
@@ -331,19 +331,22 @@ public class BuilderWindow : Window, IDisposable
 
             ImGuiHelpers.ScaledDummy(10.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Colors?");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Colors:");
             ImGui.TextUnformatted("White");
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted("Nothing selected or no data available");
-            ImGui.TextColored(ImGuiColors.HealerGreen,"Green");
-            ImGui.SameLine(spacing);
-            ImGui.TextUnformatted("Requirements reached");
             ImGui.TextColored(ImGuiColors.ParsedGold,"Gold");
             ImGui.SameLine(spacing);
-            ImGui.TextUnformatted("Requirements exceeded");
+            ImGui.TextUnformatted("Requirement exceeded");
+            ImGui.TextColored(ImGuiColors.HealerGreen,"Green");
+            ImGui.SameLine(spacing);
+            ImGui.TextUnformatted("T3/Optimal/Favor reached");
+            ImGui.TextColored(ImGuiColors.ParsedPink,"Pink");
+            ImGui.SameLine(spacing);
+            ImGui.TextUnformatted("T2/Normal reached, followed by T3/Optimal");
             ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
             ImGui.SameLine(spacing);
-            ImGui.TextUnformatted("Requirements not fulfilled, followed by requirement");
+            ImGui.TextUnformatted("Requirement not fulfilled, followed by requirement");
         }
         ImGui.EndTabItem();
 
@@ -369,22 +372,31 @@ public class BuilderWindow : Window, IDisposable
         }
     }
 
-    public void SelectRequiredColor(int required, int current)
+    public void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
     {
-        switch (required)
+        if (minRequired == 0)
         {
-            case 0:
-                ImGui.TextUnformatted($"{current}");
-                break;
-            case var n when n > current:
-                ImGui.TextColored(ImGuiColors.DalamudRed, $"{current} ({required})");
-                break;
-            case var n when n == current:
+            ImGui.TextUnformatted($"{current}");
+        }
+        else if (minRequired > current)
+        {
+            ImGui.TextColored(ImGuiColors.DalamudRed, $"{current} ({minRequired})");
+        }
+        else if (maxRequired == -1)
+        {
+            if (minRequired == current)
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
-                break;
-            case var n when n < current:
-                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current}");
-                break;
+            else
+                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({minRequired})");
+        }
+        else
+        {
+            if (maxRequired == current)
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
+            else if (current > minRequired && current < maxRequired)
+                ImGui.TextColored(ImGuiColors.ParsedPink, $"{current} ({maxRequired})");
+            else
+                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({maxRequired})");
         }
     }
 
