@@ -75,7 +75,7 @@ namespace SubmarineTracker
         }
 
         [Command("/stracker")]
-        [HelpMessage("Toggles UI")]
+        [HelpMessage("Opens the tracker")]
         private void OnCommand(string command, string args)
         {
             Submarines.LoadCharacters();
@@ -83,7 +83,7 @@ namespace SubmarineTracker
         }
 
         [Command("/sbuilder")]
-        [HelpMessage("Toggles UI")]
+        [HelpMessage("Opens the builder")]
         private void OnBuilderCommand(string command, string args)
         {
             Submarines.LoadCharacters();

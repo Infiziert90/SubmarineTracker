@@ -273,7 +273,7 @@ public static class Submarines
         // spin it up?
         if (HousingManager.GetSubmarineVoyageDistance(32, 33) == 0)
         {
-            PluginLog.Error("GetSubmarineVoyageDistance was zero.");
+            PluginLog.Warning("GetSubmarineVoyageDistance was zero.");
             return (0, new List<uint>());
         }
 
@@ -285,8 +285,16 @@ public static class Submarines
             points.Add(sheet.GetRow(p)!);
 
 
-        // Less than 1 or more than 5 points isn't allowed ingame
-        if (points.Count is <= 1 or > 5)
+        // 1 point makes no sense to optimize, so just return distance
+        if (points.Count == 1)
+        {
+            var onlyPoint = points[0];
+            var distance = BestDistance(start.RowId, onlyPoint.RowId) + onlyPoint.SurveyDistance;
+            return ((int) distance, new List<uint> { onlyPoint.RowId });
+        }
+
+        // More than 5 points isn't allowed ingame
+        if (points.Count > 5)
             return (0, new List<uint>());
 
         List<(uint Key, uint Start, Dictionary<uint, uint> Distances)> AllDis = new();
@@ -339,55 +347,60 @@ public static class Submarines
 
     public static (uint Distance, List<uint> Points) PathWalker((uint Key, uint Start, Dictionary<uint, uint> Distances) point, Dictionary<uint, Dictionary<uint, uint>> otherPoints)
     {
-        List<(uint Distance, List<uint> Points)> PossibleDistances = new();
+        List<(uint Distance, List<uint> Points)> possibleDistances = new();
         foreach (var pos1 in otherPoints)
         {
             if (point.Key == pos1.Key)
                 continue;
 
-            var dis1 = point.Distances[pos1.Key];
+            var startToFirst = point.Start + point.Distances[pos1.Key];
 
-            if (otherPoints.Count > 1)
+            if (otherPoints.Count == 1)
             {
-                foreach (var pos2 in otherPoints)
+                possibleDistances.Add((startToFirst, new List<uint> { point.Key, pos1.Key, }));
+                continue;
+            }
+
+            foreach (var pos2 in otherPoints)
+            {
+                if (pos1.Key == pos2.Key || point.Key == pos2.Key)
+                    continue;
+
+                var startToSecond = startToFirst + otherPoints[pos1.Key][pos2.Key];
+
+                if (otherPoints.Count == 2)
                 {
-                    if (pos1.Key == pos2.Key || point.Key == pos2.Key)
+                    possibleDistances.Add((startToSecond, new List<uint> { point.Key, pos1.Key, pos2.Key, }));
+                    continue;
+                }
+
+                foreach (var pos3 in otherPoints)
+                {
+                    if (pos1.Key == pos3.Key || pos2.Key == pos3.Key || point.Key == pos3.Key)
                         continue;
 
-                    var dis2 = otherPoints[pos1.Key][pos2.Key];
+                    var startToThird = startToSecond + otherPoints[pos2.Key][pos3.Key];
 
-                    if (otherPoints.Count > 2)
+                    if (otherPoints.Count == 3)
                     {
-                        foreach (var pos3 in otherPoints)
-                        {
-                            if (pos1.Key == pos3.Key || pos2.Key == pos3.Key || point.Key == pos3.Key)
-                                continue;
-
-                            var dis3 = otherPoints[pos2.Key][pos3.Key];
-
-                            if (otherPoints.Count > 3)
-                            {
-                                foreach (var pos4 in otherPoints)
-                                {
-                                    if (pos1.Key == pos4.Key || pos2.Key == pos4.Key || pos3.Key == pos4.Key || point.Key == pos4.Key)
-                                        continue;
-
-                                    var dis4 = otherPoints[pos3.Key][pos4.Key];
-
-                                    PossibleDistances.Add((dis1 + dis2 + dis3 + dis4 + point.Start, new() { point.Key, pos1.Key, pos2.Key, pos3.Key, pos4.Key, }));
-                                }
-                            }
-                            else { PossibleDistances.Add((dis1 + dis2 + dis3 + point.Start, new() { point.Key, pos1.Key, pos2.Key, pos3.Key, })); }
-                        }
+                        possibleDistances.Add((startToThird, new List<uint> { point.Key, pos1.Key, pos2.Key, pos3.Key, }));
+                        continue;
                     }
-                    else { PossibleDistances.Add((dis1 + dis2 + point.Start, new() { point.Key, pos1.Key, pos2.Key, })); }
+
+                    foreach (var pos4 in otherPoints)
+                    {
+                        if (pos1.Key == pos4.Key || pos2.Key == pos4.Key || pos3.Key == pos4.Key || point.Key == pos4.Key)
+                            continue;
+
+                        var startToLast = startToThird + otherPoints[pos3.Key][pos4.Key];
+
+                        possibleDistances.Add((startToLast, new List<uint> { point.Key, pos1.Key, pos2.Key, pos3.Key, pos4.Key, }));
+                    }
                 }
             }
-            else { PossibleDistances.Add((dis1 + point.Start, new() { point.Key, pos1.Key, })); }
         }
 
-        var min = PossibleDistances.Min(a => a.Distance);
-        return PossibleDistances.Find(a => a.Distance == min);
+        return possibleDistances.MinBy(a => a.Distance);
     }
 
     public static uint BestDistance(uint pointA, uint pointB)
