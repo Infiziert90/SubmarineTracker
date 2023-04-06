@@ -268,13 +268,13 @@ public static class Submarines
 
     #region RangeOptimizer
 
-    public static uint CalculateDistance(List<uint> walkingPoints)
+    public static (int Distance, List<uint> Points) CalculateDistance(List<uint> walkingPoints)
     {
         // spin it up?
         if (HousingManager.GetSubmarineVoyageDistance(32, 33) == 0)
         {
             PluginLog.Error("GetSubmarineVoyageDistance was zero.");
-            return 0;
+            return (0, new List<uint>());
         }
 
         var sheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
@@ -287,7 +287,7 @@ public static class Submarines
 
         // Less than 1 or more than 5 points isn't allowed ingame
         if (points.Count is <= 1 or > 5)
-            return 0;
+            return (0, new List<uint>());
 
         List<(uint Key, uint Start, Dictionary<uint, uint> Distances)> AllDis = new();
         foreach (var (point, idx) in points.Select((val, i) => (val, i)))
@@ -334,7 +334,7 @@ public static class Submarines
 
         var min = MinimalWays.MinBy(m => m.Way);
         var surveyD = min.Points.Sum(d => sheet.GetRow(d)!.SurveyDistance);
-        return (uint) (min.Way + surveyD);
+        return ((int) min.Way + surveyD, min.Points);
     }
 
     public static (uint Distance, List<uint> Points) PathWalker((uint Key, uint Start, Dictionary<uint, uint> Distances) point, Dictionary<uint, Dictionary<uint, uint>> otherPoints)
