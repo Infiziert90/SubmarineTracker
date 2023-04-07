@@ -6,5 +6,8 @@ Simple and Easy
 + Breakpoint support
 + Support for multiple FCs  
 
+### Tracker
+![tracker](SubmarineTracker/images/tracker.png)
+
 ### Builder
 ![builder](SubmarineTracker/images/builder.png)
