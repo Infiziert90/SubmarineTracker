@@ -29,12 +29,12 @@ public static class Submarines
         public static FcSubmarines Empty => new("", "Unknown", new List<Submarine>());
     }
 
-    public record Submarine(string Name, uint Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge)
+    public record Submarine(string Name, uint Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint cExp, uint nExp)
     {
         [JsonConstructor]
-        public Submarine() : this("", 0, 0,0,0,0) { }
+        public Submarine() : this("", 0, 0,0,0,0, 0, 0) { }
 
-        public unsafe Submarine(HousingWorkshopSubmersibleSubData data) : this("", 0, 0,0,0,0)
+        public unsafe Submarine(HousingWorkshopSubmersibleSubData data) : this("", 0, 0,0,0,0, 0, 0)
         {
             Name = MemoryHelper.ReadSeStringNullTerminated(new nint(data.Name)).ToString();
             Rank = data.RankId;
@@ -42,22 +42,23 @@ public static class Submarines
             Stern = data.SternId;
             Bow = data.BowId;
             Bridge = data.BridgeId;
+            cExp = data.CurrentExp;
+            nExp = data.NextLevelExp;
         }
 
         private string GetPartName(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Name.ToString();
         private uint GetIconId(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Icon;
 
-        [JsonIgnore]
         #region parts
-        public string HullName   => GetPartName(Hull);
-        public string SternName  => GetPartName(Stern);
-        public string BowName    => GetPartName(Bow);
-        public string BridgeName => GetPartName(Bridge);
+        [JsonIgnore] public string HullName   => GetPartName(Hull);
+        [JsonIgnore] public string SternName  => GetPartName(Stern);
+        [JsonIgnore] public string BowName    => GetPartName(Bow);
+        [JsonIgnore] public string BridgeName => GetPartName(Bridge);
 
-        public uint HullIconId   => GetIconId(Hull);
-        public uint SternIconId  => GetIconId(Stern);
-        public uint BowIconId    => GetIconId(Bow);
-        public uint BridgeIconId => GetIconId(Bridge);
+        [JsonIgnore] public uint HullIconId   => GetIconId(Hull);
+        [JsonIgnore] public uint SternIconId  => GetIconId(Stern);
+        [JsonIgnore] public uint BowIconId    => GetIconId(Bow);
+        [JsonIgnore] public uint BridgeIconId => GetIconId(Bridge);
 
         public string BuildIdentifier()
         {
@@ -72,6 +73,7 @@ public static class Submarines
         #endregion
 
         public bool IsValid() => Rank > 0;
+        public bool ValidExpRange() => nExp > 0;
 
         #region equals
         public virtual bool Equals(Submarine? other)
@@ -80,7 +82,9 @@ public static class Submarines
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            return Name == other.Name && Rank == other.Rank && Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
+            return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
+                   Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
+                   cExp == other.cExp;
         }
 
         public bool Equals(Submarine x, Submarine y)
@@ -95,10 +99,11 @@ public static class Submarines
                 return false;
 
             return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
-                   x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge;
+                   x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
+                   x.cExp == y.cExp;
         }
 
-        public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge);
+        public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge, cExp);
         #endregion
     }
 
@@ -151,9 +156,9 @@ public static class Submarines
         return true;
     }
 
-    public static Dictionary<ulong, FcSubmarines> KnownSubmarines = new();
+    public static readonly Dictionary<ulong, FcSubmarines> KnownSubmarines = new();
 
-    public static Dictionary<ushort, uint> PartIdToItemId = new Dictionary<ushort, uint>
+    public static readonly Dictionary<ushort, uint> PartIdToItemId = new Dictionary<ushort, uint>
     {
         // Shark
         { 1, 21792 }, // Bow
@@ -309,6 +314,10 @@ public static class Submarines
         foreach (var p in walkingPoints.Skip(1))
             points.Add(sheet.GetRow(p)!);
 
+
+        // zero
+        if (points.Count == 0)
+            return (0, new List<uint>());
 
         // 1 point makes no sense to optimize, so just return distance
         if (points.Count == 1)

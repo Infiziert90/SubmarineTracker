@@ -36,6 +36,7 @@ public class ConfigWindow : Window, IDisposable
 
                 if (changed)
                     Configuration.Save();
+
                 ImGui.EndTabItem();
             }
 
@@ -63,8 +64,11 @@ public class ConfigWindow : Window, IDisposable
 
                     if (deletion != 0)
                         Submarines.DeleteCharacter(deletion);
+
+                    ImGui.EndTable();
                 }
-                ImGui.EndTable();
+
+                ImGui.EndTabItem();
             }
         }
         ImGui.EndTabBar();
