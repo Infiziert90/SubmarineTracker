@@ -99,19 +99,17 @@ namespace SubmarineTracker
             if (local == null)
                 return;
 
-            Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
-
-            var equal = false;
             var possibleNewSubs = new List<Submarines.Submarine>();
             foreach (var sub in instance->WorkshopTerritory->Submersible.DataListSpan.ToArray().Where(data => data.RankId != 0))
-            {
-                var playerSub = new Submarines.Submarine(sub);
-                possibleNewSubs.Add(playerSub);
+                possibleNewSubs.Add(new Submarines.Submarine(sub));
 
-                equal |= Submarines.KnownSubmarines[ClientState.LocalContentId].Submarines.Any(s => s.Equals(playerSub));
-            }
+            if (!possibleNewSubs.Any())
+                return;
 
-            if (equal)
+            Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
+
+            var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
+            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs))
                 return;
 
             var newEntry = new Submarines.FcSubmarines(ToStr(local.CompanyTag),ToStr(local.HomeWorld.GameData!.Name), possibleNewSubs);

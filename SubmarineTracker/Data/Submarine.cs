@@ -139,6 +139,9 @@ public static class Submarines
         if (!l.Any() || !r.Any())
             return false;
 
+        if (l.Count != r.Count)
+            return false;
+
         foreach (var (subL, subR) in l.Zip(r))
         {
             if (!subL.Equals(subR))
