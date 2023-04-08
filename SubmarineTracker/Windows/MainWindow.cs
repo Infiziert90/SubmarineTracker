@@ -5,7 +5,10 @@ using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using Lumina.Excel;
+using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
+using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows;
 
@@ -13,6 +16,8 @@ public class MainWindow : Window, IDisposable
 {
     private Plugin Plugin;
     private Configuration Configuration;
+
+    public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
     private ulong CurrentSelection;
 
@@ -29,6 +34,8 @@ public class MainWindow : Window, IDisposable
 
         Plugin = plugin;
         Configuration = configuration;
+
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
     public void Dispose() { }
@@ -89,8 +96,41 @@ public class MainWindow : Window, IDisposable
                         ImGui.Indent(10.0f);
 
                         ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
+
                         ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
-                        TextWithCalculatedSpacing($"({sub.BuildIdentifier()})", sub.cExp, sub.nExp);
+                        ImGui.SameLine(RankMaxLength);
+                        ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
+
+                        var nameSpacing = ImGui.CalcTextSize("NameWith20Letters123").X + 10.0f;
+                        if (sub.IsOnVoyage())
+                        {
+                            var time = "";
+                            if (Configuration.ShowTimeInOverview)
+                            {
+                                time = " Done ";
+                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                                if (returnTime.TotalSeconds > 0)
+                                    time = $" {(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} ";
+                            }
+
+                            if (Configuration.ShowRouteInOverview)
+                            {
+                                var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                                time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
+                            }
+
+                            ImGui.SameLine(nameSpacing);
+                            ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
+                        }
+                        else
+                        {
+
+                            if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
+                            {
+                                ImGui.SameLine(nameSpacing);
+                                ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
+                            }
+                        }
 
                         ImGui.Unindent(10.0f);
                     }
@@ -125,8 +165,38 @@ public class MainWindow : Window, IDisposable
                                 ImGui.TableNextColumn();
                                 ImGui.TextUnformatted("EXP");
                                 ImGui.TableNextColumn();
-                                ImGui.TextUnformatted($"{sub.cExp} / {sub.nExp}");
+                                ImGui.TextUnformatted($"{sub.CExp} / {sub.NExp}");
+                                ImGui.SameLine();
+                                ImGui.TextUnformatted($"{(double) sub.CExp / sub.NExp * 100.0:##0.00}%");
                             }
+
+                            if (sub.IsOnVoyage())
+                            {
+                                AddTableSpacing();
+
+                                var time = "Done";
+                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                                if (returnTime.TotalSeconds > 0)
+                                    time = $"{(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} h";
+
+                                ImGui.TableNextColumn();
+                                ImGui.TextUnformatted("Time");
+                                ImGui.TableNextColumn();
+                                ImGui.TextUnformatted(time);
+
+                                var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                                ImGui.TableNextColumn();
+                                ImGui.TextUnformatted("Map");
+                                ImGui.TableNextColumn();
+                                ImGui.TextUnformatted($"{GetMapName(startPoint)}");
+
+                                ImGui.TableNextColumn();
+                                ImGui.TextUnformatted("Route");
+                                ImGui.TableNextColumn();
+                                ImGui.TextWrapped($"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}");
+                            }
+
+                            AddTableSpacing();
 
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted("WIP");
@@ -137,9 +207,7 @@ public class MainWindow : Window, IDisposable
 
                         if (Configuration.ShowExtendedPartsList)
                         {
-                            ImGuiHelpers.ScaledDummy(5);
-                            ImGui.Separator();
-                            ImGuiHelpers.ScaledDummy(5);
+                            ImGuiHelpers.ScaledDummy(10.0f);
 
                             if (ImGui.BeginTable($"##submarineOverview##{sub.Name}", 2))
                             {
@@ -202,16 +270,12 @@ public class MainWindow : Window, IDisposable
         ImGui.EndChild();
     }
 
-    private void TextWithCalculatedSpacing(string build, uint count, uint total)
+    private void AddTableSpacing()
     {
-        var perc = "";
-        if (total > 0)
-            perc = $"{(double) count / total * 100.0:##0.00} %%";
-
-        ImGui.SameLine(RankMaxLength);
-        ImGui.TextColored(ImGuiColors.TankBlue, build);
-        ImGui.SameLine((RankMaxLength * 2.7f) - ImGui.CalcTextSize(perc).X);
-        ImGui.TextColored(ImGuiColors.TankBlue, perc);
+        ImGui.TableNextRow();
+        ImGui.TableNextColumn();
+        ImGuiHelpers.ScaledDummy(10.0f);
+        ImGui.TableNextRow();
     }
 
     private static void DrawIcon(uint iconId)
@@ -219,4 +283,6 @@ public class MainWindow : Window, IDisposable
         var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
         ImGui.Image(texture.ImGuiHandle, IconSize);
     }
+
+    private static string GetMapName(uint key) => ToStr(ExplorationSheet.First(r => r.RowId == key).Map.Value!.Name);
 }

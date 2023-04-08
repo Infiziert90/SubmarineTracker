@@ -10,6 +10,8 @@ namespace SubmarineTracker
         public int Version { get; set; } = 0;
 
         public bool ShowExtendedPartsList = false;
+        public bool ShowTimeInOverview = false;
+        public bool ShowRouteInOverview = false;
 
         [NonSerialized]
         private DalamudPluginInterface? PluginInterface;

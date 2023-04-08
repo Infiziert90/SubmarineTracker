@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -32,6 +33,9 @@ namespace SubmarineTracker
         private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
         private BuilderWindow BuilderWindow { get; init; }
+
+        public static readonly string Authors = "Infi";
+        public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
 

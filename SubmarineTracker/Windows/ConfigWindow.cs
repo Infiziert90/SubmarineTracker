@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
@@ -33,6 +34,8 @@ public class ConfigWindow : Window, IDisposable
             {
                 var changed = false;
                 changed |= ImGui.Checkbox("Show Extended Parts List", ref Configuration.ShowExtendedPartsList);
+                changed |= ImGui.Checkbox("Show Time in Overview", ref Configuration.ShowTimeInOverview);
+                changed |= ImGui.Checkbox("Show Route in Overview", ref Configuration.ShowRouteInOverview);
 
                 if (changed)
                     Configuration.Save();
@@ -67,6 +70,49 @@ public class ConfigWindow : Window, IDisposable
 
                     ImGui.EndTable();
                 }
+
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("About"))
+            {
+                if (ImGui.BeginChild("AboutContent", new Vector2(0, -50)))
+                {
+                    ImGuiHelpers.ScaledDummy(10);
+
+                    ImGui.TextUnformatted("Author:");
+                    ImGui.SameLine();
+                    ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.Authors);
+
+                    ImGui.TextUnformatted("Discord:");
+                    ImGui.SameLine();
+                    ImGui.TextColored(ImGuiColors.ParsedGold, "Infi#6958");
+
+                    ImGui.TextUnformatted("Version:");
+                    ImGui.SameLine();
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.Version);
+                }
+                ImGui.EndChild();
+
+                ImGuiHelpers.ScaledDummy(5);
+                ImGui.Separator();
+                ImGuiHelpers.ScaledDummy(5);
+
+                if (ImGui.BeginChild("AboutBottomBar", new Vector2(0, 0), false, 0))
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
+                    if (ImGui.Button("Discord Thread"))
+                        Dalamud.Utility.Util.OpenLink("https://canary.discord.com/channels/581875019861328007/1094255662860599428");
+                    ImGui.PopStyleColor();
+
+                    ImGui.SameLine();
+
+                    ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
+                    if (ImGui.Button("Issues"))
+                        Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/SubmarineTracker/issues");
+                    ImGui.PopStyleColor();
+                }
+                ImGui.EndChild();
 
                 ImGui.EndTabItem();
             }

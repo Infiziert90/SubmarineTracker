@@ -1,7 +1,7 @@
 # Submarine Tracker
 
 Simple and Easy  
-+ Tracks current builds  
++ Tracks current builds, route and time 
 + Builder to improve your builds  
 + Breakpoint support
 + Support for multiple FCs  

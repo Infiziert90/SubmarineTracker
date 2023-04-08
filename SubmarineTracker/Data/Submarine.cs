@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Dalamud.Logging;
 using Dalamud.Memory;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
@@ -16,12 +17,14 @@ public static class Submarines
     private static ExcelSheet<Item> ItemSheet = null!;
     private static ExcelSheet<SubmarineRank> RankSheet = null!;
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
+    private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
     public static void Initialize()
     {
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
     public record FcSubmarines(string Tag, string World, List<Submarine> Submarines)
@@ -29,8 +32,11 @@ public static class Submarines
         public static FcSubmarines Empty => new("", "Unknown", new List<Submarine>());
     }
 
-    public record Submarine(string Name, uint Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint cExp, uint nExp)
+    public record Submarine(string Name, uint Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
     {
+        public DateTime ReturnTime;
+        public readonly List<uint> Points = new();
+
         [JsonConstructor]
         public Submarine() : this("", 0, 0,0,0,0, 0, 0) { }
 
@@ -42,8 +48,19 @@ public static class Submarines
             Stern = data.SternId;
             Bow = data.BowId;
             Bridge = data.BridgeId;
-            cExp = data.CurrentExp;
-            nExp = data.NextLevelExp;
+            CExp = data.CurrentExp;
+            NExp = data.NextLevelExp;
+
+            ReturnTime = data.GetReturnTime();
+
+            var managedArray = new byte[5];
+            Marshal.Copy((nint) data.CurrentExplorationPoints, managedArray, 0, 5);
+
+            foreach (var point in managedArray)
+            {
+                if (point > 0)
+                    Points.Add(point);
+            }
         }
 
         private string GetPartName(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Name.ToString();
@@ -73,9 +90,13 @@ public static class Submarines
         #endregion
 
         public bool IsValid() => Rank > 0;
-        public bool ValidExpRange() => nExp > 0;
+        public bool ValidExpRange() => NExp > 0;
+        public bool IsOnVoyage() => Points.Any();
 
         #region equals
+
+        public bool VoyageEqual(List<uint> l, List<uint> r) => l.SequenceEqual(r);
+
         public virtual bool Equals(Submarine? other)
         {
             if (ReferenceEquals(null, other))
@@ -84,7 +105,7 @@ public static class Submarines
                 return true;
             return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
                    Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
-                   cExp == other.cExp;
+                   CExp == other.CExp && ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
         }
 
         public bool Equals(Submarine x, Submarine y)
@@ -100,10 +121,10 @@ public static class Submarines
 
             return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
                    x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
-                   x.cExp == y.cExp;
+                   x.CExp == y.CExp && x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
         }
 
-        public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge, cExp);
+        public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge, CExp, Points);
         #endregion
     }
 
@@ -154,6 +175,21 @@ public static class Submarines
         }
 
         return true;
+    }
+
+    public static uint FindVoyageStartPoint(uint point)
+    {
+        var startPoints = ExplorationSheet.Where(s => s.Passengers).Select(s => s.RowId).ToList();
+        startPoints.Reverse();
+
+        // This works because we reversed the list of start points
+        foreach (var possibleStart in startPoints)
+        {
+            if (point > possibleStart)
+                return possibleStart;
+        }
+
+        return 0;
     }
 
     public static readonly Dictionary<ulong, FcSubmarines> KnownSubmarines = new();
