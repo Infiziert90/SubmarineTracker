@@ -90,6 +90,8 @@ public class BuilderWindow : Window, IDisposable
                     var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
                     var points = SelectedLocations.Prepend(startPoint).ToList();
                     var optimizedDistance = Submarines.CalculateDistance(points);
+                    var optimizedPoints = optimizedDistance.Points.Prepend(startPoint).ToList();
+                    var optimizedDuration = Submarines.CalculateDuration(optimizedPoints, build);
                     var breakpoints = LootTable.CalculateRequired(SelectedLocations);
 
                     var windowWidth = ImGui.GetWindowWidth();
@@ -116,7 +118,7 @@ public class BuilderWindow : Window, IDisposable
 
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Speed");
                     ImGui.SameLine(secondRow);
-                    SelectOrgColor(OrgSpeed, build.Speed);
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{build.Speed}");
 
                     ImGui.SameLine(thirdRow);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
@@ -127,6 +129,10 @@ public class BuilderWindow : Window, IDisposable
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
                     ImGui.SameLine(seventhRow);
                     ImGui.TextUnformatted($"{build.RepairCosts}");
+
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Duration");
+                    ImGui.SameLine(secondRow);
+                    ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
                 }
                 ImGui.EndChild();
             }
@@ -356,25 +362,6 @@ public class BuilderWindow : Window, IDisposable
         ImGui.EndTabItem();
 
         return open;
-    }
-
-    public void SelectOrgColor(int org, int current)
-    {
-        switch (org)
-        {
-            case 0:
-                ImGui.TextUnformatted($"{current}");
-                break;
-            case var n when n > current:
-                ImGui.TextColored(ImGuiColors.DalamudRed, $"{current}");
-                break;
-            case var n when n == current:
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
-                break;
-            case var n when n < current:
-                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current}");
-                break;
-        }
     }
 
     public void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)

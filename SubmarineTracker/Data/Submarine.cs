@@ -19,6 +19,8 @@ public static class Submarines
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
     private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
+    private const int FixedVoyageTime = 43200; // 12h
+
     public static void Initialize()
     {
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
@@ -336,7 +338,49 @@ public static class Submarines
     }
     #endregion
 
-    #region RangeOptimizer
+    #region Optimizer
+    public static int CalculateDuration(List<uint> walkingPoints, SubmarineBuild build)
+    {
+        // spin it up?
+        if (VoyageTime(32, 33, 100) == 0 || SurveyTime(33, 100) == 0)
+        {
+            PluginLog.Warning("GetSubmarineVoyageTime or SurveyTime was zero.");
+            return 0;
+        }
+
+        var sheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+        var start = sheet.GetRow(walkingPoints[0])!;
+
+        var points = new List<SubmarineExploration>();
+        foreach (var p in walkingPoints.Skip(1))
+            points.Add(sheet.GetRow(p)!);
+
+        switch (points.Count)
+        {
+            case 0:
+                return 0;
+            case 1: // 1 point makes no sense to optimize, so just return distance
+            {
+                var onlyPoint = points[0];
+                return VoyageTime(start.RowId, onlyPoint.RowId, (short) build.Speed) + SurveyTime(onlyPoint.RowId, (short) build.Speed) + FixedVoyageTime;
+            }
+            case > 5: // More than 5 points isn't allowed ingame
+                return 0;
+        }
+
+        var allDurations = new List<int>();
+        for (var i = 0; i < points.Count; i++)
+        {
+            var voyage = i == 0
+                             ? VoyageTime(start.RowId, points[0].RowId, (short)build.Speed)
+                             : VoyageTime(points[i - 1].RowId, points[i].RowId, (short)build.Speed);
+            var survey = SurveyTime(points[i].RowId, (short)build.Speed);
+            allDurations.Add(voyage + survey);
+        }
+
+        return allDurations.Sum() + FixedVoyageTime;
+    }
+
     public static (int Distance, List<uint> Points) CalculateDistance(List<uint> walkingPoints)
     {
         // spin it up?
@@ -479,6 +523,16 @@ public static class Submarines
     public static uint BestDistance(uint pointA, uint pointB)
     {
         return HousingManager.GetSubmarineVoyageDistance((byte) pointA, (byte) pointB);
+    }
+
+    public static int VoyageTime(uint pointA, uint pointB, short speed)
+    {
+        return (int) HousingManager.GetSubmarineVoyageTime((byte) pointA, (byte) pointB, speed);
+    }
+
+    public static int SurveyTime(uint point, short speed)
+    {
+        return (int) HousingManager.GetSubmarineSurveyDuration((byte) point, speed);
     }
 
     #endregion
