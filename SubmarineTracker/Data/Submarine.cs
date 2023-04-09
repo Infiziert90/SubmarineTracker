@@ -32,7 +32,7 @@ public static class Submarines
         public static FcSubmarines Empty => new("", "Unknown", new List<Submarine>());
     }
 
-    public record Submarine(string Name, uint Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
+    public record Submarine(string Name, ushort Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
     {
         public DateTime ReturnTime;
         public readonly List<uint> Points = new();
@@ -77,6 +77,8 @@ public static class Submarines
         [JsonIgnore] public uint BowIconId    => GetIconId(Bow);
         [JsonIgnore] public uint BridgeIconId => GetIconId(Bridge);
 
+        [JsonIgnore] public SubmarineBuild Build => new SubmarineBuild(this);
+
         public string BuildIdentifier()
         {
             var identifier = $"{ToIdentifier(Hull)}{ToIdentifier(Stern)}{ToIdentifier(Bow)}{ToIdentifier(Bridge)}";
@@ -86,7 +88,6 @@ public static class Submarines
 
             return identifier;
         }
-
         #endregion
 
         public bool IsValid() => Rank > 0;
@@ -94,7 +95,6 @@ public static class Submarines
         public bool IsOnVoyage() => Points.Any();
 
         #region equals
-
         public bool VoyageEqual(List<uint> l, List<uint> r) => l.SequenceEqual(r);
 
         public virtual bool Equals(Submarine? other)
@@ -136,6 +136,8 @@ public static class Submarines
         private readonly SubmarinePart Bow;
         private readonly SubmarinePart Bridge;
 
+        public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
+
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge)
         {
             Bonus = GetRank(rank);
@@ -150,6 +152,7 @@ public static class Submarines
         public int Speed => Bonus.SpeedBonus + Hull.Speed + Stern.Speed + Bow.Speed + Bridge.Speed;
         public int Range => Bonus.RangeBonus + Hull.Range + Stern.Range + Bow.Range + Bridge.Range;
         public int Favor => Bonus.FavorBonus + Hull.Favor + Stern.Favor + Bow.Favor + Bridge.Favor;
+        public int RepairCosts => Hull.RepairMaterials + Stern.RepairMaterials + Bow.RepairMaterials + Bridge.RepairMaterials;
 
         private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint) rank)!;
         private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;

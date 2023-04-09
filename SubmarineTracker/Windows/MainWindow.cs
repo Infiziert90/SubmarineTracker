@@ -160,6 +160,11 @@ public class MainWindow : Window, IDisposable
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted($"{sub.BuildIdentifier()}");
 
+                            ImGui.TableNextColumn();
+                            ImGui.TextUnformatted("Repair");
+                            ImGui.TableNextColumn();
+                            ImGui.TextUnformatted($"{sub.Build.RepairCosts}");
+
                             if (sub.ValidExpRange())
                             {
                                 ImGui.TableNextColumn();

@@ -97,7 +97,7 @@ public class BuilderWindow : Window, IDisposable
                     var thirdRow = windowWidth / 2.9f;
                     var fourthRow = windowWidth / 2.0f;
                     var sixthRow = windowWidth / 1.5f;
-                    var seventhRow = windowWidth / 1.3f;
+                    var seventhRow = windowWidth / 1.25f;
 
                     ImGui.TextUnformatted("Calculated Stats:");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
@@ -122,6 +122,11 @@ public class BuilderWindow : Window, IDisposable
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
                     ImGui.SameLine(fourthRow);
                     SelectRequiredColor(optimizedDistance.Distance, build.Range);
+
+                    ImGui.SameLine(sixthRow);
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
+                    ImGui.SameLine(seventhRow);
+                    ImGui.TextUnformatted($"{build.RepairCosts}");
                 }
                 ImGui.EndChild();
             }
@@ -189,7 +194,7 @@ public class BuilderWindow : Window, IDisposable
 
             ImGui.PopItemWidth();
             ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth);
+            ImGui.PushItemWidth(windowWidth - 3.0f);
             ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
             ImGui.PopItemWidth();
 
