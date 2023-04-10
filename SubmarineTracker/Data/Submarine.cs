@@ -35,8 +35,8 @@ public static class Submarines
 
     public class FcSubmarines
     {
-        public readonly string Tag = null!;
-        public readonly string World = null!;
+        public string Tag = null!;
+        public string World = null!;
         public List<Submarine> Submarines = null!;
 
         public Dictionary<uint, SubmarineLoot> SubLoot = new();
