@@ -70,6 +70,9 @@ public static class Submarines
         {
             if (Refresh)
                 Refresh = false;
+            else
+                return;
+
 
             AllLoot.Clear();
             foreach (var point in PossiblePoints)

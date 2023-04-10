@@ -120,7 +120,8 @@ namespace SubmarineTracker
             fc.Submarines = possibleNewSubs;
 
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
-                fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
+                if (sub.ReturnTime != 0)
+                    fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
 
             fc.Refresh = true;
             Submarines.SaveCharacter();
