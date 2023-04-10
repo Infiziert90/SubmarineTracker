@@ -13,8 +13,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 using SubmarineTracker.Windows;
 
-using static SubmarineTracker.Utils;
-
 namespace SubmarineTracker
 {
     public class Plugin : IDalamudPlugin
@@ -103,9 +101,12 @@ namespace SubmarineTracker
             if (local == null)
                 return;
 
+            var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
+
             var possibleNewSubs = new List<Submarines.Submarine>();
-            foreach (var sub in instance->WorkshopTerritory->Submersible.DataListSpan.ToArray().Where(data => data.RankId != 0))
+            foreach (var sub in workshopData.Where(data => data.RankId != 0))
                 possibleNewSubs.Add(new Submarines.Submarine(sub));
+
 
             if (!possibleNewSubs.Any())
                 return;
@@ -116,9 +117,12 @@ namespace SubmarineTracker
             if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs))
                 return;
 
-            var newEntry = new Submarines.FcSubmarines(ToStr(local.CompanyTag),ToStr(local.HomeWorld.GameData!.Name), possibleNewSubs);
-            Submarines.KnownSubmarines[ClientState.LocalContentId] = newEntry;
+            fc.Submarines = possibleNewSubs;
 
+            foreach (var sub in workshopData.Where(data => data.RankId != 0))
+                fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
+
+            fc.Refresh = true;
             Submarines.SaveCharacter();
         }
 

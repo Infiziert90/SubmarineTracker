@@ -19,6 +19,8 @@ public static class Submarines
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
     private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
+    private static List<SubmarineExploration> PossiblePoints = new();
+
     private const int FixedVoyageTime = 43200; // 12h
 
     public static void Initialize()
@@ -27,11 +29,115 @@ public static class Submarines
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+
+        PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToList();
     }
 
-    public record FcSubmarines(string Tag, string World, List<Submarine> Submarines)
+    public class FcSubmarines
     {
-        public static FcSubmarines Empty => new("", "Unknown", new List<Submarine>());
+        public readonly string Tag = null!;
+        public readonly string World = null!;
+        public List<Submarine> Submarines = null!;
+
+        public Dictionary<uint, SubmarineLoot> SubLoot = new();
+
+        [JsonConstructor]
+        public FcSubmarines() { }
+
+        public FcSubmarines(string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot)
+        {
+            Tag = tag;
+            World = world;
+            Submarines = submarines;
+            SubLoot = loot;
+        }
+
+        public static FcSubmarines Empty => new FcSubmarines("", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>());
+
+        public void AddSubLoot(uint key, uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
+        {
+            SubLoot.TryAdd(key, new SubmarineLoot());
+
+            var sub = SubLoot[key];
+            sub.Add(returnTime, data);
+        }
+
+        #region Loot
+        [JsonIgnore] public bool Refresh = true;
+        [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> AllLoot = new();
+
+        public void RebuildStats()
+        {
+            if (Refresh)
+                Refresh = false;
+
+            AllLoot.Clear();
+            foreach (var point in PossiblePoints)
+            {
+                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPoint(point.RowId)).ToList();
+                foreach (var pointLoot in possibleLoot)
+                {
+                    var lootList = AllLoot.GetOrCreate(point.RowId);
+                    if (!lootList.TryAdd(pointLoot.PrimaryItem, pointLoot.PrimaryCount))
+                        lootList[pointLoot.PrimaryItem] += pointLoot.PrimaryCount;
+
+                    if (!pointLoot.ValidAdditional)
+                        continue;
+
+                    if (!lootList.TryAdd(pointLoot.AdditionalItem, pointLoot.AdditionalCount))
+                        lootList[pointLoot.AdditionalItem] += pointLoot.AdditionalCount;
+                }
+            }
+        }
+
+        #endregion
+    }
+
+    public class SubmarineLoot
+    {
+        public Dictionary<uint, List<DetailedLoot>> Loot = new();
+
+        [JsonConstructor]
+        public SubmarineLoot() {}
+
+        public void Add(uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
+        {
+            if (data[0].ItemIdPrimary == 0)
+                return;
+
+            if (!Loot.TryAdd(returnTime, new List<DetailedLoot>()))
+                return;
+
+            foreach (var val in data.ToArray().Where(val => val.Point > 0))
+                Loot[returnTime].Add(new DetailedLoot(val));
+        }
+
+        public IEnumerable<DetailedLoot> LootForPoint(uint point)
+        {
+            return Loot.Values.SelectMany(val => val.Where(iVal => iVal.Point == point));
+        }
+    }
+
+    public record DetailedLoot(uint Point, uint Primary, ushort PrimaryCount, bool PrimaryHQ, uint Additional, ushort AdditionalCount, bool AdditionalHQ)
+    {
+        [JsonConstructor]
+        public DetailedLoot() : this(0, 0, 0, false, 0, 0, false) { }
+
+        public DetailedLoot(HousingWorkshopSubmarineGathered data) : this(0,0,0, false, 0, 0, false)
+        {
+            Point = data.Point;
+            Primary = data.ItemIdPrimary;
+            PrimaryCount = data.ItemCountPrimary;
+            PrimaryHQ = data.ItemHQPrimary;
+
+            Additional = data.ItemIdAdditional;
+            AdditionalCount = data.ItemCountAdditional;
+            AdditionalHQ = data.ItemHQAdditional;
+        }
+
+        [JsonIgnore] public Item PrimaryItem => ItemSheet.GetRow(Primary)!;
+        [JsonIgnore] public Item AdditionalItem => ItemSheet.GetRow(Additional)!;
+        [JsonIgnore] public bool ValidAdditional => Additional > 0;
     }
 
     public record Submarine(string Name, ushort Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
@@ -302,7 +408,7 @@ public static class Submarines
             if (SubmarinesEqual(playerFc.Submarines, config.Submarines))
                 continue;
 
-            KnownSubmarines[id] = new FcSubmarines(config.Tag, config.World, config.Submarines);
+            KnownSubmarines[id] = new FcSubmarines(config.Tag, config.World, config.Submarines, config.Loot);
         }
     }
 
@@ -312,7 +418,7 @@ public static class Submarines
         if (!KnownSubmarines.TryGetValue(id, out var playerFc))
             return;
 
-        var config = new CharacterConfiguration(id, playerFc.Tag, playerFc.World, playerFc.Submarines);
+        var config = new CharacterConfiguration(id, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot);
         config.Save();
     }
 

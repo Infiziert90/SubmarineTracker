@@ -19,15 +19,17 @@ public class CharacterConfiguration
     public string Tag = "";
     public string World = "Unknown";
     public List<Submarines.Submarine> Submarines = new();
+    public Dictionary<uint, Submarines.SubmarineLoot> Loot = new();
 
     public CharacterConfiguration() { }
 
-    public CharacterConfiguration(ulong id, string tag, string world, List<Submarines.Submarine> subs)
+    public CharacterConfiguration(ulong id, string tag, string world, List<Submarines.Submarine> subs, Dictionary<uint, Submarines.SubmarineLoot> loot)
     {
         LocalContentId = id;
         Tag = tag;
         World = world;
         Submarines = subs;
+        Loot = loot;
     }
 
     public void Save()
