@@ -114,12 +114,11 @@ namespace SubmarineTracker
             Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
 
             var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
-            fc.Tag = Utils.ToStr(local.CompanyTag);
-            fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
-
             if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.Tag != "")
                 return;
 
+            fc.Tag = Utils.ToStr(local.CompanyTag);
+            fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
             fc.Submarines = possibleNewSubs;
 
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
