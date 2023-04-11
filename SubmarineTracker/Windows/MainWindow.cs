@@ -23,7 +23,7 @@ public class MainWindow : Window, IDisposable
     private ulong CurrentSelection;
     private static Vector2 IconSize = new(28, 28);
 
-    public MainWindow(Plugin plugin, Configuration configuration) : base("Trackeru")
+    public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
