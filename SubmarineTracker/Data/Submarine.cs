@@ -457,12 +457,11 @@ public static class Submarines
             return 0;
         }
 
-        var sheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
-        var start = sheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
-            points.Add(sheet.GetRow(p)!);
+            points.Add(ExplorationSheet.GetRow(p)!);
 
         switch (points.Count)
         {
@@ -499,12 +498,11 @@ public static class Submarines
             return (0, new List<uint>());
         }
 
-        var sheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
-        var start = sheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
-            points.Add(sheet.GetRow(p)!);
+            points.Add(ExplorationSheet.GetRow(p)!);
 
 
         // zero
@@ -567,7 +565,7 @@ public static class Submarines
         }
 
         var min = MinimalWays.MinBy(m => m.Way);
-        var surveyD = min.Points.Sum(d => sheet.GetRow(d)!.SurveyDistance);
+        var surveyD = min.Points.Sum(d => ExplorationSheet.GetRow(d)!.SurveyDistance);
         return ((int) min.Way + surveyD, min.Points);
     }
 

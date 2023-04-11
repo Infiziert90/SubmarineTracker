@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
@@ -18,22 +17,24 @@ public class MainWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
+    public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
     private ulong CurrentSelection;
     private static Vector2 IconSize = new(28, 28);
 
-    public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
+    public MainWindow(Plugin plugin, Configuration configuration) : base("Trackeru")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(550, 400),
+            MinimumSize = new Vector2(710, 460),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
         Plugin = plugin;
         Configuration = configuration;
 
+        MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
@@ -150,36 +151,71 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.BeginTabItem("Loot"))
                 {
                     ImGuiHelpers.ScaledDummy(5.0f);
-                    ImGui.Indent(10.0f);
 
                     selectedFc.RebuildStats();
 
-                    if (!selectedFc.AllLoot.Any())
+                    if (ImGui.BeginChild("##LootOverview"))
                     {
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data");
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
-                    }
-                    else
-                    {
-                        ImGui.TextColored(ImGuiColors.ParsedOrange,"(( Work in Progress ))");
-                        foreach (var (point, loot) in selectedFc.AllLoot)
+                        if (!selectedFc.AllLoot.Any())
                         {
-                            ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(point)!.Location));
-                            foreach (var (item, count) in loot)
+                            ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data");
+                            ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
+                        }
+                        else
+                        {
+                            if (ImGui.BeginTabBar("##fcLootMap"))
                             {
-                                ImGui.Indent(10.0f);
-                                DrawIcon(item.Icon);
-                                ImGui.SameLine();
-                                ImGui.TextUnformatted(ToStr(item.Name));
-                                ImGui.SameLine();
-                                ImGui.TextUnformatted($"{count}");
+                                var halfWindowWidth = ImGui.GetWindowWidth() / 2;
+                                foreach (var map in MapSheet.Where(r => r.RowId != 0))
+                                {
+                                    var text = LootTable.MapToShort(map.RowId);
+                                    if (text == "")
+                                        text = ToStr(map.Name);
 
-                                ImGui.Unindent(10.0f);
+                                    if (ImGui.BeginTabItem(text))
+                                    {
+                                        ImGuiHelpers.ScaledDummy(10.0f);
+                                        var cursorPosition = ImGui.GetCursorPos();
+                                        foreach (var ((point, loot), idx) in selectedFc.AllLoot.Where(kv => GetPoint(kv.Key).Map.Row == map.RowId).Select((val, i) => (val, i)))
+                                        {
+                                            if (idx % 2 == 0)
+                                                cursorPosition = ImGui.GetCursorPos();
+                                            else
+                                            {
+                                                cursorPosition.X += halfWindowWidth;
+                                                ImGui.SetCursorPos(cursorPosition);
+                                            }
+
+                                            ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(point)!.Location));
+                                            ImGuiHelpers.ScaledDummy(5.0f);
+                                            foreach (var ((item, count), iIdx) in loot.Select((val, ii) => (val, ii)))
+                                            {
+                                                ImGui.Indent(10.0f);
+                                                if (idx % 2 == 1)
+                                                    ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
+                                                DrawIcon(item.Icon);
+                                                ImGui.SameLine();
+                                                ImGui.TextUnformatted(ToStr(item.Name));
+                                                var length = ImGui.CalcTextSize($"{count}").X;
+                                                ImGui.SameLine(idx % 2 == 0 ? 220.0f - length : 220.0f + cursorPosition.X - length);
+                                                ImGui.TextUnformatted($"{count}");
+
+                                                ImGui.Unindent(10.0f);
+                                            }
+
+                                            ImGuiHelpers.ScaledDummy(10.0f);
+                                        }
+
+                                        ImGui.EndTabItem();
+                                    }
+                                }
                             }
+                            ImGui.EndTabBar();
                         }
                     }
+                    ImGui.EndChild();
 
-                    ImGui.Unindent(10.0f);
+                    ImGui.EndTabItem();
                 }
             }
             ImGui.EndTabBar();
@@ -253,6 +289,11 @@ public class MainWindow : Window, IDisposable
                 ImGui.TextUnformatted("Time");
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted(time);
+
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted("Date");
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
                 var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
                 ImGui.TableNextColumn();
@@ -330,4 +371,5 @@ public class MainWindow : Window, IDisposable
     }
 
     private static string GetMapName(uint key) => ToStr(ExplorationSheet.First(r => r.RowId == key).Map.Value!.Name);
+    private static SubmarineExploration GetPoint(uint key) => ExplorationSheet.GetRow(key)!;
 }

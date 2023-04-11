@@ -2,7 +2,7 @@
     "Author": "Infi",
     "Name": "Submarine Tracker",
     "Punchline": "Simple Submarine Tracker and Builder",
-    "Description": "Simple and Easy\n+ Tracks current builds, routes and times \n+ Builder to improve your builds  \n+ Breakpoint support\n+ Support for multiple FCs",
+    "Description": "Simple and Easy\n+ Tracks current builds, routes and times\n+ Loot overview for each FC \n+ Builder to improve your builds  \n+ Breakpoint support\n+ Support for multiple FCs",
     "InternalName": "SubmarineTracker",
     "ApplicableVersion": "any",
     "Tags": [
@@ -10,6 +10,8 @@
         "Tracking",
         "Builder",
         "Parts",
-        "Plugins"
+        "Plugins",
+        "Loot",
+        "Optimizer"
     ]
 }

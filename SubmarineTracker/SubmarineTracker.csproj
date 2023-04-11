@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>Infi</Authors>
-        <Version>0.0.8.2</Version>
+        <Version>0.0.9.0</Version>
         <Description>Simple Submarine Tracker and Builder, with support for multiple FCs</Description>
         <PackageProjectUrl>https://github.com/Infiziert90/SubmarineTracker</PackageProjectUrl>
     </PropertyGroup>
