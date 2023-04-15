@@ -1,6 +1,7 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
+using System.Collections.Generic;
 
 namespace SubmarineTracker
 {
@@ -12,6 +13,8 @@ namespace SubmarineTracker
         public bool ShowExtendedPartsList = false;
         public bool ShowTimeInOverview = false;
         public bool ShowRouteInOverview = false;
+
+        public List<uint> CustomLoot = new();
 
         [NonSerialized]
         private DalamudPluginInterface? PluginInterface;

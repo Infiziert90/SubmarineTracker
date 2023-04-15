@@ -31,6 +31,7 @@ namespace SubmarineTracker
         private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
         private BuilderWindow BuilderWindow { get; init; }
+        private LootWindow LootWindow { get; init; }
 
         public static readonly string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
@@ -45,10 +46,12 @@ namespace SubmarineTracker
             ConfigWindow = new ConfigWindow(this);
             MainWindow = new MainWindow(this, Configuration);
             BuilderWindow = new BuilderWindow(this, Configuration);
+            LootWindow = new LootWindow(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(BuilderWindow);
+            WindowSystem.AddWindow(LootWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 
@@ -89,6 +92,13 @@ namespace SubmarineTracker
         private void OnBuilderCommand(string command, string args)
         {
             BuilderWindow.IsOpen = true;
+        }
+
+        [Command("/sloot")]
+        [HelpMessage("Opens the custom loot overview")]
+        private void OnLootCommand(string command, string args)
+        {
+            LootWindow.IsOpen = true;
         }
 
         public unsafe void FrameworkUpdate(Framework _)
