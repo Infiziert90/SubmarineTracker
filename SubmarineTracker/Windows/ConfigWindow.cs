@@ -113,7 +113,8 @@ public class ConfigWindow : Window, IDisposable
                 if (change)
                 {
                     SelectedItem = newItem;
-                    Configuration.CustomLoot.Add(newItem.Item.RowId);
+                    var value = (int) (newItem.Item.PriceLow > 1000 ? newItem.Item.PriceLow : 0);
+                    Configuration.CustomLootWithValue.Add(newItem.Item.RowId, value);
                     Configuration.Save();
                 }
 
@@ -121,19 +122,30 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.Separator();
                 ImGuiHelpers.ScaledDummy(5);
 
-                if (ImGui.BeginTable("##DeleteLootTable", 2))
+                if (ImGui.BeginTable("##DeleteLootTable", 3))
                 {
-                    ImGui.TableSetupColumn("Custom Loot");
-                    ImGui.TableSetupColumn("Del", 0, 0.2f);
+                    ImGui.TableSetupColumn("Item");
+                    ImGui.TableSetupColumn("Value", 0, 0.4f);
+                    ImGui.TableSetupColumn("Del", 0, 0.15f);
 
                     ImGui.TableHeadersRow();
 
                     var deletion = -1;
-                    foreach (var (item, idx) in Configuration.CustomLoot.Select((val, i) => (val, i)))
+                    foreach (var ((item, value), idx) in Configuration.CustomLootWithValue.Select((val, i) => (val, i)))
                     {
                         var resolvedItem = ItemSheet.GetRow(item)!;
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted($"{ToStr(resolvedItem.Name)}");
+
+                        ImGui.TableNextColumn();
+                        var val = value;
+                        ImGui.SetNextItemWidth(-1);
+                        if (ImGui.InputInt($"##inputValue{item}", ref val, 0))
+                        {
+                            val = Math.Clamp(val, 0, int.MaxValue);
+                            Configuration.CustomLootWithValue[item] = val;
+                            Configuration.Save();
+                        }
 
                         ImGui.TableNextColumn();
                         if (ImGuiComponents.IconButton(idx, FontAwesomeIcon.Trash))

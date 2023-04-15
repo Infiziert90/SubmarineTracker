@@ -73,7 +73,7 @@ public class LootWindow : Window, IDisposable
     {
         if (ImGui.BeginTabItem("Custom"))
         {
-            if (!Configuration.CustomLoot.Any())
+            if (!Configuration.CustomLootWithValue.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "No Custom Loot");
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "Add items to the custom tab in your config.");
@@ -86,6 +86,7 @@ public class LootWindow : Window, IDisposable
 
             var numSubs = 0;
             var numVoyages = 0;
+            var moneyMade = 0;
             var bigList = new Dictionary<Item, int>();
             foreach (var fc in Submarines.KnownSubmarines.Values)
             {
@@ -95,7 +96,7 @@ public class LootWindow : Window, IDisposable
 
                 foreach (var (item, count) in fc.AllLoot.SelectMany(x=>x.Value))
                 {
-                    if (!Configuration.CustomLoot.Contains(item.RowId))
+                    if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
                         continue;
 
                     if(!bigList.ContainsKey(item)){
@@ -131,12 +132,15 @@ public class LootWindow : Window, IDisposable
                     ImGui.TableNextColumn();
                     ImGui.TextUnformatted($"{count}");
                     ImGui.TableNextRow();
+
+                    moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
                 }
             }
             ImGui.EndTable();
 
             ImGuiHelpers.ScaledDummy(10.0f);
             ImGui.TextWrapped($"Your {numSubs} submarines have collected this loot over a combined {numVoyages} voyages");
+            ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil");
 
             ImGui.EndTabItem();
         }
