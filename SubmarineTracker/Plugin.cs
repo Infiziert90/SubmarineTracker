@@ -7,6 +7,7 @@ using Dalamud.Plugin;
 using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
+using Dalamud.Game.Gui;
 using Dalamud.Interface.Windowing;
 using EurekaTrackerAutoPopper.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
@@ -22,6 +23,7 @@ namespace SubmarineTracker
         [PluginService] public static CommandManager Commands { get; private set; } = null!;
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
+        [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
 
         public string Name => "Submarine Tracker";
 
@@ -37,6 +39,7 @@ namespace SubmarineTracker
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
+        private Notify Notify;
 
         public Plugin()
         {
@@ -54,6 +57,7 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(LootWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
+            Notify = new Notify(this);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -64,6 +68,7 @@ namespace SubmarineTracker
             Submarines.LoadCharacters();
 
             Framework.Update += FrameworkUpdate;
+            Framework.Update += Notify.NotifyLoop;
         }
 
         public void Dispose()
@@ -78,6 +83,7 @@ namespace SubmarineTracker
             TexturesCache.Instance?.Dispose();
 
             Framework.Update -= FrameworkUpdate;
+            Framework.Update -= Notify.NotifyLoop;
         }
 
         [Command("/stracker")]

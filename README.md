@@ -5,6 +5,7 @@ Simple and Easy
 + Loot overview for each FC
 + Builder to improve your builds  
 + Breakpoint support
++ Configurable notification for returning subs
 + Support for multiple FCs  
 
 ### Tracker

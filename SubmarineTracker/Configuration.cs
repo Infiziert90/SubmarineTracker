@@ -17,6 +17,8 @@ namespace SubmarineTracker
         public bool ShowRouteInOverview = false;
         public bool UseCharacterName = false;
 
+        public bool NotifyForAll = false;
+        public Dictionary<string, bool> NotifySpecific = new ();
 
         public List<uint> CustomLoot = new();
         public Dictionary<uint, int> CustomLootWithValue = new();

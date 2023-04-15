@@ -75,6 +75,49 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.EndTabItem();
             }
 
+            if (ImGui.BeginTabItem("Notify"))
+            {
+                var changed = false;
+                changed |= ImGui.Checkbox("All", ref Configuration.NotifyForAll);
+
+                if (!Configuration.NotifyForAll)
+                {
+                    ImGuiHelpers.ScaledDummy(5);
+                    ImGui.Separator();
+                    ImGuiHelpers.ScaledDummy(5);
+
+                    ImGui.TextUnformatted("Notify for specific:");
+                    ImGuiHelpers.ScaledDummy(5.0f);
+
+                    foreach (var (id, fc) in Submarines.KnownSubmarines)
+                    {
+                        foreach (var sub in fc.Submarines)
+                        {
+                            var key = $"{sub.Name}{id}";
+                            Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
+                            var notify = Configuration.NotifySpecific[key];
+
+                            var text = $"{sub.Name}@{fc.World}";
+                            if (Configuration.UseCharacterName && fc.CharacterName != "")
+                                text = $"{sub.Name}@{fc.CharacterName}";
+
+                            if (ImGui.Checkbox($"{text}##{id}{sub.Register}", ref notify))
+                            {
+                                Configuration.NotifySpecific[key] = notify;
+                                Configuration.Save();
+                            }
+                        }
+
+                        ImGuiHelpers.ScaledDummy(5.0f);
+                    }
+                }
+
+                if (changed)
+                    Configuration.Save();
+
+                ImGui.EndTabItem();
+            }
+
             if (ImGui.BeginTabItem("Saves"))
             {
                 if (ImGui.BeginTable("##DeleteSavesTable", 2))
