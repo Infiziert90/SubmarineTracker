@@ -56,6 +56,13 @@ public class ConfigWindow : Window, IDisposable
                 var changed = false;
                 changed |= ImGui.Checkbox("Show Extended Parts List", ref Configuration.ShowExtendedPartsList);
                 changed |= ImGui.Checkbox("Show Time in Overview", ref Configuration.ShowTimeInOverview);
+                if (Configuration.ShowTimeInOverview)
+                {
+                    ImGui.Indent(10.0f);
+                    changed |= ImGui.Checkbox("Show Return Date Instead", ref Configuration.UseDateTimeInstead);
+                    ImGui.Unindent(10.0f);
+                }
+
                 changed |= ImGui.Checkbox("Show Route in Overview", ref Configuration.ShowRouteInOverview);
 
                 if (changed)

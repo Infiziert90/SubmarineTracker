@@ -109,9 +109,17 @@ public class MainWindow : Window, IDisposable
                             if (Configuration.ShowTimeInOverview)
                             {
                                 time = " Done ";
-                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                                if (returnTime.TotalSeconds > 0)
-                                    time = $" {(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} ";
+                                if (!Configuration.UseDateTimeInstead)
+                                {
+                                    var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                                    if (returnTime.TotalSeconds > 0)
+                                        time = $" {(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} ";
+                                }
+                                else
+                                {
+                                    if (sub.ReturnTime.Second > 0)
+                                        time = $" {sub.ReturnTime.ToLocalTime()}";
+                                }
                             }
 
                             if (Configuration.ShowRouteInOverview)
