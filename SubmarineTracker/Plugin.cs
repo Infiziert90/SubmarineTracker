@@ -124,9 +124,10 @@ namespace SubmarineTracker
             Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
 
             var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
-            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.Tag != "")
+            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "")
                 return;
 
+            fc.CharacterName = Utils.ToStr(local.Name);
             fc.Tag = Utils.ToStr(local.CompanyTag);
             fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
             fc.Submarines = possibleNewSubs;

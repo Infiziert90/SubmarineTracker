@@ -16,6 +16,7 @@ public class CharacterConfiguration
 
     public ulong LocalContentId;
 
+    public string CharacterName = "";
     public string Tag = "";
     public string World = "Unknown";
     public List<Submarines.Submarine> Submarines = new();
@@ -23,9 +24,10 @@ public class CharacterConfiguration
 
     public CharacterConfiguration() { }
 
-    public CharacterConfiguration(ulong id, string tag, string world, List<Submarines.Submarine> subs, Dictionary<uint, Submarines.SubmarineLoot> loot)
+    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Submarines.Submarine> subs, Dictionary<uint, Submarines.SubmarineLoot> loot)
     {
         LocalContentId = id;
+        CharacterName = characterName;
         Tag = tag;
         World = world;
         Submarines = subs;
@@ -106,6 +108,7 @@ public class CharacterConfiguration
     {
         LocalContentId = Plugin.ClientState.LocalContentId,
 
+        CharacterName = Plugin.ClientState.LocalPlayer?.Name.ToString() ?? "",
         Tag = Plugin.ClientState.LocalPlayer?.CompanyTag.ToString() ?? "",
         World = Plugin.ClientState.LocalPlayer?.HomeWorld.GameData?.Name.ToString() ?? "Unknown",
         Submarines = new List<Submarines.Submarine>(),

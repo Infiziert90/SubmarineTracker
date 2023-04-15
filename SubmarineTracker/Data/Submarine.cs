@@ -35,6 +35,7 @@ public static class Submarines
 
     public class FcSubmarines
     {
+        public string CharacterName = "";
         public string Tag = null!;
         public string World = null!;
         public List<Submarine> Submarines = null!;
@@ -44,15 +45,16 @@ public static class Submarines
         [JsonConstructor]
         public FcSubmarines() { }
 
-        public FcSubmarines(string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot)
+        public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot)
         {
+            CharacterName = characterName;
             Tag = tag;
             World = world;
             Submarines = submarines;
             SubLoot = loot;
         }
 
-        public static FcSubmarines Empty => new FcSubmarines("", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>());
+        public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>());
 
         public void AddSubLoot(uint key, uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
         {
@@ -411,7 +413,7 @@ public static class Submarines
             if (SubmarinesEqual(playerFc.Submarines, config.Submarines))
                 continue;
 
-            KnownSubmarines[id] = new FcSubmarines(config.Tag, config.World, config.Submarines, config.Loot);
+            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot);
         }
     }
 
@@ -421,7 +423,7 @@ public static class Submarines
         if (!KnownSubmarines.TryGetValue(id, out var playerFc))
             return;
 
-        var config = new CharacterConfiguration(id, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot);
+        var config = new CharacterConfiguration(id, playerFc.CharacterName, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot);
         config.Save();
     }
 

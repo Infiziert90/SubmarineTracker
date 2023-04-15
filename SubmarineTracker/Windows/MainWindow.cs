@@ -55,6 +55,9 @@ public class MainWindow : Window, IDisposable
         if (ImGui.BeginChild("SubContent", new Vector2(0, -50)))
         {
             var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + 10;
+            if (Configuration.UseCharacterName)
+                buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + 10;
+
             ImGui.Columns(2, "columns", true);
             ImGui.SetColumnWidth(0, buttonWidth + 20);
 
@@ -68,6 +71,9 @@ public class MainWindow : Window, IDisposable
                 foreach (var (key, fc) in Submarines.KnownSubmarines.Where((kv) => kv.Value.Submarines.Any()))
                 {
                     var text = $"{fc.Tag}@{fc.World}##{key}";
+                    if (Configuration.UseCharacterName && fc.CharacterName != "")
+                        text = $"{fc.CharacterName}@{fc.World}##{key}";
+
                     if (current == key)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);

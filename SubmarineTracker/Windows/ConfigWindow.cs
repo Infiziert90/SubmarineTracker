@@ -64,6 +64,10 @@ public class ConfigWindow : Window, IDisposable
                 }
 
                 changed |= ImGui.Checkbox("Show Route in Overview", ref Configuration.ShowRouteInOverview);
+                changed |= ImGui.Checkbox("Use Character Name", ref Configuration.UseCharacterName);
+                ImGuiComponents.HelpMarker("Uses character name instead of FC tag in the overview.\n" +
+                                           "If it still shows the FC tag, so is your character name not saved, this will fix itself the next time you send out your subs.\n" +
+                                           "This option can lead to cut-off button text.");
 
                 if (changed)
                     Configuration.Save();

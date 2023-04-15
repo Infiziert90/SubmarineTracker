@@ -14,6 +14,8 @@ namespace SubmarineTracker
         public bool ShowTimeInOverview = false;
         public bool UseDateTimeInstead = false;
         public bool ShowRouteInOverview = false;
+        public bool UseCharacterName = false;
+
 
         public List<uint> CustomLoot = new();
 
