@@ -117,7 +117,6 @@ namespace SubmarineTracker
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
                 possibleNewSubs.Add(new Submarines.Submarine(sub));
 
-
             if (!possibleNewSubs.Any())
                 return;
 

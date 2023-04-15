@@ -19,10 +19,10 @@ public class LootWindow : Window, IDisposable
     private Configuration Configuration;
 
     private static ExcelSheet<Item> ItemSheet = null!;
-    public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+    private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
-    private int SelectedSubmarine = 0;
-    private int SelectedVoyage = 0;
+    private int SelectedSubmarine;
+    private int SelectedVoyage;
 
     private static Vector2 IconSize = new(28, 28);
 
@@ -76,7 +76,7 @@ public class LootWindow : Window, IDisposable
             if (!Configuration.CustomLootWithValue.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "No Custom Loot");
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "Add items to the custom tab in your config.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "You can add selected items via the loot tab under settings.");
 
                 ImGui.EndTabItem();
                 return;
@@ -111,7 +111,7 @@ public class LootWindow : Window, IDisposable
 
             if (!bigList.Any())
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "Selected items haven't been found so far.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "The selected items haven't been looted.");
 
                 ImGui.EndTabItem();
                 return;
@@ -139,20 +139,30 @@ public class LootWindow : Window, IDisposable
             ImGui.EndTable();
 
             ImGuiHelpers.ScaledDummy(10.0f);
-            ImGui.TextWrapped($"Your {numSubs} submarines have collected this loot over a combined {numVoyages} voyages");
-            ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil");
+            ImGui.TextWrapped($"The above rewards have been obtained from a total of {numVoyages} voyages via {numSubs} submarines.");
+            ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
 
             ImGui.EndTabItem();
         }
     }
 
-        private void VoyageTab()
+    private void VoyageTab()
     {
         if (ImGui.BeginTabItem("Voyage"))
         {
             var existingSubs = Submarines.KnownSubmarines.Values
                                          .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
                                          .ToArray();
+            if (!existingSubs.Any())
+            {
+                ImGui.PushTextWrapPos();
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
+                ImGui.PopTextWrapPos();
+
+                ImGui.EndTabItem();
+                return;
+            }
+
             var selectedSubmarine = SelectedSubmarine;
             ImGui.Combo("##existingSubs", ref selectedSubmarine, existingSubs, existingSubs.Length);
             if (selectedSubmarine != SelectedSubmarine)
@@ -162,12 +172,31 @@ public class LootWindow : Window, IDisposable
             }
 
             var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
-            var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey((uint) ((DateTimeOffset) selectedSub.ReturnTime).ToUnixTimeSeconds())));
-            var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey((uint)((DateTimeOffset)selectedSub.ReturnTime).ToUnixTimeSeconds()));
+
+            if (selectedSub.Register == 0)
+            {
+                ImGuiHelpers.ScaledDummy(5.0f);
+                ImGui.TextWrapped("Selected submarine needs to be refreshed, this will resolve itself the next time your submarines are sent out.");
+
+                ImGui.EndTabItem();
+                return;
+            }
+
+            var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey(selectedSub.Return)));
+            var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 
             var submarineVoyage = submarineLoot.Loot.Keys.Select(k => $"{DateTime.UnixEpoch.AddSeconds(k).ToLocalTime()}").ToArray();
+            if (!submarineVoyage.Any())
+            {
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
+
+                ImGui.EndTabItem();
+                return;
+            }
+
             ImGui.Combo("##voyageSelection", ref SelectedVoyage, submarineVoyage, submarineVoyage.Length);
 
+            ImGuiHelpers.ScaledDummy(5.0f);
             var loot = submarineLoot.Loot.First(kv => $"{DateTime.UnixEpoch.AddSeconds(kv.Key).ToLocalTime()}" == submarineVoyage[SelectedVoyage]);
             foreach (var detailedLoot in loot.Value)
             {

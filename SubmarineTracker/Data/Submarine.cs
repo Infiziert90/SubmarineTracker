@@ -147,6 +147,8 @@ public static class Submarines
 
     public record Submarine(string Name, ushort Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
     {
+        public uint Register;
+        public uint Return;
         public DateTime ReturnTime;
         public readonly List<uint> Points = new();
 
@@ -164,6 +166,8 @@ public static class Submarines
             CExp = data.CurrentExp;
             NExp = data.NextLevelExp;
 
+            Register = data.RegisterTime;
+            Return = data.ReturnTime;
             ReturnTime = data.GetReturnTime();
 
             var managedArray = new byte[5];
@@ -218,7 +222,8 @@ public static class Submarines
                 return true;
             return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
                    Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
-                   CExp == other.CExp && ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
+                   CExp == other.CExp && Return == other.Return && Register == other.Register &&
+                   ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
         }
 
         public bool Equals(Submarine x, Submarine y)
@@ -234,7 +239,8 @@ public static class Submarines
 
             return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
                    x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
-                   x.CExp == y.CExp && x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
+                   x.CExp == y.CExp && x.Return == y.Return && x.Register == y.Register &&
+                   x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
         }
 
         public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge, CExp, Points);

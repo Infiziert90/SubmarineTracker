@@ -27,7 +27,7 @@ public class ConfigWindow : Window, IDisposable
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(250, 300),
+            MinimumSize = new Vector2(320, 460),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
@@ -65,9 +65,9 @@ public class ConfigWindow : Window, IDisposable
 
                 changed |= ImGui.Checkbox("Show Route in Overview", ref Configuration.ShowRouteInOverview);
                 changed |= ImGui.Checkbox("Use Character Name", ref Configuration.UseCharacterName);
-                ImGuiComponents.HelpMarker("Uses character name instead of FC tag in the overview.\n" +
-                                           "If it still shows the FC tag, so is your character name not saved, this will fix itself the next time you send out your subs.\n" +
-                                           "This option can lead to cut-off button text.");
+                ImGuiComponents.HelpMarker("Use character name instead of FC tag in the overview.\n" +
+                                           "If the FC tag is still shown, this means your character name has yet to be saved, this will resolve itself the next time your submarines are sent out.\n" +
+                                           "Be aware this option can lead to cut-off button text.");
 
                 if (changed)
                     Configuration.Save();
