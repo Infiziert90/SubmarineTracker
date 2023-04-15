@@ -18,10 +18,11 @@ public class LootWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
-    public static ExcelSheet<SubmarineRank> RankSheet = null!;
-    public static ExcelSheet<SubmarinePart> PartSheet = null!;
-    public static ExcelSheet<SubmarineMap> MapSheet = null!;
+    private static ExcelSheet<Item> ItemSheet = null!;
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+
+    private int SelectedSubmarine = 0;
+    private int SelectedVoyage = 0;
 
     private static Vector2 IconSize = new(28, 28);
 
@@ -36,9 +37,7 @@ public class LootWindow : Window, IDisposable
         Plugin = plugin;
         Configuration = configuration;
 
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
-        PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
-        MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
+        ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
@@ -51,6 +50,8 @@ public class LootWindow : Window, IDisposable
             if (ImGui.BeginTabBar("##LootTabBar"))
             {
                 CustomLootTab();
+
+                VoyageTab();
             }
             ImGui.EndTabBar();
         }
@@ -141,7 +142,66 @@ public class LootWindow : Window, IDisposable
         }
     }
 
-    public SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
+        private void VoyageTab()
+    {
+        if (ImGui.BeginTabItem("Voyage"))
+        {
+            var existingSubs = Submarines.KnownSubmarines.Values
+                                         .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
+                                         .ToArray();
+            var selectedSubmarine = SelectedSubmarine;
+            ImGui.Combo("##existingSubs", ref selectedSubmarine, existingSubs, existingSubs.Length);
+            if (selectedSubmarine != SelectedSubmarine)
+            {
+                SelectedSubmarine = selectedSubmarine;
+                SelectedVoyage = 0;
+            }
+
+            var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
+            var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey((uint) ((DateTimeOffset) selectedSub.ReturnTime).ToUnixTimeSeconds())));
+            var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey((uint)((DateTimeOffset)selectedSub.ReturnTime).ToUnixTimeSeconds()));
+
+            var submarineVoyage = submarineLoot.Loot.Keys.Select(k => $"{DateTime.UnixEpoch.AddSeconds(k).ToLocalTime()}").ToArray();
+            ImGui.Combo("##voyageSelection", ref SelectedVoyage, submarineVoyage, submarineVoyage.Length);
+
+            var loot = submarineLoot.Loot.First(kv => $"{DateTime.UnixEpoch.AddSeconds(kv.Key).ToLocalTime()}" == submarineVoyage[SelectedVoyage]);
+            foreach (var detailedLoot in loot.Value)
+            {
+                var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
+                var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
+
+                ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(detailedLoot.Point)!.Location));
+
+                if (ImGui.BeginTable($"##VoyageLootTable", 3))
+                {
+                    ImGui.TableSetupColumn("##icon", 0, 0.15f);
+                    ImGui.TableSetupColumn("##item");
+                    ImGui.TableSetupColumn("##amount", 0, 0.3f);
+
+                    ImGui.TableNextColumn();
+                    DrawIcon(primaryItem.Icon);
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted(ToStr(primaryItem.Name));
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"{detailedLoot.PrimaryCount}");
+                    ImGui.TableNextRow();
+
+                    if (detailedLoot.ValidAdditional)
+                    {
+                        ImGui.TableNextColumn();
+                        DrawIcon(additionalItem.Icon);
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(ToStr(additionalItem.Name));
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{detailedLoot.AdditionalCount}");
+                        ImGui.TableNextRow();
+                    }
+                }
+                ImGui.EndTable();
+            }
+            ImGui.EndTabItem();
+        }
+    }
 
     private static void DrawIcon(uint iconId)
     {
