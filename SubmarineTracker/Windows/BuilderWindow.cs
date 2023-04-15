@@ -32,6 +32,7 @@ public class BuilderWindow : Window, IDisposable
 
     public int SelectedMap;
     public List<uint> SelectedLocations = new();
+    public (int Distance, List<uint> Points) OptimizedRoute = (0, new List<uint>());
 
     public int OrgSpeed;
 
@@ -62,19 +63,15 @@ public class BuilderWindow : Window, IDisposable
         {
             var sub = new Submarines.Submarine();
 
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -85)))
+            if (ImGui.BeginTabBar("SubBuilderTab"))
             {
-                if (ImGui.BeginTabBar("SubBuilderTab"))
-                {
-                    BuildTab(ref sub);
+                BuildTab(ref sub);
 
-                    RouteTab();
+                RouteTab();
 
-                    infoTabOpen |= InfoTab();
-                }
-                ImGui.EndTabBar();
+                infoTabOpen |= InfoTab();
             }
-            ImGui.EndChild();
+            ImGui.EndTabBar();
 
             if (!infoTabOpen)
             {
@@ -88,11 +85,14 @@ public class BuilderWindow : Window, IDisposable
                         SelectSub = 0;
 
                     var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
-                    var points = SelectedLocations.Prepend(startPoint).ToList();
-                    var optimizedDistance = Submarines.CalculateDistance(points);
-                    var optimizedPoints = optimizedDistance.Points.Prepend(startPoint).ToList();
+
+                    var optimizedPoints = OptimizedRoute.Points.Prepend(startPoint).ToList();
                     var optimizedDuration = Submarines.CalculateDuration(optimizedPoints, build);
                     var breakpoints = LootTable.CalculateRequired(SelectedLocations);
+                    var expPerMinute = 0.0;
+                    if (optimizedDuration != 0 && OptimizedRoute.Distance != 0)
+                        expPerMinute = OptimizedRoute.Points.Select(p => ExplorationSheet.GetRow(p)!.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);
+
 
                     var windowWidth = ImGui.GetWindowWidth();
                     var secondRow = windowWidth / 5.1f;
@@ -100,6 +100,13 @@ public class BuilderWindow : Window, IDisposable
                     var fourthRow = windowWidth / 2.0f;
                     var sixthRow = windowWidth / 1.5f;
                     var seventhRow = windowWidth / 1.25f;
+
+                    if (OptimizedRoute.Points.Any())
+                    {
+                        ImGui.TextUnformatted("Optimized Route:");
+                        ImGui.SameLine();
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", OptimizedRoute.Points.Select(p => NumToLetter(p - startPoint))));
+                    }
 
                     ImGui.TextUnformatted("Calculated Stats:");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
@@ -123,7 +130,7 @@ public class BuilderWindow : Window, IDisposable
                     ImGui.SameLine(thirdRow);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
                     ImGui.SameLine(fourthRow);
-                    SelectRequiredColor(optimizedDistance.Distance, build.Range);
+                    SelectRequiredColor(OptimizedRoute.Distance, build.Range);
 
                     ImGui.SameLine(sixthRow);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
@@ -133,6 +140,11 @@ public class BuilderWindow : Window, IDisposable
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Duration");
                     ImGui.SameLine(secondRow);
                     ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
+
+                    ImGui.SameLine(thirdRow);
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");
+                    ImGui.SameLine(fourthRow);
+                    ImGui.TextUnformatted($"{expPerMinute:F}");
                 }
                 ImGui.EndChild();
             }
@@ -189,61 +201,68 @@ public class BuilderWindow : Window, IDisposable
     {
         if (ImGui.BeginTabItem("Build"))
         {
-            var existingSubs = Submarines.KnownSubmarines.Values
-                 .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
-                 .ToArray();
-            existingSubs = existingSubs.Prepend("Custom").ToArray();
-
-            var windowWidth = ImGui.GetWindowWidth() / 2;
-            ImGui.PushItemWidth(windowWidth - 5.0f);
-            ImGui.Combo("##existingSubs", ref SelectSub, existingSubs, existingSubs.Length);
-
-            ImGui.PopItemWidth();
-            ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth - 3.0f);
-            ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
-            ImGui.PopItemWidth();
-
-            if (existingSubs[SelectSub] != "Custom")
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -110)))
             {
-                var fc = Submarines.KnownSubmarines.Values.First(fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]));
-                sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]);
+                var existingSubs = Submarines.KnownSubmarines.Values
+                                             .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
+                                             .ToArray();
+                existingSubs = existingSubs.Prepend("Custom").ToArray();
 
-                SelectedRank = (int)sub.Rank;
-                SelectedHull = sub.Hull;
-                SelectedStern = sub.Stern;
-                SelectedBow = sub.Bow;
-                SelectedBridge = sub.Bridge;
+                var windowWidth = ImGui.GetWindowWidth() / 2;
+                ImGui.PushItemWidth(windowWidth - 5.0f);
+                ImGui.Combo("##existingSubs", ref SelectSub, existingSubs, existingSubs.Length);
 
-                var subBuild = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
-                OrgSpeed = subBuild.Speed;
+                ImGui.PopItemWidth();
+                ImGui.SameLine();
+                ImGui.PushItemWidth(windowWidth - 3.0f);
+                ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
+                ImGui.PopItemWidth();
+
+                if (existingSubs[SelectSub] != "Custom")
+                {
+                    var fc = Submarines.KnownSubmarines.Values.First(
+                        fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]));
+                    sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]);
+
+                    SelectedRank = (int)sub.Rank;
+                    SelectedHull = sub.Hull;
+                    SelectedStern = sub.Stern;
+                    SelectedBow = sub.Bow;
+                    SelectedBridge = sub.Bridge;
+
+                    var subBuild =
+                        new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
+                    OrgSpeed = subBuild.Speed;
+                }
+
+                ImGuiHelpers.ScaledDummy(5);
+
+                if (ImGui.BeginTable("##submarinePartSelection", 5))
+                {
+                    ImGui.TableSetupColumn("Type");
+                    ImGui.TableSetupColumn("Hull");
+                    ImGui.TableSetupColumn("Stern");
+                    ImGui.TableSetupColumn("Bow");
+                    ImGui.TableSetupColumn("Bridge");
+
+                    ImGui.TableHeadersRow();
+
+                    BuildTableEntries("Shark", 0);
+                    BuildTableEntries("Uniki", 4);
+                    BuildTableEntries("Whale", 8);
+                    BuildTableEntries("Coelac.", 12);
+                    BuildTableEntries("Syldra", 16);
+
+                    BuildTableEntries("MShark", 20);
+                    BuildTableEntries("MUniki", 24);
+                    BuildTableEntries("MWhale", 28);
+                    BuildTableEntries("MCoelac.", 32);
+                    BuildTableEntries("MSyldra", 36);
+                }
+
+                ImGui.EndTable();
             }
-
-            ImGuiHelpers.ScaledDummy(5);
-
-            if (ImGui.BeginTable("##submarinePartSelection", 5))
-            {
-                ImGui.TableSetupColumn("Type");
-                ImGui.TableSetupColumn("Hull");
-                ImGui.TableSetupColumn("Stern");
-                ImGui.TableSetupColumn("Bow");
-                ImGui.TableSetupColumn("Bridge");
-
-                ImGui.TableHeadersRow();
-
-                BuildTableEntries("Shark", 0);
-                BuildTableEntries("Uniki", 4);
-                BuildTableEntries("Whale", 8);
-                BuildTableEntries("Coelac.", 12);
-                BuildTableEntries("Syldra", 16);
-
-                BuildTableEntries("MShark", 20);
-                BuildTableEntries("MUniki", 24);
-                BuildTableEntries("MWhale", 28);
-                BuildTableEntries("MCoelac.", 32);
-                BuildTableEntries("MSyldra", 36);
-            }
-            ImGui.EndTable();
+            ImGui.EndChild();
 
             ImGui.EndTabItem();
         }
@@ -253,55 +272,65 @@ public class BuilderWindow : Window, IDisposable
     {
         if (ImGui.BeginTabItem("Route"))
         {
-            var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
-            var selectedMap = SelectedMap;
-            ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-            if (selectedMap != SelectedMap)
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -110)))
             {
-                SelectedMap = selectedMap;
-                SelectedLocations.Clear();
-            }
-
-            var explorations = ExplorationSheet
-                                    .Where(r => r.Map.Row == SelectedMap + 1)
-                                    .Where(r => !r.Passengers)
-                                    .Where(r => !SelectedLocations.Contains(r.RowId))
-                                    .ToList();
-
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Selected {SelectedLocations.Count} / 5");
-            var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
-
-            var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-            if (ImGui.BeginListBox("##selectedPoints", new Vector2(-1, height)))
-            {
-                foreach (var location in SelectedLocations.ToArray())
+                var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
+                var selectedMap = SelectedMap;
+                ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
+                if (selectedMap != SelectedMap)
                 {
-                    var p = ExplorationSheet.GetRow(location)!;
-                    if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {ToStr(p.Location)}"))
-                        SelectedLocations.Remove(location);
+                    SelectedMap = selectedMap;
+                    SelectedLocations.Clear();
                 }
-                ImGui.EndListBox();
-            }
 
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Select with click");
-            if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 1.95f)))
-            {
-                foreach (var location in explorations)
+                var explorations = ExplorationSheet
+                                   .Where(r => r.Map.Row == SelectedMap + 1)
+                                   .Where(r => !r.Passengers)
+                                   .Where(r => !SelectedLocations.Contains(r.RowId))
+                                   .ToList();
+
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Selected {SelectedLocations.Count} / 5");
+                var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
+
+                var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
+                if (ImGui.BeginListBox("##selectedPoints", new Vector2(-1, height)))
                 {
-                    if (SelectedLocations.Count < 5)
+                    foreach (var location in SelectedLocations.ToArray())
                     {
-                        if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}"))
-                            SelectedLocations.Add(location.RowId);
+                        var p = ExplorationSheet.GetRow(location)!;
+                        if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {ToStr(p.Location)}"))
+                            SelectedLocations.Remove(location);
                     }
-                    else
-                    {
-                        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DPSRed);
-                        ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}");
-                        ImGui.PopStyleColor();
-                    }
+
+                    ImGui.EndListBox();
                 }
-                ImGui.EndListBox();
+
+                ImGui.TextColored(ImGuiColors.ParsedOrange, $"Select with click");
+                if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 1.95f)))
+                {
+                    foreach (var location in explorations)
+                    {
+                        if (SelectedLocations.Count < 5)
+                        {
+                            if (ImGui.Selectable(
+                                    $"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}"))
+                                SelectedLocations.Add(location.RowId);
+                        }
+                        else
+                        {
+                            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DPSRed);
+                            ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}");
+                            ImGui.PopStyleColor();
+                        }
+                    }
+
+                    ImGui.EndListBox();
+                }
+
+                var points = SelectedLocations.Prepend(startPoint).ToList();
+                OptimizedRoute = Submarines.CalculateDistance(points);
             }
+            ImGui.EndChild();
 
             ImGui.EndTabItem();
         }
