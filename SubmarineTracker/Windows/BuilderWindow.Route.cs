@@ -30,7 +30,6 @@ public partial class BuilderWindow
                                    .Where(r => r.Map.Row == SelectedMap + 1)
                                    .Where(r => !r.Passengers)
                                    .Where(r => !SelectedLocations.Contains(r.RowId))
-                                   .Where(r => fcSub.UnlockedSectors[r.RowId])
                                    .ToList();
 
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Selected {SelectedLocations.Count} / 5");
@@ -56,9 +55,17 @@ public partial class BuilderWindow
                     {
                         if (SelectedLocations.Count < 5)
                         {
-                            if (ImGui.Selectable(
-                                    $"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                SelectedLocations.Add(location.RowId);
+                            if (fcSub.UnlockedSectors.TryGetValue(location.RowId, out var value) && value)
+                            {
+                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                                    SelectedLocations.Add(location.RowId);
+                            }
+                            else
+                            {
+                                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                                ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+                                ImGui.PopStyleColor();
+                            }
                         }
                         else
                         {

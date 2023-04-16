@@ -30,6 +30,7 @@ namespace SubmarineTracker
         {
             this.PluginInterface = pluginInterface;
 
+            // TODO Delete at some point
             if (Version == 0)
             {
                 var itemSheet = Plugin.Data.GetExcelSheet<Item>()!;

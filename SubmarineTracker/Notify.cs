@@ -36,6 +36,10 @@ public class Notify
                 if (!Configuration.NotifyForAll && !ok)
                     continue;
 
+                // this state happens after the rewards got picked up
+                if (sub.Return == 0)
+                    continue;
+
                 var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                 if (returnTime.TotalSeconds > 0)
                     continue;

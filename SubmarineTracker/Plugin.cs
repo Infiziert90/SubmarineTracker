@@ -129,7 +129,9 @@ namespace SubmarineTracker
             Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
 
             var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
-            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "")
+
+            // TODO Remove the fc.UnlockedSectors.Count > 0 after everyone had time to update
+            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "" && fc.UnlockedSectors.Count > 0)
                 return;
 
             fc.CharacterName = Utils.ToStr(local.Name);
@@ -137,7 +139,7 @@ namespace SubmarineTracker
             fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
             fc.Submarines = possibleNewSubs;
             fc.GetUnlockedAndExploredSectors();
-            
+
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
                 if (sub.ReturnTime != 0)
                     fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);

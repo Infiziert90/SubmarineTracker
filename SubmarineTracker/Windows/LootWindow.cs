@@ -173,6 +173,8 @@ public class LootWindow : Window, IDisposable
 
             var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
 
+
+            // TODO Remove after everyone had time to update
             if (selectedSub.Register == 0)
             {
                 ImGuiHelpers.ScaledDummy(5.0f);

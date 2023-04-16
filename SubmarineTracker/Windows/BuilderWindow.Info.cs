@@ -10,14 +10,18 @@ public partial class BuilderWindow
         var open = ImGui.BeginTabItem("Info");
         if (open)
         {
+
             ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "How are these stats calculated?");
-            ImGui.TextUnformatted("All calculations are based on sheets from the game");
-            ImGuiHelpers.ScaledDummy(10.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "How are these breakpoints calculated?");
             ImGui.TextWrapped("The range breakpoint is calculated using the same method as the game. However all other breakpoints are calculated off of community data gathered from the submarine discord.\nSpecial thanks to Mystic Spirit for maintaining the current sheet.");
-            ImGuiHelpers.ScaledDummy(10.0f);
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Best Exp?");
+            ImGui.TextWrapped("This tool helps you calculate the most optimal route you can take to level the currently selected build. Calculations are based on EXP per min and unlocked Points (of the current character). Planned features are calculation based on time and other factors.");
+
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             var spacing = ImGui.CalcTextSize("Optimal").X + 20.0f;
 
@@ -38,7 +42,7 @@ public partial class BuilderWindow
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted("Favor required for chance to get two items from a sector");
 
-            ImGuiHelpers.ScaledDummy(10.0f);
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Colors:");
             ImGui.TextUnformatted("White");
@@ -56,6 +60,13 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted("Requirement not fulfilled, followed by requirement");
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Route:");
+            ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
+            ImGui.SameLine(spacing);
+            ImGui.TextUnformatted("Point not unlocked");
         }
         ImGui.EndTabItem();
 

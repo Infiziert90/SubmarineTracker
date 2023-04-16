@@ -2,7 +2,7 @@
     "Author": "Infi",
     "Name": "Submarine Tracker",
     "Punchline": "Simple Submarine Tracker and Builder",
-    "Description": "Simple and Easy\n+ Tracks current builds, routes and times\n+ Loot overview for each FC \n+ Builder to improve your builds  \n+ Breakpoint support\n+ Configurable notification for returning subs\n+ Support for multiple FCs",
+    "Description": "Simple and Easy\n+ Tracks current builds, routes and times\n+ Loot overview for each FC \n+ Builder to improve your builds\n+ Optimized EXP calculator for the selected build\n+ Unlockable exploration points are highlighted\n+ Breakpoint support\n+ Configurable notification for returning subs\n+ Support for multiple FCs",
     "InternalName": "SubmarineTracker",
     "ApplicableVersion": "any",
     "Tags": [
