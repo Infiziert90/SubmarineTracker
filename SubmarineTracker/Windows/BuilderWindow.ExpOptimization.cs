@@ -14,11 +14,13 @@ public partial class BuilderWindow
 {
     private uint[] BestPath;
     private bool ComputingPath;
+    private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
 
     private void FindBestPath()
     {
         ComputingPath = true;
+        LastComputedRank = SelectedRank;
         var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
 
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
@@ -75,7 +77,7 @@ public partial class BuilderWindow
                 var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
                 var selectedMap = SelectedMap;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if ((selectedMap != SelectedMap || BestPath == null) && !ComputingPath)
+                if ((selectedMap != SelectedMap || BestPath == null || LastComputedRank != SelectedRank) && !ComputingPath)
                 {
                     SelectedMap = selectedMap;
                     ComputeStart = DateTime.Now;
