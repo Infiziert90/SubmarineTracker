@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dalamud.Game.Command;
@@ -136,7 +136,8 @@ namespace SubmarineTracker
             fc.Tag = Utils.ToStr(local.CompanyTag);
             fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
             fc.Submarines = possibleNewSubs;
-
+            fc.GetUnlockedAndExploredSectors();
+            
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
                 if (sub.ReturnTime != 0)
                     fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);

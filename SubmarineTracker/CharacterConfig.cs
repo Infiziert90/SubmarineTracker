@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -21,10 +21,11 @@ public class CharacterConfiguration
     public string World = "Unknown";
     public List<Submarines.Submarine> Submarines = new();
     public Dictionary<uint, Submarines.SubmarineLoot> Loot = new();
+    public List<Tuple<uint, bool, bool>> ExplorationPoints = new();
 
     public CharacterConfiguration() { }
 
-    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Submarines.Submarine> subs, Dictionary<uint, Submarines.SubmarineLoot> loot)
+    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Submarines.Submarine> subs, Dictionary<uint, Submarines.SubmarineLoot> loot, List<Tuple<uint, bool, bool>> explorationPoints)
     {
         LocalContentId = id;
         CharacterName = characterName;
@@ -32,6 +33,7 @@ public class CharacterConfiguration
         World = world;
         Submarines = subs;
         Loot = loot;
+        ExplorationPoints = explorationPoints;
     }
 
     public void Save()

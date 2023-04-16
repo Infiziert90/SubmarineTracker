@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,20 +41,27 @@ public static class Submarines
         public List<Submarine> Submarines = null!;
 
         public Dictionary<uint, SubmarineLoot> SubLoot = new();
+        public Dictionary<uint, bool> UnlockedSectors = new();
+        public Dictionary<uint, bool> ExploredSectors = new();
 
         [JsonConstructor]
         public FcSubmarines() { }
 
-        public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot)
+        public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot, List<Tuple<uint, bool, bool>> points)
         {
             CharacterName = characterName;
             Tag = tag;
             World = world;
             Submarines = submarines;
             SubLoot = loot;
+            foreach (var (point, unlocked, explored) in points)
+            {
+                UnlockedSectors[point] = unlocked;
+                ExploredSectors[point] = explored;
+            }
         }
 
-        public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>());
+        public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>(), new List<Tuple<uint, bool, bool>>());
 
         public void AddSubLoot(uint key, uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
         {
@@ -62,6 +69,15 @@ public static class Submarines
 
             var sub = SubLoot[key];
             sub.Add(returnTime, data);
+        }
+
+        public void GetUnlockedAndExploredSectors()
+        {
+            foreach (var submarineExploration in ExplorationSheet)
+            {
+                UnlockedSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationUnlocked((byte) submarineExploration.RowId);
+                ExploredSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationExplored((byte) submarineExploration.RowId);
+            }
         }
 
         #region Loot
@@ -419,7 +435,7 @@ public static class Submarines
             if (SubmarinesEqual(playerFc.Submarines, config.Submarines))
                 continue;
 
-            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot);
+            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot, config.ExplorationPoints);
         }
     }
 
@@ -429,7 +445,9 @@ public static class Submarines
         if (!KnownSubmarines.TryGetValue(id, out var playerFc))
             return;
 
-        var config = new CharacterConfiguration(id, playerFc.CharacterName, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot);
+        var points = playerFc.UnlockedSectors.Select(t => new Tuple<uint, bool, bool>(t.Key, t.Value, playerFc.ExploredSectors[t.Key])).ToList();
+
+        var config = new CharacterConfiguration(id, playerFc.CharacterName, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot, points);
         config.Save();
     }
 
