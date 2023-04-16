@@ -61,13 +61,31 @@ public partial class BuilderWindow
             PluginLog.Verbose("Starting distance calculation");
             var optimalDistances = allPaths.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
             PluginLog.Verbose("Done distance calculation");
-            BestPath = optimalDistances.AsParallel()
-                                       .Select(t => new Tuple<uint[], TimeSpan, double>(
-                                                   t.Points.Select(t => t.RowId).ToArray(),
-                                                   TimeSpan.FromSeconds(Submarines.CalculateDuration(t.Points.ToList().Prepend(startPoint), build)),
-                                                   t.Points.Select(k => (double)k.ExpReward).Sum()
-                                               )).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes)
-                                       .Select(t => t.Item1).First();
+            if (!optimalDistances.Any())
+            {
+                ComputingPath = false;
+                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+                BestPath = Array.Empty<uint>();
+                return;
+            }
+
+            BestPath = optimalDistances.AsParallel().Select(t =>
+            {
+                var path = t.Points.Prepend(startPoint).ToArray();
+                var rowIdPath = new List<uint>();
+                uint exp = 0;
+                foreach (var submarineExplorationPretty in path.Skip(1))
+                {
+                    rowIdPath.Add(submarineExplorationPretty.RowId);
+                    exp += submarineExplorationPretty.ExpReward;
+                }
+                return new Tuple<uint[], TimeSpan, double>(
+                    rowIdPath.ToArray(),
+                    TimeSpan.FromSeconds(Submarines.CalculateDuration(path, build)),
+                    exp
+                );
+            }).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
+            PluginLog.Verbose("Done optimal calculation");
             ComputingPath = false;
         }
     }

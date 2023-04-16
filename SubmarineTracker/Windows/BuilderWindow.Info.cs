@@ -10,7 +10,6 @@ public partial class BuilderWindow
         var open = ImGui.BeginTabItem("Info");
         if (open)
         {
-
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "How are these breakpoints calculated?");
@@ -19,7 +18,7 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Best Exp?");
-            ImGui.TextWrapped("This tool helps you calculate the most optimal route you can take to level the currently selected build. Calculations are based on EXP per min and unlocked Points (of the current character). Planned features are calculation based on time and other factors.");
+            ImGui.TextWrapped("This tool will assist you in calculating the most optimal route that can be taken to level the currently selected build. These calculations are based on experience gained per minute and the unlocked exploration points for your current character only.");
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
