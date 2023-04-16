@@ -22,13 +22,9 @@ public partial class BuilderWindow
                 var windowWidth = ImGui.GetWindowWidth() / 2;
                 ImGui.PushItemWidth(windowWidth - 5.0f);
                 ImGui.Combo("##existingSubs", ref SelectSub, existingSubs, existingSubs.Length);
-
-                ImGui.PopItemWidth();
-                ImGui.SameLine();
-                ImGui.PushItemWidth(windowWidth - 3.0f);
-                ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
                 ImGui.PopItemWidth();
 
+                // Calculate first so rank can be changed afterwards
                 if (existingSubs[SelectSub] != "Custom")
                 {
                     var fc = Submarines.KnownSubmarines.Values.First(
@@ -41,6 +37,11 @@ public partial class BuilderWindow
                     SelectedBow = sub.Bow;
                     SelectedBridge = sub.Bridge;
                 }
+
+                ImGui.SameLine();
+                ImGui.PushItemWidth(windowWidth - 3.0f);
+                ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
+                ImGui.PopItemWidth();
 
                 ImGuiHelpers.ScaledDummy(5);
 

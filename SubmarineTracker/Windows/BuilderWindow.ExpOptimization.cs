@@ -29,24 +29,27 @@ public partial class BuilderWindow
                 .Where(r => r.Map.Row == SelectedMap + 1 && !r.Passengers & fcSub.UnlockedSectors[r.RowId] && r.RankReq <= SelectedRank)
                 .ToList();
 
-            var paths = valid.Select(t => new[] { startPoint, t }.ToList()).ToList();
+            PluginLog.Verbose("Start Building List");
+            var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
             var i = 1;
             while (i++ < 5)
             {
                 foreach (var path in paths.ToArray())
                 {
-                    foreach (var validPoint in valid.Where(t => !path.Contains(t)))
+                    foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
                     {
                         var pathNew = path.ToList();
-                        pathNew.Add(validPoint);
+                        pathNew.Add(validPoint.RowId);
                         paths.Add(pathNew.ToList());
                     }
                 }
             }
 
+            var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
+
             var build = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
 
-            if (!paths.Any())
+            if (!allPaths.Any())
             {
                 ComputingPath = false;
                 OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
@@ -54,27 +57,27 @@ public partial class BuilderWindow
                 return;
             }
 
-            PluginLog.Verbose("Deduplicating List");
-            var deduplicatedLists = DeduplicateLists(paths, valid.Prepend(startPoint).ToList());
+            PluginLog.Verbose($"List Count: {paths.Count}");
             PluginLog.Verbose("Starting distance calculation");
-            var optimalDistances = deduplicatedLists.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
+            var optimalDistances = allPaths.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
             PluginLog.Verbose("Done distance calculation");
-            BestPath = optimalDistances.Select(t => new Tuple<uint[], TimeSpan, double>(
+            BestPath = optimalDistances.AsParallel()
+                                       .Select(t => new Tuple<uint[], TimeSpan, double>(
                                                    t.Points.Select(t => t.RowId).ToArray(),
                                                    TimeSpan.FromSeconds(Submarines.CalculateDuration(t.Points.ToList().Prepend(startPoint), build)),
                                                    t.Points.Select(k => (double)k.ExpReward).Sum()
-                                               )).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
-            PluginLog.Verbose(BestPath.Length.ToString());
+                                               )).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes)
+                                       .Select(t => t.Item1).First();
             ComputingPath = false;
         }
     }
 
-    static List<List<SubmarineExplorationPretty>> DeduplicateLists(List<List<SubmarineExplorationPretty>> inputLists, List<SubmarineExplorationPretty> points)
+    static List<List<SubmarineExplorationPretty>> DeduplicateLists(List<List<uint>> inputLists, List<SubmarineExplorationPretty> points)
     {
         var hashSet = new HashSet<List<uint>>(new ListComparer());
         foreach (var list in inputLists)
         {
-            hashSet.Add(list.Select(t => t.RowId).ToList());
+            hashSet.Add(list);
         }
 
         return hashSet.Select(t => t.Select(f => points.First(k => k.RowId == f)).ToList()).ToList();
