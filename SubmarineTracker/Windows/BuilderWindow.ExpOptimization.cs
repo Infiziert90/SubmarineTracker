@@ -16,7 +16,6 @@ public partial class BuilderWindow
     private bool ComputingPath;
     private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
-    private Task Task;
 
     private void FindBestPath()
     {
@@ -102,7 +101,7 @@ public partial class BuilderWindow
                     SelectedMap = selectedMap;
                     BestPath = Array.Empty<uint>();
                     ComputeStart = DateTime.Now;
-                    Task = Task.Run(FindBestPath);
+                    Task.Run(FindBestPath);
                 }
 
                 var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;

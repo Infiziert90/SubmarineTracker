@@ -50,17 +50,7 @@ public partial class BuilderWindow : Window, IDisposable
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
-    public void Dispose()
-    {
-        if (Task is { Status: TaskStatus.Running })
-            try
-            {
-                Task.Dispose();
-            }
-            catch {
-                // ignore
-            }
-    }
+    public void Dispose() { }
 
     public override void Draw()
     {
