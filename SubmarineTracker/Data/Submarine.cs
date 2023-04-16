@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,20 +41,27 @@ public static class Submarines
         public List<Submarine> Submarines = null!;
 
         public Dictionary<uint, SubmarineLoot> SubLoot = new();
+        public Dictionary<uint, bool> UnlockedSectors = new();
+        public Dictionary<uint, bool> ExploredSectors = new();
 
         [JsonConstructor]
         public FcSubmarines() { }
 
-        public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot)
+        public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, SubmarineLoot> loot, List<Tuple<uint, bool, bool>> points)
         {
             CharacterName = characterName;
             Tag = tag;
             World = world;
             Submarines = submarines;
             SubLoot = loot;
+            foreach (var (point, unlocked, explored) in points)
+            {
+                UnlockedSectors[point] = unlocked;
+                ExploredSectors[point] = explored;
+            }
         }
 
-        public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>());
+        public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, SubmarineLoot>(), new List<Tuple<uint, bool, bool>>());
 
         public void AddSubLoot(uint key, uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
         {
@@ -62,6 +69,15 @@ public static class Submarines
 
             var sub = SubLoot[key];
             sub.Add(returnTime, data);
+        }
+
+        public void GetUnlockedAndExploredSectors()
+        {
+            foreach (var submarineExploration in ExplorationSheet)
+            {
+                UnlockedSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationUnlocked((byte) submarineExploration.RowId);
+                ExploredSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationExplored((byte) submarineExploration.RowId);
+            }
         }
 
         #region Loot
@@ -419,7 +435,7 @@ public static class Submarines
             if (SubmarinesEqual(playerFc.Submarines, config.Submarines))
                 continue;
 
-            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot);
+            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot, config.ExplorationPoints);
         }
     }
 
@@ -429,7 +445,9 @@ public static class Submarines
         if (!KnownSubmarines.TryGetValue(id, out var playerFc))
             return;
 
-        var config = new CharacterConfiguration(id, playerFc.CharacterName, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot);
+        var points = playerFc.UnlockedSectors.Select(t => new Tuple<uint, bool, bool>(t.Key, t.Value, playerFc.ExploredSectors[t.Key])).ToList();
+
+        var config = new CharacterConfiguration(id, playerFc.CharacterName, playerFc.Tag, playerFc.World, playerFc.Submarines, playerFc.SubLoot, points);
         config.Save();
     }
 
@@ -456,7 +474,7 @@ public static class Submarines
     #endregion
 
     #region Optimizer
-    public static int CalculateDuration(List<uint> walkingPoints, SubmarineBuild build)
+    public static uint CalculateDuration(IEnumerable<uint> walkingPoints, SubmarineBuild build)
     {
         // spin it up?
         if (VoyageTime(32, 33, 100) == 0 || SurveyTime(33, 100) == 0)
@@ -465,7 +483,7 @@ public static class Submarines
             return 0;
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
@@ -484,7 +502,7 @@ public static class Submarines
                 return 0;
         }
 
-        var allDurations = new List<int>();
+        var allDurations = new List<long>();
         for (var i = 0; i < points.Count; i++)
         {
             var voyage = i == 0
@@ -494,10 +512,10 @@ public static class Submarines
             allDurations.Add(voyage + survey);
         }
 
-        return allDurations.Sum() + FixedVoyageTime;
+        return (uint)allDurations.Sum() + FixedVoyageTime;
     }
 
-    public static (int Distance, List<uint> Points) CalculateDistance(List<uint> walkingPoints)
+    public static (int Distance, List<uint> Points) CalculateDistance(IEnumerable<uint> walkingPoints)
     {
         // spin it up?
         if (HousingManager.GetSubmarineVoyageDistance(32, 33) == 0)
@@ -506,7 +524,7 @@ public static class Submarines
             return (0, new List<uint>());
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
@@ -640,14 +658,14 @@ public static class Submarines
         return HousingManager.GetSubmarineVoyageDistance((byte) pointA, (byte) pointB);
     }
 
-    public static int VoyageTime(uint pointA, uint pointB, short speed)
+    public static uint VoyageTime(uint pointA, uint pointB, short speed)
     {
-        return (int) HousingManager.GetSubmarineVoyageTime((byte) pointA, (byte) pointB, speed);
+        return HousingManager.GetSubmarineVoyageTime((byte) pointA, (byte) pointB, speed);
     }
 
-    public static int SurveyTime(uint point, short speed)
+    public static uint SurveyTime(uint point, short speed)
     {
-        return (int) HousingManager.GetSubmarineSurveyDuration((byte) point, speed);
+        return HousingManager.GetSubmarineSurveyDuration((byte) point, speed);
     }
 
     #endregion
