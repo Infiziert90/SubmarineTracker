@@ -511,13 +511,6 @@ public static class Submarines
 
     public static (int Distance, List<SubmarineExplorationPretty> Points) CalculateDistance(IEnumerable<SubmarineExplorationPretty> walkingPoints)
     {
-        // spin it up?
-        if (HousingManager.GetSubmarineVoyageDistance(32, 33) == 0)
-        {
-            PluginLog.Warning("GetSubmarineVoyageDistance was zero.");
-            return (0, new List<SubmarineExplorationPretty>());
-        }
-
         var walkWay = walkingPoints.ToArray();
         var start = walkWay.First();
 
