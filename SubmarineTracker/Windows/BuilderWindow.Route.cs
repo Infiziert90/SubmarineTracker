@@ -24,10 +24,13 @@ public partial class BuilderWindow
                     SelectedLocations.Clear();
                 }
 
+                var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+
                 var explorations = ExplorationSheet
                                    .Where(r => r.Map.Row == SelectedMap + 1)
                                    .Where(r => !r.Passengers)
                                    .Where(r => !SelectedLocations.Contains(r.RowId))
+                                   .Where(r => fcSub.UnlockedSectors[r.RowId])
                                    .ToList();
 
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Selected {SelectedLocations.Count} / 5");
