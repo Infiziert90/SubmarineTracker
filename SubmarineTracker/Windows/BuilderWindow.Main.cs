@@ -20,7 +20,7 @@ public partial class BuilderWindow : Window, IDisposable
     public static ExcelSheet<SubmarineRank> RankSheet = null!;
     public static ExcelSheet<SubmarinePart> PartSheet = null!;
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
-    public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public int SelectSub;
     public int SelectedRank = 1;
@@ -31,7 +31,7 @@ public partial class BuilderWindow : Window, IDisposable
 
     public int SelectedMap;
     public List<uint> SelectedLocations = new();
-    public (int Distance, List<uint> Points) OptimizedRoute = (0, new List<uint>());
+    public (int Distance, List<SubmarineExplorationPretty> Points) OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
 
     public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder")
     {
@@ -47,7 +47,7 @@ public partial class BuilderWindow : Window, IDisposable
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
     }
 
     public void Dispose() { }
