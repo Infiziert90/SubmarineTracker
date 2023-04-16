@@ -7,9 +7,8 @@ using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using static SubmarineTracker.Utils;
+using System.Threading.Tasks;
 
 namespace SubmarineTracker.Windows;
 
@@ -34,8 +33,6 @@ public partial class BuilderWindow : Window, IDisposable
     public List<uint> SelectedLocations = new();
     public (int Distance, List<uint> Points) OptimizedRoute = (0, new List<uint>());
 
-    public int OrgSpeed;
-
     public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder")
     {
         this.SizeConstraints = new WindowSizeConstraints
@@ -53,7 +50,17 @@ public partial class BuilderWindow : Window, IDisposable
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
-    public void Dispose() { }
+    public void Dispose()
+    {
+        if (Task is { Status: TaskStatus.Running })
+            try
+            {
+                Task.Dispose();
+            }
+            catch {
+                // ignore
+            }
+    }
 
     public override void Draw()
     {
@@ -125,7 +132,5 @@ public partial class BuilderWindow : Window, IDisposable
 
         SelectedMap = 0;
         SelectedLocations.Clear();
-
-        OrgSpeed = 0;
     }
 }

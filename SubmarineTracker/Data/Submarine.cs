@@ -483,10 +483,11 @@ public static class Submarines
             return 0;
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
+        var walkWay = walkingPoints.ToArray();
+        var start = ExplorationSheet.GetRow(walkWay.First())!;
 
         var points = new List<SubmarineExploration>();
-        foreach (var p in walkingPoints.Skip(1))
+        foreach (var p in walkWay.Skip(1))
             points.Add(ExplorationSheet.GetRow(p)!);
 
         switch (points.Count)
@@ -524,10 +525,11 @@ public static class Submarines
             return (0, new List<uint>());
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
+        var walkWay = walkingPoints.ToArray();
+        var start = ExplorationSheet.GetRow(walkWay.First())!;
 
         var points = new List<SubmarineExploration>();
-        foreach (var p in walkingPoints.Skip(1))
+        foreach (var p in walkWay.Skip(1))
             points.Add(ExplorationSheet.GetRow(p)!);
 
 
@@ -655,6 +657,9 @@ public static class Submarines
 
     public static uint BestDistance(uint pointA, uint pointB)
     {
+        var dis = HousingManager.GetSubmarineVoyageDistance((byte) pointA, (byte) pointB);
+        if (dis == 0)
+            PluginLog.Warning($"{pointA} to {pointB} distance was zero");
         return HousingManager.GetSubmarineVoyageDistance((byte) pointA, (byte) pointB);
     }
 

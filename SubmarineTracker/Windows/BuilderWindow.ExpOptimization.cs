@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
-using Dalamud.Interface.Colors;
 using ImGuiNET;
 using SubmarineTracker.Data;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Dalamud.Logging;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows;
 
 public partial class BuilderWindow
 {
-    private uint[] BestPath;
+    private uint[] BestPath = Array.Empty<uint>();
     private bool ComputingPath;
     private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
+    private Task Task;
 
     private void FindBestPath()
     {
@@ -31,7 +32,7 @@ public partial class BuilderWindow
 
             var validPoints = valid.Select(t => t.RowId).ToList();
 
-            var paths = validPoints.Select(t => new[] { startPoint, t }).ToList();
+            var paths = validPoints.Select(t => new[] { startPoint, t }.ToList()).ToList();
             var i = 1;
             while (i++ < 5)
             {
@@ -41,48 +42,64 @@ public partial class BuilderWindow
                     {
                         var pathNew = path.ToList();
                         pathNew.Add(validPoint);
-                        paths.Add(pathNew.ToArray());
+                        paths.Add(pathNew.ToList());
                     }
                 }
             }
 
-            var build = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow,
-                                                      SelectedBridge);
+            var build = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
+
             if (!paths.Any())
             {
                 ComputingPath = false;
                 OptimizedRoute = (0, new List<uint>());
-                BestPath = null;
+                BestPath = Array.Empty<uint>();
                 return;
             }
 
-            var optimalDistances = paths.Select(Submarines.CalculateDistance)
-                                        .Where(t => t.Distance <= build.Range).ToArray();
-
+            PluginLog.Verbose("Deduplicating List");
+            var deduplicatedLists = DeduplicateLists(paths);
+            PluginLog.Verbose("Starting distance calculation");
+            var optimalDistances = deduplicatedLists.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
+            PluginLog.Verbose("Done distance calculation");
             BestPath = optimalDistances.Select(t => new Tuple<uint[], TimeSpan, double>(
                                                    t.Points.ToArray(),
                                                    TimeSpan.FromSeconds(Submarines.CalculateDuration(t.Points.ToList().Prepend(startPoint), build)),
                                                    valid.Where(k => t.Points.Contains(k.RowId)).Select(k => (double)k.ExpReward).Sum()
                                                )).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
+            PluginLog.Verbose(BestPath.Length.ToString());
             ComputingPath = false;
         }
+    }
+
+    static List<List<uint>> DeduplicateLists(List<List<uint>> inputLists)
+    {
+        var hashSet = new HashSet<List<uint>>(new ListComparer());
+        foreach (var list in inputLists)
+        {
+            hashSet.Add(list);
+        }
+
+        return hashSet.ToList();
     }
 
     private void ExpTab()
     {
         if (ImGui.BeginTabItem("Best Exp"))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -110)))
+            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
             {
                 var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
                 var selectedMap = SelectedMap;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if ((selectedMap != SelectedMap || BestPath == null || LastComputedRank != SelectedRank) && !ComputingPath)
+                if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath)
                 {
                     SelectedMap = selectedMap;
+                    BestPath = Array.Empty<uint>();
                     ComputeStart = DateTime.Now;
-                    Task.Run(FindBestPath);
+                    Task = Task.Run(FindBestPath);
                 }
+
                 var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                 if (ImGui.BeginListBox("##bestPoints", new Vector2(-1, height)))
@@ -91,7 +108,7 @@ public partial class BuilderWindow
                     {
                         ImGui.Text($"Loading {new string('.',(int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                     }
-                    if (BestPath != null)
+                    if (BestPath != Array.Empty<uint>())
                     {
                         foreach (var location in BestPath)
                         {

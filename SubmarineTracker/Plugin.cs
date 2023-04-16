@@ -77,6 +77,8 @@ namespace SubmarineTracker
 
             ConfigWindow.Dispose();
             MainWindow.Dispose();
+            BuilderWindow.Dispose();
+            LootWindow.Dispose();
 
             CommandManager.Dispose();
 

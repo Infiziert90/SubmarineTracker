@@ -35,15 +35,11 @@ public partial class BuilderWindow
                         fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]));
                     sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]);
 
-                    SelectedRank = (int)sub.Rank;
+                    SelectedRank = sub.Rank;
                     SelectedHull = sub.Hull;
                     SelectedStern = sub.Stern;
                     SelectedBow = sub.Bow;
                     SelectedBridge = sub.Bridge;
-
-                    var subBuild =
-                        new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
-                    OrgSpeed = subBuild.Speed;
                 }
 
                 ImGuiHelpers.ScaledDummy(5);
