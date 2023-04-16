@@ -13,6 +13,9 @@ Simple and Easy
 ### Tracker
 ![tracker](SubmarineTracker/images/tracker.png)
 
+### Notifications
+![tracker](SubmarineTracker/images/chat.png)
+
 ### FC Loot Overview
 ![tracker](SubmarineTracker/images/fcLoot.png)
 
