@@ -78,7 +78,7 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                var points = SelectedLocations.Prepend(startPoint).ToList();
+                var points = SelectedLocations.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
                 OptimizedRoute = Submarines.CalculateDistance(points);
             }
             ImGui.EndChild();

@@ -21,7 +21,7 @@ public partial class BuilderWindow
     {
         ComputingPath = true;
         LastComputedRank = SelectedRank;
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
+        var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1);
 
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
@@ -29,15 +29,13 @@ public partial class BuilderWindow
                 .Where(r => r.Map.Row == SelectedMap + 1 && !r.Passengers & fcSub.UnlockedSectors[r.RowId] && r.RankReq <= SelectedRank)
                 .ToList();
 
-            var validPoints = valid.Select(t => t.RowId).ToList();
-
-            var paths = validPoints.Select(t => new[] { startPoint, t }.ToList()).ToList();
+            var paths = valid.Select(t => new[] { startPoint, t }.ToList()).ToList();
             var i = 1;
             while (i++ < 5)
             {
                 foreach (var path in paths.ToArray())
                 {
-                    foreach (var validPoint in validPoints.Where(t => !path.Contains(t)))
+                    foreach (var validPoint in valid.Where(t => !path.Contains(t)))
                     {
                         var pathNew = path.ToList();
                         pathNew.Add(validPoint);
@@ -51,35 +49,35 @@ public partial class BuilderWindow
             if (!paths.Any())
             {
                 ComputingPath = false;
-                OptimizedRoute = (0, new List<uint>());
+                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
                 BestPath = Array.Empty<uint>();
                 return;
             }
 
             PluginLog.Verbose("Deduplicating List");
-            var deduplicatedLists = DeduplicateLists(paths);
+            var deduplicatedLists = DeduplicateLists(paths, valid.Prepend(startPoint).ToList());
             PluginLog.Verbose("Starting distance calculation");
             var optimalDistances = deduplicatedLists.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
             PluginLog.Verbose("Done distance calculation");
             BestPath = optimalDistances.Select(t => new Tuple<uint[], TimeSpan, double>(
-                                                   t.Points.ToArray(),
+                                                   t.Points.Select(t => t.RowId).ToArray(),
                                                    TimeSpan.FromSeconds(Submarines.CalculateDuration(t.Points.ToList().Prepend(startPoint), build)),
-                                                   valid.Where(k => t.Points.Contains(k.RowId)).Select(k => (double)k.ExpReward).Sum()
+                                                   t.Points.Select(k => (double)k.ExpReward).Sum()
                                                )).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
             PluginLog.Verbose(BestPath.Length.ToString());
             ComputingPath = false;
         }
     }
 
-    static List<List<uint>> DeduplicateLists(List<List<uint>> inputLists)
+    static List<List<SubmarineExplorationPretty>> DeduplicateLists(List<List<SubmarineExplorationPretty>> inputLists, List<SubmarineExplorationPretty> points)
     {
         var hashSet = new HashSet<List<uint>>(new ListComparer());
         foreach (var list in inputLists)
         {
-            hashSet.Add(list);
+            hashSet.Add(list.Select(t => t.RowId).ToList());
         }
 
-        return hashSet.ToList();
+        return hashSet.Select(t => t.Select(f => points.First(k => k.RowId == f)).ToList()).ToList();
     }
 
     private void ExpTab()
@@ -120,7 +118,7 @@ public partial class BuilderWindow
                             if (location > startPoint)
                                 ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
                         }
-                        OptimizedRoute = Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint));
+                        OptimizedRoute = Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!));
                     }
 
                     ImGui.EndListBox();
