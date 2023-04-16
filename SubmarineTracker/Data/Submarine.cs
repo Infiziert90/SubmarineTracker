@@ -474,7 +474,7 @@ public static class Submarines
     #endregion
 
     #region Optimizer
-    public static int CalculateDuration(List<uint> walkingPoints, SubmarineBuild build)
+    public static uint CalculateDuration(IEnumerable<uint> walkingPoints, SubmarineBuild build)
     {
         // spin it up?
         if (VoyageTime(32, 33, 100) == 0 || SurveyTime(33, 100) == 0)
@@ -483,7 +483,7 @@ public static class Submarines
             return 0;
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
@@ -502,7 +502,7 @@ public static class Submarines
                 return 0;
         }
 
-        var allDurations = new List<int>();
+        var allDurations = new List<long>();
         for (var i = 0; i < points.Count; i++)
         {
             var voyage = i == 0
@@ -512,10 +512,10 @@ public static class Submarines
             allDurations.Add(voyage + survey);
         }
 
-        return allDurations.Sum() + FixedVoyageTime;
+        return (uint)allDurations.Sum() + FixedVoyageTime;
     }
 
-    public static (int Distance, List<uint> Points) CalculateDistance(List<uint> walkingPoints)
+    public static (int Distance, List<uint> Points) CalculateDistance(IEnumerable<uint> walkingPoints)
     {
         // spin it up?
         if (HousingManager.GetSubmarineVoyageDistance(32, 33) == 0)
@@ -524,7 +524,7 @@ public static class Submarines
             return (0, new List<uint>());
         }
 
-        var start = ExplorationSheet.GetRow(walkingPoints[0])!;
+        var start = ExplorationSheet.GetRow(walkingPoints.First())!;
 
         var points = new List<SubmarineExploration>();
         foreach (var p in walkingPoints.Skip(1))
@@ -658,14 +658,14 @@ public static class Submarines
         return HousingManager.GetSubmarineVoyageDistance((byte) pointA, (byte) pointB);
     }
 
-    public static int VoyageTime(uint pointA, uint pointB, short speed)
+    public static uint VoyageTime(uint pointA, uint pointB, short speed)
     {
-        return (int) HousingManager.GetSubmarineVoyageTime((byte) pointA, (byte) pointB, speed);
+        return HousingManager.GetSubmarineVoyageTime((byte) pointA, (byte) pointB, speed);
     }
 
-    public static int SurveyTime(uint point, short speed)
+    public static uint SurveyTime(uint point, short speed)
     {
-        return (int) HousingManager.GetSubmarineSurveyDuration((byte) point, speed);
+        return HousingManager.GetSubmarineSurveyDuration((byte) point, speed);
     }
 
     #endregion

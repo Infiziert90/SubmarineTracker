@@ -9,7 +9,6 @@ namespace SubmarineTracker.Windows;
 
 public partial class BuilderWindow
 {
-
     private void RouteTab()
     {
         if (ImGui.BeginTabItem("Route"))
@@ -76,5 +75,5 @@ public partial class BuilderWindow
 
             ImGui.EndTabItem();
         }
-}
+    }
 }

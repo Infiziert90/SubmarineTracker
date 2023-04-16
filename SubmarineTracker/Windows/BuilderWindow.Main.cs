@@ -69,6 +69,8 @@ public partial class BuilderWindow : Window, IDisposable
 
                 RouteTab();
 
+                ExpTab();
+
                 infoTabOpen |= InfoTab();
             }
             ImGui.EndTabBar();
