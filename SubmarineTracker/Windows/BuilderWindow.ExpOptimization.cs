@@ -89,7 +89,12 @@ public partial class BuilderWindow
         {
             if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
             {
-                var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
+                var maps = ExplorationSheet
+                           .Where(r => r.Passengers)
+                           .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= SelectedRank)
+                           .Select(r => ToStr(r.Map.Value!.Name))
+                           .ToArray();
+
                 var selectedMap = SelectedMap;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
                 if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath)
