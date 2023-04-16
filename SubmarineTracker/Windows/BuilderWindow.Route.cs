@@ -39,7 +39,7 @@ public partial class BuilderWindow
                     foreach (var location in SelectedLocations.ToArray())
                     {
                         var p = ExplorationSheet.GetRow(location)!;
-                        if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {ToStr(p.Location)}"))
+                        if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}"))
                             SelectedLocations.Remove(location);
                     }
 
@@ -54,13 +54,13 @@ public partial class BuilderWindow
                         if (SelectedLocations.Count < 5)
                         {
                             if (ImGui.Selectable(
-                                    $"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}"))
+                                    $"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
                                 SelectedLocations.Add(location.RowId);
                         }
                         else
                         {
                             ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DPSRed);
-                            ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {ToStr(location.Location)}");
+                            ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
                             ImGui.PopStyleColor();
                         }
                     }

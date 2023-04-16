@@ -42,7 +42,7 @@ public partial class BuilderWindow
             {
                 ImGui.TextUnformatted("Optimized Route:");
                 ImGui.SameLine();
-                ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", OptimizedRoute.Points.Select(p => NumToLetter(p - startPoint))));
+                ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", OptimizedRoute.Points.Where(p => p > startPoint).Select(p => NumToLetter(p - startPoint))));
             }
 
             ImGui.TextUnformatted("Calculated Stats:");

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
 
@@ -9,7 +10,7 @@ public static class Utils
 {
     public static string ToStr(SeString content) => content.ToString();
     public static string ToStr(Lumina.Text.SeString content) => content.ToDalamudString().ToString();
-
+    public static string UpperCaseStr(Lumina.Text.SeString content) => string.Join(" ", content.ToDalamudString().ToString().Split(' ').Select(t => string.Concat(t[0].ToString().ToUpper(), t.AsSpan(1))));
     public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
 
     public static string NumToLetter(uint num)
