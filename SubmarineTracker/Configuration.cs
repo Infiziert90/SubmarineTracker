@@ -14,6 +14,7 @@ namespace SubmarineTracker
         public bool ShowExtendedPartsList = false;
         public bool ShowTimeInOverview = false;
         public bool UseDateTimeInstead = false;
+        public bool ShowBothOptions = false;
         public bool ShowRouteInOverview = false;
         public bool UseCharacterName = false;
 

@@ -53,21 +53,37 @@ public class ConfigWindow : Window, IDisposable
         {
             if (ImGui.BeginTabItem("General"))
             {
+                ImGuiHelpers.ScaledDummy(5.0f);
                 var changed = false;
-                changed |= ImGui.Checkbox("Show Extended Parts List", ref Configuration.ShowExtendedPartsList);
-                changed |= ImGui.Checkbox("Show Time in Overview", ref Configuration.ShowTimeInOverview);
-                if (Configuration.ShowTimeInOverview)
-                {
-                    ImGui.Indent(10.0f);
-                    changed |= ImGui.Checkbox("Show Return Date Instead", ref Configuration.UseDateTimeInstead);
-                    ImGui.Unindent(10.0f);
-                }
-
-                changed |= ImGui.Checkbox("Show Route in Overview", ref Configuration.ShowRouteInOverview);
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "FC Buttons:");
+                ImGui.Indent(10.0f);
                 changed |= ImGui.Checkbox("Use Character Name", ref Configuration.UseCharacterName);
                 ImGuiComponents.HelpMarker("Use character name instead of FC tag in the overview.\n" +
                                            "If the FC tag is still shown, this means your character name has yet to be saved, this will resolve itself the next time your submarines are sent out.\n" +
                                            "Be aware this option can lead to cut-off button text.");
+                ImGui.Unindent(10.0f);
+
+                ImGuiHelpers.ScaledDummy(5.0f);
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Overview:");
+                ImGui.Indent(10.0f);
+                changed |= ImGui.Checkbox("Show Time", ref Configuration.ShowTimeInOverview);
+                if (Configuration.ShowTimeInOverview)
+                {
+                    ImGui.Indent(10.0f);
+                    changed |= ImGui.Checkbox("Show Return Date Instead", ref Configuration.UseDateTimeInstead);
+                    changed |= ImGui.Checkbox("Show Both Options", ref Configuration.ShowBothOptions);
+                    ImGui.Unindent(10.0f);
+                }
+                changed |= ImGui.Checkbox("Show Route", ref Configuration.ShowRouteInOverview);
+                ImGui.Unindent(10.0f);
+
+                ImGuiHelpers.ScaledDummy(5.0f);
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Detailed View:");
+                ImGui.Indent(10.0f);
+                changed |= ImGui.Checkbox("Show Extended Parts List", ref Configuration.ShowExtendedPartsList);
+                ImGui.Unindent(10.0f);
 
                 if (changed)
                     Configuration.Save();
