@@ -14,10 +14,10 @@ Simple and Easy
 ![tracker](SubmarineTracker/images/tracker.png)
 
 ### Notifications
-![tracker](SubmarineTracker/images/chat.png)
+![notify](SubmarineTracker/images/chat.png)
 
 ### FC Loot Overview
-![tracker](SubmarineTracker/images/fcLoot.png)
+![loot](SubmarineTracker/images/fcLoot.png)
 
 ### Builder
 ![builder](SubmarineTracker/images/builder.png)

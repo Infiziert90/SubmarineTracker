@@ -113,6 +113,10 @@ public partial class BuilderWindow
                            .Select(r => ToStr(r.Map.Value!.Name))
                            .ToArray();
 
+                // prevent previous selection from being impossible when switching builds
+                if (maps.Length <= SelectedMap)
+                    SelectedMap = maps.Length - 1;
+
                 var selectedMap = SelectedMap;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
                 if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath)
