@@ -127,7 +127,7 @@ public partial class BuilderWindow
 
                 var selectedMap = SelectedMap;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath)
+                if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath && !Error)
                 {
                     SelectedMap = selectedMap;
                     BestPath = Array.Empty<uint>();
