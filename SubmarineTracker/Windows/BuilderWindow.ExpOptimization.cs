@@ -16,18 +16,32 @@ public partial class BuilderWindow
     private bool ComputingPath;
     private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
+    private bool Error;
 
     private void FindBestPath()
     {
         ComputingPath = true;
+        Error = false;
         LastComputedRank = SelectedRank;
         var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1);
 
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
-            var valid = ExplorationSheet
-                .Where(r => r.Map.Row == SelectedMap + 1 && !r.Passengers & fcSub.UnlockedSectors[r.RowId] && r.RankReq <= SelectedRank)
-                .ToList();
+            List<SubmarineExplorationPretty> valid;
+            try
+            {
+                valid = ExplorationSheet
+                            .Where(r => r.Map.Row == SelectedMap + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= SelectedRank)
+                            .ToList();
+            }
+            catch (KeyNotFoundException)
+            {
+                Error = true;
+                ComputingPath = false;
+                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+                BestPath = Array.Empty<uint>();
+                return;
+            }
 
             PluginLog.Verbose("Start Building List");
             var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
@@ -88,17 +102,11 @@ public partial class BuilderWindow
             PluginLog.Verbose("Done optimal calculation");
             ComputingPath = false;
         }
-    }
-
-    static List<List<SubmarineExplorationPretty>> DeduplicateLists(List<List<uint>> inputLists, List<SubmarineExplorationPretty> points)
-    {
-        var hashSet = new HashSet<List<uint>>(new ListComparer());
-        foreach (var list in inputLists)
+        else
         {
-            hashSet.Add(list);
+            Error = true;
+            ComputingPath = false;
         }
-
-        return hashSet.Select(t => t.Select(f => points.First(k => k.RowId == f)).ToList()).ToList();
     }
 
     private void ExpTab()
@@ -135,6 +143,15 @@ public partial class BuilderWindow
                     {
                         ImGui.Text($"Loading {new string('.',(int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                     }
+
+                    if (Error)
+                    {
+                        ImGui.TextWrapped("No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
+                        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                            if (fcSub.UnlockedSectors.ContainsKey(startPoint))
+                                Error = false;
+                    }
+
                     if (BestPath != Array.Empty<uint>())
                     {
                         foreach (var location in BestPath)
