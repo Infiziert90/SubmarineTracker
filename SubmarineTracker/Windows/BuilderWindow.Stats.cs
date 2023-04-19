@@ -107,7 +107,7 @@ public partial class BuilderWindow
         {
             if (maxRequired == current)
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
-            else if (current > minRequired && current < maxRequired)
+            else if (current >= minRequired && current < maxRequired)
                 ImGui.TextColored(ImGuiColors.ParsedPink, $"{current} ({maxRequired})");
             else
                 ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({maxRequired})");
