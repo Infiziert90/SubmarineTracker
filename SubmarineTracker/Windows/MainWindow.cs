@@ -187,7 +187,8 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.BeginTabBar("##fcLootMap"))
                             {
-                                var halfWindowWidth = ImGui.GetWindowWidth() / 2;
+                                var fullWindowWidth = ImGui.GetWindowWidth();
+                                var halfWindowWidth = fullWindowWidth / 2;
                                 foreach (var map in MapSheet.Where(r => r.RowId != 0))
                                 {
                                     var text = LootTable.MapToShort(map.RowId);
@@ -231,7 +232,7 @@ public class MainWindow : Window, IDisposable
                                                 ImGui.TextUnformatted(name);
 
                                                 var length = ImGui.CalcTextSize($"{count}").X;
-                                                ImGui.SameLine(idx % 2 == 0 ? 220.0f - length : 220.0f + cursorPosition.X - length);
+                                                ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
                                                 ImGui.TextUnformatted($"{count}");
 
                                                 ImGui.Unindent(10.0f);
