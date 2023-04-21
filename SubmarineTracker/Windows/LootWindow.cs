@@ -45,7 +45,8 @@ public class LootWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -50)))
+        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
+        if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
         {
             if (ImGui.BeginTabBar("##LootTabBar"))
             {

@@ -8,7 +8,6 @@ using SubmarineTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
 
 namespace SubmarineTracker.Windows;
 
@@ -56,7 +55,8 @@ public partial class BuilderWindow : Window, IDisposable
     {
         var infoTabOpen = false;
 
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -50)))
+        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
+        if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
         {
             var sub = new Submarines.Submarine();
 
