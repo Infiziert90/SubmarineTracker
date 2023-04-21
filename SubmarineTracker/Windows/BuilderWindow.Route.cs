@@ -65,6 +65,9 @@ public partial class BuilderWindow
                                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
                                 ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
                                 ImGui.PopStyleColor();
+
+                                if (ImGui.IsItemHovered())
+                                    UnlockedTooltip(location, fcSub);
                             }
                         }
                         else
@@ -78,12 +81,50 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                var points = SelectedLocations.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
-                OptimizedRoute = Submarines.CalculateDistance(points);
+                if (SelectedLocations.Any())
+                {
+                    var points = SelectedLocations.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
+                    OptimizedRoute = Submarines.CalculateDistance(points);
+                }
             }
             ImGui.EndChild();
 
             ImGui.EndTabItem();
         }
+    }
+
+    private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub)
+    {
+        if (!Unlocks.PointToUnlockPoint.TryGetValue(location.RowId, out var unlockedFrom))
+            unlockedFrom = new Unlocks.UnlockedFrom(0);
+
+        fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Point, out var otherUnlocked);
+
+        ImGui.BeginTooltip();
+        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
+        ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
+        ImGui.SameLine();
+        if (unlockedFrom.Point != 0)
+        {
+            if (unlockedFrom.Point != 9000)
+            {
+                var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Point)!;
+                var mapPoint = Submarines.FindVoyageStartPoint(unlockPoint.RowId);
+                ImGui.TextColored(otherUnlocked
+                                      ? ImGuiColors.HealerGreen
+                                      : ImGuiColors.DalamudRed,
+                                  $"{NumToLetter(unlockedFrom.Point - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+
+                if (unlockedFrom.Sub)
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"#Extra Sub Slot");
+            }
+            else
+                ImGui.TextColored(ImGuiColors.TankBlue, $"Always unlocked");
+        }
+        else
+            ImGui.TextColored(ImGuiColors.DalamudRed, "Unknown");
+
+        ImGui.PopTextWrapPos();
+        ImGui.EndTooltip();
     }
 }
