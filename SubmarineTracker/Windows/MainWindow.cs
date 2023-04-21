@@ -23,6 +23,8 @@ public class MainWindow : Window, IDisposable
     private ulong CurrentSelection;
     private static Vector2 IconSize = new(28, 28);
 
+    private static int MaxLength = "Heavens' Eye Materia".Length;
+
     public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
@@ -221,8 +223,13 @@ public class MainWindow : Window, IDisposable
                                                 if (idx % 2 == 1)
                                                     ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
                                                 DrawIcon(item.Icon);
+
+                                                var name = ToStr(item.Name);
+                                                if (MaxLength < name.Length)
+                                                    name = name.Truncate(MaxLength);
                                                 ImGui.SameLine();
-                                                ImGui.TextUnformatted(ToStr(item.Name));
+                                                ImGui.TextUnformatted(name);
+
                                                 var length = ImGui.CalcTextSize($"{count}").X;
                                                 ImGui.SameLine(idx % 2 == 0 ? 220.0f - length : 220.0f + cursorPosition.X - length);
                                                 ImGui.TextUnformatted($"{count}");
