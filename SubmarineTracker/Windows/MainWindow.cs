@@ -195,11 +195,18 @@ public class MainWindow : Window, IDisposable
                                     if (ImGui.BeginTabItem(text))
                                     {
                                         ImGuiHelpers.ScaledDummy(10.0f);
+                                        var endCursorPositionLeft = ImGui.GetCursorPos();
+                                        var endCursorPositionRight = ImGui.GetCursorPos();
                                         var cursorPosition = ImGui.GetCursorPos();
                                         foreach (var ((point, loot), idx) in selectedFc.AllLoot.Where(kv => GetPoint(kv.Key).Map.Row == map.RowId).Select((val, i) => (val, i)))
                                         {
                                             if (idx % 2 == 0)
+                                            {
+                                                if (idx != 0 && endCursorPositionLeft.Y > endCursorPositionRight.Y)
+                                                    ImGui.SetCursorPosY(endCursorPositionLeft.Y);
+
                                                 cursorPosition = ImGui.GetCursorPos();
+                                            }
                                             else
                                             {
                                                 cursorPosition.X += halfWindowWidth;
@@ -224,6 +231,11 @@ public class MainWindow : Window, IDisposable
                                             }
 
                                             ImGuiHelpers.ScaledDummy(10.0f);
+
+                                            if (idx % 2 == 0)
+                                                endCursorPositionLeft = ImGui.GetCursorPos();
+                                            else
+                                                endCursorPositionRight = ImGui.GetCursorPos();
                                         }
 
                                         ImGui.EndTabItem();
