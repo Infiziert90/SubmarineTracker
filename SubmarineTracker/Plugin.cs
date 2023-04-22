@@ -34,6 +34,7 @@ namespace SubmarineTracker
         private MainWindow MainWindow { get; init; }
         private BuilderWindow BuilderWindow { get; init; }
         private LootWindow LootWindow { get; init; }
+        private HelpyWindow HelpyWindow { get; init; }
 
         public static readonly string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
@@ -50,11 +51,13 @@ namespace SubmarineTracker
             MainWindow = new MainWindow(this, Configuration);
             BuilderWindow = new BuilderWindow(this, Configuration);
             LootWindow = new LootWindow(this, Configuration);
+            HelpyWindow = new HelpyWindow(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(BuilderWindow);
             WindowSystem.AddWindow(LootWindow);
+            WindowSystem.AddWindow(HelpyWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
             Notify = new Notify(this);
@@ -107,6 +110,13 @@ namespace SubmarineTracker
         private void OnLootCommand(string command, string args)
         {
             LootWindow.IsOpen = true;
+        }
+
+        [Command("/shelpy")]
+        [HelpMessage("Opens the helper window with lots of helpful information")]
+        private void OnUnlockedCommand(string command, string args)
+        {
+            HelpyWindow.IsOpen = true;
         }
 
         public unsafe void FrameworkUpdate(Framework _)

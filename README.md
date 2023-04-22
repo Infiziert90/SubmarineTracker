@@ -8,6 +8,7 @@ Simple and Easy
 + Unlockable exploration points are highlighted
 + Breakpoint support
 + Configurable notification for returning subs
++ Helper with lots of useful information
 + Support for multiple FCs  
 
 ### Tracker
@@ -21,6 +22,9 @@ Simple and Easy
 
 ### Builder
 ![builder](SubmarineTracker/images/builder.png)
+
+### Helpy
+![helpy](SubmarineTracker/images/helpy.png)
 
 
 ### Planned

@@ -4,7 +4,7 @@ namespace SubmarineTracker.Data;
 
 public static class Unlocks
 {
-    public static Dictionary<uint, UnlockedFrom> PointToUnlockPoint = new()
+    public static readonly Dictionary<uint, UnlockedFrom> PointToUnlockPoint = new()
     {
         { 0, new UnlockedFrom(9999) },              // Map A
         { 1, new UnlockedFrom(9000) },              // A    Default
@@ -106,4 +106,23 @@ public static class Unlocks
     };
 
     public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
+
+    public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalPoint)
+    {
+        if (!PointToUnlockPoint.TryGetValue(finalPoint, out var final))
+            return new List<(uint, UnlockedFrom)>();
+
+        var wayPoints = new List<(uint, UnlockedFrom)> { (finalPoint, final) };
+
+        var point = final.Point;
+        while (point != 9000)
+        {
+            var newPoint = PointToUnlockPoint[point];
+            wayPoints.Add((point, newPoint));
+
+            point = newPoint.Point;
+        }
+
+        return wayPoints;
+    }
 }
