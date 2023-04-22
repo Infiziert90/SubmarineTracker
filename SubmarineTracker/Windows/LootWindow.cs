@@ -174,17 +174,6 @@ public class LootWindow : Window, IDisposable
 
             var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
 
-
-            // TODO Remove after everyone had time to update
-            if (selectedSub.Register == 0)
-            {
-                ImGuiHelpers.ScaledDummy(5.0f);
-                ImGui.TextWrapped("Selected submarine needs to be refreshed, this will resolve itself the next time your submarines are sent out.");
-
-                ImGui.EndTabItem();
-                return;
-            }
-
             var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey(selectedSub.Return)));
             var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 

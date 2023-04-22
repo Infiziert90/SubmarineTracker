@@ -30,25 +30,6 @@ namespace SubmarineTracker
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.PluginInterface = pluginInterface;
-
-            // TODO Delete at some point
-            if (Version == 0)
-            {
-                var itemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-                foreach (var key in CustomLoot)
-                {
-                    var value = 0;
-                    var item = itemSheet.GetRow(key)!;
-                    if (item.PriceLow > 1000)
-                        value = (int) item.PriceLow;
-
-                    CustomLootWithValue.Add(key, value);
-                }
-
-                CustomLoot.Clear();
-                Version = 1;
-                Save();
-            }
         }
 
         public void Save()

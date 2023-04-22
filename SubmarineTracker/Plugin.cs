@@ -142,8 +142,7 @@ namespace SubmarineTracker
 
             var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
 
-            // TODO Remove the fc.UnlockedSectors.Count > 0 after everyone had time to update
-            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "" && fc.UnlockedSectors.Count > 0)
+            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "")
                 return;
 
             fc.CharacterName = Utils.ToStr(local.Name);
