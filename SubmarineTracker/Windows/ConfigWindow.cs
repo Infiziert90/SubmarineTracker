@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
@@ -20,8 +19,11 @@ public class ConfigWindow : Window, IDisposable
     private Configuration Configuration;
     private static ExcelSheet<Item> ItemSheet = null!;
 
-    private ComboWithFilter<FakeItem> ItemFilter;
-    private FakeItem SelectedItem = FakeItem.Empty();
+    private static readonly ExcelSheetSelector.ExcelSheetPopupOptions<Item> ItemPopupOptions = new()
+    {
+        FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
+        FilteredSheet = Plugin.Data.GetExcelSheet<Item>()!.Skip(1).Where(i => ToStr(i.Name) != "")
+    };
 
     public ConfigWindow(Plugin plugin) : base("Configuration")
     {
@@ -33,16 +35,6 @@ public class ConfigWindow : Window, IDisposable
 
         this.Configuration = plugin.Configuration;
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-
-        var itemList = new List<FakeItem>();
-        foreach (var item in ItemSheet.Where(i => ToStr(i.Name) != ""))
-            itemList.Add(new FakeItem(ToStr(item.Name), item));
-
-        IReadOnlyList<FakeItem> readOnlyItemList = itemList;
-        ItemFilter = new ComboWithFilter<FakeItem>("##Add", 240.0f, 240.0f, readOnlyItemList, s => s.Name) {
-            Flags = ImGuiComboFlags.NoArrowButton | ImGuiComboFlags.HeightLarge,
-            ItemsAtOnce = 12,
-        };
     }
 
     public void Dispose() { }
@@ -54,6 +46,7 @@ public class ConfigWindow : Window, IDisposable
             if (ImGui.BeginTabItem("General"))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
+
                 var changed = false;
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "FC Buttons:");
                 ImGui.Indent(10.0f);
@@ -93,6 +86,8 @@ public class ConfigWindow : Window, IDisposable
 
             if (ImGui.BeginTabItem("Notify"))
             {
+                ImGuiHelpers.ScaledDummy(5.0f);
+
                 var changed = false;
                 changed |= ImGui.Checkbox("All", ref Configuration.NotifyForAll);
 
@@ -136,6 +131,8 @@ public class ConfigWindow : Window, IDisposable
 
             if (ImGui.BeginTabItem("Saves"))
             {
+                ImGuiHelpers.ScaledDummy(5.0f);
+
                 if (ImGui.BeginTable("##DeleteSavesTable", 2))
                 {
                     ImGui.TableSetupColumn("Saved Setup");
@@ -167,13 +164,19 @@ public class ConfigWindow : Window, IDisposable
 
             if (ImGui.BeginTabItem("Loot"))
             {
-                var change  = ItemFilter.Draw(SelectedItem.Name, out var newItem, 240.0f) && newItem.Item.RowId != SelectedItem.Item.RowId;
+                ImGuiHelpers.ScaledDummy(5.0f);
 
-                if (change)
+                var buttonWidth = ImGui.GetContentRegionAvail().X / 2;
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(buttonWidth, 0));
+                ImGui.PopFont();
+
+                if (ExcelSheetSelector.ExcelSheetPopup("ItemAddPopup", out var row, ItemPopupOptions))
                 {
-                    SelectedItem = newItem;
-                    var value = (int) (newItem.Item.PriceLow > 1000 ? newItem.Item.PriceLow : 0);
-                    Configuration.CustomLootWithValue.Add(newItem.Item.RowId, value);
+                    var item = ItemSheet.GetRow(row)!;
+                    var value = (int) (item.PriceLow > 1000 ? item.PriceLow : 0);
+
+                    Configuration.CustomLootWithValue.Add(row, value);
                     Configuration.Save();
                 }
 
@@ -229,7 +232,7 @@ public class ConfigWindow : Window, IDisposable
             {
                 if (ImGui.BeginChild("AboutContent", new Vector2(0, -50)))
                 {
-                    ImGuiHelpers.ScaledDummy(10);
+                    ImGuiHelpers.ScaledDummy(5.0f);
 
                     ImGui.TextUnformatted("Author:");
                     ImGui.SameLine();
