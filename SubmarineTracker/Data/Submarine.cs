@@ -83,6 +83,7 @@ public static class Submarines
         #region Loot
         [JsonIgnore] public bool Refresh = true;
         [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> AllLoot = new();
+        [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> TimeLoot = new();
 
         public void RebuildStats()
         {
@@ -107,6 +108,24 @@ public static class Submarines
 
                     if (!lootList.TryAdd(pointLoot.AdditionalItem, pointLoot.AdditionalCount))
                         lootList[pointLoot.AdditionalItem] += pointLoot.AdditionalCount;
+                }
+            }
+
+            TimeLoot.Clear();
+            foreach (var point in PossiblePoints)
+            {
+                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPointWithTime(point.RowId)).ToList();
+                foreach (var (time, pointLoot) in possibleLoot)
+                {
+                    var timeList = TimeLoot.GetOrCreate(time);
+                    if (!timeList.TryAdd(pointLoot.PrimaryItem, pointLoot.PrimaryCount))
+                        timeList[pointLoot.PrimaryItem] += pointLoot.PrimaryCount;
+
+                    if (!pointLoot.ValidAdditional)
+                        continue;
+
+                    if (!timeList.TryAdd(pointLoot.AdditionalItem, pointLoot.AdditionalCount))
+                        timeList[pointLoot.AdditionalItem] += pointLoot.AdditionalCount;
                 }
             }
         }
@@ -136,6 +155,11 @@ public static class Submarines
         public IEnumerable<DetailedLoot> LootForPoint(uint point)
         {
             return Loot.Values.SelectMany(val => val.Where(iVal => iVal.Point == point));
+        }
+
+        public IEnumerable<(uint, DetailedLoot)> LootForPointWithTime(uint point)
+        {
+            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => (kv.Key, loot)));
         }
     }
 

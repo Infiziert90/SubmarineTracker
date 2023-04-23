@@ -92,10 +92,14 @@ public class LootWindow : Window, IDisposable
             foreach (var fc in Submarines.KnownSubmarines.Values)
             {
                 fc.RebuildStats();
-                numSubs += fc.Submarines.Count;
-                numVoyages += fc.SubLoot.Values.Sum(subs => subs.Loot.Count);
+                var dateLimit = DateUtil.LimitToDate(Configuration.DateLimit);
 
-                foreach (var (item, count) in fc.AllLoot.SelectMany(x=>x.Value))
+                numSubs += fc.Submarines.Count;
+                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Where(loot => DateTime.UnixEpoch.AddSeconds(loot.Key) >= dateLimit)).Count();
+
+                foreach (var (item, count) in fc.TimeLoot
+                                                .Where(r => DateTime.UnixEpoch.AddSeconds(r.Key) >= dateLimit)
+                                                .SelectMany(x=>x.Value))
                 {
                     if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
                         continue;
@@ -112,36 +116,49 @@ public class LootWindow : Window, IDisposable
 
             if (!bigList.Any())
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "The selected items haven't been looted.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Configuration.DateLimit != DateLimit.None
+                                                                ? "None of the selected items have been looted in the time frame."
+                                                                : "None of the selected items have been looted yet.");
 
                 ImGui.EndTabItem();
                 return;
             }
 
-            if (ImGui.BeginTable($"##customLootTable", 3))
+            var textHeight = ImGui.CalcTextSize("XXXX").Y * 4.0f; // giving space for 4.0 lines
+            if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight)))
             {
-                ImGui.TableSetupColumn("##icon", 0, 0.15f);
-                ImGui.TableSetupColumn("##item");
-                ImGui.TableSetupColumn("##amount", 0, 0.3f);
-
-                foreach (var (item, count) in bigList)
+                if (ImGui.BeginTable($"##customLootTable", 3))
                 {
-                    ImGui.TableNextColumn();
-                    DrawIcon(item.Icon);
-                    ImGui.TableNextColumn();
-                    ImGui.TextUnformatted(ToStr(item.Name));
-                    ImGui.TableNextColumn();
-                    ImGui.TextUnformatted($"{count}");
-                    ImGui.TableNextRow();
+                    ImGui.TableSetupColumn("##icon", 0, 0.15f);
+                    ImGui.TableSetupColumn("##item");
+                    ImGui.TableSetupColumn("##amount", 0, 0.3f);
 
-                    moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
+                    foreach (var (item, count) in bigList)
+                    {
+                        ImGui.TableNextColumn();
+                        DrawIcon(item.Icon);
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(ToStr(item.Name));
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{count}");
+                        ImGui.TableNextRow();
+
+                        moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
+                    }
                 }
+                ImGui.EndTable();
             }
-            ImGui.EndTable();
+            ImGui.EndChild();
 
-            ImGuiHelpers.ScaledDummy(10.0f);
-            ImGui.TextWrapped($"The above rewards have been obtained from a total of {numVoyages} voyages via {numSubs} submarines.");
-            ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
+            if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
+            {
+                var limit = Configuration.DateLimit != DateLimit.None
+                                ? $"over {DateUtil.GetDateLimitName(Configuration.DateLimit)}"
+                                : "";
+                ImGui.TextWrapped($"The above rewards have been obtained {limit} from a total of {numVoyages} voyages via {numSubs} submarines.");
+                ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
+            }
+            ImGui.EndChild();
 
             ImGui.EndTabItem();
         }

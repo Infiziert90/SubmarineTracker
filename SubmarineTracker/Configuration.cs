@@ -2,7 +2,7 @@
 using Dalamud.Plugin;
 using System;
 using System.Collections.Generic;
-using Lumina.Excel.GeneratedSheets;
+using SubmarineTracker.Data;
 
 namespace SubmarineTracker
 {
@@ -22,6 +22,7 @@ namespace SubmarineTracker
         public Dictionary<string, bool> NotifySpecific = new ();
 
         public Dictionary<uint, int> CustomLootWithValue = new();
+        public DateLimit DateLimit = DateLimit.None;
 
         [NonSerialized]
         private DalamudPluginInterface? PluginInterface;

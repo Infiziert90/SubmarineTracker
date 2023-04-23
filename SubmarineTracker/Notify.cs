@@ -29,8 +29,7 @@ public class Notify
         {
             foreach (var sub in fc.Submarines)
             {
-                bool ok;
-                if (!Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out ok))
+                if (!Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok))
                     ok = false;
 
                 if (!Configuration.NotifyForAll && !ok)

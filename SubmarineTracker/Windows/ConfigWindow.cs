@@ -225,6 +225,25 @@ public class ConfigWindow : Window, IDisposable
                     ImGui.EndTable();
                 }
 
+                ImGuiHelpers.ScaledDummy(5);
+                ImGui.Separator();
+                ImGuiHelpers.ScaledDummy(5);
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Time Frame:");
+                if(ImGui.BeginCombo($"##lootOptionCombo", DateUtil.GetDateLimitName(Configuration.DateLimit)))
+                {
+                    foreach(var dateLimit in (DateLimit[]) Enum.GetValues(typeof(DateLimit)))
+                    {
+                        if(ImGui.Selectable(DateUtil.GetDateLimitName(dateLimit)))
+                        {
+                            Configuration.DateLimit = dateLimit;
+                            Configuration.Save();
+                        }
+                    }
+
+                    ImGui.EndCombo();
+                }
+
                 ImGui.EndTabItem();
             }
 
