@@ -21,7 +21,6 @@ namespace SubmarineTracker
         public bool NotifyForAll = false;
         public Dictionary<string, bool> NotifySpecific = new ();
 
-        public List<uint> CustomLoot = new();
         public Dictionary<uint, int> CustomLootWithValue = new();
 
         [NonSerialized]

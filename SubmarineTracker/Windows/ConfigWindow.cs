@@ -189,7 +189,7 @@ public class ConfigWindow : Window, IDisposable
 
                     ImGui.TableHeadersRow();
 
-                    var deletion = -1;
+                    uint deletionKey = 0;
                     foreach (var ((item, value), idx) in Configuration.CustomLootWithValue.Select((val, i) => (val, i)))
                     {
                         var resolvedItem = ItemSheet.GetRow(item)!;
@@ -208,14 +208,14 @@ public class ConfigWindow : Window, IDisposable
 
                         ImGui.TableNextColumn();
                         if (ImGuiComponents.IconButton(idx, FontAwesomeIcon.Trash))
-                            deletion = idx;
+                            deletionKey = item;
 
                         ImGui.TableNextRow();
                     }
 
-                    if (deletion != -1)
+                    if (deletionKey != 0)
                     {
-                        Configuration.CustomLoot.RemoveAt(deletion);
+                        Configuration.CustomLootWithValue.Remove(deletionKey);
                         Configuration.Save();
                     }
 
