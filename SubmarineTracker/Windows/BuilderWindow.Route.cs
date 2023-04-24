@@ -32,7 +32,7 @@ public partial class BuilderWindow
                                    .Where(r => !SelectedLocations.Contains(r.RowId))
                                    .ToList();
 
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Selected {SelectedLocations.Count} / 5");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Sectors {SelectedLocations.Count} / 5");
                 var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
 
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
@@ -48,17 +48,26 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                ImGui.TextColored(ImGuiColors.ParsedOrange, $"Select with click");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, $"Select sector by clicking");
                 if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 1.95f)))
                 {
                     foreach (var location in explorations)
                     {
+                        fcSub.UnlockedSectors.TryGetValue(location.RowId, out var unlocked);
+                        fcSub.ExploredSectors.TryGetValue(location.RowId, out var explored);
+
                         if (SelectedLocations.Count < 5)
                         {
-                            if (fcSub.UnlockedSectors.TryGetValue(location.RowId, out var value) && value)
+                            if (unlocked && explored)
                             {
                                 if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
                                     SelectedLocations.Add(location.RowId);
+                            }
+                            else if (unlocked)
+                            {
+                                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudViolet);
+                                ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+                                ImGui.PopStyleColor();
                             }
                             else
                             {

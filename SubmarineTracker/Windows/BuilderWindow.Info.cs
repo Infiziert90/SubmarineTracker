@@ -18,7 +18,7 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Best Exp?");
-            ImGui.TextWrapped("This tool will assist you in calculating the most optimal route that can be taken to level the currently selected build. These calculations are based on experience gained per minute and the unlocked exploration points for your current character only.");
+            ImGui.TextWrapped("This tool will assist you in calculating the optimal route that can be taken to level the current build. These calculations are based on experience gained per minute and the unlocked sectors.");
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -63,9 +63,12 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Route:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet,"Violet");
+            ImGui.SameLine(spacing);
+            ImGui.TextUnformatted("Unlocked but not visited");
             ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
             ImGui.SameLine(spacing);
-            ImGui.TextUnformatted("Point not unlocked");
+            ImGui.TextUnformatted("Not unlocked");
         }
         ImGui.EndTabItem();
 
