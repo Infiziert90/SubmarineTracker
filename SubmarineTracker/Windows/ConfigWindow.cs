@@ -87,19 +87,26 @@ public class ConfigWindow : Window, IDisposable
             if (ImGui.BeginTabItem("Notify"))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
-
                 var changed = false;
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Overlay:");
+                ImGui.Indent(10.0f);
+                changed |= ImGui.Checkbox("Always show on return", ref Configuration.NotifyOverlayAlways);
+                changed |= ImGui.Checkbox("Show on game start", ref Configuration.NotifyOverlayOnStartup);
+                ImGui.Unindent(10.0f);
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
+                ImGui.Indent(10.0f);
                 changed |= ImGui.Checkbox("All", ref Configuration.NotifyForAll);
+                ImGui.Unindent(10.0f);
 
                 if (!Configuration.NotifyForAll)
                 {
-                    ImGuiHelpers.ScaledDummy(5);
-                    ImGui.Separator();
-                    ImGuiHelpers.ScaledDummy(5);
 
-                    ImGui.TextUnformatted("Notify for specific:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Notify only for:");
                     ImGuiHelpers.ScaledDummy(5.0f);
 
+                    ImGui.Indent(10.0f);
                     foreach (var (id, fc) in Submarines.KnownSubmarines)
                     {
                         foreach (var sub in fc.Submarines)
@@ -121,6 +128,8 @@ public class ConfigWindow : Window, IDisposable
 
                         ImGuiHelpers.ScaledDummy(5.0f);
                     }
+
+                    ImGui.Unindent(10.0f);
                 }
 
                 if (changed)

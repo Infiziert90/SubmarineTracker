@@ -35,6 +35,7 @@ namespace SubmarineTracker
         private BuilderWindow BuilderWindow { get; init; }
         private LootWindow LootWindow { get; init; }
         private HelpyWindow HelpyWindow { get; init; }
+        private NotifyOverlay NotifyOverlay { get; init; }
 
         public static readonly string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
@@ -47,20 +48,23 @@ namespace SubmarineTracker
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(PluginInterface);
 
+            Notify = new Notify(this);
+
             ConfigWindow = new ConfigWindow(this);
             MainWindow = new MainWindow(this, Configuration);
             BuilderWindow = new BuilderWindow(this, Configuration);
             LootWindow = new LootWindow(this, Configuration);
             HelpyWindow = new HelpyWindow(this, Configuration);
+            NotifyOverlay = new NotifyOverlay(this, Configuration, Notify);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(BuilderWindow);
             WindowSystem.AddWindow(LootWindow);
             WindowSystem.AddWindow(HelpyWindow);
+            WindowSystem.AddWindow(NotifyOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
-            Notify = new Notify(this);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -72,6 +76,9 @@ namespace SubmarineTracker
 
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
+
+            if (Configuration.NotifyOverlayAlways || Configuration.NotifyOverlayOnStartup)
+                NotifyOverlay.IsOpen = true;
         }
 
         public void Dispose()
@@ -168,6 +175,11 @@ namespace SubmarineTracker
         public void DrawConfigUI()
         {
             ConfigWindow.IsOpen = true;
+        }
+
+        public void OpenNotify()
+        {
+            NotifyOverlay.IsOpen = true;
         }
         #endregion
     }
