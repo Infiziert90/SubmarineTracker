@@ -66,13 +66,15 @@ public partial class BuilderWindow
                             else if (unlocked)
                             {
                                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudViolet);
-                                ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                                    SelectedLocations.Add(location.RowId);
                                 ImGui.PopStyleColor();
                             }
                             else
                             {
                                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                                ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                                    SelectedLocations.Add(location.RowId);
                                 ImGui.PopStyleColor();
 
                                 if (ImGui.IsItemHovered())
