@@ -6,7 +6,6 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace SubmarineTracker.Windows;
@@ -17,20 +16,10 @@ public partial class BuilderWindow : Window, IDisposable
     private Configuration Configuration;
 
     public static ExcelSheet<SubmarineRank> RankSheet = null!;
-    public static ExcelSheet<SubmarinePart> PartSheet = null!;
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    public int SelectSub;
-    public int SelectedRank = 1;
-    public int SelectedHull = 3;
-    public int SelectedStern = 4;
-    public int SelectedBow = 1;
-    public int SelectedBridge = 2;
-
-    public int SelectedMap;
-    public List<uint> SelectedLocations = new();
-    public (int Distance, List<SubmarineExplorationPretty> Points) OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+    public Submarines.RouteBuild CurrentBuild = new();
 
     public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder")
     {
@@ -44,7 +33,6 @@ public partial class BuilderWindow : Window, IDisposable
         Configuration = configuration;
 
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
-        PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
     }
@@ -110,17 +98,8 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.EndChild();
     }
 
-    public SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
-
     public void Reset()
     {
-        SelectedRank = 1;
-        SelectedHull = 3;
-        SelectedStern = 4;
-        SelectedBow = 1;
-        SelectedBridge = 2;
-
-        SelectedMap = 0;
-        SelectedLocations.Clear();
+        CurrentBuild = Submarines.RouteBuild.Empty;
     }
 }

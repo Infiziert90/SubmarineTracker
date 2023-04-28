@@ -16,33 +16,32 @@ public partial class BuilderWindow
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -110)))
             {
                 var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
-                var selectedMap = SelectedMap;
+                var selectedMap = CurrentBuild.Map;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if (selectedMap != SelectedMap)
+                if (selectedMap != CurrentBuild.Map)
                 {
-                    SelectedMap = selectedMap;
-                    SelectedLocations.Clear();
+                    CurrentBuild.ChangeMap(selectedMap);
                 }
 
                 var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
 
                 var explorations = ExplorationSheet
-                                   .Where(r => r.Map.Row == SelectedMap + 1)
+                                   .Where(r => r.Map.Row == CurrentBuild.Map + 1)
                                    .Where(r => !r.Passengers)
-                                   .Where(r => !SelectedLocations.Contains(r.RowId))
+                                   .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
                                    .ToList();
 
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Sectors {SelectedLocations.Count} / 5");
-                var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Sectors {CurrentBuild.Sectors.Count} / 5");
+                var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
 
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                 if (ImGui.BeginListBox("##selectedPoints", new Vector2(-1, height)))
                 {
-                    foreach (var location in SelectedLocations.ToArray())
+                    foreach (var location in CurrentBuild.Sectors.ToArray())
                     {
                         var p = ExplorationSheet.GetRow(location)!;
                         if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                            SelectedLocations.Remove(location);
+                            CurrentBuild.Sectors.Remove(location);
                     }
 
                     ImGui.EndListBox();
@@ -56,25 +55,25 @@ public partial class BuilderWindow
                         fcSub.UnlockedSectors.TryGetValue(location.RowId, out var unlocked);
                         fcSub.ExploredSectors.TryGetValue(location.RowId, out var explored);
 
-                        if (SelectedLocations.Count < 5)
+                        if (CurrentBuild.Sectors.Count < 5)
                         {
                             if (unlocked && explored)
                             {
                                 if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                    SelectedLocations.Add(location.RowId);
+                                    CurrentBuild.Sectors.Add(location.RowId);
                             }
                             else if (unlocked)
                             {
                                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudViolet);
                                 if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                    SelectedLocations.Add(location.RowId);
+                                    CurrentBuild.Sectors.Add(location.RowId);
                                 ImGui.PopStyleColor();
                             }
                             else
                             {
                                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
                                 if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                    SelectedLocations.Add(location.RowId);
+                                    CurrentBuild.Sectors.Add(location.RowId);
                                 ImGui.PopStyleColor();
 
                                 if (ImGui.IsItemHovered())
@@ -92,10 +91,10 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                if (SelectedLocations.Any())
+                if (CurrentBuild.Sectors.Any())
                 {
-                    var points = SelectedLocations.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
-                    OptimizedRoute = Submarines.CalculateDistance(points);
+                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
+                    CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(points!));
                 }
             }
             ImGui.EndChild();

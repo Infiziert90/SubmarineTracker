@@ -22,8 +22,8 @@ public partial class BuilderWindow
     {
         ComputingPath = true;
         Error = false;
-        LastComputedRank = SelectedRank;
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1);
+        LastComputedRank = CurrentBuild.Rank;
+        var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
 
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
@@ -31,14 +31,14 @@ public partial class BuilderWindow
             try
             {
                 valid = ExplorationSheet
-                            .Where(r => r.Map.Row == SelectedMap + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= SelectedRank)
+                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                             .ToList();
             }
             catch (KeyNotFoundException)
             {
                 Error = true;
                 ComputingPath = false;
-                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+                CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
@@ -61,12 +61,12 @@ public partial class BuilderWindow
 
             var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
 
-            var build = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow, SelectedBridge);
+            var build = new Submarines.SubmarineBuild(CurrentBuild);
 
             if (!allPaths.Any())
             {
                 ComputingPath = false;
-                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+                CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
@@ -78,7 +78,7 @@ public partial class BuilderWindow
             if (!optimalDistances.Any())
             {
                 ComputingPath = false;
-                OptimizedRoute = (0, new List<SubmarineExplorationPretty>());
+                CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
@@ -117,25 +117,25 @@ public partial class BuilderWindow
             {
                 var maps = ExplorationSheet
                            .Where(r => r.Passengers)
-                           .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= SelectedRank)
+                           .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
                            .Select(r => ToStr(r.Map.Value!.Name))
                            .ToArray();
 
-                // prevent previous selection from being impossible when switching builds
-                if (maps.Length <= SelectedMap)
-                    SelectedMap = maps.Length - 1;
+                // Always pick highest rank map if smaller then possible
+                if (maps.Length <= CurrentBuild.Map)
+                    CurrentBuild.Map = maps.Length - 1;
 
-                var selectedMap = SelectedMap;
+                var selectedMap = CurrentBuild.Map;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if ((selectedMap != SelectedMap || BestPath == Array.Empty<uint>() || LastComputedRank != SelectedRank) && !ComputingPath && !Error)
+                if ((selectedMap != CurrentBuild.Map || BestPath == Array.Empty<uint>() || LastComputedRank != CurrentBuild.Rank) && !ComputingPath && !Error)
                 {
-                    SelectedMap = selectedMap;
+                    CurrentBuild.Map = selectedMap;
                     BestPath = Array.Empty<uint>();
                     ComputeStart = DateTime.Now;
                     Task.Run(FindBestPath);
                 }
 
-                var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1).RowId;
+                var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                 if (ImGui.BeginListBox("##bestPoints", new Vector2(-1, height)))
                 {
@@ -160,7 +160,7 @@ public partial class BuilderWindow
                             if (location > startPoint)
                                 ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
                         }
-                        OptimizedRoute = Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!));
+                        CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
                     }
 
                     ImGui.EndListBox();

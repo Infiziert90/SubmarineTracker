@@ -306,6 +306,15 @@ public static class Submarines
             Bridge = GetPart(bridge);
         }
 
+        public SubmarineBuild(RouteBuild build)
+        {
+            Bonus = GetRank(build.Rank);
+            Hull = GetPart(build.Hull);
+            Stern = GetPart(build.Stern);
+            Bow = GetPart(build.Bow);
+            Bridge = GetPart(build.Bridge);
+        }
+
         public int Surveillance => Bonus.SurveillanceBonus + Hull.Surveillance + Stern.Surveillance + Bow.Surveillance + Bridge.Surveillance;
         public int Retrieval => Bonus.RetrievalBonus + Hull.Retrieval + Stern.Retrieval + Bow.Retrieval + Bridge.Retrieval;
         public int Speed => Bonus.SpeedBonus + Hull.Speed + Stern.Speed + Bow.Speed + Bridge.Speed;
@@ -319,6 +328,63 @@ public static class Submarines
         public bool EqualsSubmarine(Submarine other)
         {
             return Bonus.RowId == other.Rank && Hull.RowId == other.Hull && Stern.RowId == other.Stern && Bow.RowId == other.Bow && Bridge.RowId == other.Bridge;
+        }
+    }
+
+    public struct RouteBuild
+    {
+        public int OriginalSub = 0;
+
+        public int Rank = 1;
+        public int Hull = 3;
+        public int Stern = 4;
+        public int Bow = 1;
+        public int Bridge = 2;
+
+        public int Map = 0;
+        public List<uint> Sectors = new();
+
+        public int OptimizedDistance = 0;
+        public List<SubmarineExplorationPretty> OptimizedRoute = new();
+
+        public RouteBuild() { }
+
+        [JsonIgnore] public static RouteBuild Empty => new();
+
+        public void UpdateBuild(Submarine sub)
+        {
+            Rank = sub.Rank;
+            Hull = sub.Hull;
+            Stern = sub.Stern;
+            Bow = sub.Bow;
+            Bridge = sub.Bridge;
+        }
+
+        public void ChangeMap(int newMap)
+        {
+            Map = newMap;
+
+            Sectors.Clear();
+            OptimizedDistance = 0;
+            OptimizedRoute.Clear();
+        }
+
+        public void UpdateOptimized(int distance, List<SubmarineExplorationPretty> route)
+        {
+            OptimizedDistance = distance;
+            OptimizedRoute = route;
+        }
+
+        public void UpdateOptimized((int Distance, List<SubmarineExplorationPretty> Points) optimized)
+        {
+            OptimizedDistance = optimized.Distance;
+            OptimizedRoute = optimized.Points;
+        }
+
+        public void NoOptimized()
+        {
+            OptimizedDistance = 0;
+            OptimizedRoute.Clear();
         }
     }
 

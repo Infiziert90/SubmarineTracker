@@ -14,21 +14,20 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginChild("SubStats", new Vector2(0, 0)))
         {
-            var build = new Submarines.SubmarineBuild(SelectedRank, SelectedHull, SelectedStern, SelectedBow,
-                                                      SelectedBridge);
+            var build = new Submarines.SubmarineBuild(CurrentBuild);
 
             // Reset to costum build if not equal anymore
             if (sub.IsValid() && !build.EqualsSubmarine(sub))
-                SelectSub = 0;
+                CurrentBuild.OriginalSub = 0;
 
-            var startPoint = ExplorationSheet.First(r => r.Map.Row == SelectedMap + 1);
+            var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
 
-            var optimizedPoints = OptimizedRoute.Points.Prepend(startPoint).ToList();
+            var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
             var optimizedDuration = Submarines.CalculateDuration(optimizedPoints, build);
-            var breakpoints = LootTable.CalculateRequired(SelectedLocations);
+            var breakpoints = LootTable.CalculateRequired(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
-            if (optimizedDuration != 0 && OptimizedRoute.Distance != 0)
-                expPerMinute = OptimizedRoute.Points.Select(p => p.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);
+            if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
+                expPerMinute = CurrentBuild.OptimizedRoute.Select(p => p.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);
 
 
             var windowWidth = ImGui.GetWindowWidth();
@@ -38,11 +37,11 @@ public partial class BuilderWindow
             var sixthRow = windowWidth / 1.5f;
             var seventhRow = windowWidth / 1.25f;
 
-            if (OptimizedRoute.Points.Any())
+            if (CurrentBuild.OptimizedRoute.Any())
             {
                 ImGui.TextUnformatted("Optimized Route:");
                 ImGui.SameLine();
-                ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", OptimizedRoute.Points.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
+                ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
             }
 
             ImGui.TextUnformatted("Calculated Stats:");
@@ -67,7 +66,7 @@ public partial class BuilderWindow
             ImGui.SameLine(thirdRow);
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
             ImGui.SameLine(fourthRow);
-            SelectRequiredColor(OptimizedRoute.Distance, build.Range);
+            SelectRequiredColor(CurrentBuild.OptimizedDistance, build.Range);
 
             ImGui.SameLine(sixthRow);
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");

@@ -21,26 +21,22 @@ public partial class BuilderWindow
 
                 var windowWidth = ImGui.GetWindowWidth() / 2;
                 ImGui.PushItemWidth(windowWidth - 5.0f);
-                ImGui.Combo("##existingSubs", ref SelectSub, existingSubs, existingSubs.Length);
+                ImGui.Combo("##existingSubs", ref CurrentBuild.OriginalSub, existingSubs, existingSubs.Length);
                 ImGui.PopItemWidth();
 
                 // Calculate first so rank can be changed afterwards
-                if (existingSubs[SelectSub] != "Custom")
+                if (existingSubs[CurrentBuild.OriginalSub] != "Custom")
                 {
                     var fc = Submarines.KnownSubmarines.Values.First(
-                        fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]));
-                    sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[SelectSub]);
+                        fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]));
+                    sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
 
-                    SelectedRank = sub.Rank;
-                    SelectedHull = sub.Hull;
-                    SelectedStern = sub.Stern;
-                    SelectedBow = sub.Bow;
-                    SelectedBridge = sub.Bridge;
+                    CurrentBuild.UpdateBuild(sub);
                 }
 
                 ImGui.SameLine();
                 ImGui.PushItemWidth(windowWidth - 3.0f);
-                ImGui.SliderInt("##SliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d");
+                ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int)RankSheet.Last().RowId, "Rank %d");
                 ImGui.PopItemWidth();
 
                 ImGuiHelpers.ScaledDummy(5);
@@ -81,13 +77,13 @@ public partial class BuilderWindow
         ImGui.TableNextColumn();
         ImGui.TextUnformatted(label);
         ImGui.TableNextColumn();
-        ImGui.RadioButton($"##{label}H", ref SelectedHull, number + 3);
+        ImGui.RadioButton($"##{label}H", ref CurrentBuild.Hull, number + 3);
         ImGui.TableNextColumn();
-        ImGui.RadioButton($"##{label}S", ref SelectedStern, number + 4);
+        ImGui.RadioButton($"##{label}S", ref CurrentBuild.Stern, number + 4);
         ImGui.TableNextColumn();
-        ImGui.RadioButton($"##{label}B", ref SelectedBow, number + 1);
+        ImGui.RadioButton($"##{label}B", ref CurrentBuild.Bow, number + 1);
         ImGui.TableNextColumn();
-        ImGui.RadioButton($"##{label}Br", ref SelectedBridge, number + 2);
+        ImGui.RadioButton($"##{label}Br", ref CurrentBuild.Bridge, number + 2);
         ImGui.TableNextRow();
     }
 }
