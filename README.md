@@ -4,6 +4,7 @@ Simple and Easy
 + Tracks current builds, route and time 
 + Loot overview for each FC
 + Builder to improve your builds 
++ Save and load builds
 + Optimized EXP calculator for the selected build
 + Unlockable exploration points are highlighted
 + Breakpoint support
@@ -28,7 +29,6 @@ Simple and Easy
 
 
 ### Planned
-+ Save/Load builds and routes
 + Durability for each sub 
 + Durability calculation
 + Automatic build solver

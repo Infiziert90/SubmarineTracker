@@ -29,6 +29,14 @@ public static class Utils
         return value;
     }
 
+    public static SeString ErrorMessage(string error)
+    {
+        return new SeStringBuilder()
+               .AddUiForeground("[Submarine Tracker] ", 540)
+               .AddUiForeground($"{error}", 17)
+               .BuiltString;
+    }
+
     public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : new()
     {
         if (!dict.TryGetValue(key, out TValue val))

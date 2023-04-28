@@ -145,7 +145,7 @@ public class ConfigWindow : Window, IDisposable
                 if (ImGui.BeginTable("##DeleteSavesTable", 2))
                 {
                     ImGui.TableSetupColumn("Saved Setup");
-                    ImGui.TableSetupColumn("Del", 0, 0.2f);
+                    ImGui.TableSetupColumn("Del", 0, 0.1f);
 
                     ImGui.TableHeadersRow();
 
@@ -166,6 +166,50 @@ public class ConfigWindow : Window, IDisposable
                         Submarines.DeleteCharacter(deletion);
 
                     ImGui.EndTable();
+                }
+
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("Builds"))
+            {
+                ImGuiHelpers.ScaledDummy(5.0f);
+
+                if (ImGui.BeginTable("##DeleteBuildsTable", 2))
+                {
+                    ImGui.TableSetupColumn("Saved Builds");
+                    ImGui.TableSetupColumn("Del", 0, 0.1f);
+
+                    ImGui.TableHeadersRow();
+
+                    var deletion = string.Empty;
+                    foreach (var (key, build) in Configuration.SavedBuilds)
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.TextWrapped($"{key} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})");
+                        if (build.Sectors.Any())
+                        {
+                            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
+                            ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => NumToLetter(p - startPoint))));
+                        }
+                        else
+                        {
+                            ImGui.TextColored(ImGuiColors.DalamudOrange, "No Route");
+                        }
+
+                        ImGui.TableNextColumn();
+                        if (ImGuiComponents.IconButton(key, FontAwesomeIcon.Trash))
+                            deletion = key;
+
+                        ImGui.TableNextRow();
+                    }
+                    ImGui.EndTable();
+
+                    if (deletion != string.Empty)
+                    {
+                        Configuration.SavedBuilds.Remove(deletion);
+                        Configuration.Save();
+                    }
                 }
 
                 ImGui.EndTabItem();

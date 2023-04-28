@@ -6,6 +6,7 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using System;
+using System.Linq;
 using System.Numerics;
 
 namespace SubmarineTracker.Windows;
@@ -20,6 +21,8 @@ public partial class BuilderWindow : Window, IDisposable
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public Submarines.RouteBuild CurrentBuild = new();
+
+    private string CurrentInput = "";
 
     public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder")
     {
@@ -79,6 +82,16 @@ public partial class BuilderWindow : Window, IDisposable
                 if (ImGui.Button("Reset"))
                     Reset();
                 ImGui.PopStyleColor();
+
+                ImGui.SameLine();
+
+                ImGui.Button("Save");
+                if (SaveBuild());
+
+                ImGui.SameLine();
+
+                ImGui.Button("Load");
+                if (LoadBuild());
             }
             else
             {
@@ -96,6 +109,99 @@ public partial class BuilderWindow : Window, IDisposable
             }
         }
         ImGui.EndChild();
+    }
+
+    private bool SaveBuild()
+    {
+        ImGui.SetNextWindowSize(new Vector2(200 * ImGuiHelpers.GlobalScale, 90 * ImGuiHelpers.GlobalScale));
+        if (!ImGui.BeginPopupContextItem("##savePopup", ImGuiPopupFlags.None))
+            return false;
+
+        ImGui.BeginChild("SavePopupChild", Vector2.Zero, false);
+
+        var ret = false;
+
+        ImGuiHelpers.ScaledDummy(3.0f);
+        ImGui.SetNextItemWidth(180 * ImGuiHelpers.GlobalScale);
+        ImGui.InputTextWithHint("##SavePopupName", "Name", ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
+        ImGuiHelpers.ScaledDummy(3.0f);
+        if (ImGui.Button("Save Build"))
+        {
+            // make sure that original sub hasn't changed in the future
+            CurrentBuild.OriginalSub = 0;
+            if (Configuration.SavedBuilds.TryAdd(CurrentInput, CurrentBuild))
+            {
+                Configuration.Save();
+                ret = true;
+            }
+            else
+                Plugin.ChatGui.PrintError(Utils.ErrorMessage("Build with same name exists already."));
+        }
+
+
+        // ImGui issue #273849, children keep popups from closing automatically
+        if (ret)
+            ImGui.CloseCurrentPopup();
+
+        ImGui.EndChild();
+        ImGui.EndPopup();
+
+        return ret;
+    }
+
+    private bool LoadBuild()
+    {
+        ImGui.SetNextWindowSize(new Vector2(0, 250 * ImGuiHelpers.GlobalScale));
+        if (!ImGui.BeginPopupContextItem("##LoadPopup", ImGuiPopupFlags.None))
+            return false;
+
+        var longest = 0.0f;
+        foreach (var (key, value) in Configuration.SavedBuilds)
+        {
+            var width = ImGui.CalcTextSize($"{key} (R: {value.Rank} B: {value.GetSubmarineBuild.BuildIdentifier()})").X;
+            if (width > longest)
+                longest = width;
+        }
+
+        // set width + padding
+        ImGui.Dummy(new Vector2(longest + (30.0f * ImGuiHelpers.GlobalScale), 0));
+
+        ImGuiHelpers.ScaledDummy(3.0f);
+        ImGui.TextColored(ImGuiColors.ParsedOrange, "Load by clicking");
+        ImGui.Indent(5.0f);
+        ImGui.BeginChild("LoadPopupChild", Vector2.Zero, false);
+
+        var ret = false;
+
+        foreach (var (key, value) in Configuration.SavedBuilds)
+        {
+            if (ImGui.Selectable($"{key} (R: {value.Rank} B: {value.GetSubmarineBuild.BuildIdentifier()})"))
+            {
+                CurrentBuild = value;
+                if (CurrentBuild.Sectors.Any())
+                {
+                    var startPoint = Submarines.FindVoyageStartPoint(CurrentBuild.Sectors.First());
+                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
+                    CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(points!));
+                }
+                else
+                {
+                    CurrentBuild.NoOptimized();
+                }
+                ret = true;
+            }
+        }
+
+        ImGui.Unindent(5.0f);
+
+        // ImGui issue #273849, children keep popups from closing automatically
+        if (ret)
+            ImGui.CloseCurrentPopup();
+
+        ImGui.EndChild();
+        ImGui.EndPopup();
+
+        return ret;
     }
 
     public void Reset()
