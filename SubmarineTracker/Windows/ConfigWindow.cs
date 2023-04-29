@@ -186,16 +186,9 @@ public class ConfigWindow : Window, IDisposable
                     foreach (var (key, build) in Configuration.SavedBuilds)
                     {
                         ImGui.TableNextColumn();
-                        ImGuiHelpers.SafeTextWrapped($"{key} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})");
-                        if (build.Sectors.Any())
-                        {
-                            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
-                            ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => NumToLetter(p - startPoint))));
-                        }
-                        else
-                        {
-                            ImGui.TextColored(ImGuiColors.DalamudOrange, "No Route");
-                        }
+                        var text = FormattedRouteBuild(key, build).Split("\n");
+                        ImGuiHelpers.SafeTextWrapped(text.First());
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, text.Last());
 
                         ImGui.TableNextColumn();
                         if (ImGuiComponents.IconButton(key, FontAwesomeIcon.Trash))

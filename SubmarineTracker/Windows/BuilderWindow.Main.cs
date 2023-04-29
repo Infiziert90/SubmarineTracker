@@ -125,6 +125,7 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.SetNextItemWidth(180 * ImGuiHelpers.GlobalScale);
         ImGui.InputTextWithHint("##SavePopupName", "Name", ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
         ImGuiHelpers.ScaledDummy(3.0f);
+
         if (ImGui.Button("Save Build"))
         {
             // make sure that original sub hasn't changed in the future
@@ -135,8 +136,21 @@ public partial class BuilderWindow : Window, IDisposable
                 ret = true;
             }
             else
+            {
+                if (ImGui.GetIO().KeyCtrl)
+                {
+                    Configuration.SavedBuilds[CurrentInput] = CurrentBuild;
+                    Configuration.Save();
+                    ret = true;
+                }
+            }
+
+            if (!ret)
                 Plugin.ChatGui.PrintError(Utils.ErrorMessage("Build with same name exists already."));
         }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Hold Control to overwrite");
 
 
         // ImGui issue #273849, children keep popups from closing automatically
@@ -158,7 +172,7 @@ public partial class BuilderWindow : Window, IDisposable
         var longest = 0.0f;
         foreach (var (key, value) in Configuration.SavedBuilds)
         {
-            var width = ImGui.CalcTextSize(FormatLoadString(key, value)).X;
+            var width = ImGui.CalcTextSize(Utils.FormattedRouteBuild(key, value)).X;
             if (width > longest)
                 longest = width;
         }
@@ -175,7 +189,7 @@ public partial class BuilderWindow : Window, IDisposable
 
         foreach (var (key, value) in Configuration.SavedBuilds)
         {
-            if (ImGui.Selectable(FormatLoadString(key, value)))
+            if (ImGui.Selectable(Utils.FormattedRouteBuild(key, value)))
             {
                 CurrentBuild = value;
                 if (CurrentBuild.Sectors.Any())
@@ -202,19 +216,6 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.EndPopup();
 
         return ret;
-    }
-
-    private static string FormatLoadString(string name, Submarines.RouteBuild build)
-    {
-        var route = "No Route";
-        if (build.Sectors.Any())
-        {
-            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
-            route = string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => Utils.NumToLetter(p - startPoint)));
-        }
-
-        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})" +
-               $"\n{Utils.MapToThreeLetter(build.Map + 1)}: {route}";
     }
 
     public void Reset()

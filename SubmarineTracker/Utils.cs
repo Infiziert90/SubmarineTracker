@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
+using SubmarineTracker.Data;
 
 namespace SubmarineTracker;
 
@@ -54,6 +55,20 @@ public static class Utils
 
         return value;
     }
+
+    public static string FormattedRouteBuild(string name, Submarines.RouteBuild build)
+    {
+        var route = "No Route";
+        if (build.Sectors.Any())
+        {
+            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
+            route = string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => NumToLetter(p - startPoint)));
+        }
+
+        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})" +
+               $"\n{MapToThreeLetter(build.Map + 1)}: {route}";
+    }
+
 
     public static SeString ErrorMessage(string error)
     {

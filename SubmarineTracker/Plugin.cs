@@ -126,7 +126,7 @@ namespace SubmarineTracker
             HelpyWindow.IsOpen ^= true;
         }
 
-        [Command("/sconfig")]
+        [Command("/sconf")]
         [HelpMessage("Opens the config")]
         private void OnConfigCommand(string command, string args)
         {
