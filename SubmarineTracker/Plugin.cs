@@ -102,28 +102,35 @@ namespace SubmarineTracker
         [HelpMessage("Opens the tracker")]
         private void OnCommand(string command, string args)
         {
-            MainWindow.IsOpen = true;
+            MainWindow.IsOpen ^= true;
         }
 
         [Command("/sbuilder")]
         [HelpMessage("Opens the builder")]
         private void OnBuilderCommand(string command, string args)
         {
-            BuilderWindow.IsOpen = true;
+            BuilderWindow.IsOpen ^= true;
         }
 
         [Command("/sloot")]
         [HelpMessage("Opens the custom loot overview")]
         private void OnLootCommand(string command, string args)
         {
-            LootWindow.IsOpen = true;
+            LootWindow.IsOpen ^= true;
         }
 
         [Command("/shelpy")]
         [HelpMessage("Opens the helper window with lots of helpful information")]
         private void OnUnlockedCommand(string command, string args)
         {
-            HelpyWindow.IsOpen = true;
+            HelpyWindow.IsOpen ^= true;
+        }
+
+        [Command("/sconfig")]
+        [HelpMessage("Opens the config")]
+        private void OnConfigCommand(string command, string args)
+        {
+            ConfigWindow.IsOpen ^= true;
         }
 
         public unsafe void FrameworkUpdate(Framework _)
