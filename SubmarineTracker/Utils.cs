@@ -62,11 +62,11 @@ public static class Utils
         if (build.Sectors.Any())
         {
             var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
-            route = string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => NumToLetter(p - startPoint)));
+            route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";;
         }
 
         return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})" +
-               $"\n{MapToThreeLetter(build.Map + 1)}: {route}";
+               $"\n{route}";
     }
 
 
