@@ -186,7 +186,7 @@ public class ConfigWindow : Window, IDisposable
                     foreach (var (key, build) in Configuration.SavedBuilds)
                     {
                         ImGui.TableNextColumn();
-                        ImGui.TextWrapped($"{key} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})");
+                        ImGuiHelpers.SafeTextWrapped($"{key} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})");
                         if (build.Sectors.Any())
                         {
                             var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());

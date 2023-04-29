@@ -133,16 +133,4 @@ public static class LootTable
 
         return new Breakpoints(t2, t3, normal, optimal, favor);
     }
-
-    public static string MapToShort(uint key)
-    {
-        return key switch
-        {
-            1 => "Deep-sea",
-            2 => "Sea of Ash",
-            3 => "Sea of Jade",
-            4 => "Sirensong",
-            _ => ""
-        };
-    }
 }

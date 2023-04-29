@@ -13,6 +13,32 @@ public static class Utils
     public static string UpperCaseStr(Lumina.Text.SeString content) => string.Join(" ", content.ToDalamudString().ToString().Split(' ').Select(t => string.Concat(t[0].ToString().ToUpper(), t.AsSpan(1))));
     public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
 
+    public static string MapToShort(int key) => MapToShort((uint)key);
+    public static string MapToShort(uint key)
+    {
+        return key switch
+        {
+            1 => "Deep-sea",
+            2 => "Sea of Ash",
+            3 => "Sea of Jade",
+            4 => "Sirensong",
+            _ => ""
+        };
+    }
+
+    public static string MapToThreeLetter(int key) => MapToThreeLetter((uint) key);
+    public static string MapToThreeLetter(uint key)
+    {
+        return key switch
+        {
+            1 => "DSS",
+            2 => "SOA",
+            3 => "SOJ",
+            4 => "SSS",
+            _ => ""
+        };
+    }
+
     public static string NumToLetter(uint num)
     {
         var index = (int)(num - 1);  // 0 indexed

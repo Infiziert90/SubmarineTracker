@@ -158,7 +158,7 @@ public partial class BuilderWindow : Window, IDisposable
         var longest = 0.0f;
         foreach (var (key, value) in Configuration.SavedBuilds)
         {
-            var width = ImGui.CalcTextSize($"{key} (R: {value.Rank} B: {value.GetSubmarineBuild.BuildIdentifier()})").X;
+            var width = ImGui.CalcTextSize(FormatLoadString(key, value)).X;
             if (width > longest)
                 longest = width;
         }
@@ -175,7 +175,7 @@ public partial class BuilderWindow : Window, IDisposable
 
         foreach (var (key, value) in Configuration.SavedBuilds)
         {
-            if (ImGui.Selectable($"{key} (R: {value.Rank} B: {value.GetSubmarineBuild.BuildIdentifier()})"))
+            if (ImGui.Selectable(FormatLoadString(key, value)))
             {
                 CurrentBuild = value;
                 if (CurrentBuild.Sectors.Any())
@@ -202,6 +202,19 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.EndPopup();
 
         return ret;
+    }
+
+    private static string FormatLoadString(string name, Submarines.RouteBuild build)
+    {
+        var route = "No Route";
+        if (build.Sectors.Any())
+        {
+            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
+            route = string.Join(" -> ", build.Sectors.Where(p => p > startPoint).Select(p => Utils.NumToLetter(p - startPoint)));
+        }
+
+        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})" +
+               $"\n{Utils.MapToThreeLetter(build.Map + 1)}: {route}";
     }
 
     public void Reset()

@@ -192,7 +192,7 @@ public class MainWindow : Window, IDisposable
                                 var halfWindowWidth = fullWindowWidth / 2;
                                 foreach (var map in MapSheet.Where(r => r.RowId != 0))
                                 {
-                                    var text = LootTable.MapToShort(map.RowId);
+                                    var text = MapToShort(map.RowId);
                                     if (text == "")
                                         text = ToStr(map.Name);
 
