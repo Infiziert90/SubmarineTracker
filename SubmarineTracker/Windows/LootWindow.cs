@@ -194,7 +194,11 @@ public class LootWindow : Window, IDisposable
             var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey(selectedSub.Return)));
             var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 
-            var submarineVoyage = submarineLoot.Loot.Keys.Select(k => $"{DateTime.UnixEpoch.AddSeconds(k).ToLocalTime()}").ToArray();
+            var submarineVoyage = submarineLoot.Loot
+                                               .Select(kv => kv.Value.First().Date != DateTime.MinValue
+                                                                 ? $"{kv.Value.First().Date}"
+                                                                 : $"{DateTime.UnixEpoch.AddSeconds(kv.Key).ToLocalTime()}")
+                                               .ToArray();
             if (!submarineVoyage.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
@@ -206,7 +210,8 @@ public class LootWindow : Window, IDisposable
             ImGui.Combo("##voyageSelection", ref SelectedVoyage, submarineVoyage, submarineVoyage.Length);
 
             ImGuiHelpers.ScaledDummy(5.0f);
-            var loot = submarineLoot.Loot.First(kv => $"{DateTime.UnixEpoch.AddSeconds(kv.Key).ToLocalTime()}" == submarineVoyage[SelectedVoyage]);
+
+            var loot = submarineLoot.Loot.ToArray()[SelectedVoyage];
             foreach (var detailedLoot in loot.Value)
             {
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;

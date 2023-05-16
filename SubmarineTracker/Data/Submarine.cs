@@ -159,16 +159,16 @@ public static class Submarines
 
         public IEnumerable<(uint, DetailedLoot)> LootForPointWithTime(uint point)
         {
-            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => (kv.Key, loot)));
+            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => loot.Date != DateTime.MinValue ? (Convert.ToUInt32(new DateTimeOffset(loot.Date.ToUniversalTime()).ToUnixTimeSeconds()), loot) : (kv.Key, loot)));
         }
     }
 
-    public record DetailedLoot(uint Point, uint Primary, ushort PrimaryCount, bool PrimaryHQ, uint Additional, ushort AdditionalCount, bool AdditionalHQ)
+    public record DetailedLoot(uint Point, uint Primary, ushort PrimaryCount, bool PrimaryHQ, uint Additional, ushort AdditionalCount, bool AdditionalHQ, DateTime Date)
     {
         [JsonConstructor]
-        public DetailedLoot() : this(0, 0, 0, false, 0, 0, false) { }
+        public DetailedLoot() : this(0, 0, 0, false, 0, 0, false, DateTime.MinValue) { }
 
-        public DetailedLoot(HousingWorkshopSubmarineGathered data) : this(0, 0, 0, false, 0, 0, false)
+        public DetailedLoot(HousingWorkshopSubmarineGathered data) : this(0, 0, 0, false, 0, 0, false, DateTime.MinValue)
         {
             Point = data.Point;
             Primary = data.ItemIdPrimary;
@@ -178,6 +178,8 @@ public static class Submarines
             Additional = data.ItemIdAdditional;
             AdditionalCount = data.ItemCountAdditional;
             AdditionalHQ = data.ItemHQAdditional;
+
+            Date = DateTime.Now;
         }
 
         [JsonIgnore] public Item PrimaryItem => ItemSheet.GetRow(Primary)!;
