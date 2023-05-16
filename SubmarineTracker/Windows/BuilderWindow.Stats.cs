@@ -37,11 +37,15 @@ public partial class BuilderWindow
             var sixthRow = windowWidth / 1.5f;
             var seventhRow = windowWidth / 1.25f;
 
+            ImGui.TextUnformatted("Optimized Route:");
+            ImGui.SameLine();
             if (CurrentBuild.OptimizedRoute.Any())
             {
-                ImGui.TextUnformatted("Optimized Route:");
-                ImGui.SameLine();
                 ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
+            }
+            else
+            {
+                ImGui.TextColored(ImGuiColors.DalamudOrange, "No Selection");
             }
 
             ImGui.TextUnformatted("Calculated Stats:");

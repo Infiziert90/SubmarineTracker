@@ -137,6 +137,7 @@ public partial class BuilderWindow
                         Error = false;
                         ComputingPath = false;
                         BestPath = Array.Empty<uint>();
+                        CurrentBuild.ChangeMap(selectedMap);
                     }
                     CurrentBuild.Map = selectedMap;
 
