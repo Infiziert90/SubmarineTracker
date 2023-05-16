@@ -18,6 +18,8 @@ namespace SubmarineTracker
         public bool ShowRouteInOverview = false;
         public bool UseCharacterName = false;
 
+        public bool CalculateOnInteraction = false;
+
         public bool NotifyOverlayAlways = false;
         public bool NotifyOverlayOnStartup = false;
         public bool NotifyForAll = false;

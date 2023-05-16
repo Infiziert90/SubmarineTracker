@@ -16,7 +16,7 @@ public partial class BuilderWindow
         {
             var build = new Submarines.SubmarineBuild(CurrentBuild);
 
-            // Reset to costum build if not equal anymore
+            // Reset to custom build if not equal anymore
             if (sub.IsValid() && !build.EqualsSubmarine(sub))
                 CurrentBuild.OriginalSub = 0;
 

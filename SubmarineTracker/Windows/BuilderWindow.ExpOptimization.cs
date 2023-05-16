@@ -5,7 +5,7 @@ using SubmarineTracker.Data;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Dalamud.Logging;
+using Dalamud.Interface.Colors;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows;
@@ -18,9 +18,10 @@ public partial class BuilderWindow
     private DateTime ComputeStart = DateTime.Now;
     private bool Error;
 
+    private bool Calculate = false;
+
     private void FindBestPath()
     {
-        ComputingPath = true;
         Error = false;
         LastComputedRank = CurrentBuild.Rank;
         var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
@@ -38,12 +39,12 @@ public partial class BuilderWindow
             {
                 Error = true;
                 ComputingPath = false;
+                Calculate = false;
                 CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
 
-            PluginLog.Verbose("Start Building List");
             var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
             var i = 1;
             while (i++ < 5)
@@ -60,24 +61,22 @@ public partial class BuilderWindow
             }
 
             var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
-
             var build = new Submarines.SubmarineBuild(CurrentBuild);
 
             if (!allPaths.Any())
             {
                 ComputingPath = false;
+                Calculate = false;
                 CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
 
-            PluginLog.Verbose($"List Count: {paths.Count}");
-            PluginLog.Verbose("Starting distance calculation");
             var optimalDistances = allPaths.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
-            PluginLog.Verbose("Done distance calculation");
             if (!optimalDistances.Any())
             {
                 ComputingPath = false;
+                Calculate = false;
                 CurrentBuild.NoOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
@@ -99,13 +98,15 @@ public partial class BuilderWindow
                     exp
                 );
             }).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
-            PluginLog.Verbose("Done optimal calculation");
+
             ComputingPath = false;
+            Calculate = false;
         }
         else
         {
             Error = true;
             ComputingPath = false;
+            Calculate = false;
         }
     }
 
@@ -115,57 +116,108 @@ public partial class BuilderWindow
         {
             if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
             {
-                var maps = ExplorationSheet
-                           .Where(r => r.Passengers)
-                           .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
-                           .Select(r => ToStr(r.Map.Value!.Name))
-                           .ToArray();
-
-                // Always pick highest rank map if smaller then possible
-                if (maps.Length <= CurrentBuild.Map)
-                    CurrentBuild.Map = maps.Length - 1;
-
-                var selectedMap = CurrentBuild.Map;
-                ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if ((selectedMap != CurrentBuild.Map || BestPath == Array.Empty<uint>() || LastComputedRank != CurrentBuild.Rank) && !ComputingPath && !Error)
+                if (ImGui.BeginChild("BestPath", new Vector2(0, -70)))
                 {
+                    var maps = ExplorationSheet
+                       .Where(r => r.Passengers)
+                       .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
+                       .Select(r => ToStr(r.Map.Value!.Name))
+                       .ToArray();
+
+                    // Always pick highest rank map if smaller then possible
+                    if (maps.Length <= CurrentBuild.Map)
+                        CurrentBuild.Map = maps.Length - 1;
+
+                    var selectedMap = CurrentBuild.Map;
+                    ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
+
+                    var mapChanged = selectedMap != CurrentBuild.Map;
+                    if (mapChanged)
+                    {
+                        Error = false;
+                        ComputingPath = false;
+                        BestPath = Array.Empty<uint>();
+                    }
                     CurrentBuild.Map = selectedMap;
-                    BestPath = Array.Empty<uint>();
-                    ComputeStart = DateTime.Now;
-                    Task.Run(FindBestPath);
-                }
 
-                var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
-                var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-                if (ImGui.BeginListBox("##bestPoints", new Vector2(-1, height)))
-                {
-                    if (ComputingPath)
+                    var beginCalculation = false;
+                    if (Configuration.CalculateOnInteraction)
                     {
-                        ImGui.Text($"Loading {new string('.',(int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                        if (Calculate)
+                            beginCalculation = true;
+                    }
+                    else
+                    {
+                        if (mapChanged || !BestPath.Any() || LastComputedRank != CurrentBuild.Rank)
+                            beginCalculation = true;
                     }
 
-                    if (Error)
+                    if (beginCalculation && !ComputingPath && !Error)
                     {
-                        ImGui.TextWrapped("No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
-                        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
-                            if (fcSub.UnlockedSectors.ContainsKey(startPoint))
-                                Error = false;
+                        BestPath = Array.Empty<uint>();
+                        ComputeStart = DateTime.Now;
+                        ComputingPath = true;
+                        Task.Run(FindBestPath);
                     }
 
-                    if (BestPath != Array.Empty<uint>())
+                    var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                    var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
+                    if (ImGui.BeginListBox("##bestPoints", new Vector2(-1, height)))
                     {
-                        foreach (var location in BestPath)
+                        if (ComputingPath)
                         {
-                            var p = ExplorationSheet.GetRow(location)!;
-                            if (location > startPoint)
-                                ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
+                            ImGui.Text($"Loading {new string('.',(int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                         }
-                        CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                        else if (!BestPath.Any())
+                        {
+                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found ...");
+                        }
+
+                        if (Error)
+                        {
+                            ImGui.TextWrapped("No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
+                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                                if (fcSub.UnlockedSectors.ContainsKey(startPoint))
+                                    Error = false;
+                        }
+
+                        if (BestPath.Any())
+                        {
+                            foreach (var location in BestPath)
+                            {
+                                var p = ExplorationSheet.GetRow(location)!;
+                                if (location > startPoint)
+                                    ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
+                            }
+                            CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                        }
+
+                        ImGui.EndListBox();
                     }
 
-                    ImGui.EndListBox();
+                    if (Configuration.CalculateOnInteraction)
+                    {
+                        if (ImGui.Button("Calculate"))
+                        {
+                            BestPath = Array.Empty<uint>();
+                            Calculate = true;
+                        }
+                    }
                 }
+                ImGui.EndChild();
 
+                if (ImGui.BeginChild("ExpOptions", new Vector2(0, 0)))
+                {
+                    var changed = false;
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+                    ImGui.Indent(10.0f);
+                    changed |= ImGui.Checkbox("Calculate only on button click", ref Configuration.CalculateOnInteraction);
+                    ImGui.Unindent(10.0f);
+
+                    if (changed)
+                        Configuration.Save();
+                }
+                ImGui.EndChild();
             }
             ImGui.EndChild();
 
