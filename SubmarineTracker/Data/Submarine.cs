@@ -159,7 +159,7 @@ public static class Submarines
 
         public IEnumerable<(uint, DetailedLoot)> LootForPointWithTime(uint point)
         {
-            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => loot.Date != DateTime.MinValue ? (Convert.ToUInt32(new DateTimeOffset(loot.Date.ToUniversalTime()).ToUnixTimeSeconds()), loot) : (kv.Key, loot)));
+            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => (Convert.ToUInt32(new DateTimeOffset(loot.Date.ToUniversalTime()).ToUnixTimeSeconds()), loot)));
         }
     }
 
@@ -168,7 +168,23 @@ public static class Submarines
         [JsonConstructor]
         public DetailedLoot() : this(0, 0, 0, false, 0, 0, false, DateTime.MinValue) { }
 
-        public DetailedLoot(HousingWorkshopSubmarineGathered data) : this(0, 0, 0, false, 0, 0, false, DateTime.MinValue)
+        public DetailedLoot(DetailedLoot original, uint date) : this()
+        {
+            Point = original.Point;
+            Primary = original.Primary;
+            PrimaryCount = original.PrimaryCount;
+            PrimaryHQ = original.PrimaryHQ;
+
+            Additional = original.Additional;
+            AdditionalCount = original.AdditionalCount;
+            AdditionalHQ = original.AdditionalHQ;
+
+            Date = original.Date == DateTime.MinValue
+                       ? DateTime.UnixEpoch.AddSeconds(date).ToLocalTime()
+                       : original.Date;
+        }
+
+        public DetailedLoot(HousingWorkshopSubmarineGathered data) : this()
         {
             Point = data.Point;
             Primary = data.ItemIdPrimary;
@@ -526,6 +542,28 @@ public static class Submarines
             }
 
             var config = CharacterConfiguration.Load(id);
+
+            // TODO Remove later
+            // Migrate version 0 to version 1
+            if (config.Version == 0)
+            {
+                foreach (var (key, subLoot) in config.Loot)
+                {
+                    foreach (var (keyLoot, valueLoot) in subLoot.Loot)
+                    {
+                        var newList = new List<DetailedLoot>();
+                        foreach (var loot in valueLoot)
+                        {
+                            newList.Add(new DetailedLoot(loot, keyLoot));
+                        }
+
+                        subLoot.Loot[keyLoot] = newList;
+                    }
+                }
+
+                config.Version = 1;
+                config.Save();
+            }
 
             KnownSubmarines.TryAdd(id, FcSubmarines.Empty);
             var playerFc = KnownSubmarines[id];

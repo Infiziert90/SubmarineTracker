@@ -195,9 +195,7 @@ public class LootWindow : Window, IDisposable
             var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 
             var submarineVoyage = submarineLoot.Loot
-                                               .Select(kv => kv.Value.First().Date != DateTime.MinValue
-                                                                 ? $"{kv.Value.First().Date}"
-                                                                 : $"{DateTime.UnixEpoch.AddSeconds(kv.Key).ToLocalTime()}")
+                                               .Select(kv => $"{kv.Value.First().Date}")
                                                .ToArray();
             if (!submarineVoyage.Any())
             {
