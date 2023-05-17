@@ -60,7 +60,7 @@ public class ConfigWindow : Window, IDisposable
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Overview:");
                 ImGui.Indent(10.0f);
-                changed |= ImGui.Checkbox("Show Time", ref Configuration.ShowTimeInOverview);
+                changed |= ImGui.Checkbox("Show Return Time", ref Configuration.ShowTimeInOverview);
                 if (Configuration.ShowTimeInOverview)
                 {
                     ImGui.Indent(10.0f);
@@ -91,8 +91,8 @@ public class ConfigWindow : Window, IDisposable
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Overlay:");
                 ImGui.Indent(10.0f);
-                changed |= ImGui.Checkbox("Always show on return", ref Configuration.NotifyOverlayAlways);
-                changed |= ImGui.Checkbox("Show on game start", ref Configuration.NotifyOverlayOnStartup);
+                changed |= ImGui.Checkbox("Always Show On Return", ref Configuration.NotifyOverlayAlways);
+                changed |= ImGui.Checkbox("Show On Game Start", ref Configuration.NotifyOverlayOnStartup);
                 ImGui.Unindent(10.0f);
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
@@ -102,34 +102,37 @@ public class ConfigWindow : Window, IDisposable
 
                 if (!Configuration.NotifyForAll)
                 {
-
-                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Notify only for:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Notify Only For:");
                     ImGuiHelpers.ScaledDummy(5.0f);
 
-                    ImGui.Indent(10.0f);
-                    foreach (var (id, fc) in Submarines.KnownSubmarines)
+                    if (ImGui.BeginChild("NotifyTable"))
                     {
-                        foreach (var sub in fc.Submarines)
+                        ImGui.Indent(10.0f);
+                        foreach (var (id, fc) in Submarines.KnownSubmarines)
                         {
-                            var key = $"{sub.Name}{id}";
-                            Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
-                            var notify = Configuration.NotifySpecific[key];
-
-                            var text = $"{sub.Name}@{fc.World}";
-                            if (Configuration.UseCharacterName && fc.CharacterName != "")
-                                text = $"{sub.Name}@{fc.CharacterName}";
-
-                            if (ImGui.Checkbox($"{text}##{id}{sub.Register}", ref notify))
+                            foreach (var sub in fc.Submarines)
                             {
-                                Configuration.NotifySpecific[key] = notify;
-                                Configuration.Save();
+                                var key = $"{sub.Name}{id}";
+                                Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
+                                var notify = Configuration.NotifySpecific[key];
+
+                                var text = $"{sub.Name}@{fc.World}";
+                                if (Configuration.UseCharacterName && fc.CharacterName != "")
+                                    text = $"{sub.Name}@{fc.CharacterName}";
+
+                                if (ImGui.Checkbox($"{text}##{id}{sub.Register}", ref notify))
+                                {
+                                    Configuration.NotifySpecific[key] = notify;
+                                    Configuration.Save();
+                                }
                             }
+
+                            ImGuiHelpers.ScaledDummy(5.0f);
                         }
 
-                        ImGuiHelpers.ScaledDummy(5.0f);
+                        ImGui.Unindent(10.0f);
                     }
-
-                    ImGui.Unindent(10.0f);
+                    ImGui.EndChild();
                 }
 
                 if (changed)
@@ -138,35 +141,45 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.EndTabItem();
             }
 
-            if (ImGui.BeginTabItem("Saves"))
+            if (ImGui.BeginTabItem("FCs"))
             {
-                ImGuiHelpers.ScaledDummy(5.0f);
-
-                if (ImGui.BeginTable("##DeleteSavesTable", 2))
+                if (ImGui.BeginChild("FCContent", new Vector2(0, -30)))
                 {
-                    ImGui.TableSetupColumn("Saved Setup");
-                    ImGui.TableSetupColumn("Del", 0, 0.1f);
-
-                    ImGui.TableHeadersRow();
-
-                    ulong deletion = 0;
-                    foreach (var (id, fc) in Submarines.KnownSubmarines)
+                    ImGuiHelpers.ScaledDummy(5.0f);
+                    if (ImGui.BeginTable("##DeleteSavesTable", 2))
                     {
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{fc.Tag}@{fc.World}");
+                        ImGui.TableSetupColumn("Saved FCs");
+                        ImGui.TableSetupColumn("Del", 0, 0.1f);
 
-                        ImGui.TableNextColumn();
-                        if (ImGuiComponents.IconButton((int)id, FontAwesomeIcon.Trash))
-                            deletion = id;
+                        ImGui.TableHeadersRow();
 
-                        ImGui.TableNextRow();
+                        ulong deletion = 0;
+                        foreach (var (id, fc) in Submarines.KnownSubmarines)
+                        {
+                            ImGui.TableNextColumn();
+                            ImGui.TextUnformatted($"{fc.Tag}@{fc.World}");
+
+                            ImGui.TableNextColumn();
+                            if (ImGuiComponents.IconButton((int)id, FontAwesomeIcon.Trash))
+                                deletion = id;
+
+                            ImGui.TableNextRow();
+                        }
+
+                        if (deletion != 0)
+                            Submarines.DeleteCharacter(deletion);
+
+                        ImGui.EndTable();
                     }
-
-                    if (deletion != 0)
-                        Submarines.DeleteCharacter(deletion);
-
-                    ImGui.EndTable();
                 }
+                ImGui.EndChild();
+
+                if (ImGui.BeginChild("FCNote", new Vector2(0, 0)))
+                {
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, "Note: Deleting an FC also removes the loot history.");
+                }
+                ImGui.EndChild();
+
 
                 ImGui.EndTabItem();
             }
