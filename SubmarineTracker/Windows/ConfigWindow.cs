@@ -54,6 +54,9 @@ public class ConfigWindow : Window, IDisposable
                 ImGuiComponents.HelpMarker("Use character name instead of FC tag in the overview.\n" +
                                            "If the FC tag is still shown, this means your character name has yet to be saved, this will resolve itself the next time your submarines are sent out.\n" +
                                            "Be aware this option can lead to cut-off button text.");
+                changed |= ImGui.Checkbox("Let Me Resize", ref Configuration.UserResize);
+                ImGuiComponents.HelpMarker("This allows you to resize the FC button size to stop clipping,\n" +
+                                           "but stops them from automatically adjusting size.");
                 ImGui.Unindent(10.0f);
 
                 ImGuiHelpers.ScaledDummy(5.0f);

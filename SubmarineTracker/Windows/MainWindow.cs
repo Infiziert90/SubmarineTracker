@@ -21,9 +21,8 @@ public class MainWindow : Window, IDisposable
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
     private ulong CurrentSelection;
-    private static Vector2 IconSize = new(28, 28);
-
-    private static int MaxLength = "Heavens' Eye Materia".Length;
+    private static readonly Vector2 IconSize = new(28, 28);
+    private static readonly int MaxLength = "Heavens' Eye Materia".Length;
 
     public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
@@ -62,7 +61,10 @@ public class MainWindow : Window, IDisposable
                 buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + 10;
 
             ImGui.Columns(2, "columns", true);
-            ImGui.SetColumnWidth(0, buttonWidth + 20);
+            if (!Configuration.UserResize)
+                ImGui.SetColumnWidth(0, buttonWidth + 20);
+            else
+                buttonWidth = ImGui.GetContentRegionAvail().X;
 
             if (ImGui.BeginChild("##fcList"))
             {
