@@ -83,7 +83,7 @@ public static class Submarines
         #region Loot
         [JsonIgnore] public bool Refresh = true;
         [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> AllLoot = new();
-        [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> TimeLoot = new();
+        [JsonIgnore] public Dictionary<DateTime, Dictionary<Item, int>> TimeLoot = new();
 
         public void RebuildStats()
         {
@@ -115,23 +115,25 @@ public static class Submarines
             foreach (var point in PossiblePoints)
             {
                 var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPointWithTime(point.RowId)).ToList();
-                foreach (var (time, pointLoot) in possibleLoot)
+                foreach (var (date, loot) in possibleLoot)
                 {
-                    var timeList = TimeLoot.GetOrCreate(time);
-                    if (!timeList.TryAdd(pointLoot.PrimaryItem, pointLoot.PrimaryCount))
-                        timeList[pointLoot.PrimaryItem] += pointLoot.PrimaryCount;
+                    var timeList = TimeLoot.GetOrCreate(date);
+                    if (!timeList.TryAdd(loot.PrimaryItem, loot.PrimaryCount))
+                        timeList[loot.PrimaryItem] += loot.PrimaryCount;
 
-                    if (!pointLoot.ValidAdditional)
+                    if (!loot.ValidAdditional)
                         continue;
 
-                    if (!timeList.TryAdd(pointLoot.AdditionalItem, pointLoot.AdditionalCount))
-                        timeList[pointLoot.AdditionalItem] += pointLoot.AdditionalCount;
+                    if (!timeList.TryAdd(loot.AdditionalItem, loot.AdditionalCount))
+                        timeList[loot.AdditionalItem] += loot.AdditionalCount;
                 }
             }
         }
 
         #endregion
     }
+
+    public record LootWithDate(DateTime Date, DetailedLoot Loot);
 
     public class SubmarineLoot
     {
@@ -157,9 +159,9 @@ public static class Submarines
             return Loot.Values.SelectMany(val => val.Where(iVal => iVal.Point == point));
         }
 
-        public IEnumerable<(uint, DetailedLoot)> LootForPointWithTime(uint point)
+        public IEnumerable<LootWithDate> LootForPointWithTime(uint point)
         {
-            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => (Convert.ToUInt32(new DateTimeOffset(loot.Date.ToUniversalTime()).ToUnixTimeSeconds()), loot)));
+            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Point == point).Select(loot => new LootWithDate(loot.Date, loot)));
         }
     }
 

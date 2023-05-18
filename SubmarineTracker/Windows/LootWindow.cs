@@ -95,11 +95,9 @@ public class LootWindow : Window, IDisposable
                 var dateLimit = DateUtil.LimitToDate(Configuration.DateLimit);
 
                 numSubs += fc.Submarines.Count;
-                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Where(loot => DateTime.UnixEpoch.AddSeconds(loot.Key) >= dateLimit)).Count();
+                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Where(loot => loot.Value.First().Date >= dateLimit)).Count();
 
-                foreach (var (item, count) in fc.TimeLoot
-                                                .Where(r => DateTime.UnixEpoch.AddSeconds(r.Key) >= dateLimit)
-                                                .SelectMany(x=>x.Value))
+                foreach (var (item, count) in fc.TimeLoot.Where(r => r.Key >= dateLimit).SelectMany(kv=>kv.Value))
                 {
                     if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
                         continue;
@@ -119,7 +117,6 @@ public class LootWindow : Window, IDisposable
                 ImGui.TextColored(ImGuiColors.ParsedOrange, Configuration.DateLimit != DateLimit.None
                                                                 ? "None of the selected items have been looted in the time frame."
                                                                 : "None of the selected items have been looted yet.");
-
                 ImGui.EndTabItem();
                 return;
             }
