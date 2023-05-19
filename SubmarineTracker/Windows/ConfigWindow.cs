@@ -63,6 +63,7 @@ public class ConfigWindow : Window, IDisposable
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Overview:");
                 ImGui.Indent(10.0f);
+                changed |= ImGui.Checkbox("Show Repair Status", ref Configuration.ShowOnlyLowest);
                 changed |= ImGui.Checkbox("Show Return Time", ref Configuration.ShowTimeInOverview);
                 if (Configuration.ShowTimeInOverview)
                 {
@@ -100,12 +101,13 @@ public class ConfigWindow : Window, IDisposable
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
                 ImGui.Indent(10.0f);
-                changed |= ImGui.Checkbox("All", ref Configuration.NotifyForAll);
+                changed |= ImGui.Checkbox("For Repairs", ref Configuration.NotifyForRepairs);
+                changed |= ImGui.Checkbox("For All Returns", ref Configuration.NotifyForAll);
                 ImGui.Unindent(10.0f);
 
                 if (!Configuration.NotifyForAll)
                 {
-                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Notify Only For:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Only For Returning:");
                     ImGuiHelpers.ScaledDummy(5.0f);
 
                     if (ImGui.BeginChild("NotifyTable"))

@@ -146,8 +146,8 @@ namespace SubmarineTracker
             var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
 
             var possibleNewSubs = new List<Submarines.Submarine>();
-            foreach (var sub in workshopData.Where(data => data.RankId != 0))
-                possibleNewSubs.Add(new Submarines.Submarine(sub));
+            foreach (var (sub, idx) in workshopData.Where(data => data.RankId != 0).Select((val, i) => (val, i)))
+                possibleNewSubs.Add(new Submarines.Submarine(sub, idx));
 
             if (!possibleNewSubs.Any())
                 return;

@@ -13,10 +13,13 @@ Simple and Easy
 + Support for multiple FCs  
 
 ### Tracker
-![tracker](SubmarineTracker/images/tracker.png)
+![tracker](SubmarineTracker/images/tracker2.png)
 
 ### Notifications
+#### Return
 ![notify](SubmarineTracker/images/chat.png)
+#### Repair
+![notify](SubmarineTracker/images/repair.png)
 
 ### FC Loot Overview
 ![loot](SubmarineTracker/images/fcLoot.png)
@@ -29,6 +32,4 @@ Simple and Easy
 
 
 ### Planned
-+ Durability for each sub 
-+ Durability calculation
 + Automatic build solver

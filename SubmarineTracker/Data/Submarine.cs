@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Dalamud.Logging;
 using Dalamud.Memory;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -212,10 +213,15 @@ public static class Submarines
         public DateTime ReturnTime;
         public readonly List<uint> Points = new();
 
+        public ushort HullDurability = 30000;
+        public ushort SternDurability = 30000;
+        public ushort BowDurability = 30000;
+        public ushort BridgeDurability = 30000;
+
         [JsonConstructor]
         public Submarine() : this("", 0, 0, 0, 0, 0, 0, 0) { }
 
-        public unsafe Submarine(HousingWorkshopSubmersibleSubData data) : this("", 0, 0, 0, 0, 0, 0, 0)
+        public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx) : this("", 0, 0, 0, 0, 0, 0, 0)
         {
             Name = MemoryHelper.ReadSeStringNullTerminated(new nint(data.Name)).ToString();
             Rank = data.RankId;
@@ -238,6 +244,24 @@ public static class Submarines
                 if (point > 0)
                     Points.Add(point);
             }
+
+            try
+            {
+                var manager = InventoryManager.Instance();
+                if (manager == null)
+                    return;
+
+                var offset = idx == 0 ? 0 : 5 * idx;
+
+                HullDurability = manager->GetInventoryContainer(InventoryType.HousingInteriorPlacedItems2)->GetInventorySlot(0 + offset)->Condition;
+                SternDurability = manager->GetInventoryContainer(InventoryType.HousingInteriorPlacedItems2)->GetInventorySlot(1 + offset)->Condition;
+                BowDurability = manager->GetInventoryContainer(InventoryType.HousingInteriorPlacedItems2)->GetInventorySlot(2 + offset)->Condition;
+                BridgeDurability = manager->GetInventoryContainer(InventoryType.HousingInteriorPlacedItems2)->GetInventorySlot(3 + offset)->Condition;
+            }
+            catch
+            {
+                PluginLog.Warning("Unable to read HousingInteriorPlacedItems2");
+            }
         }
 
         private string GetPartName(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Name.ToString();
@@ -253,6 +277,14 @@ public static class Submarines
         [JsonIgnore] public uint SternIconId => GetIconId(Stern);
         [JsonIgnore] public uint BowIconId => GetIconId(Bow);
         [JsonIgnore] public uint BridgeIconId => GetIconId(Bridge);
+
+        [JsonIgnore] public double HullCondition => HullDurability / 300.0;
+        [JsonIgnore] public double SternCondition => SternDurability / 300.0;
+        [JsonIgnore] public double BowCondition => BowDurability / 300.0;
+        [JsonIgnore] public double BridgeCondition => BridgeDurability / 300.0;
+
+        [JsonIgnore] public bool NoRepairNeeded => HullDurability > 0 && SternDurability > 0 && BowDurability > 0 && BridgeDurability > 0;
+        [JsonIgnore] public double LowestCondition => new[] { HullDurability, SternDurability, BowDurability, BridgeDurability }.Min() / 300.0;
 
         [JsonIgnore] public SubmarineBuild Build => new SubmarineBuild(this);
 
@@ -283,6 +315,8 @@ public static class Submarines
             return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
                    Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
                    CExp == other.CExp && Return == other.Return && Register == other.Register &&
+                   HullDurability == other.HullDurability && SternDurability == other.SternDurability  &&
+                   BowDurability == other.BowDurability  && BridgeDurability == other.BridgeDurability &&
                    ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
         }
 
@@ -300,6 +334,8 @@ public static class Submarines
             return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
                    x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
                    x.CExp == y.CExp && x.Return == y.Return && x.Register == y.Register &&
+                   x.HullDurability == y.HullDurability && x.SternDurability == y.SternDurability  &&
+                   x.BowDurability == y.BowDurability  && x.BridgeDurability == y.BridgeDurability &&
                    x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
         }
 

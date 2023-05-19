@@ -100,20 +100,30 @@ public class MainWindow : Window, IDisposable
             {
                 if (ImGui.BeginTabItem("Overview"))
                 {
-                    ImGuiHelpers.ScaledDummy(5.0f);
-                    var rankMaxLength = ImGui.CalcTextSize("Rank 105").X + 25.0f;
+                    var secondRow = ImGui.GetContentRegionMax().X / 8;
+                    var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
+                    var lastRow = ImGui.GetContentRegionMax().X / 3;
 
                     foreach (var sub in selectedFc.Submarines)
                     {
+                        ImGuiHelpers.ScaledDummy(10.0f);
                         ImGui.Indent(10.0f);
 
                         ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
 
                         ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
-                        ImGui.SameLine(rankMaxLength);
+                        ImGui.SameLine(secondRow);
                         ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
 
-                        var nameSpacing = ImGui.CalcTextSize("NameWith20Letters123").X + 15.0f;
+
+                        if (Configuration.ShowOnlyLowest)
+                        {
+                            var repair = $"{sub.LowestCondition:F}%%";
+
+                            ImGui.SameLine(thirdRow);
+                            ImGui.TextColored(ImGuiColors.ParsedOrange, repair);
+                        }
+
                         if (sub.IsOnVoyage())
                         {
                             var time = "";
@@ -145,7 +155,7 @@ public class MainWindow : Window, IDisposable
                                 time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
                             }
 
-                            ImGui.SameLine(nameSpacing);
+                            ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
                             ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
                         }
                         else
@@ -153,7 +163,7 @@ public class MainWindow : Window, IDisposable
 
                             if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
                             {
-                                ImGui.SameLine(nameSpacing);
+                                ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
                                 ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
                             }
                         }
@@ -308,6 +318,9 @@ public class MainWindow : Window, IDisposable
             ImGui.TextUnformatted("Repair");
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Build.RepairCosts}");
+            ImGui.TableNextColumn();
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted($"{sub.HullCondition:F}% | {sub.SternCondition:F}% | {sub.BowCondition:F}% | {sub.BridgeCondition:F}%");
 
             if (sub.ValidExpRange())
             {
@@ -351,11 +364,6 @@ public class MainWindow : Window, IDisposable
             }
 
             AddTableSpacing();
-
-            ImGui.TableNextColumn();
-            ImGui.TextUnformatted("WIP");
-            ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"More coming soon");
         }
         ImGui.EndTable();
 

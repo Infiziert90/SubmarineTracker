@@ -12,10 +12,11 @@ namespace SubmarineTracker
         public int Version { get; set; } = 1;
 
         public bool ShowExtendedPartsList = false;
-        public bool ShowTimeInOverview = false;
+        public bool ShowTimeInOverview = true;
         public bool UseDateTimeInstead = false;
         public bool ShowBothOptions = false;
-        public bool ShowRouteInOverview = false;
+        public bool ShowRouteInOverview = true;
+        public bool ShowOnlyLowest = true;
         public bool UseCharacterName = false;
         public bool UserResize = false;
 
@@ -23,8 +24,9 @@ namespace SubmarineTracker
 
         public bool NotifyOverlayAlways = false;
         public bool NotifyOverlayOnStartup = false;
-        public bool NotifyForAll = false;
+        public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
+        public bool NotifyForRepairs = true;
 
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;

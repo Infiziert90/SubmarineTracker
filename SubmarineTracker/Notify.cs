@@ -59,6 +59,34 @@ public class Notify
                 }
             }
         }
+
+        if (!Configuration.NotifyForRepairs)
+            return;
+
+        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var currentFC))
+        {
+            foreach (var (sub, idx) in currentFC.Submarines.Select((val, i) => (val, i)))
+            {
+                // We want this state, as it signals a returned submarine
+                if (sub.Return != 0)
+                    continue;
+
+                if (sub.NoRepairNeeded)
+                    continue;
+
+                // using just date here because subs can't come back the same day and be broken again
+                if (!FinishedNotifications.Contains($"Repair{sub.Name}{idx}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}"))
+                {
+                    FinishedNotifications.Add($"Repair{sub.Name}{idx}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}");
+
+                    var text = $"{sub.Name}@{currentFC.World}";
+                    if (Configuration.UseCharacterName && currentFC.CharacterName != "")
+                        text = $"{sub.Name}@{currentFC.CharacterName}";
+
+                    Plugin.ChatGui.Print(RepairMessage(text));
+                }
+            }
+        }
     }
 
     public static SeString GenerateMessage(string text)
@@ -66,6 +94,14 @@ public class Notify
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
                .AddUiForeground($"{text} has returned.", 566)
+               .BuiltString;
+    }
+
+    public static SeString RepairMessage(string name)
+    {
+        return new SeStringBuilder()
+               .AddUiForeground("[Submarine Tracker] ", 540)
+               .AddUiForeground($"{name} has returned and requires repair before being dispatched again.", 43)
                .BuiltString;
     }
 }
