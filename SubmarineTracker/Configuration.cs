@@ -19,6 +19,7 @@ namespace SubmarineTracker
         public bool ShowOnlyLowest = true;
         public bool UseCharacterName = false;
         public bool UserResize = false;
+        public bool ShowAll = true;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;

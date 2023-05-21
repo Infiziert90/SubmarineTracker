@@ -20,7 +20,7 @@ public class MainWindow : Window, IDisposable
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
-    private ulong CurrentSelection;
+    private ulong CurrentSelection = 1;
     private static readonly Vector2 IconSize = new(28, 28);
     private static readonly int MaxLength = "Heavens' Eye Materia".Length;
 
@@ -68,10 +68,25 @@ public class MainWindow : Window, IDisposable
 
             if (ImGui.BeginChild("##fcList"))
             {
-                if (!Submarines.KnownSubmarines.ContainsKey(CurrentSelection))
-                    CurrentSelection = Submarines.KnownSubmarines.Keys.First();
+                if (!(Configuration.ShowAll && CurrentSelection == 1))
+                    if (!Submarines.KnownSubmarines.ContainsKey(CurrentSelection))
+                        CurrentSelection = Submarines.KnownSubmarines.Keys.First();
 
                 var current = CurrentSelection;
+
+                if (Configuration.ShowAll)
+                {
+                    if (current == 1)
+                    {
+                        ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);
+                        if (ImGui.Button("All", new Vector2(buttonWidth, 0)))
+                            CurrentSelection = 1;
+                        ImGui.PopStyleColor();
+                    }
+                    else
+                    if (ImGui.Button("All", new Vector2(buttonWidth, 0)))
+                        CurrentSelection = 1;
+                }
 
                 foreach (var (key, fc) in Submarines.KnownSubmarines.Where((kv) => kv.Value.Submarines.Any()))
                 {
@@ -95,183 +110,14 @@ public class MainWindow : Window, IDisposable
 
             ImGui.NextColumn();
 
-            var selectedFc = Submarines.KnownSubmarines[CurrentSelection];
-            if (ImGui.BeginTabBar("##fcSubmarineDetail"))
+            if (CurrentSelection != 1)
             {
-                if (ImGui.BeginTabItem("Overview"))
-                {
-                    var secondRow = ImGui.GetContentRegionMax().X / 8;
-                    var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
-                    var lastRow = ImGui.GetContentRegionMax().X / 3;
-
-                    foreach (var sub in selectedFc.Submarines)
-                    {
-                        ImGuiHelpers.ScaledDummy(10.0f);
-                        ImGui.Indent(10.0f);
-
-                        ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
-
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
-                        ImGui.SameLine(secondRow);
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
-
-
-                        if (Configuration.ShowOnlyLowest)
-                        {
-                            var repair = $"{sub.LowestCondition:F}%%";
-
-                            ImGui.SameLine(thirdRow);
-                            ImGui.TextColored(ImGuiColors.ParsedOrange, repair);
-                        }
-
-                        if (sub.IsOnVoyage())
-                        {
-                            var time = "";
-                            if (Configuration.ShowTimeInOverview)
-                            {
-                                time = " Done ";
-                                if (Configuration.ShowBothOptions)
-                                {
-                                    var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                                    if (returnTime.TotalSeconds > 0)
-                                        time = $" {sub.ReturnTime.ToLocalTime()} ({ToTime(returnTime)}) ";
-                                }
-                                else if (!Configuration.UseDateTimeInstead)
-                                {
-                                    var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                                    if (returnTime.TotalSeconds > 0)
-                                        time = $" {ToTime(returnTime)} ";
-                                }
-                                else
-                                {
-                                    if (sub.ReturnTime.Second > 0)
-                                        time = $" {sub.ReturnTime.ToLocalTime()}";
-                                }
-                            }
-
-                            if (Configuration.ShowRouteInOverview)
-                            {
-                                var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
-                                time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
-                            }
-
-                            ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
-                            ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
-                        }
-                        else
-                        {
-
-                            if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
-                            {
-                                ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
-                                ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
-                            }
-                        }
-
-                        ImGui.Unindent(10.0f);
-                    }
-
-                    ImGui.EndTabItem();
-                }
-
-                foreach (var (sub, idx) in selectedFc.Submarines.Select((val, i) => (val, i)))
-                {
-                    if (ImGui.BeginTabItem($"{sub.Name}##{idx}"))
-                    {
-                        DetailedSub(sub);
-                        ImGui.EndTabItem();
-                    }
-                }
-
-                if (ImGui.BeginTabItem("Loot"))
-                {
-                    ImGuiHelpers.ScaledDummy(5.0f);
-
-                    selectedFc.RebuildStats();
-
-                    if (ImGui.BeginChild("##LootOverview"))
-                    {
-                        if (!selectedFc.AllLoot.Any())
-                        {
-                            ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data");
-                            ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
-                        }
-                        else
-                        {
-                            if (ImGui.BeginTabBar("##fcLootMap"))
-                            {
-                                var fullWindowWidth = ImGui.GetWindowWidth();
-                                var halfWindowWidth = fullWindowWidth / 2;
-                                foreach (var map in MapSheet.Where(r => r.RowId != 0))
-                                {
-                                    var text = MapToShort(map.RowId);
-                                    if (text == "")
-                                        text = ToStr(map.Name);
-
-                                    if (ImGui.BeginTabItem(text))
-                                    {
-                                        ImGuiHelpers.ScaledDummy(10.0f);
-                                        var endCursorPositionLeft = ImGui.GetCursorPos();
-                                        var endCursorPositionRight = ImGui.GetCursorPos();
-                                        var cursorPosition = ImGui.GetCursorPos();
-                                        foreach (var ((point, loot), idx) in selectedFc.AllLoot.Where(kv => GetPoint(kv.Key).Map.Row == map.RowId).Select((val, i) => (val, i)))
-                                        {
-                                            if (idx % 2 == 0)
-                                            {
-                                                if (idx != 0 && endCursorPositionLeft.Y > endCursorPositionRight.Y)
-                                                    ImGui.SetCursorPosY(endCursorPositionLeft.Y);
-
-                                                cursorPosition = ImGui.GetCursorPos();
-                                            }
-                                            else
-                                            {
-                                                cursorPosition.X += halfWindowWidth;
-                                                ImGui.SetCursorPos(cursorPosition);
-                                            }
-
-                                            ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(point)!.Location));
-                                            ImGuiHelpers.ScaledDummy(5.0f);
-                                            foreach (var ((item, count), iIdx) in loot.Select((val, ii) => (val, ii)))
-                                            {
-                                                ImGui.Indent(10.0f);
-                                                if (idx % 2 == 1)
-                                                    ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
-                                                DrawIcon(item.Icon);
-
-                                                var name = ToStr(item.Name);
-                                                if (MaxLength < name.Length)
-                                                    name = name.Truncate(MaxLength);
-                                                ImGui.SameLine();
-                                                ImGui.TextUnformatted(name);
-
-                                                var length = ImGui.CalcTextSize($"{count}").X;
-                                                ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
-                                                ImGui.TextUnformatted($"{count}");
-
-                                                ImGui.Unindent(10.0f);
-                                            }
-
-                                            ImGuiHelpers.ScaledDummy(10.0f);
-
-                                            if (idx % 2 == 0)
-                                                endCursorPositionLeft = ImGui.GetCursorPos();
-                                            else
-                                                endCursorPositionRight = ImGui.GetCursorPos();
-                                        }
-
-                                        ImGui.EndTabItem();
-                                    }
-                                }
-                            }
-                            ImGui.EndTabBar();
-                        }
-                    }
-                    ImGui.EndChild();
-
-                    ImGui.EndTabItem();
-                }
+                OverviewTab();
             }
-            ImGui.EndTabBar();
+            else
+            {
+                All();
+            }
         }
         ImGui.EndChild();
 
@@ -292,6 +138,269 @@ public class MainWindow : Window, IDisposable
             ImGui.PopStyleColor();
         }
         ImGui.EndChild();
+    }
+
+    private void All()
+    {
+        foreach (var (id, fc) in Submarines.KnownSubmarines)
+        {
+            var secondRow = ImGui.GetContentRegionMax().X / 7.0f;
+            var thirdRow = ImGui.GetContentRegionMax().X / 4.0f;
+            var lastRow = ImGui.GetContentRegionMax().X / 2.8f;
+
+            var text = $"{fc.Tag}@{fc.World}";
+            if (Configuration.UseCharacterName && fc.CharacterName != "")
+                text = $"{fc.CharacterName}@{fc.World}";
+            ImGui.TextColored(ImGuiColors.DalamudViolet, $"{text}:");
+
+            foreach (var (sub, idx) in fc.Submarines.Select((val, i) => (val, i)))
+            {
+                ImGui.Indent(10.0f);
+
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{idx + 1}. ");
+                ImGui.SameLine();
+                ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
+                ImGui.SameLine(secondRow);
+                ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
+
+
+                if (Configuration.ShowOnlyLowest)
+                {
+                    var repair = $"{sub.LowestCondition:F}%%";
+
+                    ImGui.SameLine(thirdRow);
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, repair);
+                }
+
+                if (sub.IsOnVoyage())
+                {
+                    var time = "";
+                    if (Configuration.ShowTimeInOverview)
+                    {
+                        time = " Done ";
+                        if (Configuration.ShowBothOptions)
+                        {
+                            var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                            if (returnTime.TotalSeconds > 0)
+                                time = $" {sub.ReturnTime.ToLocalTime()} ({ToTime(returnTime)}) ";
+                        }
+                        else if (!Configuration.UseDateTimeInstead)
+                        {
+                            var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                            if (returnTime.TotalSeconds > 0)
+                                time = $" {ToTime(returnTime)} ";
+                        }
+                        else
+                        {
+                            if (sub.ReturnTime.Second > 0)
+                                time = $" {sub.ReturnTime.ToLocalTime()}";
+                        }
+                    }
+
+                    if (Configuration.ShowRouteInOverview)
+                    {
+                        var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                        time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
+                    }
+
+                    ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
+                }
+                else
+                {
+
+                    if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
+                    {
+                        ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                        ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
+                    }
+                }
+
+                ImGui.Unindent(10.0f);
+            }
+            ImGuiHelpers.ScaledDummy(5.0f);
+        }
+    }
+
+    private void OverviewTab()
+    {
+        var selectedFc = Submarines.KnownSubmarines[CurrentSelection];
+        if (ImGui.BeginTabBar("##fcSubmarineDetail"))
+        {
+            if (ImGui.BeginTabItem("Overview"))
+            {
+                var secondRow = ImGui.GetContentRegionMax().X / 8;
+                var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
+                var lastRow = ImGui.GetContentRegionMax().X / 3;
+
+                foreach (var sub in selectedFc.Submarines)
+                {
+                    ImGuiHelpers.ScaledDummy(10.0f);
+                    ImGui.Indent(10.0f);
+
+                    ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
+
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
+                    ImGui.SameLine(secondRow);
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
+
+
+                    if (Configuration.ShowOnlyLowest)
+                    {
+                        var repair = $"{sub.LowestCondition:F}%%";
+
+                        ImGui.SameLine(thirdRow);
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, repair);
+                    }
+
+                    if (sub.IsOnVoyage())
+                    {
+                        var time = "";
+                        if (Configuration.ShowTimeInOverview)
+                        {
+                            time = " Done ";
+                            if (Configuration.ShowBothOptions)
+                            {
+                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                                if (returnTime.TotalSeconds > 0)
+                                    time = $" {sub.ReturnTime.ToLocalTime()} ({ToTime(returnTime)}) ";
+                            }
+                            else if (!Configuration.UseDateTimeInstead)
+                            {
+                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                                if (returnTime.TotalSeconds > 0)
+                                    time = $" {ToTime(returnTime)} ";
+                            }
+                            else
+                            {
+                                if (sub.ReturnTime.Second > 0)
+                                    time = $" {sub.ReturnTime.ToLocalTime()}";
+                            }
+                        }
+
+                        if (Configuration.ShowRouteInOverview)
+                        {
+                            var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                            time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
+                        }
+
+                        ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
+                    }
+                    else
+                    {
+
+                        if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
+                        {
+                            ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                            ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
+                        }
+                    }
+
+                    ImGui.Unindent(10.0f);
+                }
+
+                ImGui.EndTabItem();
+            }
+
+            foreach (var (sub, idx) in selectedFc.Submarines.Select((val, i) => (val, i)))
+            {
+                if (ImGui.BeginTabItem($"{sub.Name}##{idx}"))
+                {
+                    DetailedSub(sub);
+                    ImGui.EndTabItem();
+                }
+            }
+
+            if (ImGui.BeginTabItem("Loot"))
+            {
+                ImGuiHelpers.ScaledDummy(5.0f);
+
+                selectedFc.RebuildStats();
+
+                if (ImGui.BeginChild("##LootOverview"))
+                {
+                    if (!selectedFc.AllLoot.Any())
+                    {
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data");
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
+                    }
+                    else
+                    {
+                        if (ImGui.BeginTabBar("##fcLootMap"))
+                        {
+                            var fullWindowWidth = ImGui.GetWindowWidth();
+                            var halfWindowWidth = fullWindowWidth / 2;
+                            foreach (var map in MapSheet.Where(r => r.RowId != 0))
+                            {
+                                var text = MapToShort(map.RowId);
+                                if (text == "")
+                                    text = ToStr(map.Name);
+
+                                if (ImGui.BeginTabItem(text))
+                                {
+                                    ImGuiHelpers.ScaledDummy(10.0f);
+                                    var endCursorPositionLeft = ImGui.GetCursorPos();
+                                    var endCursorPositionRight = ImGui.GetCursorPos();
+                                    var cursorPosition = ImGui.GetCursorPos();
+                                    foreach (var ((point, loot), idx) in selectedFc.AllLoot.Where(kv => GetPoint(kv.Key).Map.Row == map.RowId).Select((val, i) => (val, i)))
+                                    {
+                                        if (idx % 2 == 0)
+                                        {
+                                            if (idx != 0 && endCursorPositionLeft.Y > endCursorPositionRight.Y)
+                                                ImGui.SetCursorPosY(endCursorPositionLeft.Y);
+
+                                            cursorPosition = ImGui.GetCursorPos();
+                                        }
+                                        else
+                                        {
+                                            cursorPosition.X += halfWindowWidth;
+                                            ImGui.SetCursorPos(cursorPosition);
+                                        }
+
+                                        ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(point)!.Location));
+                                        ImGuiHelpers.ScaledDummy(5.0f);
+                                        foreach (var ((item, count), iIdx) in loot.Select((val, ii) => (val, ii)))
+                                        {
+                                            ImGui.Indent(10.0f);
+                                            if (idx % 2 == 1)
+                                                ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
+                                            DrawIcon(item.Icon);
+
+                                            var name = ToStr(item.Name);
+                                            if (MaxLength < name.Length)
+                                                name = name.Truncate(MaxLength);
+                                            ImGui.SameLine();
+                                            ImGui.TextUnformatted(name);
+
+                                            var length = ImGui.CalcTextSize($"{count}").X;
+                                            ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
+                                            ImGui.TextUnformatted($"{count}");
+
+                                            ImGui.Unindent(10.0f);
+                                        }
+
+                                        ImGuiHelpers.ScaledDummy(10.0f);
+
+                                        if (idx % 2 == 0)
+                                            endCursorPositionLeft = ImGui.GetCursorPos();
+                                        else
+                                            endCursorPositionRight = ImGui.GetCursorPos();
+                                    }
+
+                                    ImGui.EndTabItem();
+                                }
+                            }
+                        }
+                        ImGui.EndTabBar();
+                    }
+                }
+                ImGui.EndChild();
+
+                ImGui.EndTabItem();
+            }
+        }
+        ImGui.EndTabBar();
     }
 
     private void DetailedSub(Submarines.Submarine sub)
