@@ -21,6 +21,7 @@ namespace SubmarineTracker
         public bool UserResize = false;
 
         public bool CalculateOnInteraction = false;
+        public DurationLimit DurationLimit = DurationLimit.None;
 
         public bool NotifyOverlayAlways = false;
         public bool NotifyOverlayOnStartup = false;

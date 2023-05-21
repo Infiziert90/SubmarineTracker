@@ -83,21 +83,25 @@ public partial class BuilderWindow
             }
 
             BestPath = optimalDistances.AsParallel().Select(t =>
-            {
-                var path = t.Points.Prepend(startPoint).ToArray();
-                var rowIdPath = new List<uint>();
-                uint exp = 0;
-                foreach (var submarineExplorationPretty in path.Skip(1))
                 {
-                    rowIdPath.Add(submarineExplorationPretty.RowId);
-                    exp += submarineExplorationPretty.ExpReward;
-                }
-                return new Tuple<uint[], TimeSpan, double>(
-                    rowIdPath.ToArray(),
-                    TimeSpan.FromSeconds(Submarines.CalculateDuration(path, build)),
-                    exp
-                );
-            }).OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes).Select(t => t.Item1).First();
+                    var path = t.Points.Prepend(startPoint).ToArray();
+                    var rowIdPath = new List<uint>();
+                    uint exp = 0;
+                    foreach (var submarineExplorationPretty in path.Skip(1))
+                    {
+                        rowIdPath.Add(submarineExplorationPretty.RowId);
+                        exp += submarineExplorationPretty.ExpReward;
+                    }
+                    return new Tuple<uint[], TimeSpan, double>(
+                        rowIdPath.ToArray(),
+                        TimeSpan.FromSeconds(Submarines.CalculateDuration(path, build)),
+                        exp
+                    );
+                })
+              .Where(t => t.Item2 < DateUtil.DurationToTime(Configuration.DurationLimit))
+              .OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes)
+              .Select(t => t.Item1)
+              .First();
 
             ComputingPath = false;
             Calculate = false;
@@ -116,7 +120,7 @@ public partial class BuilderWindow
         {
             if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
             {
-                if (ImGui.BeginChild("BestPath", new Vector2(0, -70)))
+                if (ImGui.BeginChild("BestPath", new Vector2(0, -90)))
                 {
                     var maps = ExplorationSheet
                        .Where(r => r.Passengers)
@@ -212,7 +216,25 @@ public partial class BuilderWindow
                     var changed = false;
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
                     ImGui.Indent(10.0f);
-                    changed |= ImGui.Checkbox("Calculate only on button click", ref Configuration.CalculateOnInteraction);
+                    changed |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
+                    ImGui.SameLine();
+                    if(ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
+                    {
+                        foreach(var durationLimit in (DurationLimit[]) Enum.GetValues(typeof(DurationLimit)))
+                        {
+                            if(ImGui.Selectable(DateUtil.GetDurationLimitName(durationLimit)))
+                            {
+                                Configuration.DurationLimit = durationLimit;
+                                Configuration.Save();
+
+                                if (!Configuration.CalculateOnInteraction)
+                                    BestPath = Array.Empty<uint>();
+                            }
+                        }
+
+                        ImGui.EndCombo();
+                    }
                     ImGui.Unindent(10.0f);
 
                     if (changed)

@@ -2,6 +2,15 @@
 
 namespace SubmarineTracker.Data
 {
+    public enum DurationLimit
+    {
+        None = 0,
+        H24 = 1,
+        H36 = 2,
+        H48 = 3,
+    }
+
+
     public enum DateLimit
     {
         None = 0,
@@ -17,6 +26,30 @@ namespace SubmarineTracker.Data
     }
 
     public static class DateUtil {
+        public static string GetDurationLimitName(DurationLimit n)
+        {
+            return n switch
+            {
+                DurationLimit.None => "No Limit",
+                DurationLimit.H24 => "24 Hours",
+                DurationLimit.H36 => "36 Hours",
+                DurationLimit.H48 => "48 Hours",
+                _ => "Unknown"
+            };
+        }
+
+        public static TimeSpan DurationToTime(DurationLimit n)
+        {
+            return n switch
+            {
+                DurationLimit.None => TimeSpan.MaxValue,
+                DurationLimit.H24 => TimeSpan.FromHours(24),
+                DurationLimit.H36 => TimeSpan.FromHours(36),
+                DurationLimit.H48 => TimeSpan.FromHours(48),
+                _ => TimeSpan.MaxValue
+            };
+        }
+
         public static string GetDateLimitName(DateLimit n)
         {
             return n switch
