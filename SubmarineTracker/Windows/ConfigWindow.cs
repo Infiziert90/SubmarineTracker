@@ -102,7 +102,7 @@ public class ConfigWindow : Window, IDisposable
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Overlay:");
                 ImGui.Indent(10.0f);
-                changed |= ImGui.Checkbox("Always Show On Return", ref Configuration.NotifyOverlayAlways);
+                changed |= ImGui.Checkbox("Show On Return", ref Configuration.NotifyOverlayAlways);
                 changed |= ImGui.Checkbox("Show On Game Start", ref Configuration.NotifyOverlayOnStartup);
                 ImGui.Unindent(10.0f);
 
@@ -114,7 +114,7 @@ public class ConfigWindow : Window, IDisposable
 
                 if (!Configuration.NotifyForAll)
                 {
-                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Only For Returning:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet,"Only For Specific:");
                     ImGuiHelpers.ScaledDummy(5.0f);
 
                     if (ImGui.BeginChild("NotifyTable"))
@@ -164,8 +164,6 @@ public class ConfigWindow : Window, IDisposable
                         ImGui.TableSetupColumn("##OrderUp", 0, 0.1f);
                         ImGui.TableSetupColumn("##OrderDown", 0, 0.1f);
                         ImGui.TableSetupColumn("##Del", 0, 0.1f);
-
-                        ImGui.TableHeadersRow();
 
                         Plugin.EnsureFCOrderSafety();
                         ulong deletion = 0;
