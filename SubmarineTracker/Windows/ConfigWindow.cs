@@ -16,6 +16,7 @@ namespace SubmarineTracker.Windows;
 
 public class ConfigWindow : Window, IDisposable
 {
+    private Plugin Plugin;
     private Configuration Configuration;
     private static ExcelSheet<Item> ItemSheet = null!;
 
@@ -33,6 +34,7 @@ public class ConfigWindow : Window, IDisposable
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
+        this.Plugin = plugin;
         this.Configuration = plugin.Configuration;
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
     }
@@ -153,40 +155,72 @@ public class ConfigWindow : Window, IDisposable
 
             if (ImGui.BeginTabItem("FCs"))
             {
-                if (ImGui.BeginChild("FCContent", new Vector2(0, -30)))
+                if (ImGui.BeginChild("FCContent", new Vector2(0, 0)))
                 {
                     ImGuiHelpers.ScaledDummy(5.0f);
-                    if (ImGui.BeginTable("##DeleteSavesTable", 2))
+                    if (ImGui.BeginTable("##DeleteSavesTable", 4))
                     {
                         ImGui.TableSetupColumn("Saved FCs");
-                        ImGui.TableSetupColumn("Del", 0, 0.1f);
+                        ImGui.TableSetupColumn("##OrderUp", 0, 0.1f);
+                        ImGui.TableSetupColumn("##OrderDown", 0, 0.1f);
+                        ImGui.TableSetupColumn("##Del", 0, 0.1f);
 
                         ImGui.TableHeadersRow();
 
+                        Plugin.EnsureFCOrderSafety();
                         ulong deletion = 0;
-                        foreach (var (id, fc) in Submarines.KnownSubmarines)
+                        (int orgIdx, int newIdx) changedOrder = (0, 0);
+                        foreach (var (id, idx) in Configuration.FCOrder.Select((val, i) => (val, i)))
                         {
+                            var fc = Submarines.KnownSubmarines[id];
                             ImGui.TableNextColumn();
-                            ImGui.TextUnformatted($"{fc.Tag}@{fc.World}");
+
+                            var text = $"{fc.Tag}@{fc.World}";
+                            if (Configuration.UseCharacterName && fc.CharacterName != "")
+                                text = $"{fc.CharacterName}@{fc.World}";
+
+                            ImGui.TextUnformatted(text);
 
                             ImGui.TableNextColumn();
-                            if (ImGuiComponents.IconButton((int)id, FontAwesomeIcon.Trash))
+                            var first = Configuration.FCOrder.First() == id;
+                            if (first) ImGui.BeginDisabled();
+                            if (ImGuiComponents.IconButton($"##{id}Up", FontAwesomeIcon.ArrowUp))
+                                changedOrder = (idx, idx - 1);
+                            if (first) ImGui.EndDisabled();
+
+                            ImGui.TableNextColumn();
+                            var last = Configuration.FCOrder.Last() == id;
+                            if (last) ImGui.BeginDisabled();
+                            if (ImGuiComponents.IconButton($"##{id}Down", FontAwesomeIcon.ArrowDown))
+                                changedOrder = (idx, idx + 1);
+                            if (last) ImGui.EndDisabled();
+
+                            ImGui.TableNextColumn();
+                            if (ImGuiComponents.IconButton($"##{id}Del", FontAwesomeIcon.Trash) && ImGui.GetIO().KeyCtrl)
                                 deletion = id;
+
+                            if (ImGui.IsItemHovered())
+                                ImGui.SetTooltip("Deleting an FC entry will additionally remove it's loot history.\nHold Control to delete");
 
                             ImGui.TableNextRow();
                         }
 
+                        if (changedOrder.orgIdx != 0)
+                        {
+                            Configuration.FCOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
+                            Configuration.Save();
+                        }
+
                         if (deletion != 0)
+                        {
+                            Configuration.FCOrder.Remove(deletion);
+                            Configuration.Save();
+
                             Submarines.DeleteCharacter(deletion);
+                        }
 
                         ImGui.EndTable();
                     }
-                }
-                ImGui.EndChild();
-
-                if (ImGui.BeginChild("FCNote", new Vector2(0, 0)))
-                {
-                    ImGui.TextColored(ImGuiColors.ParsedOrange, "Note: Deleting an FC also removes the loot history.");
                 }
                 ImGui.EndChild();
 

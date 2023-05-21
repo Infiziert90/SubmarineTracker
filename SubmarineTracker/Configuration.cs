@@ -35,6 +35,8 @@ namespace SubmarineTracker
 
         public Dictionary<string, Submarines.RouteBuild> SavedBuilds = new();
 
+        public List<ulong> FCOrder = new();
+
         [NonSerialized]
         private DalamudPluginInterface? PluginInterface;
 

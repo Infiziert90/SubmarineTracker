@@ -70,7 +70,7 @@ public class MainWindow : Window, IDisposable
             {
                 if (!(Configuration.ShowAll && CurrentSelection == 1))
                     if (!Submarines.KnownSubmarines.ContainsKey(CurrentSelection))
-                        CurrentSelection = Submarines.KnownSubmarines.Keys.First();
+                        CurrentSelection = Configuration.FCOrder.First();
 
                 var current = CurrentSelection;
 
@@ -88,8 +88,13 @@ public class MainWindow : Window, IDisposable
                         CurrentSelection = 1;
                 }
 
-                foreach (var (key, fc) in Submarines.KnownSubmarines.Where((kv) => kv.Value.Submarines.Any()))
+                Plugin.EnsureFCOrderSafety();
+                foreach (var key in Configuration.FCOrder)
                 {
+                    var fc = Submarines.KnownSubmarines[key];
+                    if (!fc.Submarines.Any())
+                        continue;
+
                     var text = $"{fc.Tag}@{fc.World}##{key}";
                     if (Configuration.UseCharacterName && fc.CharacterName != "")
                         text = $"{fc.CharacterName}@{fc.World}##{key}";
@@ -134,7 +139,10 @@ public class MainWindow : Window, IDisposable
 
             ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
             if (ImGui.Button("Reload"))
+            {
                 Submarines.LoadCharacters();
+                Plugin.LoadFCOrder();
+            }
             ImGui.PopStyleColor();
         }
         ImGui.EndChild();
@@ -142,8 +150,11 @@ public class MainWindow : Window, IDisposable
 
     private void All()
     {
-        foreach (var (id, fc) in Submarines.KnownSubmarines)
+        Plugin.EnsureFCOrderSafety();
+        foreach (var id in Configuration.FCOrder)
         {
+            var fc = Submarines.KnownSubmarines[id];
+
             var secondRow = ImGui.GetContentRegionMax().X / 7.0f;
             var thirdRow = ImGui.GetContentRegionMax().X / 4.0f;
             var lastRow = ImGui.GetContentRegionMax().X / 2.8f;

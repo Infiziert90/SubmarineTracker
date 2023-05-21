@@ -73,6 +73,7 @@ namespace SubmarineTracker
             TexturesCache.Initialize();
 
             Submarines.LoadCharacters();
+            LoadFCOrder();
 
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
@@ -170,6 +171,7 @@ namespace SubmarineTracker
                     fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
 
             fc.Refresh = true;
+            LoadFCOrder();
             Submarines.SaveCharacter();
         }
 
@@ -189,5 +191,30 @@ namespace SubmarineTracker
             NotifyOverlay.IsOpen = true;
         }
         #endregion
+
+        public void LoadFCOrder()
+        {
+            foreach (var id in Submarines.KnownSubmarines.Keys)
+                if (!Configuration.FCOrder.Contains(id))
+                    Configuration.FCOrder.Add(id);
+
+            Configuration.Save();
+        }
+
+        public void EnsureFCOrderSafety()
+        {
+            var notSafe = false;
+            foreach (var id in Configuration.FCOrder.ToArray())
+            {
+                if (!Submarines.KnownSubmarines.ContainsKey(id))
+                {
+                    notSafe = true;
+                    Configuration.FCOrder.Remove(id);
+                }
+            }
+
+            if (notSafe)
+                Configuration.Save();
+        }
     }
 }
