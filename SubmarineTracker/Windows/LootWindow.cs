@@ -170,10 +170,7 @@ public class LootWindow : Window, IDisposable
                                          .ToArray();
             if (!existingSubs.Any())
             {
-                ImGui.PushTextWrapPos();
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
-                ImGui.PopTextWrapPos();
-
+                Helper.NoData();
                 ImGui.EndTabItem();
                 return;
             }

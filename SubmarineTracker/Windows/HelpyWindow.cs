@@ -33,7 +33,7 @@ public partial class HelpyWindow : Window, IDisposable
     {
         if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
+            Helper.NoData();
             return;
         }
 

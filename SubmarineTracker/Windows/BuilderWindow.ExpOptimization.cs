@@ -5,6 +5,7 @@ using SubmarineTracker.Data;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using static SubmarineTracker.Utils;
 
@@ -12,13 +13,19 @@ namespace SubmarineTracker.Windows;
 
 public partial class BuilderWindow
 {
+    private List<SubmarineExplorationPretty> MustInclude = new();
+
     private uint[] BestPath = Array.Empty<uint>();
     private bool ComputingPath;
     private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
     private bool Error;
 
-    private bool Calculate = false;
+    private bool Calculate;
+
+    private int LastSeenMap;
+    private int LastSeenRank;
+    private bool OptionsChanged;
 
     private void FindBestPath()
     {
@@ -46,7 +53,10 @@ public partial class BuilderWindow
             }
 
             var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
-            var i = 1;
+            if (MustInclude.Any())
+                paths = new [] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
+
+            var i = MustInclude.Any() ? MustInclude.Count : 1;
             while (i++ < 5)
             {
                 foreach (var path in paths.ToArray())
@@ -118,9 +128,19 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Best Exp"))
         {
+            if (!Submarines.KnownSubmarines.ContainsKey(Plugin.ClientState.LocalContentId))
+            {
+                if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
+                {
+                    Helper.NoData();
+                }
+                ImGui.EndChild();
+                return;
+            }
+
             if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
             {
-                if (ImGui.BeginChild("BestPath", new Vector2(0, -90)))
+                if (ImGui.BeginChild("BestPath", new Vector2(0, 170)))
                 {
                     var maps = ExplorationSheet
                        .Where(r => r.Passengers)
@@ -153,12 +173,15 @@ public partial class BuilderWindow
                     }
                     else
                     {
-                        if (mapChanged || !BestPath.Any() || LastComputedRank != CurrentBuild.Rank)
+                        if (mapChanged || LastComputedRank != CurrentBuild.Rank || OptionsChanged)
                             beginCalculation = true;
                     }
 
                     if (beginCalculation && !ComputingPath && !Error)
                     {
+                        // Don't set it false until we sure it got begins calculation
+                        OptionsChanged = false;
+
                         BestPath = Array.Empty<uint>();
                         ComputeStart = DateTime.Now;
                         ComputingPath = true;
@@ -175,12 +198,12 @@ public partial class BuilderWindow
                         }
                         else if (!BestPath.Any())
                         {
-                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found ...");
+                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found, check speed and range ...");
                         }
 
                         if (Error)
                         {
-                            ImGui.TextWrapped("No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
+                            ImGui.TextWrapped("Error: Unable to calculate, please refresh your data (Voyage Control Panel -> Submersible Management).");
                             if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                                 if (fcSub.UnlockedSectors.ContainsKey(startPoint))
                                     Error = false;
@@ -213,12 +236,16 @@ public partial class BuilderWindow
 
                 if (ImGui.BeginChild("ExpOptions", new Vector2(0, 0)))
                 {
+                    var width = ImGui.GetContentRegionAvail().X / 3;
+                    var length = ImGui.CalcTextSize("Must Include 5 / 5").X + 25.0f;
+
                     var changed = false;
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
                     ImGui.Indent(10.0f);
                     changed |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
-                    ImGui.SameLine();
+                    ImGui.SameLine(length);
+                    ImGui.SetNextItemWidth(width);
                     if(ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
                     {
                         foreach(var durationLimit in (DurationLimit[]) Enum.GetValues(typeof(DurationLimit)))
@@ -228,13 +255,65 @@ public partial class BuilderWindow
                                 Configuration.DurationLimit = durationLimit;
                                 Configuration.Save();
 
-                                if (!Configuration.CalculateOnInteraction)
-                                    BestPath = Array.Empty<uint>();
+                                OptionsChanged = true;
                             }
                         }
 
                         ImGui.EndCombo();
                     }
+
+                    if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                    {
+                        ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
+                        ImGui.SameLine(length);
+                        if (MustInclude.Count >= 5) ImGui.BeginDisabled();
+                        ImGui.PushFont(UiBuilder.IconFont);
+                        ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(width, 0));
+                        ImGui.PopFont();
+                        if (MustInclude.Count >= 5) ImGui.EndDisabled();
+
+                        // Reset to refresh the internal state
+                        if (LastSeenMap != CurrentBuild.Map || LastSeenRank != CurrentBuild.Rank)
+                            ExcelSheetSelector.FilteredSearchSheet = null!;
+
+                        LastSeenMap = CurrentBuild.Map;
+                        LastSeenRank = CurrentBuild.Rank;
+
+                        try
+                        {
+                            var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                            ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> ExplorationPopupOptions = new()
+                            {
+                                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)}",
+                                FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            };
+
+                            if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, MustInclude.Count >= 5))
+                            {
+                                var point = ExplorationSheet.GetRow(row)!;
+                                if (!MustInclude.Contains(point))
+                                {
+                                    MustInclude.Add(point);
+                                    OptionsChanged = true;
+                                }
+                            }
+
+                            var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
+                            if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, height)))
+                            {
+                                foreach (var p in MustInclude.ToArray())
+                                    if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
+                                        MustInclude.Remove(p);
+
+                                ImGui.EndListBox();
+                            }
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            ImGui.TextWrapped("Error: Unable to find unlocked sectors, please refresh your data (Voyage Control Panel -> Submersible Management)");
+                        }
+                    }
+
                     ImGui.Unindent(10.0f);
 
                     if (changed)

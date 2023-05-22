@@ -47,9 +47,7 @@ public class MainWindow : Window, IDisposable
 
         if (!Submarines.KnownSubmarines.Values.Any(s => s.Submarines.Any()))
         {
-            ImGui.PushTextWrapPos();
-            ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data, pls talk to the Voyage Control Panel -> Submersible Management.");
-            ImGui.PopTextWrapPos();
+            Helper.NoData();
             return;
         }
 

@@ -277,8 +277,8 @@ public class ConfigWindow : Window, IDisposable
                     var item = ItemSheet.GetRow(row)!;
                     var value = (int) (item.PriceLow > 1000 ? item.PriceLow : 0);
 
-                    Configuration.CustomLootWithValue.Add(row, value);
-                    Configuration.Save();
+                    if (Configuration.CustomLootWithValue.TryAdd(row, value))
+                        Configuration.Save();
                 }
 
                 ImGuiHelpers.ScaledDummy(5);

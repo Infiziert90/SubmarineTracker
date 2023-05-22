@@ -12,8 +12,9 @@ namespace SubmarineTracker.Windows
 {
     public static class ExcelSheetSelector
     {
+        public static ExcelRow[] FilteredSearchSheet = null!;
+
         private static string SheetSearchText = null!;
-        private static ExcelRow[] FilteredSearchSheet = null!;
         private static string PrevSearchId = null!;
         private static Type PrevSearchType = null!;
 
@@ -59,12 +60,16 @@ namespace SubmarineTracker.Windows
             FilteredSearchSheet ??= filteredSheet.Where(s => searchPredicate(s, SheetSearchText)).Cast<ExcelRow>().ToArray();
         }
 
-        public static bool ExcelSheetPopup<T>(string id, out uint selectedRow, ExcelSheetPopupOptions<T> options = null) where T : ExcelRow
+        public static bool ExcelSheetPopup<T>(string id, out uint selectedRow, ExcelSheetPopupOptions<T> options = null, bool close = false) where T : ExcelRow
         {
+
             options ??= new ExcelSheetPopupOptions<T>();
             var sheet = options.FilteredSheet ?? Plugin.Data.GetExcelSheet<T>();
             selectedRow = 0;
             if (sheet == null)
+                return false;
+
+            if (close)
                 return false;
 
             ImGui.SetNextWindowSize(options.Size ?? new Vector2(0, 250 * ImGuiHelpers.GlobalScale));
