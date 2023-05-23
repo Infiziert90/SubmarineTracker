@@ -27,7 +27,7 @@ public partial class BuilderWindow
 
                 var explorations = ExplorationSheet
                                    .Where(r => r.Map.Row == CurrentBuild.Map + 1)
-                                   .Where(r => !r.Passengers)
+                                   .Where(r => !r.StartingPoint)
                                    .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
                                    .ToList();
 

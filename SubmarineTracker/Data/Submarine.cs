@@ -469,7 +469,7 @@ public static class Submarines
 
     public static uint FindVoyageStartPoint(uint point)
     {
-        var startPoints = ExplorationSheet.Where(s => s.Passengers).Select(s => s.RowId).ToList();
+        var startPoints = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).ToList();
         startPoints.Reverse();
 
         // This works because we reversed the list of start points

@@ -39,7 +39,7 @@ public partial class BuilderWindow
             try
             {
                 valid = ExplorationSheet
-                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                             .ToList();
             }
             catch (KeyNotFoundException)
@@ -143,7 +143,7 @@ public partial class BuilderWindow
                 if (ImGui.BeginChild("BestPath", new Vector2(0, 170)))
                 {
                     var maps = ExplorationSheet
-                       .Where(r => r.Passengers)
+                       .Where(r => r.StartingPoint)
                        .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
                        .Select(r => ToStr(r.Map.Value!.Name))
                        .ToArray();
@@ -285,7 +285,7 @@ public partial class BuilderWindow
                             ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> ExplorationPopupOptions = new()
                             {
                                 FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)}",
-                                FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.Passengers && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                                FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                             };
 
                             if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, MustInclude.Count >= 5))
