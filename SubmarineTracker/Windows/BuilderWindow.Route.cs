@@ -114,7 +114,7 @@ public partial class BuilderWindow
         ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
         ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
         ImGui.SameLine();
-        if (unlockedFrom.Point != 0)
+        if (unlockedFrom.Point != 9876)
         {
             if (unlockedFrom.Point != 9000)
             {

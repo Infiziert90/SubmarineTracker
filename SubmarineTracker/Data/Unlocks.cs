@@ -102,7 +102,16 @@ public static class Unlocks
         { 90, new UnlockedFrom(87) },               // Q Sirensong Sea 5		            <- 		Drifter's Decay
         { 91, new UnlockedFrom(88) },               // R Tidewind Isle		                <- 		Lugat's Landing
         { 92, new UnlockedFrom(88) },               // S Bloodbreak		                <- 		Lugat's Landing
-        { 93, new UnlockedFrom(89) },               // T The Crystal Font		            <- 		The Frozen Spring
+        { 93, new UnlockedFrom(89, Map: true) },    // T The Crystal Font		            <- 		The Frozen Spring
+
+        { 94, new UnlockedFrom(9999) },  // Map E
+        { 95, new UnlockedFrom(93) },    // Weeping Trellis
+        { 96, new UnlockedFrom(9876) },  // The Forsaken Isle
+        { 97, new UnlockedFrom(9876) },  // Fortune's Ford
+        { 98, new UnlockedFrom(9876) },  // The Lilac Sea 1
+        { 99, new UnlockedFrom(9876) },  // Runner's Reach
+        { 100, new UnlockedFrom(9876) }, // Bellflower Flood
+        { 101, new UnlockedFrom(9876) }, // The Lilac Sea 2
     };
 
     public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
@@ -110,6 +119,10 @@ public static class Unlocks
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalPoint)
     {
         if (!PointToUnlockPoint.TryGetValue(finalPoint, out var final))
+            return new List<(uint, UnlockedFrom)>();
+
+        // Unknown unlock at the time
+        if (final.Point == 9876)
             return new List<(uint, UnlockedFrom)>();
 
         var wayPoints = new List<(uint, UnlockedFrom)> { (finalPoint, final) };
