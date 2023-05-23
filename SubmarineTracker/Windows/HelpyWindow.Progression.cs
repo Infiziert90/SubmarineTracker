@@ -109,7 +109,7 @@ public partial class HelpyWindow
     private void LastSectorTab(Submarines.FcSubmarines fcSub)
     {
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
-        var unlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last().Key);
+        var unlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last(s => s.Value.Point != 9876).Key);
         unlockPath.Reverse();
 
         var mod = new Box.Modifier();
