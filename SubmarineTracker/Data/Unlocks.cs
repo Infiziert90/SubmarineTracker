@@ -104,10 +104,10 @@ public static class Unlocks
         { 92, new UnlockedFrom(88) },               // S Bloodbreak		                <- 		Lugat's Landing
         { 93, new UnlockedFrom(89, Map: true) },    // T The Crystal Font		            <- 		The Frozen Spring
 
-        { 94, new UnlockedFrom(9999) },  // Map E
-        { 95, new UnlockedFrom(93) },    // Weeping Trellis
-        { 96, new UnlockedFrom(9876) },  // The Forsaken Isle
-        { 97, new UnlockedFrom(9876) },  // Fortune's Ford
+        { 94, new UnlockedFrom(9999) },             // Map E
+        { 95, new UnlockedFrom(93) },               // Weeping Trellis                     <-       The Crystal Font
+        { 96, new UnlockedFrom(95) },               // The Forsaken Isle                   <-       Weeping Trellis
+        { 97, new UnlockedFrom(95) },               // Fortune's Ford                      <-       Weeping Trellis
         { 98, new UnlockedFrom(9876) },  // The Lilac Sea 1
         { 99, new UnlockedFrom(9876) },  // Runner's Reach
         { 100, new UnlockedFrom(9876) }, // Bellflower Flood

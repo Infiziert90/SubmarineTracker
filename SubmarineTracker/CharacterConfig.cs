@@ -36,13 +36,27 @@ public class CharacterConfiguration
         ExplorationPoints = explorationPoints;
     }
 
-    public void Save()
+    public void Save(bool saveBackup = false)
     {
         if (LocalContentId != 0)
         {
+            // if (saveBackup)
+            // {
+            //     var org = GetConfigFileInfo(LocalContentId);
+            //     var backup = GetBackupConfigFileInfo(LocalContentId);
+            //     if (!backup.Exists)
+            //         backup.Delete();
+            //
+            //     org.CopyTo(backup.FullName);
+            // }
+
+
             SaveConfigFile(GetConfigFileInfo(LocalContentId));
         }
     }
+
+    public void SaveBackup() => Save(true);
+    private static FileInfo GetBackupConfigFileInfo(ulong contentID) => new(Plugin.PluginInterface.ConfigDirectory.FullName + $@"\{contentID}.bak.json");
 
     public static CharacterConfiguration Load(ulong contentId)
     {
