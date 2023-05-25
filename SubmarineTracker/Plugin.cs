@@ -8,6 +8,7 @@ using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
+using Dalamud.Game.Gui.Toast;
 using Dalamud.Interface.Windowing;
 using EurekaTrackerAutoPopper.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
@@ -24,6 +25,7 @@ namespace SubmarineTracker
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
+        [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
 
         public string Name => "Submarine Tracker";
 

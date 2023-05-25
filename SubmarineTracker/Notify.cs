@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Game;
+using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using SubmarineTracker.Data;
 
@@ -68,10 +69,10 @@ public class Notify
             foreach (var (sub, idx) in currentFC.Submarines.Select((val, i) => (val, i)))
             {
                 // We want this state, as it signals a returned submarine
-                if (sub.Return != 0)
+                if (sub.Return == 0)
                     continue;
 
-                if (sub.NoRepairNeeded)
+                if (!sub.NoRepairNeeded)
                     continue;
 
                 // using just date here because subs can't come back the same day and be broken again
@@ -84,6 +85,9 @@ public class Notify
                         text = $"{sub.Name}@{currentFC.CharacterName}";
 
                     Plugin.ChatGui.Print(RepairMessage(text));
+
+                    if (Configuration.ShowRepairToast)
+                        Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
                 }
             }
         }
@@ -102,6 +106,13 @@ public class Notify
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
                .AddUiForeground($"{name} has returned and requires repair before being dispatched again.", 43)
+               .BuiltString;
+    }
+
+    public static SeString ShortRepairMessage()
+    {
+        return new SeStringBuilder()
+               .AddUiForeground($"Requires repair before being dispatched again", 43)
                .BuiltString;
     }
 }

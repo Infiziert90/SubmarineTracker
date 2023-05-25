@@ -29,6 +29,7 @@ namespace SubmarineTracker
         public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
         public bool NotifyForRepairs = true;
+        public bool ShowRepairToast = true;
 
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;

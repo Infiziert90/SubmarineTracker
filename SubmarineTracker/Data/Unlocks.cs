@@ -111,7 +111,7 @@ public static class Unlocks
         { 98, new UnlockedFrom(96) },               // The Lilac Sea 1                     <-       The Forsaken Isle
         { 99, new UnlockedFrom(97) },               // Runner's Reach                      <-       Fortune's Ford
         { 100, new UnlockedFrom(96) },              // Bellflower Flood                    <-       The Forsaken Isle
-        { 101, new UnlockedFrom(9876) },            // The Lilac Sea 2
+        { 101, new UnlockedFrom(97) },              // The Lilac Sea 2                     <-       Fortune's Ford
     };
 
     public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);

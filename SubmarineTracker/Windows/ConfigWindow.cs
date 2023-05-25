@@ -109,6 +109,12 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
                 ImGui.Indent(10.0f);
                 changed |= ImGui.Checkbox("For Repairs", ref Configuration.NotifyForRepairs);
+                if (Configuration.NotifyForRepairs)
+                {
+                    ImGui.Indent(10.0f);
+                    changed |= ImGui.Checkbox("Show Repair Toast", ref Configuration.ShowRepairToast);
+                    ImGui.Unindent(10.0f);
+                }
                 changed |= ImGui.Checkbox("For All Returns", ref Configuration.NotifyForAll);
                 ImGui.Unindent(10.0f);
 
