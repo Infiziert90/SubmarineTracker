@@ -161,6 +161,7 @@ public partial class BuilderWindow
                         Error = false;
                         ComputingPath = false;
                         BestPath = Array.Empty<uint>();
+                        MustInclude.Clear();
                         CurrentBuild.ChangeMap(selectedMap);
                     }
                     CurrentBuild.Map = selectedMap;
@@ -274,7 +275,10 @@ public partial class BuilderWindow
 
                         // Reset to refresh the internal state
                         if (LastSeenMap != CurrentBuild.Map || LastSeenRank != CurrentBuild.Rank)
+                        {
+                            MustInclude.Clear();
                             ExcelSheetSelector.FilteredSearchSheet = null!;
+                        }
 
                         LastSeenMap = CurrentBuild.Map;
                         LastSeenRank = CurrentBuild.Rank;
