@@ -108,10 +108,10 @@ public static class Unlocks
         { 95, new UnlockedFrom(93) },               // Weeping Trellis                     <-       The Crystal Font
         { 96, new UnlockedFrom(95) },               // The Forsaken Isle                   <-       Weeping Trellis
         { 97, new UnlockedFrom(95) },               // Fortune's Ford                      <-       Weeping Trellis
-        { 98, new UnlockedFrom(9876) },  // The Lilac Sea 1
-        { 99, new UnlockedFrom(9876) },  // Runner's Reach
-        { 100, new UnlockedFrom(9876) }, // Bellflower Flood
-        { 101, new UnlockedFrom(9876) }, // The Lilac Sea 2
+        { 98, new UnlockedFrom(96) },               // The Lilac Sea 1                     <-       The Forsaken Isle
+        { 99, new UnlockedFrom(97) },               // Runner's Reach                      <-       Fortune's Ford
+        { 100, new UnlockedFrom(96) },              // Bellflower Flood                    <-       The Forsaken Isle
+        { 101, new UnlockedFrom(9876) },            // The Lilac Sea 2
     };
 
     public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
