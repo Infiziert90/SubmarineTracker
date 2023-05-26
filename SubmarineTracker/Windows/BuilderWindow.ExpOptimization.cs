@@ -307,7 +307,10 @@ public partial class BuilderWindow
                             {
                                 foreach (var p in MustInclude.ToArray())
                                     if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
+                                    {
                                         MustInclude.Remove(p);
+                                        OptionsChanged = true;
+                                    }
 
                                 ImGui.EndListBox();
                             }
