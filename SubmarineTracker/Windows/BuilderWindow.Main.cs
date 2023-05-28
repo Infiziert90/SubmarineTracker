@@ -39,7 +39,8 @@ public partial class BuilderWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var noStatsTabOpen = false;
+        var infoTabOpen = false;
+        var shipTabOpen = false;
 
         var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
         if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
@@ -54,13 +55,13 @@ public partial class BuilderWindow : Window, IDisposable
 
                 ExpTab();
 
-                noStatsTabOpen |= ShipTab();
+                shipTabOpen |= ShipTab();
 
-                noStatsTabOpen |= InfoTab();
+                infoTabOpen |= InfoTab();
             }
             ImGui.EndTabBar();
 
-            if (!noStatsTabOpen)
+            if (!infoTabOpen && !shipTabOpen)
             {
                 BuildStats(ref sub);
             }
@@ -73,7 +74,7 @@ public partial class BuilderWindow : Window, IDisposable
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
         {
-            if (!noStatsTabOpen)
+            if (!infoTabOpen)
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
                 if (ImGui.Button("Reset"))

@@ -320,9 +320,10 @@ public partial class BuilderWindow
             }
 
             ImGui.EndTable();
+
+            ImGui.EndTabItem();
         }
 
-        ImGui.EndTabItem();
         return open;
     }
 

@@ -2,7 +2,7 @@ namespace SubmarineTracker.Windows;
 
 public partial class BuilderWindow
 {
-    private static bool InfoTab()
+    private bool InfoTab()
     {
         var open = ImGui.BeginTabItem("Info");
         if (open)
@@ -66,8 +66,9 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted("Not unlocked");
+
+            ImGui.EndTabItem();
         }
-        ImGui.EndTabItem();
 
         return open;
     }
