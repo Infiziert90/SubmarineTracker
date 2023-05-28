@@ -271,7 +271,7 @@ public partial class BuilderWindow
             ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
             if (hasRoute)
                 ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort, 0.15f);
+            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
             ImGui.TableHeadersRow();
 
             var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
