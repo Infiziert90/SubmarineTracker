@@ -220,7 +220,7 @@ public static class Submarines
 
         public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx) : this("", 0, 0, 0, 0, 0, 0, 0)
         {
-            Name = MemoryHelper.ReadSeStringNullTerminated(new nint(data.Name)).ToString();
+            Name = MemoryHelper.ReadSeStringNullTerminated((nint)data.Name).ToString();
             Rank = data.RankId;
             Hull = data.HullId;
             Stern = data.SternId;
@@ -350,7 +350,7 @@ public static class Submarines
 
         public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
 
-        public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge)
+        public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
             Bonus = GetRank(rank);
             Hull = GetPart(hull);
@@ -359,13 +359,22 @@ public static class Submarines
             Bridge = GetPart(bridge);
         }
 
-        public SubmarineBuild(RouteBuild build)
+        public SubmarineBuild(RouteBuild build) : this()
         {
             Bonus = GetRank(build.Rank);
             Hull = GetPart(build.Hull);
             Stern = GetPart(build.Stern);
             Bow = GetPart(build.Bow);
             Bridge = GetPart(build.Bridge);
+        }
+
+        public SubmarineBuild(int rank, int rowCollection) : this()
+        {
+            Bonus = GetRank(rank);
+            Hull = GetPart((rowCollection * 4) + 3);
+            Stern = GetPart((rowCollection * 4) + 4);
+            Bow = GetPart((rowCollection * 4) + 1);
+            Bridge = GetPart((rowCollection * 4) + 2);
         }
 
         public int Surveillance => Bonus.SurveillanceBonus + Hull.Surveillance + Stern.Surveillance + Bow.Surveillance + Bridge.Surveillance;
