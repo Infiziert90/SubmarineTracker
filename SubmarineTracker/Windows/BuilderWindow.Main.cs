@@ -1,13 +1,7 @@
-using Dalamud.Interface;
-using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
-using System;
-using System.Linq;
-using System.Numerics;
 
 namespace SubmarineTracker.Windows;
 
@@ -16,7 +10,7 @@ public partial class BuilderWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
-    public static ExcelSheet<SubmarineRank> RankSheet = null!;
+    public static IEnumerable<SubmarineRank> RankSheet = null!;
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
@@ -35,9 +29,10 @@ public partial class BuilderWindow : Window, IDisposable
         Plugin = plugin;
         Configuration = configuration;
 
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
+        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0);
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        Initialize();
     }
 
     public void Dispose() { }
@@ -58,6 +53,8 @@ public partial class BuilderWindow : Window, IDisposable
                 RouteTab();
 
                 ExpTab();
+
+                ShipTab();
 
                 infoTabOpen |= InfoTab();
             }

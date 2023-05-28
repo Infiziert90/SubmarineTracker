@@ -1,6 +1,3 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
 namespace SubmarineTracker.Data;
 
 // All this data is taken from:

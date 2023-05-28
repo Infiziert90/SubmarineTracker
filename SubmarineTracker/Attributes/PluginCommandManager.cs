@@ -1,11 +1,8 @@
-﻿using Dalamud.Game.Command;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Dalamud.Game.Command;
 using System.Reflection;
 using static Dalamud.Game.Command.CommandInfo;
 
-namespace EurekaTrackerAutoPopper.Attributes
+namespace SubmarineTracker.Attributes
 {
     public class PluginCommandManager<THost> : IDisposable
     {

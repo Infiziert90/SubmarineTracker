@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Dalamud.Logging;
 using Dalamud.Memory;
@@ -223,7 +220,7 @@ public static class Submarines
 
         public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx) : this("", 0, 0, 0, 0, 0, 0, 0)
         {
-            Name = MemoryHelper.ReadSeStringNullTerminated(new nint(data.Name)).ToString();
+            Name = MemoryHelper.ReadSeStringNullTerminated((nint)data.Name).ToString();
             Rank = data.RankId;
             Hull = data.HullId;
             Stern = data.SternId;
@@ -315,8 +312,8 @@ public static class Submarines
             return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
                    Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
                    CExp == other.CExp && Return == other.Return && Register == other.Register &&
-                   HullDurability == other.HullDurability && SternDurability == other.SternDurability  &&
-                   BowDurability == other.BowDurability  && BridgeDurability == other.BridgeDurability &&
+                   HullDurability == other.HullDurability && SternDurability == other.SternDurability &&
+                   BowDurability == other.BowDurability && BridgeDurability == other.BridgeDurability &&
                    ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
         }
 
@@ -334,8 +331,8 @@ public static class Submarines
             return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
                    x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
                    x.CExp == y.CExp && x.Return == y.Return && x.Register == y.Register &&
-                   x.HullDurability == y.HullDurability && x.SternDurability == y.SternDurability  &&
-                   x.BowDurability == y.BowDurability  && x.BridgeDurability == y.BridgeDurability &&
+                   x.HullDurability == y.HullDurability && x.SternDurability == y.SternDurability &&
+                   x.BowDurability == y.BowDurability && x.BridgeDurability == y.BridgeDurability &&
                    x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
         }
 
@@ -345,15 +342,15 @@ public static class Submarines
 
     public readonly struct SubmarineBuild
     {
-        private readonly SubmarineRank Bonus;
-        private readonly SubmarinePart Hull;
-        private readonly SubmarinePart Stern;
-        private readonly SubmarinePart Bow;
-        private readonly SubmarinePart Bridge;
+        public readonly SubmarineRank Bonus;
+        public readonly SubmarinePart Hull;
+        public readonly SubmarinePart Stern;
+        public readonly SubmarinePart Bow;
+        public readonly SubmarinePart Bridge;
 
         public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
 
-        public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge)
+        public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
             Bonus = GetRank(rank);
             Hull = GetPart(hull);
@@ -362,7 +359,7 @@ public static class Submarines
             Bridge = GetPart(bridge);
         }
 
-        public SubmarineBuild(RouteBuild build)
+        public SubmarineBuild(RouteBuild build) : this()
         {
             Bonus = GetRank(build.Rank);
             Hull = GetPart(build.Hull);
@@ -377,13 +374,18 @@ public static class Submarines
         public int Range => Bonus.RangeBonus + Hull.Range + Stern.Range + Bow.Range + Bridge.Range;
         public int Favor => Bonus.FavorBonus + Hull.Favor + Stern.Favor + Bow.Favor + Bridge.Favor;
         public int RepairCosts => Hull.RepairMaterials + Stern.RepairMaterials + Bow.RepairMaterials + Bridge.RepairMaterials;
+        public int BuildCost => Hull.Components + Stern.Components + Bow.Components + Bridge.Components;
+        public uint HullCharId => (Hull.RowId - 3) / 4;
+        public uint SternCharId => (Stern.RowId - 4) / 4;
+        public uint BowCharId => (Bow.RowId - 1) / 4;
+        public uint BridgeCharId => (Bridge.RowId - 2) / 4;
 
         private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
         private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
 
         public string BuildIdentifier()
         {
-            var identifier = $"{ToIdentifier((ushort) Hull.RowId)}{ToIdentifier((ushort) Stern.RowId)}{ToIdentifier((ushort) Bow.RowId)}{ToIdentifier((ushort) Bridge.RowId)}";
+            var identifier = $"{ToIdentifier((ushort)Hull.RowId)}{ToIdentifier((ushort)Stern.RowId)}{ToIdentifier((ushort)Bow.RowId)}{ToIdentifier((ushort)Bridge.RowId)}";
 
             if (identifier.Count(l => l == '+') == 4)
                 identifier = $"{identifier.Replace("+", "")}++";
@@ -484,7 +486,7 @@ public static class Submarines
 
     public static readonly Dictionary<ulong, FcSubmarines> KnownSubmarines = new();
 
-    public static readonly Dictionary<ushort, uint> PartIdToItemId = new Dictionary<ushort, uint>
+    public static readonly Dictionary<ushort, uint> PartIdToItemId = new()
     {
         // Shark
         { 1, 21792 }, // Bow
@@ -541,6 +543,20 @@ public static class Submarines
         { 38, 24365 },
         { 39, 24366 },
         { 40, 24367 }
+    };
+
+    public static readonly Dictionary<uint, string> SectionIdToChar = new()
+    {
+        { 0, "S" },
+        { 1, "U" },
+        { 2, "W" },
+        { 3, "C" },
+        { 4, "Y" },
+        { 5, "S+" },
+        { 6, "U+" },
+        { 7, "W+" },
+        { 8, "C+" },
+        { 9, "Y+" }
     };
 
     public static string ToIdentifier(ushort partId)

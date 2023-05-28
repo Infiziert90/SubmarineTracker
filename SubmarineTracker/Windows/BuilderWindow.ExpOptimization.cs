@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using ImGuiNET;
 using SubmarineTracker.Data;
-using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
-using Dalamud.Interface;
-using Dalamud.Interface.Colors;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows;
@@ -54,7 +47,7 @@ public partial class BuilderWindow
 
             var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
             if (MustInclude.Any())
-                paths = new [] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
+                paths = new[] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
 
             var i = MustInclude.Any() ? MustInclude.Count : 1;
             while (i++ < 5)
@@ -195,7 +188,7 @@ public partial class BuilderWindow
                     {
                         if (ComputingPath)
                         {
-                            ImGui.Text($"Loading {new string('.',(int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                            ImGui.Text($"Loading {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                         }
                         else if (!BestPath.Any())
                         {
@@ -247,11 +240,11 @@ public partial class BuilderWindow
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
-                    if(ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
+                    if (ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
                     {
-                        foreach(var durationLimit in (DurationLimit[]) Enum.GetValues(typeof(DurationLimit)))
+                        foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                         {
-                            if(ImGui.Selectable(DateUtil.GetDurationLimitName(durationLimit)))
+                            if (ImGui.Selectable(DateUtil.GetDurationLimitName(durationLimit)))
                             {
                                 Configuration.DurationLimit = durationLimit;
                                 Configuration.Save();

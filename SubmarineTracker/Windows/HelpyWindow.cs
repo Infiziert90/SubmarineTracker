@@ -1,10 +1,5 @@
-﻿using Dalamud.Interface;
-using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 using SubmarineTracker.Data;
-using System;
-using System.Numerics;
 
 namespace SubmarineTracker.Windows;
 

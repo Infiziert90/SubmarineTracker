@@ -1,10 +1,4 @@
-﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using Dalamud.Interface;
-using ImGuiNET;
 using Lumina.Excel;
 
 // From: https://github.com/UnknownX7/Hypostasis/blob/master/ImGui/ExcelSheet.cs
