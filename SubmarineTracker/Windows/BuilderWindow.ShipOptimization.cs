@@ -89,7 +89,7 @@ public partial class BuilderWindow
                 time = time.Add(TimeSpan.FromSeconds(route.First().GetSurveyTime(build.Speed) + start.GetVoyageTime(route.First(), build.Speed)));
                 for (var i = 1; i < route.Length; i++)
                 {
-                    time = time.Add(TimeSpan.FromSeconds(route[i - 1].GetSurveyTime(build.Speed) + route[i - 1].GetVoyageTime(route[i], build.Speed)));
+                    time = time.Add(TimeSpan.FromSeconds(route[i].GetSurveyTime(build.Speed) + route[i - 1].GetVoyageTime(route[i], build.Speed)));
                 }
                 return new Tuple<Submarines.SubmarineBuild, TimeSpan>(build, time);
             });
@@ -271,7 +271,7 @@ public partial class BuilderWindow
             ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
             if (hasRoute)
                 ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort, 0.1f);
+            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort, 0.15f);
             ImGui.TableHeadersRow();
 
             var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
