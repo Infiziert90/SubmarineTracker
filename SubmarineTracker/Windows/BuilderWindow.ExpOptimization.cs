@@ -40,7 +40,7 @@ public partial class BuilderWindow
                 Error = true;
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NoOptimized();
+                CurrentBuild.NotOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
@@ -70,7 +70,7 @@ public partial class BuilderWindow
             {
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NoOptimized();
+                CurrentBuild.NotOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }
@@ -80,7 +80,7 @@ public partial class BuilderWindow
             {
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NoOptimized();
+                CurrentBuild.NotOptimized();
                 BestPath = Array.Empty<uint>();
                 return;
             }

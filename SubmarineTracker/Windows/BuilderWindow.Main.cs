@@ -197,7 +197,7 @@ public partial class BuilderWindow : Window, IDisposable
                 }
                 else
                 {
-                    CurrentBuild.NoOptimized();
+                    CurrentBuild.NotOptimized();
                 }
                 ret = true;
             }

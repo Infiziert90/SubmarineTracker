@@ -1,4 +1,4 @@
-using Dalamud.Logging;
+using Dalamud.Interface.Components;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
@@ -84,9 +84,9 @@ public partial class BuilderWindow
             builds = builds.Select(tuple =>
             {
                 var (build, time) = tuple;
-                var route = CurrentBuild.Sectors.Select(t => ExplorationSheet.GetRow(t)!).ToArray();
+                var route = CurrentBuild.OptimizedRoute.ToArray();
                 var start = ExplorationSheet.First(t => t.Map.Row == route.First().Map.Row);
-                time = time.Add(TimeSpan.FromSeconds(start.GetSurveyTime(build.Speed) + start.GetVoyageTime(route.First(), build.Speed)));
+                time = time.Add(TimeSpan.FromSeconds(route.First().GetSurveyTime(build.Speed) + start.GetVoyageTime(route.First(), build.Speed)));
                 for (var i = 1; i < route.Length; i++)
                 {
                     time = time.Add(TimeSpan.FromSeconds(route[i - 1].GetSurveyTime(build.Speed) + route[i - 1].GetVoyageTime(route[i], build.Speed)));
@@ -257,7 +257,7 @@ public partial class BuilderWindow
                 return true;
             }
 
-            ImGui.BeginTable("##shipTable", hasRoute ? 12 : 11, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable);
+            ImGui.BeginTable("##shipTable", hasRoute ? 13 : 12, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable);
             ImGui.TableSetupColumn("Cost");
             ImGui.TableSetupColumn("Repair");
             ImGui.TableSetupColumn("Hull", ImGuiTableColumnFlags.NoSort);
@@ -271,6 +271,7 @@ public partial class BuilderWindow
             ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
             if (hasRoute)
                 ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
+            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
             ImGui.TableHeadersRow();
 
             var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
@@ -306,6 +307,10 @@ public partial class BuilderWindow
                         ImGui.TableNextColumn();
                         ImGui.Text($"{ToTime(time)}");
                     }
+
+                    ImGui.TableNextColumn();
+                    if (ImGuiComponents.IconButton(i, FontAwesomeIcon.Book))
+                        CurrentBuild.UpdateBuild(build, SelectedRank);
 
                     ImGui.TableNextRow();
                 }

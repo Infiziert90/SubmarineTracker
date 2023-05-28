@@ -418,9 +418,7 @@ public static class Submarines
 
         [JsonIgnore] public int OptimizedDistance = 0;
         [JsonIgnore] public List<SubmarineExplorationPretty> OptimizedRoute = new();
-
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
-
         [JsonIgnore] public static RouteBuild Empty => new();
 
         public void UpdateBuild(Submarine sub)
@@ -430,6 +428,15 @@ public static class Submarines
             Stern = sub.Stern;
             Bow = sub.Bow;
             Bridge = sub.Bridge;
+        }
+
+        public void UpdateBuild(SubmarineBuild build, int currentRank)
+        {
+            Rank = currentRank;
+            Hull = (int) build.Hull.RowId;
+            Stern = (int) build.Stern.RowId;
+            Bow = (int) build.Bow.RowId;
+            Bridge = (int) build.Bridge.RowId;
         }
 
         public void ChangeMap(int newMap)
@@ -447,7 +454,7 @@ public static class Submarines
             OptimizedRoute = optimized.Points;
         }
 
-        public void NoOptimized()
+        public void NotOptimized()
         {
             OptimizedDistance = 0;
             OptimizedRoute = new List<SubmarineExplorationPretty>();
