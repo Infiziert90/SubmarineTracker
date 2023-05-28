@@ -352,7 +352,7 @@ public static class Submarines
 
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
-            Bonus = GetRank(rank);
+            Bonus = GetRank((uint)rank);
             Hull = GetPart(hull);
             Stern = GetPart(stern);
             Bow = GetPart(bow);
@@ -361,14 +361,14 @@ public static class Submarines
 
         public SubmarineBuild(RouteBuild build) : this()
         {
-            Bonus = GetRank(build.Rank);
+            Bonus = GetRank((uint)build.Rank);
             Hull = GetPart(build.Hull);
             Stern = GetPart(build.Stern);
             Bow = GetPart(build.Bow);
             Bridge = GetPart(build.Bridge);
         }
 
-        public SubmarineBuild(int rank, int rowCollection) : this()
+        public SubmarineBuild(uint rank, int rowCollection) : this()
         {
             Bonus = GetRank(rank);
             Hull = GetPart((rowCollection * 4) + 3);
@@ -384,7 +384,7 @@ public static class Submarines
         public int Favor => Bonus.FavorBonus + Hull.Favor + Stern.Favor + Bow.Favor + Bridge.Favor;
         public int RepairCosts => Hull.RepairMaterials + Stern.RepairMaterials + Bow.RepairMaterials + Bridge.RepairMaterials;
 
-        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
+        private SubmarineRank GetRank(uint rank) => RankSheet.GetRow(rank)!;
         private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
 
         public string BuildIdentifier()
