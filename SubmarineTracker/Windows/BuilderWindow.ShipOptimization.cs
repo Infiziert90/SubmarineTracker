@@ -271,7 +271,7 @@ public partial class BuilderWindow
             ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
             if (hasRoute)
                 ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
+            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort, 0.1f);
             ImGui.TableHeadersRow();
 
             var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
@@ -309,8 +309,11 @@ public partial class BuilderWindow
                     }
 
                     ImGui.TableNextColumn();
-                    if (ImGuiComponents.IconButton(i, FontAwesomeIcon.Book))
+                    if (ImGuiComponents.IconButton(i, FontAwesomeIcon.ArrowRightFromBracket))
                         CurrentBuild.UpdateBuild(build, SelectedRank);
+
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetTooltip("Import this build");
 
                     ImGui.TableNextRow();
                 }
