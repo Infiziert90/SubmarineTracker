@@ -14,6 +14,8 @@ public partial class BuilderWindow
     private TargetValues Target;
     private TargetValues LockedTarget;
 
+    private bool IgnoreBreakpoints = false;
+
     public void Initialize()
     {
         AllBuilds.Clear();
@@ -76,7 +78,7 @@ public partial class BuilderWindow
             }
         }
 
-        var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Submarines.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
+        var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute && !IgnoreBreakpoints ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Submarines.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
         if (hasRoute)
         {
             builds = builds.Select(tuple =>
@@ -133,8 +135,16 @@ public partial class BuilderWindow
                 RefreshList();
             }
 
+            ImGui.SameLine();
+            ImGui.Checkbox("Ignore Breakpoints", ref IgnoreBreakpoints);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Selected Route:");
+            SelectedRoute();
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
             var hasRoute = CurrentBuild.Sectors.Count > 0;
-            if (!hasRoute)
+            if (!hasRoute || IgnoreBreakpoints)
             {
                 if (ImGui.CollapsingHeader("Stats"))
                 {
@@ -210,8 +220,6 @@ public partial class BuilderWindow
 
                 var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
 
-                ImGui.TextColored(ImGuiColors.DalamudViolet, "Selected Route:");
-                ImGui.TextColored(ImGuiColors.DalamudOrange, SelectedRoute());
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints:");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
                 ImGui.SameLine(secondRow);
@@ -224,6 +232,16 @@ public partial class BuilderWindow
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
                 ImGui.SameLine(secondRow);
                 ImGui.TextUnformatted($"Favor: {breakpoints.Favor}");
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+
+                ImGui.Checkbox("Use T2", ref Target.UseT2);
+                ImGui.SameLine();
+                ImGui.Checkbox("Use Normal", ref Target.UseNormal);
+                ImGui.SameLine();
+                ImGui.Checkbox("Ignore Favor", ref Target.IgnoreFavor);
+
+                ImGuiHelpers.ScaledDummy(10.0f);
             }
 
             if (!FilterBuilds().Any())
@@ -254,8 +272,6 @@ public partial class BuilderWindow
             if (hasRoute)
                 ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
             ImGui.TableHeadersRow();
-            // DateTime start = DateTime.UtcNow;
-            // PluginLog.Information("Speed 3");
 
             var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
             using (var clipper = new ListClipper(tableContent.Length, itemHeight: ImGui.CalcTextSize("W").Y * 1.1f))
@@ -296,9 +312,6 @@ public partial class BuilderWindow
             }
 
             ImGui.EndTable();
-            // DateTime end = DateTime.UtcNow;
-            // TimeSpan timeDiff = end - start;
-            // PluginLog.Information(timeDiff.TotalMilliseconds.ToString());
         }
 
         ImGui.EndTabItem();
@@ -317,6 +330,10 @@ public partial class BuilderWindow
         public int MaxSpeed;
         public int MaxRange;
         public int MaxFavor;
+
+        public bool UseT2 = false;
+        public bool UseNormal = false;
+        public bool IgnoreFavor = false;
 
         public TargetValues(List<Submarines.SubmarineBuild> allBuilds) : this()
         {
@@ -366,11 +383,15 @@ public partial class BuilderWindow
         {
             var breakpoints = LootTable.CalculateBreakpoints(path);
             var tmpThis = this;
+            var useT2 = this.UseT2;
+            var useN = this.UseNormal;
+            var ignoreF = IgnoreFavor;
+
             return build =>
-                build.Surveillance >= breakpoints.T3 &&
-                build.Retrieval >= breakpoints.Optimal &&
-                build.Favor >= breakpoints.Favor &&
-                build.Speed <= tmpThis.MaxSpeed;
+                build.Surveillance >= (useT2 ? breakpoints.T2 : breakpoints.T3) &&
+                build.Retrieval >= (useN ? breakpoints.Normal : breakpoints.Optimal) &&
+                build.Speed <= tmpThis.MaxSpeed &&
+                (ignoreF || build.Favor >= breakpoints.Favor);
         }
     }
 }

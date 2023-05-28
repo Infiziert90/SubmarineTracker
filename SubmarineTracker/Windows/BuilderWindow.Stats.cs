@@ -34,14 +34,7 @@ public partial class BuilderWindow
 
             ImGui.TextUnformatted("Optimized Route:");
             ImGui.SameLine();
-            if (CurrentBuild.OptimizedRoute.Any())
-            {
-                ImGui.TextColored(ImGuiColors.DalamudOrange, SelectedRoute());
-            }
-            else
-            {
-                ImGui.TextColored(ImGuiColors.DalamudOrange, "No Selection");
-            }
+            SelectedRoute();
 
             ImGui.TextUnformatted("Calculated Stats:");
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
@@ -112,12 +105,20 @@ public partial class BuilderWindow
         }
     }
 
-    public string SelectedRoute()
+    public void SelectedRoute()
     {
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
-        return string.Join(" -> ",
-                           CurrentBuild.OptimizedRoute
-                                       .Where(p => p.RowId > startPoint.RowId)
-                                       .Select(p => NumToLetter(p.RowId - startPoint.RowId)));
+        if (CurrentBuild.OptimizedRoute.Any())
+        {
+            var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
+            ImGui.TextColored(ImGuiColors.DalamudOrange,
+                              string.Join(" -> ",
+                                          CurrentBuild.OptimizedRoute
+                                                      .Where(p => p.RowId > startPoint.RowId)
+                                                      .Select(p => NumToLetter(p.RowId - startPoint.RowId))));
+        }
+        else
+        {
+            ImGui.TextColored(ImGuiColors.DalamudOrange, "No Selection");
+        }
     }
 }
