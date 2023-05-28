@@ -31,7 +31,7 @@ public partial class BuilderWindow
 
                 ImGui.SameLine();
                 ImGui.PushItemWidth(windowWidth - 3.0f);
-                ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) RankSheet.Last(r => r.Capacity != 0).RowId, "Rank %d");
+                ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) RankSheet.Last().RowId, "Rank %d");
                 ImGui.PopItemWidth();
 
                 ImGuiHelpers.ScaledDummy(5);
