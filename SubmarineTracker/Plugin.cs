@@ -49,6 +49,9 @@ namespace SubmarineTracker
             Configuration.Initialize(PluginInterface);
 
             Notify = new Notify(this);
+            
+            Submarines.Initialize();
+            TexturesCache.Initialize();
 
             ConfigWindow = new ConfigWindow(this);
             MainWindow = new MainWindow(this, Configuration);
@@ -69,8 +72,6 @@ namespace SubmarineTracker
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
-            Submarines.Initialize();
-            TexturesCache.Initialize();
 
             Submarines.LoadCharacters();
             LoadFCOrder();
