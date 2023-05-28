@@ -1,4 +1,4 @@
-namespace SubmarineTracker.Data;
+﻿namespace SubmarineTracker.Data;
 
 // All this data is taken from:
 // https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA
@@ -107,7 +107,7 @@ public static class LootTable
         { 093, new Breakpoints(220, 235, 275, 320, 225) },
     };
 
-    public static Breakpoints CalculateRequired(List<uint> points)
+    public static Breakpoints CalculateBreakpoints(List<uint> points)
     {
         // more than 5 points isn't allowed ingame
         if (points.Count is 0 or > 5)

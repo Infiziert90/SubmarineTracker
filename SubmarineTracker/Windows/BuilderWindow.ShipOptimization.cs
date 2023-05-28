@@ -1,3 +1,4 @@
+using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
@@ -18,7 +19,7 @@ public partial class BuilderWindow
         AllBuilds.Clear();
 
         Rank = RankSheet.Last();
-        SelectedRank = (int)Rank.RowId;
+        SelectedRank = (int) Rank.RowId;
 
         for (var hull = 0; hull < PartsCount; hull++)
         {
@@ -57,12 +58,14 @@ public partial class BuilderWindow
         }
 
         AllBuilds = newList;
+        LockedTarget = new TargetValues(AllBuilds);
     }
 
     public IEnumerable<Tuple<Submarines.SubmarineBuild, TimeSpan>> FilterBuilds()
     {
         uint distance = 0;
-        if (CurrentBuild.Sectors.Count > 0)
+        var hasRoute = CurrentBuild.Sectors.Count > 0;
+        if (hasRoute)
         {
             var route = CurrentBuild.Sectors.Select(t => ExplorationSheet.GetRow(t)!).ToArray();
             var start = ExplorationSheet.First(t => t.Map.Row == route.First().Map.Row);
@@ -73,8 +76,8 @@ public partial class BuilderWindow
             }
         }
 
-        var builds = AllBuilds.Where(b => b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(Target.GetFilter()).Select(t => new Tuple<Submarines.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
-        if (CurrentBuild.Sectors.Count > 0)
+        var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Submarines.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
+        if (hasRoute)
         {
             builds = builds.Select(tuple =>
             {
@@ -105,9 +108,9 @@ public partial class BuilderWindow
             5 => x => (int)x.Item1.Bridge.RowId,
             6 => x => x.Item1.Surveillance,
             7 => x => x.Item1.Retrieval,
-            8 => x => x.Item1.Speed,
-            9 => x => x.Item1.Range,
-            10 => x => x.Item1.Favor,
+            8 => x => x.Item1.Favor,
+            9 => x => x.Item1.Speed,
+            10 => x => x.Item1.Range,
             _ => _ => 0
         };
 
@@ -119,9 +122,10 @@ public partial class BuilderWindow
         };
     }
 
-    public void ShipTab()
+    public bool ShipTab()
     {
-        if (ImGui.BeginTabItem("Ship"))
+        var open = ImGui.BeginTabItem("Ship");
+        if (open)
         {
             if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d"))
             {
@@ -129,69 +133,113 @@ public partial class BuilderWindow
                 RefreshList();
             }
 
-            var windowWidth = ImGui.GetWindowWidth() / 3;
-
-            ImGui.Text("Surveillance: ");
-            ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth - 3.0f);
-            if (ImGui.SliderInt("##shipSliderMinSurveillance", ref Target.MinSurveillance, LockedTarget.MinSurveillance, LockedTarget.MaxSurveillance, "Min %d"))
+            var hasRoute = CurrentBuild.Sectors.Count > 0;
+            if (!hasRoute)
             {
-                Target.MaxSurveillance = Math.Max(Target.MinSurveillance, Target.MaxSurveillance);
+                if (ImGui.CollapsingHeader("Stats"))
+                {
+                    var textWidth = ImGui.CalcTextSize("Surveillance:").X + (15.0f * ImGuiHelpers.GlobalScale);
+                    var sliderWidth = ImGui.GetWindowWidth() / 3;
+
+                    ImGui.Text("Surveillance:");
+                    ImGui.SameLine(textWidth);
+                    ImGui.PushItemWidth(sliderWidth);
+                    if (ImGui.SliderInt("##shipSliderMinSurveillance", ref Target.MinSurveillance, LockedTarget.MinSurveillance, LockedTarget.MaxSurveillance, "Min %d"))
+                    {
+                        Target.MaxSurveillance = Math.Max(Target.MinSurveillance, Target.MaxSurveillance);
+                    }
+
+                    ImGui.SameLine();
+                    if (ImGui.SliderInt("##shipSliderMaxSurveillance", ref Target.MaxSurveillance, LockedTarget.MinSurveillance, LockedTarget.MaxSurveillance, "Max %d"))
+                    {
+                        Target.MinSurveillance = Math.Min(Target.MinSurveillance, Target.MaxSurveillance);
+                    }
+                    ImGui.PopItemWidth();
+
+                    ImGui.Text("Retrieval:");
+                    ImGui.SameLine(textWidth);
+                    ImGui.PushItemWidth(sliderWidth);
+                    if (ImGui.SliderInt("##shipSliderMinRetrieval", ref Target.MinRetrieval, LockedTarget.MinRetrieval, LockedTarget.MaxRetrieval, "Min %d"))
+                    {
+                        Target.MaxRetrieval = Math.Max(Target.MinRetrieval, Target.MaxRetrieval);
+                    }
+
+                    ImGui.SameLine();
+                    if (ImGui.SliderInt("##shipSliderMaxRetrieval", ref Target.MaxRetrieval, LockedTarget.MinRetrieval, LockedTarget.MaxRetrieval, "Max %d"))
+                    {
+                        Target.MinRetrieval = Math.Min(Target.MinRetrieval, Target.MaxRetrieval);
+                    }
+                    ImGui.PopItemWidth();
+
+                    ImGui.Text("Favor:");
+                    ImGui.SameLine(textWidth);
+                    ImGui.PushItemWidth(sliderWidth);
+                    if (ImGui.SliderInt("##shipSliderMinFavor", ref Target.MinFavor, LockedTarget.MinFavor, LockedTarget.MaxFavor, "Min %d"))
+                    {
+                        Target.MaxFavor = Math.Max(Target.MinFavor, Target.MaxFavor);
+                    }
+
+                    ImGui.SameLine();
+                    if (ImGui.SliderInt("##shipSliderMaxFavor", ref Target.MaxFavor, LockedTarget.MinFavor, LockedTarget.MaxFavor, "Max %d"))
+                    {
+                        Target.MinFavor = Math.Min(Target.MinFavor, Target.MaxFavor);
+                    }
+                    ImGui.PopItemWidth();
+
+                    ImGui.Text("Speed:");
+                    ImGui.SameLine(textWidth);
+                    ImGui.PushItemWidth(sliderWidth);
+                    if (ImGui.SliderInt("##shipSliderMinSpeed", ref Target.MinSpeed, LockedTarget.MinSpeed, LockedTarget.MaxSpeed, "Min %d"))
+                    {
+                        Target.MaxSpeed = Math.Max(Target.MinSpeed, Target.MaxSpeed);
+                    }
+
+                    ImGui.SameLine();
+                    if (ImGui.SliderInt("##shipSliderMaxSpeed", ref Target.MaxSpeed, LockedTarget.MinSpeed, LockedTarget.MaxSpeed, "Max %d"))
+                    {
+                        Target.MinSpeed = Math.Min(Target.MinSpeed, Target.MaxSpeed);
+                    }
+                    ImGui.PopItemWidth();
+                }
+
+                ImGuiHelpers.ScaledDummy(10.0f);
+            }
+            else
+            {
+                var secondRow = ImGui.GetWindowWidth() / 5.1f;
+
+                var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
+
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Selected Route:");
+                ImGui.TextColored(ImGuiColors.DalamudOrange, SelectedRoute());
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints:");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
+                ImGui.SameLine(secondRow);
+                ImGui.TextUnformatted($"T2: {breakpoints.T2} | T3: {breakpoints.T3}");
+
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Retrieval");
+                ImGui.SameLine(secondRow);
+                ImGui.TextUnformatted($"Normal: {breakpoints.Normal} | Opti: {breakpoints.Optimal}");
+
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
+                ImGui.SameLine(secondRow);
+                ImGui.TextUnformatted($"Favor: {breakpoints.Favor}");
             }
 
-            ImGui.SameLine();
-            if (ImGui.SliderInt("##shipSliderMaxSurveillance", ref Target.MaxSurveillance, LockedTarget.MinSurveillance, LockedTarget.MaxSurveillance, "Max %d"))
+            if (!FilterBuilds().Any())
             {
-                Target.MinSurveillance = Math.Min(Target.MinSurveillance, Target.MaxSurveillance);
-            }
-            ImGui.PopItemWidth();
+                ImGuiHelpers.ScaledDummy(20.0f);
 
-            ImGui.Text("Retrieval: ");
-            ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth - 3.0f);
-            if (ImGui.SliderInt("##shipSliderMinRetrieval", ref Target.MinRetrieval, LockedTarget.MinRetrieval, LockedTarget.MaxRetrieval, "Min %d"))
-            {
-                Target.MaxRetrieval = Math.Max(Target.MinRetrieval, Target.MaxRetrieval);
+                var width = ImGui.GetWindowSize().X;
+                var textWidth   = ImGui.CalcTextSize("No build found.").X;
+
+                ImGui.SetCursorPosX((width - textWidth) * 0.5f);
+                ImGui.TextColored(ImGuiColors.DalamudOrange, "No build found.");
+                ImGui.EndTabItem();
+                return true;
             }
 
-            ImGui.SameLine();
-            if (ImGui.SliderInt("##shipSliderMaxRetrieval", ref Target.MaxRetrieval, LockedTarget.MinRetrieval, LockedTarget.MaxRetrieval, "Max %d"))
-            {
-                Target.MinRetrieval = Math.Min(Target.MinRetrieval, Target.MaxRetrieval);
-            }
-            ImGui.PopItemWidth();
-
-            ImGui.Text("Speed: ");
-            ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth - 3.0f);
-            if (ImGui.SliderInt("##shipSliderMinSpeed", ref Target.MinSpeed, LockedTarget.MinSpeed, LockedTarget.MaxSpeed, "Min %d"))
-            {
-                Target.MaxSpeed = Math.Max(Target.MinSpeed, Target.MaxSpeed);
-            }
-
-            ImGui.SameLine();
-            if (ImGui.SliderInt("##shipSliderMaxSpeed", ref Target.MaxSpeed, LockedTarget.MinSpeed, LockedTarget.MaxSpeed, "Max %d"))
-            {
-                Target.MinSpeed = Math.Min(Target.MinSpeed, Target.MaxSpeed);
-            }
-            ImGui.PopItemWidth();
-
-            ImGui.Text("Favor: ");
-            ImGui.SameLine();
-            ImGui.PushItemWidth(windowWidth - 3.0f);
-            if (ImGui.SliderInt("##shipSliderMinFavor", ref Target.MinFavor, LockedTarget.MinFavor, LockedTarget.MaxFavor, "Min %d"))
-            {
-                Target.MaxFavor = Math.Max(Target.MinFavor, Target.MaxFavor);
-            }
-
-            ImGui.SameLine();
-            if (ImGui.SliderInt("##shipSliderMaxFavor", ref Target.MaxFavor, LockedTarget.MinFavor, LockedTarget.MaxFavor, "Max %d"))
-            {
-                Target.MinFavor = Math.Min(Target.MinFavor, Target.MaxFavor);
-            }
-            ImGui.PopItemWidth();
-
-            ImGui.BeginTable("##shipTable", 12, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.SortMulti | ImGuiTableFlags.Sortable);
+            ImGui.BeginTable("##shipTable", hasRoute ? 12 : 11, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable);
             ImGui.TableSetupColumn("Cost");
             ImGui.TableSetupColumn("Repair");
             ImGui.TableSetupColumn("Hull", ImGuiTableColumnFlags.NoSort);
@@ -200,43 +248,61 @@ public partial class BuilderWindow
             ImGui.TableSetupColumn("Bridge", ImGuiTableColumnFlags.NoSort);
             ImGui.TableSetupColumn("Surveillance", ImGuiTableColumnFlags.PreferSortDescending);
             ImGui.TableSetupColumn("Retrieval", ImGuiTableColumnFlags.PreferSortDescending);
+            ImGui.TableSetupColumn("Favor", ImGuiTableColumnFlags.PreferSortDescending);
             ImGui.TableSetupColumn("Speed", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending);
             ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Favor", ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
+            if (hasRoute)
+                ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
             ImGui.TableHeadersRow();
+            // DateTime start = DateTime.UtcNow;
+            // PluginLog.Information("Speed 3");
 
-            foreach (var (build, time) in SortBuilds(ImGui.TableGetSortSpecs().Specs))
+            var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
+            using (var clipper = new ListClipper(tableContent.Length, itemHeight: ImGui.CalcTextSize("W").Y * 1.1f))
             {
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.BuildCost}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.RepairCosts}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{Submarines.SectionIdToChar[build.HullCharId]}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{Submarines.SectionIdToChar[build.SternCharId]}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{Submarines.SectionIdToChar[build.BowCharId]}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{Submarines.SectionIdToChar[build.BridgeCharId]}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.Surveillance}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.Retrieval}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.Speed}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.Range}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{build.Favor}");
-                ImGui.TableNextColumn();
-                ImGui.Text($"{ToTime(time)}");
-                ImGui.TableNextRow();
+                foreach (var i in clipper.Rows)
+                {
+                    var (build, time) = tableContent[i];
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.BuildCost}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.RepairCosts}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{Submarines.SectionIdToChar[build.HullCharId]}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{Submarines.SectionIdToChar[build.SternCharId]}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{Submarines.SectionIdToChar[build.BowCharId]}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{Submarines.SectionIdToChar[build.BridgeCharId]}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.Surveillance}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.Retrieval}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.Favor}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.Speed}");
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{build.Range}");
+                    if (hasRoute)
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{ToTime(time)}");
+                    }
+
+                    ImGui.TableNextRow();
+                }
             }
+
             ImGui.EndTable();
-            ImGui.EndTabItem();
+            // DateTime end = DateTime.UtcNow;
+            // TimeSpan timeDiff = end - start;
+            // PluginLog.Information(timeDiff.TotalMilliseconds.ToString());
         }
+
+        ImGui.EndTabItem();
+        return open;
     }
 
     struct TargetValues
@@ -294,6 +360,17 @@ public partial class BuilderWindow
                 build.Speed <= tmpThis.MaxSpeed &&
                 build.Range <= tmpThis.MaxRange &&
                 build.Favor <= tmpThis.MaxFavor;
+        }
+
+        public Func<Submarines.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
+        {
+            var breakpoints = LootTable.CalculateBreakpoints(path);
+            var tmpThis = this;
+            return build =>
+                build.Surveillance >= breakpoints.T3 &&
+                build.Retrieval >= breakpoints.Optimal &&
+                build.Favor >= breakpoints.Favor &&
+                build.Speed <= tmpThis.MaxSpeed;
         }
     }
 }

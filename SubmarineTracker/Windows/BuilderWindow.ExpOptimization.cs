@@ -143,20 +143,18 @@ public partial class BuilderWindow
 
                     // Always pick highest rank map if smaller then possible
                     if (maps.Length <= CurrentBuild.Map)
+                    {
                         CurrentBuild.Map = maps.Length - 1;
+                        Reset(CurrentBuild.Map);
+                    }
 
                     var selectedMap = CurrentBuild.Map;
                     ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
 
                     var mapChanged = selectedMap != CurrentBuild.Map;
                     if (mapChanged)
-                    {
-                        Error = false;
-                        ComputingPath = false;
-                        BestPath = Array.Empty<uint>();
-                        MustInclude.Clear();
-                        CurrentBuild.ChangeMap(selectedMap);
-                    }
+                        Reset(selectedMap);
+
                     CurrentBuild.Map = selectedMap;
 
                     var beginCalculation = false;
@@ -325,5 +323,14 @@ public partial class BuilderWindow
 
             ImGui.EndTabItem();
         }
+    }
+
+    private void Reset(int newMap)
+    {
+        Error = false;
+        ComputingPath = false;
+        BestPath = Array.Empty<uint>();
+        MustInclude.Clear();
+        CurrentBuild.ChangeMap(newMap);
     }
 }

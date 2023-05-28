@@ -380,8 +380,10 @@ public static class Submarines
         public uint BowCharId => (Bow.RowId - 1) / 4;
         public uint BridgeCharId => (Bridge.RowId - 2) / 4;
 
-        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
-        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
+        public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
+
+        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint) rank)!;
+        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
 
         public string BuildIdentifier()
         {

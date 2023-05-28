@@ -6,13 +6,14 @@
     "InternalName": "SubmarineTracker",
     "ApplicableVersion": "any",
     "Tags": [
-        "Submarines",
+        "Submarine",
         "Tracker",
         "Builder",
-        "Plugins",
         "Loot",
         "Optimizer",
         "Notifications",
-        "Helper"
+        "Helper",
+        "Solver",
+        "Routes"
     ]
 }

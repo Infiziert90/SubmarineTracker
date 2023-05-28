@@ -19,7 +19,7 @@ public partial class BuilderWindow
 
             var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
             var optimizedDuration = Submarines.CalculateDuration(optimizedPoints, build);
-            var breakpoints = LootTable.CalculateRequired(CurrentBuild.Sectors);
+            var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
                 expPerMinute = CurrentBuild.OptimizedRoute.Select(p => p.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);
@@ -36,7 +36,7 @@ public partial class BuilderWindow
             ImGui.SameLine();
             if (CurrentBuild.OptimizedRoute.Any())
             {
-                ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
+                ImGui.TextColored(ImGuiColors.DalamudOrange, SelectedRoute());
             }
             else
             {
@@ -110,5 +110,14 @@ public partial class BuilderWindow
             else
                 ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({maxRequired})");
         }
+    }
+
+    public string SelectedRoute()
+    {
+        var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
+        return string.Join(" -> ",
+                           CurrentBuild.OptimizedRoute
+                                       .Where(p => p.RowId > startPoint.RowId)
+                                       .Select(p => NumToLetter(p.RowId - startPoint.RowId)));
     }
 }

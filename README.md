@@ -8,6 +8,7 @@ Simple and Easy
 + Optimized EXP calculator for the selected build
 + Unlockable exploration points are highlighted
 + Breakpoint support
++ Build solver
 + Configurable notification for returning subs
 + Helper with lots of useful information
 + Support for multiple FCs  
@@ -29,7 +30,3 @@ Simple and Easy
 
 ### Helpy
 ![helpy](SubmarineTracker/images/helpy.png)
-
-
-### Planned
-+ Automatic build solver
