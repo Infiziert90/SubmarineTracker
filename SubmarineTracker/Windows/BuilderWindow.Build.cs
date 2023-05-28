@@ -36,7 +36,7 @@ public partial class BuilderWindow
 
                 ImGuiHelpers.ScaledDummy(5);
 
-                if (ImGui.BeginTable("##submarinePartSelection", 5))
+                if (ImGui.BeginTable("##submarinePartSelection", 5, ImGuiTableFlags.BordersInnerH))
                 {
                     ImGui.TableSetupColumn("Type");
                     ImGui.TableSetupColumn("Hull");
@@ -56,7 +56,7 @@ public partial class BuilderWindow
                     BuildTableEntries("MUniki", 24);
                     BuildTableEntries("MWhale", 28);
                     BuildTableEntries("MCoelac.", 32);
-                    BuildTableEntries("MSyldra", 36);
+                    BuildTableEntries("MSyldra", 36, last: true);
                 }
 
                 ImGui.EndTable();
@@ -67,7 +67,7 @@ public partial class BuilderWindow
         }
     }
 
-    public void BuildTableEntries(string label, int number)
+    public void BuildTableEntries(string label, int number, bool last = false)
     {
         ImGui.TableNextColumn();
         ImGui.TextUnformatted(label);
@@ -79,6 +79,8 @@ public partial class BuilderWindow
         ImGui.RadioButton($"##{label}B", ref CurrentBuild.Bow, number + 1);
         ImGui.TableNextColumn();
         ImGui.RadioButton($"##{label}Br", ref CurrentBuild.Bridge, number + 2);
-        ImGui.TableNextRow();
+
+        if(!last)
+            ImGui.TableNextRow();
     }
 }
