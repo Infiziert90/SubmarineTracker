@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
 using SubmarineTracker.Data;

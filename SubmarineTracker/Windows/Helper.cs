@@ -1,7 +1,3 @@
-﻿using Dalamud.Interface;
-using Dalamud.Interface.Colors;
-using ImGuiNET;
-
 namespace SubmarineTracker.Windows;
 
 public static class Helper

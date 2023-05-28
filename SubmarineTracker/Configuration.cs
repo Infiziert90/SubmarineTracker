@@ -1,7 +1,5 @@
-﻿using Dalamud.Configuration;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
-using System;
-using System.Collections.Generic;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker

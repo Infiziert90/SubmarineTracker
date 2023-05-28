@@ -2,8 +2,6 @@ using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Excel;
 using Lumina;
-using System;
-using System.Numerics;
 
 namespace SubmarineTracker;
 

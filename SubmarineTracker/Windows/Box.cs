@@ -1,7 +1,3 @@
-﻿using System;
-using System.Numerics;
-using ImGuiNET;
-
 namespace SubmarineTracker.Windows;
 
 // From https://github.com/ocornut/imgui/issues/5944

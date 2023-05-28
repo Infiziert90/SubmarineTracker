@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
@@ -10,7 +8,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Interface.Windowing;
-using EurekaTrackerAutoPopper.Attributes;
+using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 using SubmarineTracker.Windows;

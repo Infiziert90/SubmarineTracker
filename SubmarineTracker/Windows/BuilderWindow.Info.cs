@@ -1,8 +1,5 @@
-using Dalamud.Interface;
-using Dalamud.Interface.Colors;
-using ImGuiNET;
-
 namespace SubmarineTracker.Windows;
+
 public partial class BuilderWindow
 {
     private static bool InfoTab()

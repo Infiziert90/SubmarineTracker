@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EurekaTrackerAutoPopper.Attributes
+namespace SubmarineTracker.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class AliasesAttribute : Attribute

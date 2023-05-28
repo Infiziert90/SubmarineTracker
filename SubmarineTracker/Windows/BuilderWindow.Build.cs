@@ -1,8 +1,4 @@
-using Dalamud.Interface;
-using ImGuiNET;
 using SubmarineTracker.Data;
-using System.Linq;
-using System.Numerics;
 
 namespace SubmarineTracker.Windows;
 
