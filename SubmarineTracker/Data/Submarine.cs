@@ -309,7 +309,7 @@ public static class Submarines
                 durabilityAfter.Add(result <= 0 ? 0 : result / 300.0);
             }
 
-            return durabilityAfter.Min();
+            return durabilityAfter.Any() ? durabilityAfter.Min() : 42.0;
         }
         #endregion
 
