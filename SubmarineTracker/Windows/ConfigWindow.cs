@@ -65,6 +65,12 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Overview:");
                 ImGui.Indent(10.0f);
                 changed |= ImGui.Checkbox("Show Repair Status", ref Configuration.ShowOnlyLowest);
+                if (Configuration.ShowOnlyLowest)
+                {
+                    ImGui.Indent(10.0f);
+                    changed |= ImGui.Checkbox("Show Repair Prediction", ref Configuration.ShowPrediction);
+                    ImGui.Unindent(10.0f);
+                }
                 changed |= ImGui.Checkbox("Show Return Time", ref Configuration.ShowTimeInOverview);
                 if (Configuration.ShowTimeInOverview)
                 {
@@ -350,7 +356,7 @@ public class ConfigWindow : Window, IDisposable
 
             if (ImGui.BeginTabItem("About"))
             {
-                if (ImGui.BeginChild("AboutContent", new Vector2(0, -50)))
+                if (ImGui.BeginChild("AboutContent", new Vector2(0, -(50 * ImGuiHelpers.GlobalScale))))
                 {
                     ImGuiHelpers.ScaledDummy(5.0f);
 

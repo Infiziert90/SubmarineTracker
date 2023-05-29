@@ -131,9 +131,9 @@ public partial class BuilderWindow
                 return;
             }
 
-            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
+            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
             {
-                if (ImGui.BeginChild("BestPath", new Vector2(0, 170)))
+                if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
                     var maps = ExplorationSheet
                        .Where(r => r.StartingPoint)

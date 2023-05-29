@@ -9,7 +9,7 @@ public partial class BuilderWindow
 {
     public static List<Submarines.SubmarineBuild> AllBuilds = new();
     public int SelectedRank;
-    private SubmarineRank Rank;
+    private SubmarineRank Rank = null!;
     private const int PartsCount = 10;
     private TargetValues Target;
     private TargetValues LockedTarget;

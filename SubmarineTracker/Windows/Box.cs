@@ -48,10 +48,6 @@ public static class Box
 
     public static void SimpleBox(Modifier iModifier, Action iBoxContent)
     {
-        // Implementation note: this is made static because of this https://github.com/ocornut/imgui/issues/5944#issuecomment-1333930454
-        // "using a new Splitter every frame is prohibitively costly".
-        ImDrawListSplitter kSplitter = new();
-
         var hasBackground = !ColorIsTransparent(iModifier.FBackgroundColor);
         var hasBorder = !ColorIsTransparent(iModifier.FBorderColor);
 
@@ -80,7 +76,7 @@ public static class Box
         // account for padding right/bottom
         var max = ImGui.GetItemRectMax() + new Vector2(iModifier.FPadding.Y, iModifier.FPadding.Z);
 
-        if( drawList._Data != nint.Zero)
+        if(drawList._Data != nint.Zero)
         {
             // second we draw the rectangle and border in channel 0 (will be below)
             drawList.ChannelsSetCurrent(0);

@@ -15,6 +15,7 @@ namespace SubmarineTracker
         public bool ShowBothOptions = false;
         public bool ShowRouteInOverview = true;
         public bool ShowOnlyLowest = true;
+        public bool ShowPrediction = true;
         public bool UseCharacterName = false;
         public bool UserResize = false;
         public bool ShowAll = true;

@@ -42,7 +42,7 @@ public partial class BuilderWindow : Window, IDisposable
         var infoTabOpen = false;
         var shipTabOpen = false;
 
-        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
+        var buttonHeight = ImGui.CalcTextSize("XXX").Y + (10.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
         {
             var sub = new Submarines.Submarine();
@@ -84,12 +84,12 @@ public partial class BuilderWindow : Window, IDisposable
                 ImGui.SameLine();
 
                 ImGui.Button("Save");
-                if (SaveBuild());
+                SaveBuild();
 
                 ImGui.SameLine();
 
                 ImGui.Button("Load");
-                if (LoadBuild());
+                LoadBuild();
             }
             else
             {

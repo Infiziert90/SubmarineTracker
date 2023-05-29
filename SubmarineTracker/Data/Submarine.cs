@@ -294,6 +294,23 @@ public static class Submarines
 
             return identifier;
         }
+
+        public double PredictDurability()
+        {
+            var partsDurability = new[] { (Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability) };
+            var durabilityAfter = new List<double>();
+            foreach (var (part, durability) in partsDurability)
+            {
+                var damage = 0;
+                foreach (var sector in Points)
+                    damage += (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow(part)!.Rank) * 7;
+
+                var result = durability - damage;
+                durabilityAfter.Add(result <= 0 ? 0 : result / 300.0);
+            }
+
+            return durabilityAfter.Min();
+        }
         #endregion
 
         public bool IsValid() => Rank > 0;
@@ -774,7 +791,7 @@ public static class Submarines
         catch (Exception e)
         {
             PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace);
+            PluginLog.Error(e.StackTrace!);
         }
 
         var min = MinimalWays.MinBy(m => m.Way);

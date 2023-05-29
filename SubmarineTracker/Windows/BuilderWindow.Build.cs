@@ -8,7 +8,7 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Build"))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -110)))
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
             {
                 var existingSubs = Configuration.FCOrder
                                              .SelectMany(id => Submarines.KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
@@ -16,7 +16,7 @@ public partial class BuilderWindow
                 existingSubs = existingSubs.Prepend("Custom").ToArray();
 
                 var windowWidth = ImGui.GetWindowWidth() / 2;
-                ImGui.PushItemWidth(windowWidth - 5.0f);
+                ImGui.PushItemWidth(windowWidth - (5.0f * ImGuiHelpers.GlobalScale));
                 ImGui.Combo("##existingSubs", ref CurrentBuild.OriginalSub, existingSubs, existingSubs.Length);
                 ImGui.PopItemWidth();
 
@@ -30,7 +30,7 @@ public partial class BuilderWindow
                 }
 
                 ImGui.SameLine();
-                ImGui.PushItemWidth(windowWidth - 3.0f);
+                ImGui.PushItemWidth(windowWidth - (3.0f * ImGuiHelpers.GlobalScale));
                 ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) RankSheet.Last().RowId, "Rank %d");
                 ImGui.PopItemWidth();
 

@@ -45,16 +45,16 @@ public class MainWindow : Window, IDisposable
             return;
         }
 
-        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
+        var buttonHeight = ImGui.CalcTextSize("XXX").Y + (10.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
         {
-            var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + 10;
+            var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
             if (Configuration.UseCharacterName)
-                buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + 10;
+                buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
 
             ImGui.Columns(2, "columns", true);
             if (!Configuration.UserResize)
-                ImGui.SetColumnWidth(0, buttonWidth + 20);
+                ImGui.SetColumnWidth(0, buttonWidth + (20 * ImGuiHelpers.GlobalScale));
             else
                 buttonWidth = ImGui.GetContentRegionAvail().X;
 
@@ -149,7 +149,7 @@ public class MainWindow : Window, IDisposable
 
             var secondRow = ImGui.GetContentRegionMax().X / 7.0f;
             var thirdRow = ImGui.GetContentRegionMax().X / 4.0f;
-            var lastRow = ImGui.GetContentRegionMax().X / 2.8f;
+            var lastRow = ImGui.GetContentRegionMax().X / (Configuration.ShowPrediction ? 2.3f : 2.8f);
 
             var text = $"{fc.Tag}@{fc.World}";
             if (Configuration.UseCharacterName && fc.CharacterName != "")
@@ -173,6 +173,13 @@ public class MainWindow : Window, IDisposable
 
                     ImGui.SameLine(thirdRow);
                     ImGui.TextColored(ImGuiColors.ParsedOrange, repair);
+
+                    if (Configuration.ShowPrediction)
+                    {
+                        var durabilityAfter = sub.PredictDurability();
+                        ImGui.SameLine();
+                        ImGui.TextColored(ImGuiColors.ParsedOrange, durabilityAfter == 0 ? "(Breaks)" : $"({durabilityAfter:F}%%)");
+                    }
                 }
 
                 if (sub.IsOnVoyage())
