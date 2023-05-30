@@ -58,7 +58,8 @@ public partial class HelpyWindow
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
-            var special = point.Item2.Sub ? "Unlocks slot" : "";
+            var rank = explorationPoint.RankReq;
+            var special = point.Item2.Sub ? $"Rank {rank} <Unlocks slot>" : $"Rank {rank}";
 
             Box.SimpleBox(mod, () =>
             {
@@ -70,7 +71,7 @@ public partial class HelpyWindow
 
                 ImGui.BeginChild($"##{point.Item1}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
                 ImGui.PushTextWrapPos();
-                ImGui.TextColored(color, $"({letter}) {dest}");
+                ImGui.TextColored(color, $"{letter}. {dest}");
                 ImGui.PopTextWrapPos();
                 ImGui.TextColored(ImGuiColors.TankBlue, special);
                 ImGui.EndChild();
@@ -120,7 +121,8 @@ public partial class HelpyWindow
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
-            var special = point.Item2.Sub ? "Unlocks slot" : point.Item2.Map ? "Unlocks new map" : "";
+            var rank = explorationPoint.RankReq;
+            var special = point.Item2.Sub ? $"Rank {rank} <Unlocks slot>" : point.Item2.Map ? $"Rank {rank} <Unlocks map>" : $"Rank {rank}";
 
             Box.SimpleBox(mod, () =>
             {
@@ -132,7 +134,7 @@ public partial class HelpyWindow
 
                 ImGui.BeginChild($"##{point.Item1}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
                 ImGui.PushTextWrapPos();
-                ImGui.TextColored(color, $"({letter}) {dest}");
+                ImGui.TextColored(color, $"{letter}. {dest}");
                 ImGui.PopTextWrapPos();
                 ImGui.TextColored(ImGuiColors.TankBlue, special);
                 ImGui.EndChild();

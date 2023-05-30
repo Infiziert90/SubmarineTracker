@@ -368,7 +368,7 @@ public class MainWindow : Window, IDisposable
                                             ImGui.SetCursorPos(cursorPosition);
                                         }
 
-                                        ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(point)!.Location));
+                                        ImGui.TextUnformatted(UpperCaseStr(ExplorationSheet.GetRow(point)!.Destination));
                                         ImGuiHelpers.ScaledDummy(5.0f);
                                         foreach (var ((item, count), iIdx) in loot.Select((val, ii) => (val, ii)))
                                         {

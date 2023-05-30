@@ -286,7 +286,7 @@ public partial class BuilderWindow
                             var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
                             ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> ExplorationPopupOptions = new()
                             {
-                                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)}",
+                                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
                                 FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                             };
 

@@ -51,6 +51,7 @@ public partial class BuilderWindow
                         fcSub.UnlockedSectors.TryGetValue(location.RowId, out var unlocked);
                         fcSub.ExploredSectors.TryGetValue(location.RowId, out var explored);
 
+                        var unlockTooltip = false;
                         if (CurrentBuild.Sectors.Count < 5)
                         {
                             if (unlocked && explored)
@@ -72,8 +73,7 @@ public partial class BuilderWindow
                                     CurrentBuild.Sectors.Add(location.RowId);
                                 ImGui.PopStyleColor();
 
-                                if (ImGui.IsItemHovered())
-                                    UnlockedTooltip(location, fcSub);
+                                unlockTooltip = true;
                             }
                         }
                         else
@@ -82,6 +82,9 @@ public partial class BuilderWindow
                             ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
                             ImGui.PopStyleColor();
                         }
+
+                        if (ImGui.IsItemHovered())
+                            UnlockedTooltip(location, fcSub, unlockTooltip);
                     }
 
                     ImGui.EndListBox();
@@ -99,7 +102,7 @@ public partial class BuilderWindow
         }
     }
 
-    private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub)
+    private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
     {
         if (!Unlocks.PointToUnlockPoint.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(0);
@@ -108,27 +111,34 @@ public partial class BuilderWindow
 
         ImGui.BeginTooltip();
         ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
+        ImGui.TextColored(ImGuiColors.HealerGreen, "Rank: ");
         ImGui.SameLine();
-        if (unlockedFrom.Point != 9876)
-        {
-            if (unlockedFrom.Point != 9000)
-            {
-                var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Point)!;
-                var mapPoint = Submarines.FindVoyageStartPoint(unlockPoint.RowId);
-                ImGui.TextColored(otherUnlocked
-                                      ? ImGuiColors.HealerGreen
-                                      : ImGuiColors.DalamudRed,
-                                  $"{NumToLetter(unlockedFrom.Point - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+        ImGui.TextColored(ImGuiColors.HealerGreen, $"{location.RankReq}");
 
-                if (unlockedFrom.Sub)
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"#Extra Sub Slot");
+        if (unlockTooltip)
+        {
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
+            ImGui.SameLine();
+            if (unlockedFrom.Point != 9876)
+            {
+                if (unlockedFrom.Point != 9000)
+                {
+                    var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Point)!;
+                    var mapPoint = Submarines.FindVoyageStartPoint(unlockPoint.RowId);
+                    ImGui.TextColored(otherUnlocked
+                                          ? ImGuiColors.HealerGreen
+                                          : ImGuiColors.DalamudRed,
+                                      $"{NumToLetter(unlockedFrom.Point - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+
+                    if (unlockedFrom.Sub)
+                        ImGui.TextColored(ImGuiColors.TankBlue, $"#Extra Sub Slot");
+                }
+                else
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"Always unlocked");
             }
             else
-                ImGui.TextColored(ImGuiColors.TankBlue, $"Always unlocked");
+                ImGui.TextColored(ImGuiColors.DalamudRed, "Unknown");
         }
-        else
-            ImGui.TextColored(ImGuiColors.DalamudRed, "Unknown");
 
         ImGui.PopTextWrapPos();
         ImGui.EndTooltip();

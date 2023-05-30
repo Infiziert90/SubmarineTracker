@@ -202,7 +202,7 @@ public class LootWindow : Window, IDisposable
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
 
-                ImGui.TextUnformatted(ToStr(ExplorationSheet.GetRow(detailedLoot.Point)!.Location));
+                ImGui.TextUnformatted(UpperCaseStr(ExplorationSheet.GetRow(detailedLoot.Point)!.Destination));
 
                 if (ImGui.BeginTable($"##VoyageLootTable", 3))
                 {
