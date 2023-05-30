@@ -8,6 +8,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Interface.Windowing;
+using Dalamud.Logging;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
@@ -49,7 +50,7 @@ namespace SubmarineTracker
             Configuration.Initialize(PluginInterface);
 
             Notify = new Notify(this);
-            
+
             Submarines.Initialize();
             TexturesCache.Initialize();
 

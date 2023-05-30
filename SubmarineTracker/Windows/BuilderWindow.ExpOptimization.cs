@@ -20,6 +20,8 @@ public partial class BuilderWindow
     private int LastSeenRank;
     private bool OptionsChanged;
 
+    private bool IgnoreUnlocks = false;
+
     private void FindBestPath()
     {
         Error = false;
@@ -32,7 +34,8 @@ public partial class BuilderWindow
             try
             {
                 valid = ExplorationSheet
-                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && r.RankReq <= CurrentBuild.Rank)
+                            .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToList();
             }
             catch (KeyNotFoundException)
@@ -235,6 +238,10 @@ public partial class BuilderWindow
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
                     ImGui.Indent(10.0f);
                     changed |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
+                    if (ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks))
+                    {
+                        OptionsChanged = true;
+                    }
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
