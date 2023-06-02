@@ -17,6 +17,7 @@ public static class Submarines
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
     private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
 
+    private static List<uint> PossibleRanks = new();
     private static List<SubmarineExploration> PossiblePoints = new();
 
     private const int FixedVoyageTime = 43200; // 12h
@@ -29,6 +30,7 @@ public static class Submarines
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
 
         PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToList();
+        PossibleRanks = RankSheet.Where(t => t.Capacity != 0).Select(r => r.RowId).ToList();
     }
 
     public class FcSubmarines
@@ -295,6 +297,8 @@ public static class Submarines
             return identifier;
         }
 
+        // Credits for the formula
+        // https://docs.google.com/spreadsheets/d/e/2PACX-1vTy99IDOlZ48efiFunLGMtZ-_fcfy4Z0Y_GqnL_1dvL7PmH0u7N_op5dysh0U4bVhKaLMHGuGlBf8zq/pubhtml#
         public double PredictDurability()
         {
             var partsDurability = new[] { (Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability) };
@@ -310,6 +314,38 @@ public static class Submarines
             }
 
             return durabilityAfter.Any() ? durabilityAfter.Min() : 42.0;
+        }
+
+        public (uint Rank, double Exp) PredictExpGrowth()
+        {
+            long leftover = CExp;
+            foreach (var sector in Points)
+                leftover += ExplorationSheet.GetRow(sector)!.ExpReward;
+
+            var rank = Rank;
+            (uint Rank, double Exp) result = (rank, 0.0);
+            do
+            {
+                if (!PossibleRanks.Contains(rank))
+                {
+                    result = ((uint)rank - 1, 100.0);
+                    break;
+                }
+
+                var expToNext = RankSheet.GetRow(rank)!.ExpToNext;
+                if (leftover - expToNext >= 0)
+                {
+                    rank += 1;
+                    leftover -= expToNext;
+                }
+                else
+                {
+                    result = (rank, (double) leftover / expToNext * 100.0);
+                }
+            }
+            while (leftover >= 0);
+
+            return result;
         }
         #endregion
 

@@ -449,6 +449,12 @@ public class MainWindow : Window, IDisposable
                 ImGui.TextUnformatted($"{sub.CExp} / {sub.NExp}");
                 ImGui.SameLine();
                 ImGui.TextUnformatted($"{(double) sub.CExp / sub.NExp * 100.0:##0.00}%");
+
+                var predictedExp = sub.PredictExpGrowth();
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted("Predicted");
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted($"Rank {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)");
             }
 
             if (sub.IsOnVoyage())
