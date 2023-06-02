@@ -341,6 +341,7 @@ public static class Submarines
                 else
                 {
                     result = (rank, (double) leftover / expToNext * 100.0);
+                    break;
                 }
             }
             while (leftover >= 0);
