@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Dalamud.Logging;
@@ -152,6 +153,9 @@ public class CharacterConfiguration
             // Migrate version 1 to version 2
             if (config.Version == 1)
             {
+                if (Process.GetProcessesByName("ffxiv_dx11").Length > 1)
+                    throw new Exception("Impossible to migrate. Please close all other instances of FFXIV and restart your game.");
+
                 foreach (var (key, subLoot) in config.Loot)
                 {
                     var sub = new Build.SubmarineBuild(config.Submarines.Find(s => s.Register == key)!);
