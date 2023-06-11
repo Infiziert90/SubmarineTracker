@@ -159,7 +159,7 @@ public class LootWindow : Window, IDisposable
         if (ImGui.BeginTabItem("Voyage"))
         {
             var existingSubs = Submarines.KnownSubmarines.Values
-                                         .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
+                                         .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
                                          .ToArray();
             if (!existingSubs.Any())
             {
@@ -182,6 +182,7 @@ public class LootWindow : Window, IDisposable
             var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 
             var submarineVoyage = submarineLoot.Loot
+                                               .SkipLast(1)
                                                .Select(kv => $"{kv.Value.First().Date}")
                                                .ToArray();
             if (!submarineVoyage.Any())
@@ -197,13 +198,20 @@ public class LootWindow : Window, IDisposable
             ImGuiHelpers.ScaledDummy(5.0f);
 
             var loot = submarineLoot.Loot.ToArray()[SelectedVoyage];
+            var stats = loot.Value.First();
+            if (stats.Valid)
+                ImGui.TextUnformatted($"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
+            else
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "-Legacy Data-");
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
             foreach (var detailedLoot in loot.Value)
             {
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
 
-                ImGui.TextUnformatted(UpperCaseStr(ExplorationSheet.GetRow(detailedLoot.Point)!.Destination));
-
+                ImGui.TextUnformatted(UpperCaseStr(ExplorationSheet.GetRow(detailedLoot.Sector)!.Destination));
                 if (ImGui.BeginTable($"##VoyageLootTable", 3))
                 {
                     ImGui.TableSetupColumn("##icon", 0, 0.15f);
@@ -230,6 +238,18 @@ public class LootWindow : Window, IDisposable
                     }
                 }
                 ImGui.EndTable();
+
+                if (stats.Valid)
+                {
+                    ImGui.TextUnformatted($"Favor Proc: {Loot.ProcToText(detailedLoot.FavProc)}");
+                    ImGui.TextUnformatted($"Retrieval Proc: {Loot.ProcToText(detailedLoot.PrimaryRetProc)}");
+                    ImGui.TextUnformatted($"Primary Surv Proc: {Loot.ProcToText(detailedLoot.PrimarySurvProc)}");
+
+                    if (detailedLoot.ValidAdditional)
+                        ImGui.TextUnformatted($"Additional Surveillance Proc: {Loot.ProcToText(detailedLoot.AdditionalSurvProc)}");
+                }
+
+                ImGuiHelpers.ScaledDummy(5.0f);
             }
             ImGui.EndTabItem();
         }

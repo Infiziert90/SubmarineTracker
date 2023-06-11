@@ -8,9 +8,10 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using Lumina.Excel;
+using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.Windows;
 
@@ -25,6 +26,7 @@ namespace SubmarineTracker
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
+        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
 
         public string Name => "Submarine Tracker";
 
@@ -44,6 +46,8 @@ namespace SubmarineTracker
         private readonly PluginCommandManager<Plugin> CommandManager;
         private Notify Notify;
 
+        private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
+
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -51,6 +55,9 @@ namespace SubmarineTracker
 
             Notify = new Notify(this);
 
+            Loot.Initialize();
+            Build.Initialize();
+            Voyage.Initialize();
             Submarines.Initialize();
             TexturesCache.Initialize();
 
@@ -73,8 +80,9 @@ namespace SubmarineTracker
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
+            TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
 
-            Submarines.LoadCharacters();
+            CharacterConfiguration.LoadCharacters();
             LoadFCOrder();
 
             Framework.Update += FrameworkUpdate;
@@ -146,6 +154,10 @@ namespace SubmarineTracker
             if (local == null)
                 return;
 
+            // 6.4 triggers HousingManager + WorkshopTerritory in Island Sanctuary
+            if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
+                return;
+
             var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
 
             var possibleNewSubs = new List<Submarines.Submarine>();
@@ -158,7 +170,6 @@ namespace SubmarineTracker
             Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
 
             var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
-
             if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "")
                 return;
 
@@ -174,7 +185,7 @@ namespace SubmarineTracker
 
             fc.Refresh = true;
             LoadFCOrder();
-            Submarines.SaveCharacter();
+            CharacterConfiguration.SaveCharacter();
         }
 
         #region Draws

@@ -53,16 +53,16 @@ public static class Utils
         return value;
     }
 
-    public static string FormattedRouteBuild(string name, Submarines.RouteBuild build)
+    public static string FormattedRouteBuild(string name, Build.RouteBuild build)
     {
         var route = "No Route";
         if (build.Sectors.Any())
         {
-            var startPoint = Submarines.FindVoyageStartPoint(build.Sectors.First());
+            var startPoint = Voyage.FindVoyageStartPoint(build.Sectors.First());
             route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";;
         }
 
-        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.BuildIdentifier()})" +
+        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.FullIdentifier()})" +
                $"\n{route}";
     }
 

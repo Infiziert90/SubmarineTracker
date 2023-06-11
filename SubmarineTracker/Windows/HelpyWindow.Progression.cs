@@ -54,7 +54,7 @@ public partial class HelpyWindow
         foreach (var (point, idx) in unlockPath.Select((val, i) => (val, i)))
         {
             var explorationPoint = ExplorationSheet.GetRow(point.Item1)!;
-            var startPoint = Submarines.FindVoyageStartPoint(explorationPoint.RowId);
+            var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
@@ -117,7 +117,7 @@ public partial class HelpyWindow
         foreach (var (point, idx) in unlockPath.Select((val, i) => (val, i)))
         {
             var explorationPoint = ExplorationSheet.GetRow(point.Item1)!;
-            var startPoint = Submarines.FindVoyageStartPoint(explorationPoint.RowId);
+            var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);

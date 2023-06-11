@@ -7,7 +7,7 @@ namespace SubmarineTracker.Windows;
 
 public partial class BuilderWindow
 {
-    public static List<Submarines.SubmarineBuild> AllBuilds = new();
+    public static List<Build.SubmarineBuild> AllBuilds = new();
     public int SelectedRank;
     private SubmarineRank Rank = null!;
     private const int PartsCount = 10;
@@ -31,7 +31,7 @@ public partial class BuilderWindow
                 {
                     for (var bridge = 0; bridge < PartsCount; bridge++)
                     {
-                        var build = new Submarines.SubmarineBuild(SelectedRank, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
+                        var build = new Build.SubmarineBuild(SelectedRank, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
                         AllBuilds.Add(build);
                     }
                 }
@@ -43,7 +43,7 @@ public partial class BuilderWindow
 
     public void RefreshList()
     {
-        var newList = new List<Submarines.SubmarineBuild>();
+        var newList = new List<Build.SubmarineBuild>();
         for (var hull = 0; hull < PartsCount; hull++)
         {
             for (var stern = 0; stern < PartsCount; stern++)
@@ -52,7 +52,7 @@ public partial class BuilderWindow
                 {
                     for (var bridge = 0; bridge < PartsCount; bridge++)
                     {
-                        var build = new Submarines.SubmarineBuild(SelectedRank, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
+                        var build = new Build.SubmarineBuild(SelectedRank, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
                         newList.Add(build);
                     }
                 }
@@ -63,7 +63,7 @@ public partial class BuilderWindow
         LockedTarget = new TargetValues(AllBuilds);
     }
 
-    public IEnumerable<Tuple<Submarines.SubmarineBuild, TimeSpan>> FilterBuilds()
+    public IEnumerable<Tuple<Build.SubmarineBuild, TimeSpan>> FilterBuilds()
     {
         uint distance = 0;
         var hasRoute = CurrentBuild.Sectors.Count > 0;
@@ -78,7 +78,7 @@ public partial class BuilderWindow
             }
         }
 
-        var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute && !IgnoreBreakpoints ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Submarines.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
+        var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute && !IgnoreBreakpoints ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Build.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
         if (hasRoute)
         {
             builds = builds.Select(tuple =>
@@ -91,16 +91,16 @@ public partial class BuilderWindow
                 {
                     time = time.Add(TimeSpan.FromSeconds(route[i].GetSurveyTime(build.Speed) + route[i - 1].GetVoyageTime(route[i], build.Speed)));
                 }
-                return new Tuple<Submarines.SubmarineBuild, TimeSpan>(build, time);
+                return new Tuple<Build.SubmarineBuild, TimeSpan>(build, time);
             });
         }
 
         return builds;
     }
 
-    public IEnumerable<Tuple<Submarines.SubmarineBuild, TimeSpan>> SortBuilds(ImGuiTableColumnSortSpecsPtr sortSpecsPtr)
+    public IEnumerable<Tuple<Build.SubmarineBuild, TimeSpan>> SortBuilds(ImGuiTableColumnSortSpecsPtr sortSpecsPtr)
     {
-        Func<Tuple<Submarines.SubmarineBuild, TimeSpan>, int> sortFunc = sortSpecsPtr.ColumnIndex switch
+        Func<Tuple<Build.SubmarineBuild, TimeSpan>, int> sortFunc = sortSpecsPtr.ColumnIndex switch
         {
             0 => x => x.Item1.BuildCost,
             1 => x => x.Item1.RepairCosts,
@@ -285,13 +285,13 @@ public partial class BuilderWindow
                     ImGui.TableNextColumn();
                     ImGui.Text($"{build.RepairCosts}");
                     ImGui.TableNextColumn();
-                    ImGui.Text($"{Submarines.SectionIdToChar[build.HullCharId]}");
+                    ImGui.Text($"{build.HullIdentifier}");
                     ImGui.TableNextColumn();
-                    ImGui.Text($"{Submarines.SectionIdToChar[build.SternCharId]}");
+                    ImGui.Text($"{build.SternIdentifier}");
                     ImGui.TableNextColumn();
-                    ImGui.Text($"{Submarines.SectionIdToChar[build.BowCharId]}");
+                    ImGui.Text($"{build.BowIdentifier}");
                     ImGui.TableNextColumn();
-                    ImGui.Text($"{Submarines.SectionIdToChar[build.BridgeCharId]}");
+                    ImGui.Text($"{build.BridgeIdentifier}");
                     ImGui.TableNextColumn();
                     ImGui.Text($"{build.Surveillance}");
                     ImGui.TableNextColumn();
@@ -344,7 +344,7 @@ public partial class BuilderWindow
         public bool UseNormal = false;
         public bool IgnoreFavor = false;
 
-        public TargetValues(List<Submarines.SubmarineBuild> allBuilds) : this()
+        public TargetValues(List<Build.SubmarineBuild> allBuilds) : this()
         {
             MinSurveillance = allBuilds.Min(x => x.Surveillance);
             MinRetrieval = allBuilds.Min(x => x.Retrieval);
@@ -372,7 +372,7 @@ public partial class BuilderWindow
             MaxFavor = lockedTarget.MaxFavor;
         }
 
-        public Func<Submarines.SubmarineBuild, bool> GetFilter()
+        public Func<Build.SubmarineBuild, bool> GetFilter()
         {
             var tmpThis = this;
             return build =>
@@ -388,7 +388,7 @@ public partial class BuilderWindow
                 build.Favor <= tmpThis.MaxFavor;
         }
 
-        public Func<Submarines.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
+        public Func<Build.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
         {
             var breakpoints = LootTable.CalculateBreakpoints(path);
             var tmpThis = this;

@@ -33,7 +33,7 @@ namespace SubmarineTracker
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;
 
-        public Dictionary<string, Submarines.RouteBuild> SavedBuilds = new();
+        public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
         public List<ulong> FCOrder = new();
 

@@ -14,7 +14,7 @@ public partial class BuilderWindow : Window, IDisposable
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    public Submarines.RouteBuild CurrentBuild = new();
+    public Build.RouteBuild CurrentBuild = new();
 
     private string CurrentInput = "";
 
@@ -192,9 +192,9 @@ public partial class BuilderWindow : Window, IDisposable
                 CurrentBuild = value;
                 if (CurrentBuild.Sectors.Any())
                 {
-                    var startPoint = Submarines.FindVoyageStartPoint(CurrentBuild.Sectors.First());
+                    var startPoint = Voyage.FindVoyageStartPoint(CurrentBuild.Sectors.First());
                     var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
-                    CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(points!));
+                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
                 }
                 else
                 {
@@ -218,6 +218,6 @@ public partial class BuilderWindow : Window, IDisposable
 
     public void Reset()
     {
-        CurrentBuild = Submarines.RouteBuild.Empty;
+        CurrentBuild = Build.RouteBuild.Empty;
     }
 }

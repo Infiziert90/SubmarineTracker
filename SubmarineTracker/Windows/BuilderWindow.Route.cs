@@ -93,7 +93,7 @@ public partial class BuilderWindow
                 if (CurrentBuild.Sectors.Any())
                 {
                     var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
-                    CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(points!));
+                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
                 }
             }
             ImGui.EndChild();
@@ -124,7 +124,7 @@ public partial class BuilderWindow
                 if (unlockedFrom.Point != 9000)
                 {
                     var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Point)!;
-                    var mapPoint = Submarines.FindVoyageStartPoint(unlockPoint.RowId);
+                    var mapPoint = Voyage.FindVoyageStartPoint(unlockPoint.RowId);
                     ImGui.TextColored(otherUnlocked
                                           ? ImGuiColors.HealerGreen
                                           : ImGuiColors.DalamudRed,

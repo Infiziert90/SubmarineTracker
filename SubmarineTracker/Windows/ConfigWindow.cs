@@ -220,7 +220,7 @@ public class ConfigWindow : Window, IDisposable
                             Configuration.FCOrder.Remove(deletion);
                             Configuration.Save();
 
-                            Submarines.DeleteCharacter(deletion);
+                            CharacterConfiguration.DeleteCharacter(deletion);
                         }
 
                         ImGui.EndTable();

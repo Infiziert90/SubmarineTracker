@@ -11,7 +11,7 @@ public partial class BuilderWindow
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
             {
                 var existingSubs = Configuration.FCOrder
-                                             .SelectMany(id => Submarines.KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.BuildIdentifier()})"))
+                                             .SelectMany(id => Submarines.KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
                                              .ToArray();
                 existingSubs = existingSubs.Prepend("Custom").ToArray();
 
@@ -23,8 +23,8 @@ public partial class BuilderWindow
                 // Calculate first so rank can be changed afterwards
                 if (existingSubs[CurrentBuild.OriginalSub] != "Custom")
                 {
-                    var fc = Submarines.KnownSubmarines.Values.First(fc => fc.Submarines.Any(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]));
-                    sub = fc.Submarines.First(s => $"{s.Name} ({s.BuildIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
+                    var fc = Submarines.KnownSubmarines.Values.First(fc => fc.Submarines.Any(s => $"{s.Name} ({s.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]));
+                    sub = fc.Submarines.First(s => $"{s.Name} ({s.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
 
                     CurrentBuild.UpdateBuild(sub);
                 }

@@ -67,7 +67,7 @@ public partial class BuilderWindow
             }
 
             var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
-            var build = new Submarines.SubmarineBuild(CurrentBuild);
+            var build = CurrentBuild.GetSubmarineBuild;
 
             if (!allPaths.Any())
             {
@@ -78,7 +78,7 @@ public partial class BuilderWindow
                 return;
             }
 
-            var optimalDistances = allPaths.AsParallel().Select(Submarines.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
+            var optimalDistances = allPaths.AsParallel().Select(Voyage.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
             if (!optimalDistances.Any())
             {
                 ComputingPath = false;
@@ -100,7 +100,7 @@ public partial class BuilderWindow
                     }
                     return new Tuple<uint[], TimeSpan, double>(
                         rowIdPath.ToArray(),
-                        TimeSpan.FromSeconds(Submarines.CalculateDuration(path, build)),
+                        TimeSpan.FromSeconds(Voyage.CalculateDuration(path, build)),
                         exp
                     );
                 })
@@ -212,7 +212,7 @@ public partial class BuilderWindow
                                 if (location > startPoint)
                                     ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
                             }
-                            CurrentBuild.UpdateOptimized(Submarines.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                            CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
                         }
 
                         ImGui.EndListBox();

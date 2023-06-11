@@ -132,7 +132,7 @@ public class MainWindow : Window, IDisposable
             ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
             if (ImGui.Button("Reload"))
             {
-                Submarines.LoadCharacters();
+                CharacterConfiguration.LoadCharacters();
                 Plugin.LoadFCOrder();
             }
             ImGui.PopStyleColor();
@@ -164,7 +164,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.SameLine();
                 ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
                 ImGui.SameLine(secondRow);
-                ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
+                ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
 
 
                 if (Configuration.ShowOnlyLowest)
@@ -209,7 +209,7 @@ public class MainWindow : Window, IDisposable
 
                     if (Configuration.ShowRouteInOverview)
                     {
-                        var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                        var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
                         time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
                     }
 
@@ -252,7 +252,7 @@ public class MainWindow : Window, IDisposable
 
                     ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
                     ImGui.SameLine(secondRow);
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.BuildIdentifier()})");
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
 
 
                     if (Configuration.ShowOnlyLowest)
@@ -290,7 +290,7 @@ public class MainWindow : Window, IDisposable
 
                         if (Configuration.ShowRouteInOverview)
                         {
-                            var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                            var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
                             time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
                         }
 
@@ -431,7 +431,7 @@ public class MainWindow : Window, IDisposable
             ImGui.TableNextColumn();
             ImGui.TextUnformatted("Build");
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"{sub.BuildIdentifier()}");
+            ImGui.TextUnformatted($"{sub.Build.FullIdentifier()}");
 
             ImGui.TableNextColumn();
             ImGui.TextUnformatted("Repair");
@@ -476,7 +476,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
-                var startPoint = Submarines.FindVoyageStartPoint(sub.Points.First());
+                var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted("Map");
                 ImGui.TableNextColumn();

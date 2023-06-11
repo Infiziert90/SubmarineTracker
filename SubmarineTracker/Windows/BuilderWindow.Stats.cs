@@ -9,7 +9,7 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginChild("SubStats", new Vector2(0, 0)))
         {
-            var build = new Submarines.SubmarineBuild(CurrentBuild);
+            var build = CurrentBuild.GetSubmarineBuild;
 
             // Reset to custom build if not equal anymore
             if (sub.IsValid() && !build.EqualsSubmarine(sub))
@@ -18,7 +18,7 @@ public partial class BuilderWindow
             var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
 
             var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
-            var optimizedDuration = Submarines.CalculateDuration(optimizedPoints, build);
+            var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
             var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
