@@ -156,6 +156,13 @@ public class CharacterConfiguration
                 if (Process.GetProcessesByName("ffxiv_dx11").Length > 1)
                     throw new Exception("Impossible to migrate. Please close all other instances of FFXIV and restart your game.");
 
+                foreach (var key in config.Loot.Keys)
+                {
+                    if (!config.Submarines.Exists(s => s.Register == key))
+                        config.Loot.Remove(key);
+
+                }
+
                 foreach (var (key, subLoot) in config.Loot)
                 {
                     var sub = new Build.SubmarineBuild(config.Submarines.Find(s => s.Register == key)!);

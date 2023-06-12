@@ -82,7 +82,15 @@ namespace SubmarineTracker
 
             TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
 
-            CharacterConfiguration.LoadCharacters();
+            try
+            {
+                CharacterConfiguration.LoadCharacters();
+            }
+            catch (Exception e)
+            {
+                Dispose(false);
+                throw;
+            }
             LoadFCOrder();
 
             Framework.Update += FrameworkUpdate;
@@ -92,7 +100,9 @@ namespace SubmarineTracker
                 NotifyOverlay.IsOpen = true;
         }
 
-        public void Dispose()
+        public void Dispose() => Dispose(true);
+
+        public void Dispose(bool full)
         {
             this.WindowSystem.RemoveAllWindows();
 
@@ -105,8 +115,11 @@ namespace SubmarineTracker
 
             TexturesCache.Instance?.Dispose();
 
-            Framework.Update -= FrameworkUpdate;
-            Framework.Update -= Notify.NotifyLoop;
+            if (full)
+            {
+                Framework.Update -= FrameworkUpdate;
+                Framework.Update -= Notify.NotifyLoop;
+            }
         }
 
         [Command("/stracker")]
