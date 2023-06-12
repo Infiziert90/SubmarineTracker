@@ -65,16 +65,22 @@ public static class Submarines
             SubLoot.TryAdd(key, new Loot.SubmarineLoot());
 
             var subLoot = SubLoot[key];
+            var sub = Submarines.Find(s => s.Register == key)!;
+
             // add last voyage loot and procs
             if (subLoot.Loot.Any())
             {
                 var lastVoyage = subLoot.Loot.Last();
+
+                // prevent the current snapshot from being overwritten
+                if (lastVoyage.Key == sub.Return)
+                    return;
+
                 if (lastVoyage.Value.First().Sector == 0)
                     subLoot.LootAdd(lastVoyage.Key, data);
             }
 
             // add snapshot of current submarine stats
-            var sub = Submarines.Find(s => s.Register == key)!;
             subLoot.Snapshot(returnTime, sub);
         }
 
