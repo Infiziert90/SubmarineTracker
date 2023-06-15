@@ -326,7 +326,7 @@ public class MainWindow : Window, IDisposable
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
 
-                selectedFc.RebuildStats();
+                selectedFc.RebuildStats(Configuration.ExcludeLegacy);
 
                 if (ImGui.BeginChild("##LootOverview"))
                 {

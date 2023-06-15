@@ -48,14 +48,19 @@ public static class Loot
                 Loot[returnTime][i].AddLoot(val);
         }
 
-        public IEnumerable<DetailedLoot> LootForPoint(uint point)
+        public IEnumerable<DetailedLoot> LootForPoint(uint point, bool excludeLegacy)
         {
-            return Loot.Values.SelectMany(val => val.Where(iVal => iVal.Sector == point));
+            return Loot.Values.SelectMany(val => val
+                                                 .Where(iVal => iVal.Sector == point)
+                                                 .Where(iVal => !excludeLegacy || iVal.Valid));
         }
 
-        public IEnumerable<LootWithDate> LootForPointWithTime(uint point)
+        public IEnumerable<LootWithDate> LootForPointWithTime(uint point, bool excludeLegacy)
         {
-            return Loot.SelectMany(kv => kv.Value.Where(iVal => iVal.Sector == point).Select(loot => new LootWithDate(loot.Date, loot)));
+            return Loot.SelectMany(kv => kv.Value
+                                           .Where(iVal => iVal.Sector == point)
+                                           .Where(iVal => !excludeLegacy || iVal.Valid)
+                                           .Select(loot => new LootWithDate(loot.Date, loot)));
         }
     }
 

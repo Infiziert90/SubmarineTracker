@@ -9,13 +9,13 @@ public partial class ConfigWindow
     {
         if (ImGui.BeginTabItem("Loot"))
         {
-            // ImGuiHelpers.ScaledDummy(5.0f);
-            // var changed = false;
-            //
-            // ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
-            // ImGui.Indent(10.0f);
-            // changed |= ImGui.Checkbox("Exclude Legacy Data", ref Configuration.ExcludeLegacy);
-            // ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledDummy(5.0f);
+            var changed = false;
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+            ImGui.Indent(10.0f);
+            changed |= ImGui.Checkbox("Exclude Legacy Loot", ref Configuration.ExcludeLegacy);
+            ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Add Items:");
@@ -94,8 +94,12 @@ public partial class ConfigWindow
                 ImGui.EndCombo();
             }
 
-            // if (changed)
-            //     Configuration.Save();
+            if (changed)
+            {
+                foreach (var fc in Submarines.KnownSubmarines.Values)
+                    fc.Refresh = true;
+                Configuration.Save();
+            }
 
             ImGui.EndTabItem();
         }

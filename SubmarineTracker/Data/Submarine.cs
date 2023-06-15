@@ -113,7 +113,7 @@ public static class Submarines
         [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> AllLoot = new();
         [JsonIgnore] public Dictionary<DateTime, Dictionary<Item, int>> TimeLoot = new();
 
-        public void RebuildStats()
+        public void RebuildStats(bool excludeLegacy = false)
         {
             if (Refresh)
                 Refresh = false;
@@ -124,7 +124,7 @@ public static class Submarines
             AllLoot.Clear();
             foreach (var point in PossiblePoints)
             {
-                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPoint(point.RowId)).ToList();
+                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPoint(point.RowId, excludeLegacy)).ToList();
                 foreach (var pointLoot in possibleLoot)
                 {
                     var lootList = AllLoot.GetOrCreate(point.RowId);
@@ -142,7 +142,7 @@ public static class Submarines
             TimeLoot.Clear();
             foreach (var point in PossiblePoints)
             {
-                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPointWithTime(point.RowId)).ToList();
+                var possibleLoot = SubLoot.Values.SelectMany(val => val.LootForPointWithTime(point.RowId, excludeLegacy)).ToList();
                 foreach (var (date, loot) in possibleLoot)
                 {
                     var timeList = TimeLoot.GetOrCreate(date);

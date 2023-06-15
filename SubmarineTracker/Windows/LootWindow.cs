@@ -84,11 +84,13 @@ public class LootWindow : Window, IDisposable
             var bigList = new Dictionary<Item, int>();
             foreach (var fc in Submarines.KnownSubmarines.Values)
             {
-                fc.RebuildStats();
+                fc.RebuildStats(Configuration.ExcludeLegacy);
                 var dateLimit = DateUtil.LimitToDate(Configuration.DateLimit);
 
                 numSubs += fc.Submarines.Count;
-                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Where(loot => loot.Value.First().Date >= dateLimit)).Count();
+                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot
+                                                                             .Where(loot => loot.Value.First().Date >= dateLimit)
+                                                                             .Where(loot => !Configuration.ExcludeLegacy || loot.Value.First().Valid)).Count();
 
                 foreach (var (item, count) in fc.TimeLoot.Where(r => r.Key >= dateLimit).SelectMany(kv=>kv.Value))
                 {
@@ -114,7 +116,7 @@ public class LootWindow : Window, IDisposable
                 return;
             }
 
-            var textHeight = ImGui.CalcTextSize("XXXX").Y * 5.0f; // giving space for 5.0 lines
+            var textHeight = ImGui.CalcTextSize("XXXX").Y * 4.2f; // giving space for 4.2 lines
             if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight)))
             {
                 if (ImGui.BeginTable($"##customLootTable", 3))
