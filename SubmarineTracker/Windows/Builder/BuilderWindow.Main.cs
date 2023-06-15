@@ -3,7 +3,7 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow : Window, IDisposable
 {

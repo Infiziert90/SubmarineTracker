@@ -1,7 +1,7 @@
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {

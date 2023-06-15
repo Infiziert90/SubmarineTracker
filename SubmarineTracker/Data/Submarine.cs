@@ -44,6 +44,21 @@ public static class Submarines
         [JsonConstructor]
         public FcSubmarines() { }
 
+        public FcSubmarines(CharacterConfiguration config)
+        {
+            CharacterName = config.CharacterName;
+            Tag = config.Tag;
+            World = config.World;
+            Submarines = config.Submarines;
+            SubLoot = config.Loot;
+            foreach (var (point, unlocked, explored) in config.ExplorationPoints)
+            {
+                UnlockedSectors[point] = unlocked;
+                ExploredSectors[point] = explored;
+            }
+        }
+
+
         public FcSubmarines(string characterName, string tag, string world, List<Submarine> submarines, Dictionary<uint, Loot.SubmarineLoot> loot, List<Tuple<uint, bool, bool>> points)
         {
             CharacterName = characterName;

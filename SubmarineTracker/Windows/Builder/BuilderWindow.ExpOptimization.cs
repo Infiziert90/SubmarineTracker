@@ -1,8 +1,8 @@
-using SubmarineTracker.Data;
 using System.Threading.Tasks;
+using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
@@ -240,6 +240,7 @@ public partial class BuilderWindow
                     changed |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
                     if (ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks))
                     {
+                        changed = true;
                         OptionsChanged = true;
                     }
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");

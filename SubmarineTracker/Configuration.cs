@@ -20,6 +20,8 @@ namespace SubmarineTracker
         public bool UserResize = false;
         public bool ShowAll = true;
 
+        public bool ShowOnlyCurrentFC = false;
+
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;
 
@@ -30,6 +32,7 @@ namespace SubmarineTracker
         public bool NotifyForRepairs = true;
         public bool ShowRepairToast = true;
 
+        public bool ExcludeLegacy = false;
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;
 

@@ -3,7 +3,7 @@ using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
@@ -310,7 +310,10 @@ public partial class BuilderWindow
 
                     ImGui.TableNextColumn();
                     if (ImGuiComponents.IconButton(i, FontAwesomeIcon.ArrowRightFromBracket))
+                    {
                         CurrentBuild.UpdateBuild(build, SelectedRank);
+                        CurrentBuild.OriginalSub = 0;
+                    }
 
                     if (ImGui.IsItemHovered())
                         ImGui.SetTooltip("Import this build");

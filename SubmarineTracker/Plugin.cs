@@ -14,6 +14,9 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.Windows;
+using SubmarineTracker.Windows.Helpy;
+using SubmarineTracker.Windows.Config;
+using SubmarineTracker.Windows.Builder;
 
 namespace SubmarineTracker
 {

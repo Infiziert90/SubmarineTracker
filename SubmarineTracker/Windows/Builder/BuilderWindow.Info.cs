@@ -1,4 +1,4 @@
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {

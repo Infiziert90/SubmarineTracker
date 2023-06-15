@@ -127,8 +127,7 @@ public class CharacterConfiguration
 
         CharacterName = Plugin.ClientState.LocalPlayer?.Name.ToString() ?? "",
         Tag = Plugin.ClientState.LocalPlayer?.CompanyTag.ToString() ?? "",
-        World = Plugin.ClientState.LocalPlayer?.HomeWorld.GameData?.Name.ToString() ?? "Unknown",
-        Submarines = new List<Submarine>(),
+        World = Plugin.ClientState.LocalPlayer?.HomeWorld.GameData?.Name.ToString() ?? "Unknown"
     };
 
     #region Character Handler
@@ -207,7 +206,7 @@ public class CharacterConfiguration
             if (SubmarinesEqual(playerFc.Submarines, config.Submarines))
                 continue;
 
-            KnownSubmarines[id] = new FcSubmarines(config.CharacterName, config.Tag, config.World, config.Submarines, config.Loot, config.ExplorationPoints);
+            KnownSubmarines[id] = new FcSubmarines(config);
         }
     }
 

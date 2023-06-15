@@ -1,7 +1,7 @@
 using Lumina.Excel;
 using SubmarineTracker.Data;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow
 {

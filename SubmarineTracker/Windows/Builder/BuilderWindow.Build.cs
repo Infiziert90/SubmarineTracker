@@ -1,19 +1,24 @@
-using SubmarineTracker.Data;
+using static SubmarineTracker.Data.Submarines;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private void BuildTab(ref Submarines.Submarine sub)
+    private void BuildTab(ref Submarine sub)
     {
         if (ImGui.BeginTabItem("Build"))
         {
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
             {
                 var existingSubs = Configuration.FCOrder
-                                             .SelectMany(id => Submarines.KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
-                                             .ToArray();
+                                                   .SelectMany(id => KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
+                                                   .ToArray();
+                if (Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                    existingSubs = fcSub.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
                 existingSubs = existingSubs.Prepend("Custom").ToArray();
+
+                if (existingSubs.Length < CurrentBuild.OriginalSub)
+                    CurrentBuild.OriginalSub = 0;
 
                 var windowWidth = ImGui.GetWindowWidth() / 2;
                 ImGui.PushItemWidth(windowWidth - (5.0f * ImGuiHelpers.GlobalScale));
@@ -23,8 +28,9 @@ public partial class BuilderWindow
                 // Calculate first so rank can be changed afterwards
                 if (existingSubs[CurrentBuild.OriginalSub] != "Custom")
                 {
-                    var fc = Submarines.KnownSubmarines.Values.First(fc => fc.Submarines.Any(s => $"{s.Name} ({s.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]));
-                    sub = fc.Submarines.First(s => $"{s.Name} ({s.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
+                    sub = KnownSubmarines.Values
+                                         .SelectMany(fc => fc.Submarines)
+                                         .First(sub => $"{sub.Name} ({sub.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
 
                     CurrentBuild.UpdateBuild(sub);
                 }

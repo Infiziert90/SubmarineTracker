@@ -114,7 +114,7 @@ public class LootWindow : Window, IDisposable
                 return;
             }
 
-            var textHeight = ImGui.CalcTextSize("XXXX").Y * 4.0f; // giving space for 4.0 lines
+            var textHeight = ImGui.CalcTextSize("XXXX").Y * 5.0f; // giving space for 5.0 lines
             if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight)))
             {
                 if (ImGui.BeginTable($"##customLootTable", 3))

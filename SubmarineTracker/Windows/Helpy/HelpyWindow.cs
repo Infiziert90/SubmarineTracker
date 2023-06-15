@@ -1,7 +1,7 @@
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
 
-namespace SubmarineTracker.Windows;
+namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow : Window, IDisposable
 {
