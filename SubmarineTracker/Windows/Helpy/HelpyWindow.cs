@@ -39,7 +39,7 @@ public partial class HelpyWindow : Window, IDisposable
             {
                 ProgressionTab(fcSub);
 
-                StorageTab(fcSub);
+                StorageTab();
             }
             ImGui.EndTabBar();
         }

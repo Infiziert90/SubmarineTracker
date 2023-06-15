@@ -18,6 +18,9 @@ public class MainWindow : Window, IDisposable
     private static readonly Vector2 IconSize = new(28, 28);
     private static readonly int MaxLength = "Heavens' Eye Materia".Length;
 
+    // https://github.com/Critical-Impact/CriticalCommonLib/blob/591dc2592341aa8b7c3aca1175a792568ca51e85/Enums/InventoryType.cs#L4
+    private static uint[] Inventories = { 0, 1, 2, 3, 4000, 4001, 4100, 4101, 20000, 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008, 20009, 20009, 20010 };
+
     public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
@@ -242,6 +245,26 @@ public class MainWindow : Window, IDisposable
                 var secondRow = ImGui.GetContentRegionMax().X / 8;
                 var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
                 var lastRow = ImGui.GetContentRegionMax().X / 3;
+
+                if (Plugin.AllaganToolsConsumer.IsAvailable)
+                {
+                    ImGuiHelpers.ScaledDummy(5.0f);
+
+                    uint tanks = 0;
+                    uint kits = 0;
+                    foreach (var inventory in Inventories)
+                    {
+                        tanks += Plugin.AllaganToolsConsumer.GetCount((uint) ImportantItems.Tanks, CurrentSelection, inventory);
+                        kits += Plugin.AllaganToolsConsumer.GetCount((uint) ImportantItems.Kits, CurrentSelection, inventory);
+
+                        if (tanks == uint.MaxValue)
+                            break;
+                    }
+
+                    ImGui.TextColored(ImGuiColors.HealerGreen, "Resources:");
+                    ImGui.SameLine();
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"Tanks x{tanks} & Kits x{kits}");
+                }
 
                 foreach (var sub in selectedFc.Submarines)
                 {

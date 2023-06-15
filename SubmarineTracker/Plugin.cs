@@ -13,6 +13,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
+using SubmarineTracker.IPC;
 using SubmarineTracker.Windows;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
@@ -29,7 +30,6 @@ namespace SubmarineTracker
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
-        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
 
         public string Name => "Submarine Tracker";
 
@@ -51,6 +51,8 @@ namespace SubmarineTracker
 
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
 
+        public static AllaganToolsConsumer AllaganToolsConsumer = null!;
+
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -63,6 +65,9 @@ namespace SubmarineTracker
             Voyage.Initialize();
             Submarines.Initialize();
             TexturesCache.Initialize();
+            ImportantItemsMethods.Initialize();
+
+            AllaganToolsConsumer = new AllaganToolsConsumer();
 
             ConfigWindow = new ConfigWindow(this);
             MainWindow = new MainWindow(this, Configuration);
