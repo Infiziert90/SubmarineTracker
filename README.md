@@ -16,17 +16,19 @@ Simple and Easy
 ### Tracker
 ![tracker](SubmarineTracker/images/tracker2.png)
 
-### Notifications
-#### Return
-![notify](SubmarineTracker/images/chat.png)
-#### Repair
-![notify](SubmarineTracker/images/repair.png)
-
-### FC Loot Overview
+### Tracker > FC Loot Overview
 ![loot](SubmarineTracker/images/fcLoot.png)
+
+### Notifications > Return
+![notify](SubmarineTracker/images/chat.png)
+### Notifications > Repair
+![notify](SubmarineTracker/images/repair.png)
 
 ### Builder
 ![builder](SubmarineTracker/images/builder.png)
 
 ### Helpy
 ![helpy](SubmarineTracker/images/helpy.png)
+
+### Helpy > Storage
+![helpy](SubmarineTracker/images/storage.png)
