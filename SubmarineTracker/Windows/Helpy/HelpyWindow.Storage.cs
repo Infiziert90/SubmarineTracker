@@ -11,9 +11,6 @@ public partial class HelpyWindow
         var open = ImGui.BeginTabItem("Storage");
         if (open)
         {
-            // build cache if needed
-            Storage.BuildStorageCache();
-
             ImGuiHelpers.ScaledDummy(5.0f);
             if (!Plugin.AllaganToolsConsumer.IsAvailable)
             {
@@ -22,6 +19,9 @@ public partial class HelpyWindow
 
                 return open;
             }
+
+            // build cache if needed
+            Storage.BuildStorageCache();
 
             foreach (var (key, fc) in Submarines.KnownSubmarines)
             {

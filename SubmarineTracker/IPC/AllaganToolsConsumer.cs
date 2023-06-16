@@ -21,9 +21,10 @@ public class AllaganToolsConsumer
 
             try
             {
+                TimeSinceLastCheck = Environment.TickCount64;
+
                 IsInitialized.InvokeFunc();
                 Available = true;
-                TimeSinceLastCheck = Environment.TickCount64;
             }
             catch
             {
