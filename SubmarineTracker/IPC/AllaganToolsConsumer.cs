@@ -35,14 +35,14 @@ public class AllaganToolsConsumer
     }
 
     private ICallGateSubscriber<bool> IsInitialized = null!;
-    private ICallGateSubscriber<uint, ulong, uint, uint> ItemCount = null!;
+    private ICallGateSubscriber<uint, ulong, int, uint> ItemCount = null!;
 
     private void Subscribe()
     {
         try
         {
             IsInitialized = Plugin.PluginInterface.GetIpcSubscriber<bool>("AllaganTools.IsInitialized");
-            ItemCount = Plugin.PluginInterface.GetIpcSubscriber<uint, ulong, uint, uint>("AllaganTools.ItemCount");
+            ItemCount = Plugin.PluginInterface.GetIpcSubscriber<uint, ulong, int, uint>("AllaganTools.ItemCount");
         }
         catch (Exception e)
         {
@@ -50,11 +50,12 @@ public class AllaganToolsConsumer
         }
     }
 
-    public uint GetCount(uint itemId, ulong characterId, uint inventoryType)
+    public uint GetCount(uint itemId, ulong characterId)
     {
         try
         {
-            return ItemCount.InvokeFunc(itemId, characterId, inventoryType);
+            // -1 checks all inventories
+            return ItemCount.InvokeFunc(itemId, characterId, -1);
         }
         catch
         {

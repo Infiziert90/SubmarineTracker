@@ -32,14 +32,15 @@ public partial class HelpyWindow : Window, IDisposable
             return;
         }
 
+        var storageOpen = false;
         var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (30.0f * ImGuiHelpers.GlobalScale)))))
+        if (ImGui.BeginChild("HelpyContent", new Vector2(0, -(buttonHeight + (25.0f * ImGuiHelpers.GlobalScale)))))
         {
             if (ImGui.BeginTabBar("##helperTabBar"))
             {
                 ProgressionTab(fcSub);
 
-                StorageTab();
+                storageOpen = StorageTab();
             }
             ImGui.EndTabBar();
         }
@@ -53,6 +54,15 @@ public partial class HelpyWindow : Window, IDisposable
         {
             if (ImGui.Button("Settings"))
                 Plugin.DrawConfigUI();
+
+            if (storageOpen)
+            {
+                ImGui.SameLine();
+                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
+                if (ImGui.Button("Refresh"))
+                    Storage.Refresh = true;
+                ImGui.PopStyleColor();
+            }
         }
         ImGui.EndChild();
     }
