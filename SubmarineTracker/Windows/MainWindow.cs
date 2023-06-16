@@ -130,8 +130,9 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
 
             ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-            if (ImGui.Button("Reload"))
+            if (ImGui.Button("Refresh"))
             {
+                Storage.Refresh = true;
                 CharacterConfiguration.LoadCharacters();
                 Plugin.LoadFCOrder();
             }
