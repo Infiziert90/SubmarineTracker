@@ -108,9 +108,9 @@ public static class SectorBreakpoints
 
         { 095, new Breakpoint(220, 235, 275, 320, 225) },
         { 096, new Breakpoint(220, 235, 275, 320, 225) },
-        { 097, new Breakpoint(220, 235, 275, 320, 225) }, // missing
-        { 098, new Breakpoint(220, 235, 275, 320, 225) }, // missing
-        { 099, new Breakpoint(220, 235, 275, 320, 225) }, // missing
+        { 097, new Breakpoint(220, 235, 275, 320, 225) },
+        { 098, new Breakpoint(225, 240, 280, 325, 230) },
+        { 099, new Breakpoint(225, 237, 280, 325, 227) },
         { 100, new Breakpoint(225, 238, 280, 325, 230) },
         { 101, new Breakpoint(225, 240, 280, 325, 230) },
     };
