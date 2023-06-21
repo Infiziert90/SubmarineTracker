@@ -66,6 +66,13 @@ public static class Utils
                $"\n{route}";
     }
 
+    public static SeString SuccessMessage(string success)
+    {
+        return new SeStringBuilder()
+               .AddUiForeground("[Submarine Tracker] ", 540)
+               .AddUiForeground($"{success}", 43)
+               .BuiltString;
+    }
 
     public static SeString ErrorMessage(string error)
     {

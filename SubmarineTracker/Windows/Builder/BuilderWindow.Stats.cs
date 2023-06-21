@@ -19,7 +19,7 @@ public partial class BuilderWindow
 
             var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
             var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
-            var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
+            var breakpoints = SectorBreakpoints.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
                 expPerMinute = CurrentBuild.OptimizedRoute.Select(p => p.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);

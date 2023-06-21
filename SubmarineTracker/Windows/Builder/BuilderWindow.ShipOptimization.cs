@@ -218,7 +218,7 @@ public partial class BuilderWindow
             {
                 var secondRow = ImGui.GetWindowWidth() / 5.1f;
 
-                var breakpoints = LootTable.CalculateBreakpoints(CurrentBuild.Sectors);
+                var breakpoints = SectorBreakpoints.CalculateBreakpoint(CurrentBuild.Sectors);
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints:");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
@@ -393,7 +393,7 @@ public partial class BuilderWindow
 
         public Func<Build.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
         {
-            var breakpoints = LootTable.CalculateBreakpoints(path);
+            var breakpoints = SectorBreakpoints.CalculateBreakpoint(path);
             var tmpThis = this;
             var useT2 = this.UseT2;
             var useN = this.UseNormal;

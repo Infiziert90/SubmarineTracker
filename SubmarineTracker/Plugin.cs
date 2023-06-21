@@ -7,6 +7,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.Toast;
+using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
@@ -15,6 +16,7 @@ using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
 using SubmarineTracker.Windows;
+using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
@@ -30,6 +32,8 @@ namespace SubmarineTracker
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
+
+        public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
         public string Name => "Submarine Tracker";
 
@@ -57,6 +61,8 @@ namespace SubmarineTracker
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(PluginInterface);
+
+            FileDialogManager = new FileDialogManager();
 
             Notify = new Notify(this);
 
