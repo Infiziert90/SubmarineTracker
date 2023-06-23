@@ -10,7 +10,8 @@ public partial class BuilderWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
-    public static IEnumerable<SubmarineRank> RankSheet = null!;
+    public static List<SubmarineRank> RankSheet = null!;
+    public static ExcelSheet<SubmarinePart> PartSheet = null!;
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
@@ -29,7 +30,8 @@ public partial class BuilderWindow : Window, IDisposable
         Plugin = plugin;
         Configuration = configuration;
 
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0);
+        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0).ToList();
+        PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
         Initialize();
@@ -58,6 +60,8 @@ public partial class BuilderWindow : Window, IDisposable
                 shipTabOpen |= ShipTab();
 
                 infoTabOpen |= InfoTab();
+
+                shipTabOpen |= LevelingTab();
             }
             ImGui.EndTabBar();
 

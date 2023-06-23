@@ -33,6 +33,7 @@ public static class Utils
             2 => "SOA",
             3 => "SOJ",
             4 => "SSS",
+            5 => "TLS",
             _ => ""
         };
     }

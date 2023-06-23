@@ -21,8 +21,12 @@ public partial class BuilderWindow
             var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
             var breakpoints = SectorBreakpoints.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
+            var durationLimitExp = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
-                expPerMinute = CurrentBuild.OptimizedRoute.Select(p => p.ExpReward).Sum(exp => exp) / (optimizedDuration / 60.0);
+            {
+                expPerMinute = SectorBreakpoints.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
+                durationLimitExp = SectorBreakpoints.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes);
+            }
 
 
             var windowWidth = ImGui.GetWindowWidth();
@@ -73,6 +77,18 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");
             ImGui.SameLine(fourthRow);
             ImGui.TextUnformatted($"{expPerMinute:F}");
+
+            if (Configuration.DurationLimit != DurationLimit.None)
+            {
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Limit");
+                ImGui.SameLine(secondRow);
+                ImGui.TextUnformatted($"{DateUtil.GetDurationLimitName(Configuration.DurationLimit)}");
+
+                ImGui.SameLine(thirdRow);
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Duration");
+                ImGui.SameLine(fourthRow);
+                ImGui.TextUnformatted($"{durationLimitExp:F}");
+            }
         }
         ImGui.EndChild();
     }

@@ -18,7 +18,7 @@ public static class Storage
 
         StorageCache.Clear();
 
-        var possibleItems = (ImportantItems[]) Enum.GetValues(typeof(ImportantItems));
+        var possibleItems = (Items[]) Enum.GetValues(typeof(Items));
         foreach (var key in Submarines.KnownSubmarines.Keys)
         {
             StorageCache.Add(key, new Dictionary<uint, CachedItem>());

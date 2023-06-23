@@ -254,9 +254,9 @@ public class MainWindow : Window, IDisposable
                     if (Storage.StorageCache.TryGetValue(CurrentSelection, out var cachedItems))
                     {
                         uint tanks = 0, kits = 0;
-                        if (cachedItems.TryGetValue((uint) ImportantItems.Tanks, out var temp))
+                        if (cachedItems.TryGetValue((uint) Items.Tanks, out var temp))
                             tanks = temp.Count;
-                        if (cachedItems.TryGetValue((uint) ImportantItems.Kits, out temp))
+                        if (cachedItems.TryGetValue((uint) Items.Kits, out temp))
                             kits = temp.Count;
 
                         ImGui.TextColored(ImGuiColors.HealerGreen, "Resources:");

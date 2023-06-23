@@ -22,11 +22,10 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks = false;
 
-    private void FindBestPath()
+    private uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
         Error = false;
-        LastComputedRank = CurrentBuild.Rank;
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
+        LastComputedRank = routeBuild.Rank;
 
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
@@ -34,7 +33,7 @@ public partial class BuilderWindow
             try
             {
                 valid = ExplorationSheet
-                            .Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && r.RankReq <= CurrentBuild.Rank)
+                            .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
                             .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToList();
             }
@@ -43,11 +42,10 @@ public partial class BuilderWindow
                 Error = true;
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NotOptimized();
-                BestPath = Array.Empty<uint>();
-                return;
+                return Array.Empty<uint>();
             }
 
+            var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
             var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
             if (MustInclude.Any())
                 paths = new[] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
@@ -67,15 +65,13 @@ public partial class BuilderWindow
             }
 
             var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
-            var build = CurrentBuild.GetSubmarineBuild;
+            var build = routeBuild.GetSubmarineBuild;
 
             if (!allPaths.Any())
             {
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NotOptimized();
-                BestPath = Array.Empty<uint>();
-                return;
+                return Array.Empty<uint>();
             }
 
             var optimalDistances = allPaths.AsParallel().Select(Voyage.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
@@ -83,21 +79,18 @@ public partial class BuilderWindow
             {
                 ComputingPath = false;
                 Calculate = false;
-                CurrentBuild.NotOptimized();
-                BestPath = Array.Empty<uint>();
-                return;
+                return Array.Empty<uint>();
             }
 
-            BestPath = optimalDistances.AsParallel().Select(t =>
+            var bestPath = optimalDistances.AsParallel().Select(t =>
                 {
                     var path = t.Points.Prepend(startPoint).ToArray();
                     var rowIdPath = new List<uint>();
-                    uint exp = 0;
+                    var exp = SectorBreakpoints.CalculateExpForSectors(path.Skip(1).ToList(), CurrentBuild.GetSubmarineBuild);
+
                     foreach (var submarineExplorationPretty in path.Skip(1))
-                    {
                         rowIdPath.Add(submarineExplorationPretty.RowId);
-                        exp += submarineExplorationPretty.ExpReward;
-                    }
+
                     return new Tuple<uint[], TimeSpan, double>(
                         rowIdPath.ToArray(),
                         TimeSpan.FromSeconds(Voyage.CalculateDuration(path, build)),
@@ -105,12 +98,21 @@ public partial class BuilderWindow
                     );
                 })
               .Where(t => t.Item2 < DateUtil.DurationToTime(Configuration.DurationLimit))
-              .OrderByDescending(t => t.Item3 / t.Item2.TotalMinutes)
+              .OrderByDescending(t => t.Item3 / (Configuration.DurationLimit != DurationLimit.None ? DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes : t.Item2.TotalMinutes))
               .Select(t => t.Item1)
-              .First();
+              .FirstOrDefault();
+
+            if (bestPath == null)
+            {
+                ComputingPath = false;
+                Calculate = false;
+                return Array.Empty<uint>();
+            }
 
             ComputingPath = false;
             Calculate = false;
+
+            return bestPath;
         }
         else
         {
@@ -118,6 +120,8 @@ public partial class BuilderWindow
             ComputingPath = false;
             Calculate = false;
         }
+
+        return Array.Empty<uint>();
     }
 
     private void ExpTab()
@@ -180,7 +184,14 @@ public partial class BuilderWindow
                         BestPath = Array.Empty<uint>();
                         ComputeStart = DateTime.Now;
                         ComputingPath = true;
-                        Task.Run(FindBestPath);
+                        Task.Run(() =>
+                        {
+                            var path = FindBestPath(CurrentBuild);
+                            if (!path.Any())
+                                CurrentBuild.NotOptimized();
+
+                            BestPath = path;
+                        });
                     }
 
                     var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;

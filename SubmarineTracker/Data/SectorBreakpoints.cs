@@ -138,4 +138,88 @@ public static class SectorBreakpoints
 
         return new Breakpoint(t2, t3, normal, optimal, favor);
     }
+
+    public static List<(int Guaranteed, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
+    {
+        var predictedExp = new List<(int, int)>();
+        foreach (var point in sectors)
+        {
+            if (!MapBreakpoints.TryGetValue(point, out var br))
+                return new List<(int, int)> {(-1, -1)};;
+
+            var guaranteed = 0;
+            guaranteed += br.Optimal <= build.Retrieval ? 1 : 0;
+
+            var predicted = guaranteed;
+            predicted += br.T2 <= build.Surveillance ? 1 : 0;
+            predicted += br.T3 <= build.Surveillance ? 1 : 0;
+
+            if (br.Favor <= build.Favor)
+            {
+                predicted += 1;
+                predicted += br.T2 <= build.Surveillance ? 1 : 0;
+                predicted += br.T3 <= build.Surveillance ? 1 : 0;
+            }
+
+            predictedExp.Add((guaranteed, Math.Clamp(predicted, 0, 4)));
+        }
+
+        return predictedExp;
+    }
+
+    public static (int Guaranteed, int Max) PredictBonusExp(uint sector, Build.SubmarineBuild build)
+    {
+        if (!MapBreakpoints.TryGetValue(sector, out var br))
+            return (0, 0);
+
+        var guaranteed = 0;
+        guaranteed += br.Optimal <= build.Retrieval ? 1 : 0;
+
+        var predicted = guaranteed;
+        predicted += br.T2 <= build.Surveillance ? 1 : 0;
+        predicted += br.T3 <= build.Surveillance ? 1 : 0;
+
+        if (br.Favor <= build.Favor)
+        {
+            predicted += 1;
+            predicted += br.T2 <= build.Surveillance ? 1 : 0;
+            predicted += br.T3 <= build.Surveillance ? 1 : 0;
+        }
+
+        return (guaranteed, Math.Clamp(predicted, 0, 4));
+    }
+
+    public static long CalculateExpForSectors(List<SubmarineExplorationPretty> sectors, Build.SubmarineBuild build)
+    {
+        var bonuses = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
+
+        long expGain = 0;
+        foreach (var (bonus, sector) in bonuses.Zip(sectors))
+        {
+            expGain += (bonus.Guaranteed) switch
+            {
+                0 => sector.ExpReward,
+                1 => (long) (sector.ExpReward * 1.25),
+                2 => (long) (sector.ExpReward * 1.50),
+                3 => (long) (sector.ExpReward * 1.75),
+                4 => (long) (sector.ExpReward * 2.00),
+                _ => sector.ExpReward
+            };
+        }
+
+        return expGain;
+    }
+
+    public static long CalculateBonusExp(int bonus, uint exp)
+    {
+        return (bonus) switch
+        {
+            0 => exp,
+            1 => (long) (exp * 1.25),
+            2 => (long) (exp * 1.50),
+            3 => (long) (exp * 1.75),
+            4 => (long) (exp * 2.00),
+            _ => exp
+        };
+    }
 }

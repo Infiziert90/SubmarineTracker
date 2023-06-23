@@ -26,14 +26,14 @@ public partial class LootWindow
                 SelectedVoyage = 0;
             }
 
-            var selectedSub =
-                Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
+            var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
 
             var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey(selectedSub.Return)));
             var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
 
             var submarineVoyage = submarineLoot.Loot
                                                .SkipLast(1)
+                                               .Reverse()
                                                .Select(kv => $"{kv.Value.First().Date}")
                                                .ToArray();
             if (!submarineVoyage.Any())
@@ -48,7 +48,7 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            var loot = submarineLoot.Loot.ToArray()[SelectedVoyage];
+            var loot = submarineLoot.Loot.SkipLast(1).Reverse().ToArray()[SelectedVoyage];
             var stats = loot.Value.First();
             if (stats.Valid)
                 ImGui.TextUnformatted($"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");

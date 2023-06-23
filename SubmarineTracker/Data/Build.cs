@@ -52,6 +52,7 @@ public static class Build
         public int BuildCost => Hull.Components + Stern.Components + Bow.Components + Bridge.Components;
 
         public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
+        public byte[] GetPartRanks() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank };
 
         private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint) rank)!;
         private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
@@ -79,8 +80,6 @@ public static class Build
 
     public struct RouteBuild
     {
-        public int OriginalSub = 0;
-
         public int Rank = 1;
         public int Hull = 3;
         public int Stern = 4;
@@ -92,10 +91,54 @@ public static class Build
 
         public RouteBuild() { }
 
+        public RouteBuild(RouteBuild build)
+        {
+            Rank = build.Rank;
+            Hull = build.Hull;
+            Stern = build.Stern;
+            Bow = build.Bow;
+            Bridge = build.Bridge;
+        }
+
+        public RouteBuild(int rank, int hull, int stern, int bow, int bridge)
+        {
+            Rank = rank;
+            Hull = hull;
+            Stern = stern;
+            Bow = bow;
+            Bridge = bridge;
+        }
+
+        public RouteBuild(Items hull, Items stern, Items bow, Items bridge)
+        {
+            Rank = 1;
+            Hull = hull.GetPartId();
+            Stern = stern.GetPartId();
+            Bow = bow.GetPartId();
+            Bridge = bridge.GetPartId();
+        }
+
+        [JsonIgnore] public int OriginalSub = 0;
+
         [JsonIgnore] public int OptimizedDistance = 0;
         [JsonIgnore] public List<SubmarineExplorationPretty> OptimizedRoute = new();
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
+
+        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort) Hull);
+        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort) Stern);
+        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort) Bow);
+        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort) Bridge);
+
+        public string FullIdentifier()
+        {
+            var identifier = $"{HullIdentifier}{SternIdentifier}{BowIdentifier}{BridgeIdentifier}";
+
+            if (identifier.Count(l => l == '+') == 4)
+                identifier = $"{identifier.Replace("+", "")}++";
+
+            return identifier;
+        }
 
         public void UpdateBuild(Submarines.Submarine sub)
         {
