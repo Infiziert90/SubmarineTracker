@@ -15,6 +15,9 @@ public partial class BuilderWindow
     private int TargetRank = 85;
     private int CurrentLowestTime = 9999;
 
+    private int SwapAfter = 1;
+    private bool IgnoreBuild;
+
     private int PossibleBuilds;
     private bool Processing;
     private int Progress;
@@ -36,10 +39,16 @@ public partial class BuilderWindow
         {
             ImGuiHelpers.ScaledDummy(10.0f);
 
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild.FullIdentifier()}");
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild}");
+            ImGui.Checkbox("Ignore Build", ref IgnoreBuild);
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Target: {TargetRank}");
             ImGui.SameLine();
             ImGui.SliderInt("##targetRank", ref TargetRank, 15, 110);
+            ImGui.TextColored(ImGuiColors.HealerGreen, "Swap if optimal after");
+            ImGui.SameLine();
+            ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10);
+            ImGui.SameLine();
+            ImGui.TextColored(ImGuiColors.HealerGreen, "Voyages");
             if (Processing)
             {
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"At Rank: {ProgressRank}");
@@ -51,6 +60,7 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(10.0f);
             if (ImGui.Button("Calculate for Build"))
             {
+                CancelSource.Cancel();
                 CancelSource = new CancellationTokenSource();
                 StartTime = DateTime.Now;
                 ProgressStartTime = DateTime.Now;
@@ -99,8 +109,6 @@ public partial class BuilderWindow
     public void DoThingsOffThread()
     {
         FinishedLevelingBuilds.Clear();
-        // ConcurrentRouteList.Clear();
-        //IgnoreUnlocks = false;
         Processing = true;
 
         try
@@ -118,51 +126,51 @@ public partial class BuilderWindow
         }
 
         // Add durations limit if they not exist
-        DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit);
-        CachedRouteList.Caches.TryAdd(DurationName, new BuildCache(new Dictionary<string, RouteCache>()));
+        DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit) + (IgnoreBuild ? "" : " - " + CurrentBuild);
 
         CurrentLowestTime = 9999;
         PossibleBuilds = 0;
         Progress = 0;
 
         Progress += 1;
-        var routeBuilds = new List<Build.RouteBuild>();
-        for (var hull = 0; hull < PartsCount; hull++)
+        var outTree = BuildRoute();
+
+        var rank = 1;
+
+        foreach (var (build, route) in outTree)
         {
-            for (var stern = 0; stern < PartsCount; stern++)
+            PluginLog.Information("=================");
+            PluginLog.Information($"Used Build {build}");
+            PluginLog.Information($"Rank: {rank}");
+            foreach (var (i, (rankReached, leftover, routeExp, points)) in route.Voyages)
             {
-                for (var bow = 0; bow < PartsCount; bow++)
-                {
-                    for (var bridge = 0; bridge < PartsCount; bridge++)
-                    {
-                        var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
-                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank)
-                        {
-                            PossibleBuilds += 1;
-                            routeBuilds.Add(build);
-                        }
-                    }
-                }
+                rank = rankReached;
+                var startPoint = Voyage.FindVoyageStartPoint(points[0]);
+                PluginLog.Information($"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+                PluginLog.Information($"Exp gained {routeExp}");
+                PluginLog.Information($"After-Rank {rank}");
+                PluginLog.Information($"Leftover: {leftover}");
+                PluginLog.Information($"-----------------");
             }
         }
 
-        var lastIdentifier = string.Empty;
-        //var routeBuilds = GenerateBuildTree(new Build.RouteBuild(Items.SharkClassHull, Items.SharkClassStern, Items.UnkiuClassBow, Items.WhaleClassBridge));
-        // var routeBuilds = GenerateBuildTree(CurrentBuild);
-        // var lastIdentifier = routeBuilds.Last().FullIdentifier();
-        // PossibleBuilds = routeBuilds.Count;
-        //
-        // PluginLog.Information("Testing Builds:");
-        // foreach (var build in routeBuilds)
-        // {
-        //     PluginLog.Information(build.FullIdentifier());
-        // }
-        // PluginLog.Information("________________");
-
+        PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");
         
-        //TODO: Use Cache for init outTree and save outTree to cache if not existing.
+        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
-        var outTree = new Dictionary<Build.RouteBuild, RouteCache>();
+        var filePath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
+        PluginLog.Information($"Writing routeList json");
+        PluginLog.Information(filePath);
+        File.WriteAllText(filePath, l);
+        
+        Processing = false;
+    }
+
+    private Dictionary<Build.RouteBuild, RouteCache> BuildRoute()
+    {
+        var routeBuilds = BuildParts();
+
+        var outTree = CachedRouteList.Caches.TryGetValue(DurationName, out var cacheOut) ? cacheOut.Builds.ToDictionary(t => (Build.RouteBuild)t.Key, t => t.Value) : new Dictionary<Build.RouteBuild, RouteCache>();
         var count = 0;
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
@@ -185,13 +193,19 @@ public partial class BuilderWindow
                 {
                     lastBuildRouteRank = ProgressRank;
                     var builds = routeBuilds.Where(t =>
-                             {
-                                 var build = t.GetSubmarineBuild;
-                                 return build.HighestRankPart() <= ProgressRank && build.Surveillance >= 20 && build.Range >= 20;
-                             }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
+                    {
+                        var build = t.GetSubmarineBuild;
+                        return build.HighestRankPart() <= ProgressRank && build.Surveillance >= 20 && build.Range >= 20;
+                    }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
+
+                    if (builds.Contains(CurrentBuild) && !IgnoreBuild)
+                    {
+                        builds = builds.Where(t => t == CurrentBuild).ToArray();
+                    }
+
                     PossibleBuilds = builds.Length;
                     Progress = 0;
-                    
+
                     bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 });
 
                     foreach (var build in builds)
@@ -212,10 +226,11 @@ public partial class BuilderWindow
 
                         if (bestJourney.RouteExp < exp)
                         {
-                            if (!curBuild.SameBuildWithoutRank(routeBuild))
+                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && (journeys?.Voyages.Count ?? 0) >= SwapAfter && (!curBuild.SameBuildWithoutRank(CurrentBuild) || IgnoreBuild)) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild))
                             {
                                 curBuild = routeBuild;
                             }
+
                             bestJourney = new Journey(ProgressRank, exp, exp, path);
                         }
 
@@ -232,6 +247,7 @@ public partial class BuilderWindow
                         ProgressRank--;
                         leftover = 0;
                     }
+
                     while (RankSheet[ProgressRank - 1].ExpToNext <= leftover)
                     {
                         leftover -= RankSheet[ProgressRank - 1].ExpToNext;
@@ -243,6 +259,7 @@ public partial class BuilderWindow
                             break;
                         }
                     }
+
                     ProgressStartTime = DateTime.Now;
                 }
                 else
@@ -254,7 +271,14 @@ public partial class BuilderWindow
 
                 if (outTree.TryGetValue(curBuild, out var cache))
                 {
-                    cache.Voyages.Add(count++, bestJourney);
+                    if (!cache.Voyages.ContainsKey(count))
+                    {
+                        cache.Voyages.Add(count++, bestJourney);
+                    }
+                    else
+                    {
+                        cache.Voyages[count++] = bestJourney;
+                    }
                 }
                 else
                 {
@@ -266,49 +290,45 @@ public partial class BuilderWindow
             }
         }
 
-        //foreach (var build in routeBuilds)
-        //    CalculateLevelingBuild(build, build.FullIdentifier() == lastIdentifier, lastIdentifier);
+        var json = outTree.GroupBy(t => t.Key.ToString())
+                          .ToDictionary(t => t.Key,
+                                        t => new RouteCache(t.SelectMany(f => f.Value.Voyages)
+                                                             .ToDictionary(f => f.Key, f => f.Value)));
 
-        var rank = 1;
-
-        foreach (var (build, route) in outTree)
+        if (CachedRouteList.Caches.ContainsKey(DurationName))
         {
-            PluginLog.Information("=================");
-            PluginLog.Information($"Used Build {build.FullIdentifier()}");
-            PluginLog.Information($"Rank: {rank}");
-            foreach (var (i, (rankReached, leftover, routeExp, points)) in route.Voyages)
+            CachedRouteList.Caches[DurationName] = new BuildCache(json);
+        }
+        else
+        {
+            CachedRouteList.Caches.Add(DurationName, new BuildCache(json));
+        }
+
+        return outTree;
+    }
+
+    private List<Build.RouteBuild> BuildParts()
+    {
+        var routeBuilds = new List<Build.RouteBuild>();
+        for (var hull = 0; hull < PartsCount; hull++)
+        {
+            for (var stern = 0; stern < PartsCount; stern++)
             {
-                rank = rankReached;
-                var startPoint = Voyage.FindVoyageStartPoint(points[0]);
-                PluginLog.Information($"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
-                PluginLog.Information($"Exp gained {routeExp}");
-                PluginLog.Information($"After-Rank {rank}");
-                PluginLog.Information($"Leftover: {leftover}");
-                PluginLog.Information($"-----------------");
+                for (var bow = 0; bow < PartsCount; bow++)
+                {
+                    for (var bridge = 0; bridge < PartsCount; bridge++)
+                    {
+                        var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
+                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank && (build.IsSubComponent(CurrentBuild) || IgnoreBuild))
+                        {
+                            routeBuilds.Add(build);
+                        }
+                    }
+                }
             }
         }
 
-        PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");
-
-        //var voyages = FinishedLevelingBuilds.Min(pair => pair.Key);
-        //PluginLog.Information($"-----------------");
-        //PluginLog.Information($"Rank 1 -> {TargetRank}");
-        //PluginLog.Information($"Redeployment {DurationName}");
-        //PluginLog.Information($"Voyages: {voyages} ({voyages * DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24.0} days)");
-        //foreach (var build in FinishedLevelingBuilds[voyages])
-        //{
-        //    PluginLog.Information(build.GetSubmarineBuild.FullIdentifier());
-        //}
-        //PluginLog.Information($"-----------------");
-        //Progress -= 1;
-
-        //var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
-
-        //var filePath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
-        //PluginLog.Information($"Writing routeList json");
-        //PluginLog.Information(filePath);
-        //File.WriteAllText(filePath, l);
-        Processing = false;
+        return routeBuilds;
     }
 
     public record Journey(int RankReached, uint Leftover, uint RouteExp, uint[] Route);
