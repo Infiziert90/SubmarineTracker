@@ -1,4 +1,4 @@
-﻿namespace SubmarineTracker.Data;
+namespace SubmarineTracker.Data;
 
 // All this data is taken from:
 // https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA
@@ -210,15 +210,15 @@ public static class SectorBreakpoints
         return expGain;
     }
 
-    public static long CalculateBonusExp(int bonus, uint exp)
+    public static uint CalculateBonusExp(int bonus, uint exp)
     {
         return (bonus) switch
         {
             0 => exp,
-            1 => (long) (exp * 1.25),
-            2 => (long) (exp * 1.50),
-            3 => (long) (exp * 1.75),
-            4 => (long) (exp * 2.00),
+            1 => (uint) (exp * 1.25),
+            2 => (uint) (exp * 1.50),
+            3 => (uint) (exp * 1.75),
+            4 => (uint) (exp * 2.00),
             _ => exp
         };
     }

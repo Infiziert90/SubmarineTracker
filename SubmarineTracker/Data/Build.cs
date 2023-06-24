@@ -1,4 +1,4 @@
-﻿using Lumina.Excel;
+using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
@@ -109,6 +109,15 @@ public static class Build
             Bridge = bridge;
         }
 
+        public RouteBuild(int rank, RouteBuild prevBuild)
+        {
+            Rank = rank;
+            Hull = prevBuild.Hull;
+            Stern = prevBuild.Stern;
+            Bow = prevBuild.Bow;
+            Bridge = prevBuild.Bridge;
+        }
+
         public RouteBuild(Items hull, Items stern, Items bow, Items bridge)
         {
             Rank = 1;
@@ -177,6 +186,11 @@ public static class Build
         {
             OptimizedDistance = 0;
             OptimizedRoute = new List<SubmarineExplorationPretty>();
+        }
+
+        public bool SameBuildWithoutRank(RouteBuild other)
+        {
+            return Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
         }
     }
 
