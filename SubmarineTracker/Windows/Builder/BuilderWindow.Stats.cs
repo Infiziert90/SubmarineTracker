@@ -19,13 +19,13 @@ public partial class BuilderWindow
 
             var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
             var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
-            var breakpoints = SectorBreakpoints.CalculateBreakpoint(CurrentBuild.Sectors);
+            var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             var durationLimitExp = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
             {
-                expPerMinute = SectorBreakpoints.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
-                durationLimitExp = SectorBreakpoints.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes);
+                expPerMinute = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
+                durationLimitExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes);
             }
 
 

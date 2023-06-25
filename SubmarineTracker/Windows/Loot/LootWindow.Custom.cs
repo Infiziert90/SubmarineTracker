@@ -22,7 +22,7 @@ public partial class LootWindow
 
             var numSubs = 0;
             var numVoyages = 0;
-            var moneyMade = 0;
+            var moneyMade = 0L;
             var bigList = new Dictionary<Item, int>();
             foreach (var fc in Submarines.KnownSubmarines.Values)
             {

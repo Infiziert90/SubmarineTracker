@@ -14,20 +14,20 @@ public static class Submarines
     private static ExcelSheet<Item> ItemSheet = null!;
     private static ExcelSheet<SubmarineRank> RankSheet = null!;
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
-    private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    private static List<uint> PossibleRanks = new();
-    private static List<SubmarineExploration> PossiblePoints = new();
+    private static uint LastRank = 0;
+    private static List<SubmarineExplorationPretty> PossiblePoints = new();
 
     public static void Initialize()
     {
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
 
         PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToList();
-        PossibleRanks = RankSheet.Where(t => t.Capacity != 0).Select(r => r.RowId).ToList();
+        LastRank = RankSheet.Last(t => t.Capacity != 0).RowId;
     }
 
     public class FcSubmarines
@@ -239,60 +239,57 @@ public static class Submarines
         [JsonIgnore] public double BridgeCondition => BridgeDurability / 300.0;
 
         [JsonIgnore] public bool NoRepairNeeded => HullDurability > 0 && SternDurability > 0 && BowDurability > 0 && BridgeDurability > 0;
-        [JsonIgnore] public double LowestCondition => new[] { HullDurability, SternDurability, BowDurability, BridgeDurability }.Min() / 300.0;
+        [JsonIgnore] public IEnumerable<(ushort Part, ushort Condition)> PartConditions => new[] { (Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability) };
+
+        public double LowestCondition()
+        {
+            var lowest = PredictDurability();
+            return lowest > 0 ? lowest / 300.0 : 0;
+        }
 
         [JsonIgnore] public Build.SubmarineBuild Build => new(this);
 
         // Credits for the formula
         // https://docs.google.com/spreadsheets/d/e/2PACX-1vTy99IDOlZ48efiFunLGMtZ-_fcfy4Z0Y_GqnL_1dvL7PmH0u7N_op5dysh0U4bVhKaLMHGuGlBf8zq/pubhtml#
-        public double PredictDurability()
+        public int PredictDurability()
         {
-            var partsDurability = new[] { (Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability) };
-            var durabilityAfter = new List<double>();
-            foreach (var (part, durability) in partsDurability)
+            var lowest = 30000;
+            foreach (var (part, durability) in PartConditions)
             {
-                var damage = 0;
+                int damaged = durability;
                 foreach (var sector in Points)
-                    damage += (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow(part)!.Rank) * 7;
+                    damaged -= (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow(part)!.Rank) * 7;
 
-                var result = durability - damage;
-                durabilityAfter.Add(result <= 0 ? 0 : result / 300.0);
+                if (lowest > damaged)
+                    lowest = damaged;
             }
 
-            return durabilityAfter.Any() ? durabilityAfter.Min() : 42.0;
+            return lowest;
         }
 
         public (uint Rank, double Exp) PredictExpGrowth()
         {
-            long leftover = CExp;
-            foreach (var sector in Points)
-                leftover += ExplorationSheet.GetRow(sector)!.ExpReward;
-
-            var rank = Rank;
-            (uint Rank, double Exp) result = (rank, 0.0);
-            do
+            var currentRank = RankSheet.GetRow(Rank)!;
+            var leftover = CExp + Sectors.CalculateExpForSectors(ToSheetList(Points), Build);
+            while (leftover > 0)
             {
-                if (!PossibleRanks.Contains(rank))
-                {
-                    result = ((uint)rank - 1, 100.0);
+                if (currentRank.RowId == LastRank)
                     break;
-                }
 
-                var expToNext = RankSheet.GetRow(rank)!.ExpToNext;
-                if (leftover - expToNext >= 0)
+                if (leftover > currentRank.ExpToNext)
                 {
-                    rank += 1;
-                    leftover -= expToNext;
+                    leftover -= currentRank.ExpToNext;
+                    currentRank = RankSheet.GetRow(currentRank.RowId + 1)!;
                 }
                 else
                 {
-                    result = (rank, (double) leftover / expToNext * 100.0);
                     break;
                 }
             }
-            while (leftover >= 0);
 
-            return result;
+            return currentRank.RowId < LastRank
+                       ? (currentRank.RowId, (double) leftover / currentRank.ExpToNext * 100.0)
+                       : (LastRank, 100.0);
         }
         #endregion
 
@@ -417,4 +414,6 @@ public static class Submarines
         { 39, 24366 },
         { 40, 24367 }
     };
+
+    public static List<SubmarineExplorationPretty> ToSheetList(IEnumerable<uint> sectors) => sectors.Select(s => ExplorationSheet.GetRow(s)!).ToList();
 }

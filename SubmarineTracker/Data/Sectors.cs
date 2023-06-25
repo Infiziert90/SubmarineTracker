@@ -3,7 +3,7 @@
 // All this data is taken from:
 // https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA
 // Credits to Mystic Spirit and other contributors from the submarine discord
-public static class SectorBreakpoints
+public static class Sectors
 {
     public record Breakpoint(int T2, int T3, int Normal, int Optimal, int Favor)
     {
@@ -189,20 +189,19 @@ public static class SectorBreakpoints
         return (guaranteed, Math.Clamp(predicted, 0, 4));
     }
 
-    public static long CalculateExpForSectors(List<SubmarineExplorationPretty> sectors, Build.SubmarineBuild build)
+    public static uint CalculateExpForSectors(List<SubmarineExplorationPretty> sectors, Build.SubmarineBuild build)
     {
         var bonuses = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
 
-        long expGain = 0;
+        var expGain = 0u;
         foreach (var (bonus, sector) in bonuses.Zip(sectors))
         {
             expGain += (bonus.Guaranteed) switch
             {
-                0 => sector.ExpReward,
-                1 => (long) (sector.ExpReward * 1.25),
-                2 => (long) (sector.ExpReward * 1.50),
-                3 => (long) (sector.ExpReward * 1.75),
-                4 => (long) (sector.ExpReward * 2.00),
+                1 => (uint) (sector.ExpReward * 1.25),
+                2 => (uint) (sector.ExpReward * 1.50),
+                3 => (uint) (sector.ExpReward * 1.75),
+                4 => (uint) (sector.ExpReward * 2.00),
                 _ => sector.ExpReward
             };
         }

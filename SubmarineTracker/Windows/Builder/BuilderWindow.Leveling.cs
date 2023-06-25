@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Dalamud.Logging;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.SectorBreakpoints;
+using static SubmarineTracker.Data.Sectors;
 
 namespace SubmarineTracker.Windows.Builder;
 
@@ -347,9 +347,6 @@ public partial class BuilderWindow
                 {
                     if (ExplorationSheet.GetRow(map.RowId + 1)!.RankReq > i)
                         break;
-
-                    if (ExplorationSheet.GetRow(map.RowId + 1)!.RankReq == 1 && i > 60)
-                        continue;
 
                     copiedBuild.Map = (int) map.Map.Row - 1;
                     var pathTaken = FindBestPath(copiedBuild);

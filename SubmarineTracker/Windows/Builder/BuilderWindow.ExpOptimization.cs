@@ -86,7 +86,7 @@ public partial class BuilderWindow
                 {
                     var path = t.Points.Prepend(startPoint).ToArray();
                     var rowIdPath = new List<uint>();
-                    var exp = SectorBreakpoints.CalculateExpForSectors(path.Skip(1).ToList(), CurrentBuild.GetSubmarineBuild);
+                    var exp = Sectors.CalculateExpForSectors(path.Skip(1).ToList(), CurrentBuild.GetSubmarineBuild);
 
                     foreach (var submarineExplorationPretty in path.Skip(1))
                         rowIdPath.Add(submarineExplorationPretty.RowId);
