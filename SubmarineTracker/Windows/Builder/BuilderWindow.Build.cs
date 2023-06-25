@@ -8,7 +8,7 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Build"))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(140 * ImGuiHelpers.GlobalScale))))
             {
                 var existingSubs = Configuration.FCOrder
                                                    .SelectMany(id => KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
@@ -65,8 +65,6 @@ public partial class BuilderWindow
                     BuildTableEntries("MSyldra", 36, last: true);
                 }
                 ImGui.EndTable();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild}");
-                ImGuiHelpers.ScaledDummy(5);
             }
             ImGui.EndChild();
 
