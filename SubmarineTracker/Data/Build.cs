@@ -1,4 +1,4 @@
-﻿using Lumina.Excel;
+using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
@@ -54,8 +54,8 @@ public static class Build
         public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
         public byte[] GetPartRanks() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank };
 
-        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint) rank)!;
-        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
+        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
+        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
 
         public string HullIdentifier => ToIdentifier((ushort)Hull.RowId);
         public string SternIdentifier => ToIdentifier((ushort)Stern.RowId);
@@ -78,7 +78,7 @@ public static class Build
         }
     }
 
-    public struct RouteBuild
+    public struct RouteBuild : IEquatable<RouteBuild>
     {
         public int Rank = 1;
         public int Hull = 3;
@@ -109,6 +109,15 @@ public static class Build
             Bridge = bridge;
         }
 
+        public RouteBuild(int rank, RouteBuild prevBuild)
+        {
+            Rank = rank;
+            Hull = prevBuild.Hull;
+            Stern = prevBuild.Stern;
+            Bow = prevBuild.Bow;
+            Bridge = prevBuild.Bridge;
+        }
+
         public RouteBuild(Items hull, Items stern, Items bow, Items bridge)
         {
             Rank = 1;
@@ -125,20 +134,10 @@ public static class Build
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
 
-        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort) Hull);
-        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort) Stern);
-        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort) Bow);
-        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort) Bridge);
-
-        public string FullIdentifier()
-        {
-            var identifier = $"{HullIdentifier}{SternIdentifier}{BowIdentifier}{BridgeIdentifier}";
-
-            if (identifier.Count(l => l == '+') == 4)
-                identifier = $"{identifier.Replace("+", "")}++";
-
-            return identifier;
-        }
+        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort)Hull);
+        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);
+        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort)Bow);
+        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort)Bridge);
 
         public void UpdateBuild(Submarines.Submarine sub)
         {
@@ -152,10 +151,10 @@ public static class Build
         public void UpdateBuild(SubmarineBuild build, int currentRank)
         {
             Rank = currentRank;
-            Hull = (int) build.Hull.RowId;
-            Stern = (int) build.Stern.RowId;
-            Bow = (int) build.Bow.RowId;
-            Bridge = (int) build.Bridge.RowId;
+            Hull = (int)build.Hull.RowId;
+            Stern = (int)build.Stern.RowId;
+            Bow = (int)build.Bow.RowId;
+            Bridge = (int)build.Bridge.RowId;
         }
 
         public void ChangeMap(int newMap)
@@ -178,6 +177,102 @@ public static class Build
             OptimizedDistance = 0;
             OptimizedRoute = new List<SubmarineExplorationPretty>();
         }
+
+        public bool SameBuildWithoutRank(RouteBuild other)
+        {
+            return Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
+        }
+
+        public string ToStringWithRank() => $"{Rank} - {this}";
+
+        public override string ToString()
+        {
+            var identifier = $"{HullIdentifier}{SternIdentifier}{BowIdentifier}{BridgeIdentifier}";
+
+            if (identifier.Count(l => l == '+') == 4)
+                identifier = $"{identifier.Replace("+", "")}++";
+
+            return identifier;
+        }
+
+        public static explicit operator RouteBuild(string s)
+        {
+            if (s.Length < 4)
+                return new RouteBuild();
+
+            var allMod = s.EndsWith("++");
+            var parts = s.Replace("+", "").ToCharArray().Select(t => t.ToString()).ToList();
+
+            for (var i = 0; i < parts.Count; i++)
+            {
+                var t = parts[i];
+                var k = string.Join("", parts.Take(i + 1)).Length;
+                if ((k >= k + 1 && s[k + 1] == '+') || allMod)
+                    parts[i] = t + "+";
+            }
+
+            return new RouteBuild
+            {
+                Hull = FromIdentifier(parts[0]) + 3,
+                Stern = FromIdentifier(parts[1]) + 4,
+                Bow = FromIdentifier(parts[2]) + 1,
+                Bridge = FromIdentifier(parts[3]) + 2
+            };
+        }
+
+        public static explicit operator string(RouteBuild build) => build.ToString();
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is RouteBuild other)
+                return other.SameBuildWithoutRank(this);
+            return false;
+        }
+
+        public bool Equals(RouteBuild other)
+        {
+            return other.SameBuildWithoutRank(this);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(Rank);
+            hashCode.Add(Hull);
+            hashCode.Add(Stern);
+            hashCode.Add(Bow);
+            hashCode.Add(Bridge);
+            hashCode.Add(Map);
+            hashCode.Add(Sectors);
+            hashCode.Add(OriginalSub);
+            hashCode.Add(OptimizedDistance);
+            hashCode.Add(OptimizedRoute);
+            return hashCode.ToHashCode();
+        }
+
+        public static bool operator ==(RouteBuild left, RouteBuild right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(RouteBuild left, RouteBuild right)
+        {
+            return !(left == right);
+        }
+
+        public bool IsSubComponent(RouteBuild other)
+        {
+            var curParts = ToString().Replace("+", "").ToCharArray();
+            var otherParts = other.ToString().Replace("+", "").ToCharArray();
+
+            for (var i = 0; i < curParts.Length; i++)
+            {
+                if (curParts[i] != otherParts[i] && curParts[i] != 'S')
+                    return false;
+            }
+
+            return true;
+        }
     }
 
     public static string ToIdentifier(ushort partId)
@@ -197,5 +292,23 @@ public static class Build
             9 => $"{ToIdentifier((ushort)(partId - 20))}+",
             _ => "Unknown"
         };
+    }
+
+    public static int FromIdentifier(string s)
+    {
+        var k = s[0] switch
+        {
+            'S' => 0,
+            'U' => 1,
+            'W' => 2,
+            'C' => 3,
+            'Y' => 4,
+            _ => 0
+        };
+
+        if (s[^1] == '+')
+            k += 5;
+
+        return k * 4;
     }
 }

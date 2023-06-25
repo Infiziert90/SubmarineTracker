@@ -40,7 +40,6 @@ namespace SubmarineTracker.Data
         {
             return n switch
             {
-                DurationLimit.None => TimeSpan.MaxValue,
                 DurationLimit.H24 => TimeSpan.FromHours(24),
                 DurationLimit.H36 => TimeSpan.FromHours(36),
                 DurationLimit.H48 => TimeSpan.FromHours(48),

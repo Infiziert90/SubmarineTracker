@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
@@ -22,6 +23,8 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks = false;
 
+    private readonly ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]> CachedDistances = new();
+
     private uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
         Error = false;
@@ -30,12 +33,14 @@ public partial class BuilderWindow
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
             List<SubmarineExplorationPretty> valid;
+            int highestRank;
             try
             {
                 valid = ExplorationSheet
                             .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
                             .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToList();
+                highestRank = valid.Max(r => r.RankReq);
             }
             catch (KeyNotFoundException)
             {
@@ -46,35 +51,40 @@ public partial class BuilderWindow
             }
 
             var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
-            var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
-            if (MustInclude.Any())
-                paths = new[] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
-
-            var i = MustInclude.Any() ? MustInclude.Count : 1;
-            while (i++ < 5)
+            if (!CachedDistances.TryGetValue(highestRank, out var distances) || !distances.Any(t => t.Item2.ContainsAllItems(MustInclude)))
             {
-                foreach (var path in paths.ToArray())
+                var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
+                if (MustInclude.Any())
+                    paths = new[] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
+
+                var i = MustInclude.Any() ? MustInclude.Count : 1;
+                while (i++ < 5)
                 {
-                    foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
+                    foreach (var path in paths.ToArray()) 
                     {
-                        var pathNew = path.ToList();
-                        pathNew.Add(validPoint.RowId);
-                        paths.Add(pathNew.ToList());
+                        foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
+                        {
+                            var pathNew = path.ToList();
+                            pathNew.Add(validPoint.RowId);
+                            paths.Add(pathNew.ToList());
+                        }
                     }
                 }
-            }
 
-            var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
+                var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
+
+                if (!allPaths.Any())
+                {
+                    ComputingPath = false;
+                    Calculate = false;
+                    return Array.Empty<uint>();
+                }
+
+                distances = allPaths.AsParallel().Select(Voyage.CalculateDistance).ToArray();
+                CachedDistances.AddOrUpdate(highestRank, distances, (k, v) => distances);
+            }
             var build = routeBuild.GetSubmarineBuild;
-
-            if (!allPaths.Any())
-            {
-                ComputingPath = false;
-                Calculate = false;
-                return Array.Empty<uint>();
-            }
-
-            var optimalDistances = allPaths.AsParallel().Select(Voyage.CalculateDistance).Where(t => t.Distance <= build.Range).ToArray();
+            var optimalDistances = distances.Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(MustInclude)).ToArray();
             if (!optimalDistances.Any())
             {
                 ComputingPath = false;
@@ -84,21 +94,16 @@ public partial class BuilderWindow
 
             var bestPath = optimalDistances.AsParallel().Select(t =>
                 {
-                    var path = t.Points.Prepend(startPoint).ToArray();
-                    var rowIdPath = new List<uint>();
-                    var exp = SectorBreakpoints.CalculateExpForSectors(path.Skip(1).ToList(), CurrentBuild.GetSubmarineBuild);
-
-                    foreach (var submarineExplorationPretty in path.Skip(1))
-                        rowIdPath.Add(submarineExplorationPretty.RowId);
+                    var path = t.Item2.Prepend(startPoint).ToArray();
 
                     return new Tuple<uint[], TimeSpan, double>(
-                        rowIdPath.ToArray(),
+                        t.Item2.Select(t => t.RowId).ToArray(),
                         TimeSpan.FromSeconds(Voyage.CalculateDuration(path, build)),
-                        exp
+                        SectorBreakpoints.CalculateExpForSectors(t.Item2, CurrentBuild.GetSubmarineBuild)
                     );
                 })
               .Where(t => t.Item2 < DateUtil.DurationToTime(Configuration.DurationLimit))
-              .OrderByDescending(t => t.Item3 / (Configuration.DurationLimit != DurationLimit.None ? DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes : t.Item2.TotalMinutes))
+              .OrderByDescending(t => MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
               .Select(t => t.Item1)
               .FirstOrDefault();
 
@@ -114,12 +119,10 @@ public partial class BuilderWindow
 
             return bestPath;
         }
-        else
-        {
-            Error = true;
-            ComputingPath = false;
-            Calculate = false;
-        }
+
+        Error = true;
+        ComputingPath = false;
+        Calculate = false;
 
         return Array.Empty<uint>();
     }
@@ -142,11 +145,26 @@ public partial class BuilderWindow
             {
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
-                    var maps = ExplorationSheet
-                       .Where(r => r.StartingPoint)
-                       .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
-                       .Select(r => ToStr(r.Map.Value!.Name))
-                       .ToArray();
+                    string[] maps;
+                    if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                    {
+                        maps = ExplorationSheet
+                                   .Where(r => r.StartingPoint)
+                                   .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
+                                   .Where(r => r.RankReq <= CurrentBuild.Rank)
+                                   .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                                   .Select(r => ToStr(r.Map.Value!.Name))
+                                   .ToArray();
+                    }
+                    else
+                    {
+                        maps = ExplorationSheet
+                               .Where(r => r.StartingPoint)
+                               .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
+                               .Where(r => r.RankReq <= CurrentBuild.Rank)
+                               .Select(r => ToStr(r.Map.Value!.Name))
+                               .ToArray();
+                    }
 
                     // Always pick highest rank map if smaller then possible
                     if (maps.Length <= CurrentBuild.Map)
@@ -210,7 +228,7 @@ public partial class BuilderWindow
                         if (Error)
                         {
                             ImGui.TextWrapped("Error: Unable to calculate, please refresh your data (Voyage Control Panel -> Submersible Management).");
-                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out fcSub))
                                 if (fcSub.UnlockedSectors.ContainsKey(startPoint))
                                     Error = false;
                         }
@@ -272,6 +290,8 @@ public partial class BuilderWindow
 
                         ImGui.EndCombo();
                     }
+
+                    ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
 
                     if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                     {
