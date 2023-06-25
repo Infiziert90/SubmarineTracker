@@ -195,7 +195,7 @@ public partial class BuilderWindow
                     var builds = routeBuilds.Where(t =>
                     {
                         var build = t.GetSubmarineBuild;
-                        return build.HighestRankPart() <= ProgressRank && build.Surveillance >= 20 && build.Range >= 20;
+                        return build.HighestRankPart() <= ProgressRank && build.Speed >= 20 && build.Range >= 20;
                     }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
 
                     if (builds.Contains(CurrentBuild) && !IgnoreBuild)
