@@ -257,14 +257,16 @@ public partial class BuilderWindow
 
                         if (bestJourney.RouteExp < exp)
                         {
-                            PluginLog.Information($"[Leveling] SameBuildWithoutRank: {curBuild.SameBuildWithoutRank(routeBuild)}, Swap: {lastBuild.Item2 >= SwapAfter}, TargetedBuild: {routeBuild.SameBuildWithoutRank(CurrentBuild)}");
                             if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                             {
-                                PluginLog.Information($"[Leveling] Build: {routeBuild}");
                                 curBuild = routeBuild;
                                 bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
-                        } 
+                            else if(curBuild.SameBuildWithoutRank(routeBuild))
+                            {
+                                bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
+                            }
+                        }
                     }
                 }
                 

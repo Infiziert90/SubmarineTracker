@@ -183,6 +183,8 @@ public static class Build
             return Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
         }
 
+        public string ToStringWithRank() => $"{Rank} - {this}";
+
         public override string ToString()
         {
             var identifier = $"{HullIdentifier}{SternIdentifier}{BowIdentifier}{BridgeIdentifier}";
