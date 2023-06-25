@@ -99,7 +99,7 @@ public partial class BuilderWindow
                     return new Tuple<uint[], TimeSpan, double>(
                         t.Item2.Select(t => t.RowId).ToArray(),
                         TimeSpan.FromSeconds(Voyage.CalculateDuration(path, build)),
-                        SectorBreakpoints.CalculateExpForSectors(t.Item2, CurrentBuild.GetSubmarineBuild)
+                        Sectors.CalculateExpForSectors(t.Item2, CurrentBuild.GetSubmarineBuild)
                     );
                 })
               .Where(t => t.Item2 < DateUtil.DurationToTime(Configuration.DurationLimit))

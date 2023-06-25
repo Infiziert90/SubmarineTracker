@@ -36,7 +36,7 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted("Selected Build:");
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild.FullIdentifier()} (Rank {CurrentBuild.Rank})");
+                ImGui.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild} (Rank {CurrentBuild.Rank})");
 
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted("Optimized Route:");

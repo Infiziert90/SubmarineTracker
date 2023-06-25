@@ -4,16 +4,13 @@ using System.Threading.Tasks;
 using Dalamud.Logging;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.SectorBreakpoints;
+using static SubmarineTracker.Data.Sectors;
 
 namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    public static readonly Dictionary<int, List<Build.RouteBuild>> FinishedLevelingBuilds = new();
-
     private int TargetRank = 85;
-    private int CurrentLowestTime = 9999;
 
     private int SwapAfter = 1;
     private bool IgnoreBuild;
@@ -23,7 +20,6 @@ public partial class BuilderWindow
     private int Progress;
     private int ProgressRank;
     private DurationCache CachedRouteList = new();
-    private readonly Dictionary<string, List<string>> UnusedCache = new();
 
     private CancellationTokenSource CancelSource = new();
 
@@ -33,7 +29,7 @@ public partial class BuilderWindow
     private DateTime StartTime;
     private DateTime ProgressStartTime;
 
-    private Thread Thread;
+    private Thread Thread = null!;
 
     private bool LevelingTab()
     {
@@ -116,7 +112,6 @@ public partial class BuilderWindow
 
     public void DoThingsOffThread()
     {
-        FinishedLevelingBuilds.Clear();
         Processing = true;
 
         var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
@@ -137,7 +132,6 @@ public partial class BuilderWindow
         // Add durations limit if they not exist
         DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit) + (IgnoreBuild ? "" : " - " + CurrentBuild);
 
-        CurrentLowestTime = 9999;
         PossibleBuilds = 0;
         Progress = 0;
 
@@ -269,7 +263,7 @@ public partial class BuilderWindow
                         }
                     }
                 }
-                
+
                 if (!lastBuild.Item1.SameBuildWithoutRank(curBuild))
                     lastBuild.Item2 = 0;
                 lastBuild.Item1 = curBuild;

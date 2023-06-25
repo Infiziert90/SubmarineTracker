@@ -100,7 +100,7 @@ namespace SubmarineTracker
             {
                 CharacterConfiguration.LoadCharacters();
             }
-            catch (Exception e)
+            catch
             {
                 Dispose(false);
                 throw;
