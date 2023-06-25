@@ -65,8 +65,6 @@ public partial class BuilderWindow
                     BuildTableEntries("MSyldra", 36, last: true);
                 }
                 ImGui.EndTable();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild.FullIdentifier()}");
-                ImGuiHelpers.ScaledDummy(5);
             }
             ImGui.EndChild();
 

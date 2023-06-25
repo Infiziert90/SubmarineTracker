@@ -36,59 +36,75 @@ public partial class BuilderWindow
             var sixthRow = windowWidth / 1.5f;
             var seventhRow = windowWidth / 1.25f;
 
+            ImGui.Columns(2, "##buildColumn", false);
+            ImGui.SetColumnWidth(0, ImGui.CalcTextSize("Optimized Route:").X + (20 * ImGuiHelpers.GlobalScale));
+            ImGui.TextUnformatted("Selected Build:");
+            ImGui.NextColumn();
+            ImGui.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild.FullIdentifier()}");
+
+            ImGui.NextColumn();
             ImGui.TextUnformatted("Optimized Route:");
-            ImGui.SameLine();
+            ImGui.NextColumn();
             SelectedRoute();
+            ImGui.Columns(0);
 
             ImGui.TextUnformatted("Calculated Stats:");
+
+            ImGui.Columns(6, "##statsColumn", false);
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
-            ImGui.SameLine(secondRow);
+            ImGui.NextColumn();
             SelectRequiredColor(breakpoints.T2, build.Surveillance, breakpoints.T3);
 
-            ImGui.SameLine(thirdRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Retrieval");
-            ImGui.SameLine(fourthRow);
+            ImGui.NextColumn();
             SelectRequiredColor(breakpoints.Normal, build.Retrieval, breakpoints.Optimal);
 
-            ImGui.SameLine(sixthRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
-            ImGui.SameLine(seventhRow);
+            ImGui.NextColumn();
             SelectRequiredColor(breakpoints.Favor, build.Favor);
 
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Speed");
-            ImGui.SameLine(secondRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"{build.Speed}");
 
-            ImGui.SameLine(thirdRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
-            ImGui.SameLine(fourthRow);
+            ImGui.NextColumn();
             SelectRequiredColor(CurrentBuild.OptimizedDistance, build.Range);
 
-            ImGui.SameLine(sixthRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
-            ImGui.SameLine(seventhRow);
+            ImGui.NextColumn();
             ImGui.TextUnformatted($"{build.RepairCosts}");
 
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Duration");
-            ImGui.SameLine(secondRow);
+            ImGui.NextColumn();
             ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
 
-            ImGui.SameLine(thirdRow);
+            ImGui.NextColumn();
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");
-            ImGui.SameLine(fourthRow);
+            ImGui.NextColumn();
             ImGui.TextUnformatted($"{expPerMinute:F}");
 
             if (Configuration.DurationLimit != DurationLimit.None)
             {
+                ImGui.NextColumn();
+                ImGui.NextColumn();
+                ImGui.NextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Limit");
-                ImGui.SameLine(secondRow);
+                ImGui.NextColumn();
                 ImGui.TextUnformatted($"{DateUtil.GetDurationLimitName(Configuration.DurationLimit)}");
 
-                ImGui.SameLine(thirdRow);
+                ImGui.NextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Duration");
-                ImGui.SameLine(fourthRow);
+                ImGui.NextColumn();
                 ImGui.TextUnformatted($"{durationLimitExp:F}");
             }
+            ImGui.Columns(0);
         }
         ImGui.EndChild();
     }
