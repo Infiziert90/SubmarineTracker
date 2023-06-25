@@ -54,8 +54,8 @@ public static class Build
         public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
         public byte[] GetPartRanks() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank };
 
-        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint) rank)!;
-        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint) partId)!;
+        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
+        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
 
         public string HullIdentifier => ToIdentifier((ushort)Hull.RowId);
         public string SternIdentifier => ToIdentifier((ushort)Stern.RowId);
@@ -134,11 +134,11 @@ public static class Build
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
 
-        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort) Hull);
-        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort) Stern);
-        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort) Bow);
-        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort) Bridge);
-        
+        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort)Hull);
+        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);
+        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort)Bow);
+        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort)Bridge);
+
         public void UpdateBuild(Submarines.Submarine sub)
         {
             Rank = sub.Rank;
@@ -151,10 +151,10 @@ public static class Build
         public void UpdateBuild(SubmarineBuild build, int currentRank)
         {
             Rank = currentRank;
-            Hull = (int) build.Hull.RowId;
-            Stern = (int) build.Stern.RowId;
-            Bow = (int) build.Bow.RowId;
-            Bridge = (int) build.Bridge.RowId;
+            Hull = (int)build.Hull.RowId;
+            Stern = (int)build.Stern.RowId;
+            Bow = (int)build.Bow.RowId;
+            Bridge = (int)build.Bridge.RowId;
         }
 
         public void ChangeMap(int newMap)
@@ -195,13 +195,19 @@ public static class Build
 
         public static explicit operator RouteBuild(string s)
         {
+            if (s.Length < 4)
+                return new RouteBuild();
+
             var allMod = s.EndsWith("++");
-            var parts = s.Replace("+", "").ToCharArray().Select(t =>
+            var parts = s.Replace("+", "").ToCharArray().Select(t => t.ToString()).ToList();
+
+            for (var i = 0; i < parts.Count; i++)
             {
-                if (s[s.IndexOf(t) + 1] == '+' || allMod)
-                    return t + "+";
-                return t.ToString();
-            }).ToList();
+                var t = parts[i];
+                var k = string.Join("", parts.Take(i + 1)).Length;
+                if ((k >= k + 1 && s[k + 1] == '+') || allMod)
+                    parts[i] = t + "+";
+            }
 
             return new RouteBuild
             {
@@ -297,8 +303,8 @@ public static class Build
             'Y' => 4,
             _ => 0
         };
-        
-        if(s[^1] == '+')
+
+        if (s[^1] == '+')
             k += 5;
 
         return k * 4;
