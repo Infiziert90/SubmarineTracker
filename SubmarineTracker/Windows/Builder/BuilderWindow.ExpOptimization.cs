@@ -278,10 +278,11 @@ public partial class BuilderWindow
                     if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                     {
                         ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
-                        ImGui.SameLine(length);
+
+                        var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                         if (MustInclude.Count >= 5) ImGui.BeginDisabled();
                         ImGui.PushFont(UiBuilder.IconFont);
-                        ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(width, 0));
+                        ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
                         ImGui.PopFont();
                         if (MustInclude.Count >= 5) ImGui.EndDisabled();
 
@@ -314,8 +315,8 @@ public partial class BuilderWindow
                                 }
                             }
 
-                            var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-                            if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, height)))
+                            ImGui.SameLine();
+                            if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
                             {
                                 foreach (var p in MustInclude.ToArray())
                                     if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
