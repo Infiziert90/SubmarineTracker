@@ -118,13 +118,13 @@ public partial class BuilderWindow
     {
         FinishedLevelingBuilds.Clear();
         Processing = true;
-        
+
         var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
 
         try
         {
             PluginLog.Debug("Loading cached leveling data.");
-            
+
             var jsonString = File.ReadAllText(filePath);
             CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
         }
@@ -168,7 +168,7 @@ public partial class BuilderWindow
         PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");
 
         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
-        
+
         PluginLog.Information($"Writing routeList json");
         PluginLog.Information(filePath);
         File.WriteAllText(filePath, l);
@@ -180,7 +180,7 @@ public partial class BuilderWindow
     {
         var routeBuilds = BuildParts();
 
-        var outTree = new Dictionary<Build.RouteBuild, RouteCache>();
+        var outTree = new Dictionary<int, Journey>();
         var count = 1;
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
@@ -196,10 +196,11 @@ public partial class BuilderWindow
 
             while (ProgressRank < TargetRank)
             {
-                var (curBuild, journeys) = outTree.LastOrDefault();
-                var leftover = journeys?.Voyages.LastOrDefault().Value.Leftover ?? 0;
+                var (_, bestJourney) = outTree.LastOrDefault();
+                var leftover = bestJourney?.Leftover ?? 0;
+                var curBuild = (Build.RouteBuild)(bestJourney?.Build ?? "SSSS");
 
-                var bestJourney = journeys?.Voyages.LastOrDefault().Value;
+
                 if (lastBuildRouteRank != ProgressRank)
                 {
                     lastBuildRouteRank = ProgressRank;
@@ -219,7 +220,7 @@ public partial class BuilderWindow
                     PossibleBuilds = builds.Length * possibleMaps.Length;
                     Progress = 0;
 
-                    bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 }, "");
+                    bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
 
                     foreach (var build in builds)
                     {
@@ -255,12 +256,11 @@ public partial class BuilderWindow
 
                         if (bestJourney.RouteExp < exp)
                         {
-                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && (journeys?.Voyages.Count ?? 0) >= SwapAfter && (!curBuild.SameBuildWithoutRank(CurrentBuild) || IgnoreBuild)) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild))
+                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && outTree.Skip(count - 5).Count(t => t.Value.Build == bestJourney.Build) >= SwapAfter && (!curBuild.SameBuildWithoutRank(CurrentBuild) || IgnoreBuild)) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                             {
-                                curBuild = routeBuild;
+                                PluginLog.Information($"[Leveling] Build: {routeBuild}");
+                                bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
-
-                            bestJourney = new Journey(ProgressRank, exp, exp, path, "");
                         }
 
                     }
@@ -269,9 +269,11 @@ public partial class BuilderWindow
                 if (CancelSource.IsCancellationRequested)
                     break;
 
-                if (RankSheet[ProgressRank - 1].ExpToNext <= leftover + bestJourney!.RouteExp)
+                var newLeftover = leftover + bestJourney!.RouteExp;
+
+                if (RankSheet[ProgressRank - 1].ExpToNext <= newLeftover)
                 {
-                    leftover = bestJourney.RouteExp + leftover - RankSheet[ProgressRank - 1].ExpToNext;
+                    leftover = newLeftover - RankSheet[ProgressRank - 1].ExpToNext;
                     ProgressRank++;
                     if (ProgressRank > RankSheet.Count)
                     {
@@ -298,45 +300,28 @@ public partial class BuilderWindow
                     leftover += bestJourney.RouteExp;
                 }
 
-                bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover, Build = curBuild.ToString() };
+                bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
 
-                if (outTree.TryGetValue(curBuild, out var cache))
-                {
-                    if (!cache.Voyages.ContainsKey(count))
-                    {
-                        cache.Voyages.Add(count++, bestJourney);
-                    }
-                    else
-                    {
-                        cache.Voyages[count++] = bestJourney;
-                    }
-                }
-                else
-                {
-                    outTree.Add(curBuild, new RouteCache(new Dictionary<int, Journey> { { count++, bestJourney } }));
-                }
+                outTree.Add(count++, bestJourney);
 
                 if (ProgressRank == 0 || CancelSource.IsCancellationRequested)
                     break;
             }
         }
-        
+
         if (CancelSource.IsCancellationRequested)
             return null!;
 
-        var json = outTree.Values.SelectMany(t => t.Voyages).OrderBy(t => t.Key).ToDictionary(t => t.Key, t => t.Value);
-
-
         if (CachedRouteList.Caches.ContainsKey(DurationName))
         {
-            CachedRouteList.Caches[DurationName] = new RouteCache(json);
+            CachedRouteList.Caches[DurationName] = new RouteCache(outTree);
         }
         else
         {
-            CachedRouteList.Caches.Add(DurationName, new RouteCache(json));
+            CachedRouteList.Caches.Add(DurationName, new RouteCache(outTree));
         }
 
-        return json;
+        return outTree;
     }
 
     private Journey GetJourney(Build.RouteBuild routeBuild, int possibleMap)
