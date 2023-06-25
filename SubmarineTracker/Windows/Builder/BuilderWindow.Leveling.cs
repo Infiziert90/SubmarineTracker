@@ -11,15 +11,19 @@ public partial class BuilderWindow
 {
     public static readonly Dictionary<int, List<Build.RouteBuild>> FinishedLevelingBuilds = new();
 
-    private int TargetRank = 85;
+    private int TargetRank = 110;
     private int CurrentLowestTime = 9999;
 
     private int PossibleBuilds = 0;
     private int Progress = 0;
+    private int LevelProgress = 0;
+    private string CurrentBuildName = string.Empty;
     private DurationCache CachedRouteList = new();
     private readonly Dictionary<string, List<string>> UnusedCache = new();
 
     private string DurationName = string.Empty;
+
+    private TimeSpan TimeNeeded = new TimeSpan();
 
     private bool LevelingTab()
     {
@@ -30,14 +34,26 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild.FullIdentifier()}");
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Target: {TargetRank}");
             ImGui.SameLine();
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, 85);
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, 110);
             if (Progress > 0)
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Progress: {Progress} / {PossibleBuilds}");
+            if (LevelProgress > 0 && CurrentBuildName != string.Empty)
+            {
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuildName}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank: {LevelProgress} / {TargetRank}");
+            }
 
             ImGuiHelpers.ScaledDummy(10.0f);
             if (ImGui.Button("Calculate for Build"))
             {
                 Task.Run(DoThingsOffThread);
+            }
+
+            ImGui.SameLine();
+
+            if (ImGui.Button("Calculate for All!!!"))
+            {
+                Task.Run(DoAllThingsOffThread);
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
@@ -72,11 +88,10 @@ public partial class BuilderWindow
         return false;
     }
 
-    public void DoThingsOffThread()
+    public void DoAllThingsOffThread()
     {
         FinishedLevelingBuilds.Clear();
         // ConcurrentRouteList.Clear();
-        IgnoreUnlocks = false;
 
         try
         {
@@ -84,7 +99,7 @@ public partial class BuilderWindow
 
             var importPath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
             var jsonString = File.ReadAllText(importPath);
-            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();;
+            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
         }
         catch (Exception e)
         {
@@ -94,7 +109,7 @@ public partial class BuilderWindow
 
         // Add durations limit if they not exist
         DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit);
-        CachedRouteList.Caches.TryAdd(DurationName, new BuildCache(new Dictionary<string, RouteCache>()));
+        CachedRouteList.Caches.TryAdd($"{DurationName}/{IgnoreUnlocks}", new BuildCache(new Dictionary<string, RouteCache>()));
 
         CurrentLowestTime = 9999;
         PossibleBuilds = 0;
@@ -102,65 +117,122 @@ public partial class BuilderWindow
 
         Progress += 1;
         var routeBuilds = new List<Build.RouteBuild>();
-         for (var hull = 0; hull < PartsCount; hull++)
-         {
-             for (var stern = 0; stern < PartsCount; stern++)
-             {
-                 for (var bow = 0; bow < PartsCount; bow++)
-                 {
-                     for (var bridge = 0; bridge < PartsCount; bridge++)
-                     {
-                         var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
-                         if (build.GetSubmarineBuild.HighestRankPart() < TargetRank)
-                         {
-                             PossibleBuilds += 1;
-                             routeBuilds.Add(build);
-                         }
-                     }
-                 }
-             }
-         }
+        for (var hull = 0; hull < PartsCount; hull++)
+        {
+            for (var stern = 0; stern < PartsCount; stern++)
+            {
+                for (var bow = 0; bow < PartsCount; bow++)
+                {
+                    for (var bridge = 0; bridge < PartsCount; bridge++)
+                    {
+                        var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
+                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank)
+                        {
+                            PossibleBuilds += 1;
+                            routeBuilds.Add(build);
+                        }
+                    }
+                }
+            }
+        }
 
         var lastIdentifier = string.Empty;
-        //var routeBuilds = GenerateBuildTree(new Build.RouteBuild(Items.SharkClassHull, Items.SharkClassStern, Items.UnkiuClassBow, Items.WhaleClassBridge));
-        // var routeBuilds = GenerateBuildTree(CurrentBuild);
-        // var lastIdentifier = routeBuilds.Last().FullIdentifier();
-        // PossibleBuilds = routeBuilds.Count;
-        //
-        // PluginLog.Information("Testing Builds:");
-        // foreach (var build in routeBuilds)
-        // {
-        //     PluginLog.Information(build.FullIdentifier());
-        // }
-        // PluginLog.Information("________________");
 
         foreach (var build in routeBuilds)
             CalculateLevelingBuild(build, build.FullIdentifier() == lastIdentifier, lastIdentifier);
 
 
-         var voyages = FinishedLevelingBuilds.Min(pair => pair.Key);
-         PluginLog.Information($"-----------------");
-         PluginLog.Information($"Rank 1 -> {TargetRank}");
-         PluginLog.Information($"Redeployment {DurationName}");
-         PluginLog.Information($"Voyages: {voyages} ({voyages * DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24.0} days)");
-         foreach (var build in FinishedLevelingBuilds[voyages])
-         {
-             PluginLog.Information(build.GetSubmarineBuild.FullIdentifier());
-         }
-         PluginLog.Information($"-----------------");
-         Progress -= 1;
+        var voyages = FinishedLevelingBuilds.Min(pair => pair.Key);
+        PluginLog.Information($"-----------------");
+        PluginLog.Information($"Rank 1 -> {TargetRank}");
+        PluginLog.Information($"Redeployment {DurationName}");
+        PluginLog.Information($"Voyages: {voyages} ({voyages * DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24.0} days)");
+        foreach (var build in FinishedLevelingBuilds[voyages])
+        {
+         PluginLog.Information(build.GetSubmarineBuild.FullIdentifier());
+        }
+        PluginLog.Information($"-----------------");
+        Progress -= 1;
 
-         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented,});
+        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented,});
 
-         var path = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
-         PluginLog.Information($"Writing routeList json");
-         PluginLog.Information(path);
-         File.WriteAllText(path, l);
+        var path = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
+        PluginLog.Information($"Writing routeList json");
+        PluginLog.Information(path);
+        File.WriteAllText(path, l);
+    }
+
+    public void DoThingsOffThread()
+    {
+        FinishedLevelingBuilds.Clear();
+        // ConcurrentRouteList.Clear();
+
+        try
+        {
+            PluginLog.Debug("Loading cached leveling data.");
+
+            var importPath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
+            var jsonString = File.ReadAllText(importPath);
+            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error("Loading cached leveling data failed.");
+            PluginLog.Error(e.Message);
+        }
+
+        // Add durations limit if they not exist
+        DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit);
+        CachedRouteList.Caches.TryAdd($"{DurationName}/{IgnoreUnlocks}", new BuildCache(new Dictionary<string, RouteCache>()));
+
+        CurrentLowestTime = 9999;
+        PossibleBuilds = 0;
+        Progress = 0;
+
+        //var routeBuilds = GenerateBuildTree(new Build.RouteBuild(Items.SharkClassHull, Items.SharkClassStern, Items.UnkiuClassBow, Items.WhaleClassBridge));
+        var routeBuilds = GenerateBuildTree(CurrentBuild);
+        var lastIdentifier = routeBuilds.Last().FullIdentifier();
+        PossibleBuilds = routeBuilds.Count;
+
+        PluginLog.Information("Testing Builds:");
+        foreach (var build in routeBuilds)
+        {
+            PluginLog.Information(build.FullIdentifier());
+        }
+        PluginLog.Information("________________");
+
+        foreach (var build in routeBuilds)
+            CalculateLevelingBuild(build, build.FullIdentifier() == lastIdentifier, lastIdentifier);
+
+
+        var voyages = FinishedLevelingBuilds.Min(pair => pair.Key);
+        PluginLog.Information($"-----------------");
+        PluginLog.Information($"Rank 1 -> {TargetRank}");
+        PluginLog.Information($"Redeployment {DurationName}");
+        PluginLog.Information($"Voyages: {voyages} ({voyages * (Configuration.DurationLimit != DurationLimit.None ? DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24.0 : 0)} days)");
+        PluginLog.Information($"Total Voyage Duration: {TimeNeeded}");
+        foreach (var build in FinishedLevelingBuilds[voyages])
+        {
+         PluginLog.Information(build.GetSubmarineBuild.FullIdentifier());
+        }
+        PluginLog.Information($"-----------------");
+        Progress -= 1;
+
+        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented,});
+
+        var path = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
+        PluginLog.Information($"Writing routeList json1");
+        PluginLog.Information(path);
+        File.WriteAllText(path, l);
     }
 
     public void CalculateLevelingBuild(Build.RouteBuild build, bool isLastBuild, string lastBuildIdentifier)
     {
-        var routeList = CachedRouteList.Caches[DurationName];
+        LevelProgress = 0;
+        CurrentBuildName = build.FullIdentifier();
+        TimeNeeded = new TimeSpan();
+
+        var routeList = CachedRouteList.Caches[$"{DurationName}/{IgnoreUnlocks}"];
         routeList.Builds.TryAdd(build.GetSubmarineBuild.FullIdentifier(), new RouteCache(new Dictionary<int, Journey>()));
         if (UnusedCache.TryGetValue(lastBuildIdentifier+DurationName, out var cached) && cached.Exists(s => s == build.FullIdentifier()))
         {
@@ -199,6 +271,14 @@ public partial class BuilderWindow
         long leftover = 0;
         while (i < TargetRank)
         {
+            LevelProgress = i;
+
+            if (journey > CurrentLowestTime)
+            {
+                Progress += 1;
+                return;
+            }
+
             foreach (var (rank, idx) in build.GetSubmarineBuild.GetPartRanks().Select((val, idx) => (val, idx)))
             {
                 if (i >= rank)
@@ -238,7 +318,7 @@ public partial class BuilderWindow
 
             if (copiedBuild.GetSubmarineBuild.Speed < 20 || copiedBuild.GetSubmarineBuild.Range < 20)
             {
-                PluginLog.Information($"{copiedBuild.FullIdentifier()} impossible with too low speed | range");
+                PluginLog.Information($"{copiedBuild.FullIdentifier()} impossible with too low speed or range");
                 Progress += 1;
                 return;
             }
@@ -262,76 +342,48 @@ public partial class BuilderWindow
             else
             {
                 var totalExp = leftover;
-                if (i < 50)
+                var bestMapExp = 0L;
+                foreach (var map in ExplorationSheet.Where(r => r.StartingPoint))
                 {
-                    bestPath = FindBestPath(copiedBuild);
+                    if (ExplorationSheet.GetRow(map.RowId + 1)!.RankReq > i)
+                        break;
 
-                    foreach (var sector in bestPath)
+                    if (ExplorationSheet.GetRow(map.RowId + 1)!.RankReq == 1 && i > 60)
+                        continue;
+
+                    copiedBuild.Map = (int) map.Map.Row - 1;
+                    var pathTaken = FindBestPath(copiedBuild);
+
+                    var mapGain = 0L;
+                    foreach (var sector in pathTaken)
                     {
                         var sheetSector = ExplorationSheet.GetRow(sector)!;
-                        var bonus = CalculateBonusExp(PredictBonusExp(sector, copiedBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
-                        gainedExp += bonus;
-                        totalExp += bonus;
+                        mapGain += CalculateBonusExp(PredictBonusExp(sector, copiedBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
+                    }
+
+                    if (mapGain > bestMapExp)
+                    {
+                        bestMapExp = mapGain;
+                        bestPath = pathTaken;
                     }
                 }
-                else if (i is > 50 and < 70)
+
+                // protection against subs that never go on voyage
+                if (bestMapExp == 0)
                 {
-                    copiedBuild.Map = 1;
-                    bestPath = FindBestPath(copiedBuild);
-
-                    foreach (var sector in bestPath)
-                    {
-                        var sheetSector = ExplorationSheet.GetRow(sector)!;
-                        var bonus = CalculateBonusExp(PredictBonusExp(sector, copiedBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
-                        gainedExp += bonus;
-                        totalExp += bonus;
-                    }
+                    Progress += 1;
+                    return;
                 }
-                else
-                {
-                    long expMap1 = 0;
-                    long expMap2 = 0;
 
-                    copiedBuild.Map = 1;
+                var startPoint = Voyage.FindVoyageStartPoint(bestPath.First());
+                TimeNeeded += TimeSpan.FromSeconds(Voyage.CalculateDuration(bestPath.Prepend(startPoint).Select(d => ExplorationSheet.GetRow(d)!), copiedBuild.GetSubmarineBuild));
 
-                    bestPath = FindBestPath(copiedBuild);
-
-                    foreach (var sector in bestPath)
-                    {
-                        var sheetSector = ExplorationSheet.GetRow(sector)!;
-                        var bonus = CalculateBonusExp(PredictBonusExp(sector, copiedBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
-                        expMap1 += bonus;
-                    }
-
-                    var orgBestPath = bestPath.ToArray();
-
-                    copiedBuild.Map = 2;
-                    bestPath = FindBestPath(copiedBuild);
-
-                    foreach (var sector in bestPath)
-                    {
-                        var sheetSector = ExplorationSheet.GetRow(sector)!;
-                        var bonus = CalculateBonusExp(PredictBonusExp(sector, copiedBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
-                        expMap2 += bonus;
-                    }
-
-                    if (expMap1 > expMap2)
-                        bestPath = orgBestPath.ToArray();
-
-                    // protection against subs that never go on voyage
-                    if (expMap1 == 0 && expMap2 == 0)
-                    {
-                        Progress += 1;
-                        return;
-                    }
-
-                    totalExp += expMap1 > expMap2 ? expMap1 : expMap2;
-                    gainedExp += expMap1 > expMap2 ? expMap1 : expMap2;
-                }
+                totalExp += bestMapExp;
+                gainedExp += bestMapExp;
 
                 while (totalExp > 0)
                 {
-                    var currentRank = RankSheet[i];
+                    var currentRank = RankSheet[i-1];
                     if (totalExp > currentRank.ExpToNext)
                     {
                         i += 1;
@@ -352,8 +404,10 @@ public partial class BuilderWindow
                         {
                             if (oldBuildVoyage.RankReached > i || (oldBuildVoyage.RankReached == i && oldBuildVoyage.Leftover >= leftover))
                             {
+                                //PluginLog.Information($"{oldBuild.FullIdentifier()} - 1{string.Join(" -> ", oldBuildVoyage.Route)} {oldBuildVoyage.RouteExp} vs {gainedExp} {string.Join(" -> ", bestPath)} - {copiedBuild.FullIdentifier()}");
                                 i = oldBuildVoyage.RankReached;
                                 leftover = oldBuildVoyage.Leftover;
+                                gainedExp = oldBuildVoyage.RouteExp;
                                 bestPath = oldBuildVoyage.Route;
                                 usedBuild = oldBuild.FullIdentifier();
                             }
