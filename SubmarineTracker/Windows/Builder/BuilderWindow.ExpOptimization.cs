@@ -23,7 +23,7 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks = false;
 
-    private ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]> CachedDistances = new();
+    private readonly ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]> CachedDistances = new();
 
     private uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
@@ -84,7 +84,7 @@ public partial class BuilderWindow
                 CachedDistances.AddOrUpdate(highestRank, distances, (k, v) => distances);
             }
             var build = routeBuild.GetSubmarineBuild;
-            var optimalDistances = distances.Where(t => t.Item1 <= build.Range).ToArray();
+            var optimalDistances = distances.Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(MustInclude)).ToArray();
             if (!optimalDistances.Any())
             {
                 ComputingPath = false;
