@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -14,6 +15,8 @@ public partial class BuilderWindow
 
     private int SwapAfter = 1;
     private bool IgnoreBuild;
+
+    private string Result = string.Empty;
 
     private int PossibleBuilds;
     private bool Processing;
@@ -36,29 +39,48 @@ public partial class BuilderWindow
         if (ImGui.BeginTabItem("Leveling"))
         {
             ImGuiHelpers.ScaledDummy(10.0f);
+            var wip = "- Work in Progress -";
+            var width = ImGui.GetWindowWidth();
+            var textWidth = ImGui.CalcTextSize(wip).X;
 
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {CurrentBuild}");
-            ImGui.Checkbox("Ignore Build", ref IgnoreBuild);
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Target: {TargetRank}");
-            ImGui.SameLine();
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, 110);
-            ImGui.TextColored(ImGuiColors.HealerGreen, "Swap if optimal after");
-            ImGui.SameLine();
+            ImGui.SetCursorPosX((width - textWidth) * 0.5f);
+            ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
+            ImGuiHelpers.ScaledDummy(10.0f);
+            ImGui.Separator();
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            var avail = ImGui.GetContentRegionAvail().X;
+            width = avail / 2;
+
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? CurrentBuild : "All")}");
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"Target Rank: {TargetRank}");
+            ImGui.SetNextItemWidth(width);
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int) RankSheet.Last().RowId);
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"Swap if optimal after {SwapAfter} voyages");
+            ImGui.SetNextItemWidth(width);
             ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10);
-            ImGui.SameLine();
-            ImGui.TextColored(ImGuiColors.HealerGreen, "Voyages");
             if (Processing)
             {
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Progress:");
+                ImGui.Indent(10.0f);
                 if (IgnoreBuild)
-                    ImGui.TextColored(ImGuiColors.DalamudOrange, "Warning this will take a long time and you may feel the game lagging during the calculation.");
+                    Helper.WrappedError("Warning this will take a long time and you'll experience game slowdown");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"At Rank: {ProgressRank}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Progress for current Rank: {Progress} / {PossibleBuilds}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Time Elapsed: {DateTime.Now - StartTime}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Time Elapsed for current Rank: {DateTime.Now - ProgressStartTime}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Progress for current: {Progress} / {PossibleBuilds}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Time elapsed: {DateTime.Now - StartTime}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Time elapsed current calculation: {DateTime.Now - ProgressStartTime}");
+                ImGui.Unindent(10.0f);
+            }
+            else if (Result != string.Empty)
+            {
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Result:");
+                ImGui.Indent(10.0f);
+                ImGui.TextUnformatted(Result);
+                ImGui.Unindent(10.0f);
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
-            if (ImGui.Button("Calculate for Build"))
+            if (ImGui.Button($"Calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
                 Thread?.Join();
@@ -69,7 +91,10 @@ public partial class BuilderWindow
                 Thread.SetApartmentState(ApartmentState.MTA);
                 Thread.Start();
             }
-            if (ImGui.Button("Stop calculate for Build"))
+
+            ImGui.SameLine();
+
+            if (ImGui.Button($"Stop calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
                 Thread?.Join();
@@ -77,10 +102,29 @@ public partial class BuilderWindow
 
             ImGuiHelpers.ScaledDummy(10.0f);
 
-            var width = ImGui.GetContentRegionAvail().X / 3;
+            width = avail / 3;
             var length = ImGui.CalcTextSize("Duration Limit").X + 25.0f;
 
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+            ImGui.Indent(10.0f);
+            ImGui.Checkbox("Ignore Build", ref IgnoreBuild);
+            ImGuiComponents.HelpMarker("This will calculate every single possible build\n" +
+                                       "Warning: This will take a long time and you'll experience game slowdown");
             ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
+            if (Configuration.DurationLimit != DurationLimit.None)
+            {
+                ImGui.Checkbox("Maximize duration limit", ref MaximizeDuration);
+                ImGuiComponents.HelpMarker("This will prioritize maximum Exp over best Exp\n" +
+                                           "e.g 48H Limit -\n" +
+                                           "Route 1: 38:30h 500 Exp/Min = 1,15mil\n" +
+                                           "Route 2: 47:58h 450 Exp/Min = 1,29mil\n" +
+                                           "Route 1 is preferred for best Exp/Min\n" +
+                                           "Route 2 is preferred for maximizing Exp/Limit in under 48h");
+
+            }
+
+            ImGui.Unindent(10.0f);
+
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
             ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width);
@@ -100,8 +144,6 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
-            ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
-
 
             ImGui.EndTabItem();
             return true;
@@ -112,6 +154,7 @@ public partial class BuilderWindow
 
     public void DoThingsOffThread()
     {
+        Result = string.Empty;
         Processing = true;
 
         var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
@@ -157,6 +200,14 @@ public partial class BuilderWindow
             PluginLog.Information($"After-Rank {rank}");
             PluginLog.Information($"Leftover: {leftover}");
             PluginLog.Information("-----------------");
+
+            // TODO not WIP this
+            Result = $"Best Build: {build}\n" +
+                     $"Voyages: {i} {(Configuration.DurationLimit != DurationLimit.None ? $"(Days {i * DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24})" : "")}\n" +
+                     $"Final Rank: {rank} Leftover Exp: {leftover:N0}\n" +
+                     $"---Options---\n" +
+                     $"Limit: {DateUtil.GetDurationLimitName(Configuration.DurationLimit)}\n" +
+                     $"Ignore Build? {IgnoreBuild} IgnoreUnlocks? {IgnoreUnlocks} Maximize? {MaximizeDuration}";
         }
 
         PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");

@@ -263,15 +263,12 @@ public partial class BuilderWindow
                     var width = ImGui.GetContentRegionAvail().X / 3;
                     var length = ImGui.CalcTextSize("Must Include 5 / 5").X + 25.0f;
 
-                    var changed = false;
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
                     ImGui.Indent(10.0f);
-                    changed |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
-                    if (ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks))
-                    {
-                        changed = true;
-                        OptionsChanged = true;
-                    }
+                    OptionsChanged |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
+                    OptionsChanged |= ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
+                    if (Configuration.DurationLimit != DurationLimit.None)
+                        OptionsChanged |= ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
                     ImGui.Unindent(10.0f);
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
@@ -292,8 +289,6 @@ public partial class BuilderWindow
 
                         ImGui.EndCombo();
                     }
-
-                    ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
 
                     if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                     {
@@ -354,7 +349,7 @@ public partial class BuilderWindow
                         }
                     }
 
-                    if (changed)
+                    if (OptionsChanged)
                         Configuration.Save();
                 }
                 ImGui.EndChild();

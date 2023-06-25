@@ -6,18 +6,15 @@ public partial class HelpyWindow
 {
     private static readonly Vector2 IconSize = new(32, 32);
 
-    private bool StorageTab()
+    private void StorageTab()
     {
-        var open = ImGui.BeginTabItem("Storage");
-        if (open)
+        if (ImGui.BeginTabItem("Storage"))
         {
             ImGuiHelpers.ScaledDummy(5.0f);
             if (!Plugin.AllaganToolsConsumer.IsAvailable)
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "AllaganTools not available.");
                 ImGui.EndTabItem();
-
-                return open;
             }
 
             // build cache if needed
@@ -60,8 +57,6 @@ public partial class HelpyWindow
             }
         }
         ImGui.EndTabItem();
-
-        return open;
     }
 
     private static void DrawIcon(uint iconId)

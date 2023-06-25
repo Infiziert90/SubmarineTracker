@@ -135,6 +135,9 @@ public class CharacterConfiguration
     {
         foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
         {
+            if (file.Name == "routeList.json")
+                continue;
+
             ulong id;
             try
             {

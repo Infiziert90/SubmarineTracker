@@ -102,7 +102,7 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
-                // if (Configuration.DurationLimit != DurationLimit.None)
+                // if (MaximizeDuration)
                 // {
                 //     ImGui.TableNextRow();
                 //

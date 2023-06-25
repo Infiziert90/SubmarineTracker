@@ -48,7 +48,7 @@ public class MainWindow : Window, IDisposable
             return;
         }
 
-        var buttonHeight = ImGui.CalcTextSize("WWWW").Y + (18.0f * ImGuiHelpers.GlobalScale);
+        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
             var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
@@ -126,22 +126,7 @@ public class MainWindow : Window, IDisposable
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
         {
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Sync))
-            {
-                Storage.Refresh = true;
-                CharacterConfiguration.LoadCharacters();
-                Plugin.LoadFCOrder();
-            }
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Reload all saved FCs from your disk");
-
-            ImGui.SameLine();
-
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog))
-                Plugin.DrawConfigUI();
-
-            if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Open the config menu");
+            Helper.MainMenuIcon(Plugin);
         }
         ImGui.EndChild();
     }

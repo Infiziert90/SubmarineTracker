@@ -6,7 +6,8 @@ public partial class ConfigWindow
     {
         if (ImGui.BeginTabItem("About"))
         {
-            if (ImGui.BeginChild("AboutContent", new Vector2(0, -(50 * ImGuiHelpers.GlobalScale))))
+            var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+            if (ImGui.BeginChild("AboutContent", new Vector2(0, -buttonHeight)))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -25,9 +26,8 @@ public partial class ConfigWindow
 
             ImGui.EndChild();
 
-            ImGuiHelpers.ScaledDummy(5);
             ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(5);
+            ImGuiHelpers.ScaledDummy(1.0f);
 
             if (ImGui.BeginChild("AboutBottomBar", new Vector2(0, 0), false, 0))
             {

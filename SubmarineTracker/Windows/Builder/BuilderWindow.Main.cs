@@ -1,3 +1,4 @@
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -44,8 +45,8 @@ public partial class BuilderWindow : Window, IDisposable
         var infoTabOpen = false;
         var shipTabOpen = false;
 
-        var buttonHeight = ImGui.CalcTextSize("XXX").Y + (10.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (25.0f * ImGuiHelpers.GlobalScale)))))
+        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
             var sub = new Submarines.Submarine();
 
@@ -59,9 +60,9 @@ public partial class BuilderWindow : Window, IDisposable
 
                 shipTabOpen |= ShipTab();
 
-                infoTabOpen |= InfoTab();
-
                 shipTabOpen |= LevelingTab();
+
+                infoTabOpen |= InfoTab();
             }
             ImGui.EndTabBar();
 
@@ -72,9 +73,8 @@ public partial class BuilderWindow : Window, IDisposable
         }
         ImGui.EndChild();
 
-        ImGuiHelpers.ScaledDummy(5);
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(5);
+        ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
         {
@@ -109,6 +109,8 @@ public partial class BuilderWindow : Window, IDisposable
                     Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA/edit#gid=1894926908");
                 ImGui.PopStyleColor();
             }
+
+            Helper.MainMenuIcon(Plugin);
         }
         ImGui.EndChild();
     }

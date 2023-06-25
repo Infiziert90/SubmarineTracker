@@ -38,8 +38,8 @@ public partial class LootWindow : Window, IDisposable
     {
         Plugin.FileDialogManager.Draw();
 
-        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -(buttonHeight + (25.0f * ImGuiHelpers.GlobalScale)))))
+        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
             if (ImGui.BeginTabBar("##LootTabBar"))
             {
@@ -53,14 +53,12 @@ public partial class LootWindow : Window, IDisposable
         }
         ImGui.EndChild();
 
-        ImGuiHelpers.ScaledDummy(5);
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(5);
+        ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
         {
-            if (ImGui.Button("Settings"))
-                Plugin.DrawConfigUI();
+            Helper.MainMenuIcon(Plugin);
         }
         ImGui.EndChild();
     }

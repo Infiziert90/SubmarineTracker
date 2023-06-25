@@ -32,37 +32,25 @@ public partial class HelpyWindow : Window, IDisposable
             return;
         }
 
-        var storageOpen = false;
-        var buttonHeight = ImGui.CalcTextSize("XXX").Y + 10.0f;
-        if (ImGui.BeginChild("HelpyContent", new Vector2(0, -(buttonHeight + (25.0f * ImGuiHelpers.GlobalScale)))))
+        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginChild("HelpyContent", new Vector2(0, -buttonHeight)))
         {
             if (ImGui.BeginTabBar("##helperTabBar"))
             {
                 ProgressionTab(fcSub);
 
-                storageOpen = StorageTab();
+                StorageTab();
             }
             ImGui.EndTabBar();
         }
         ImGui.EndChild();
 
-        ImGuiHelpers.ScaledDummy(5);
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(5);
+        ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
         {
-            if (ImGui.Button("Settings"))
-                Plugin.DrawConfigUI();
-
-            if (storageOpen)
-            {
-                ImGui.SameLine();
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button("Refresh"))
-                    Storage.Refresh = true;
-                ImGui.PopStyleColor();
-            }
+            Helper.MainMenuIcon(Plugin);
         }
         ImGui.EndChild();
     }
