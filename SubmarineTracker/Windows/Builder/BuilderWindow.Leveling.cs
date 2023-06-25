@@ -253,7 +253,7 @@ public partial class BuilderWindow
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
                         var (_, _, exp, path, _) = best;
 
-                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 1;
+                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
 
                         if (bestJourney.RouteExp < exp)
                         {
@@ -342,7 +342,7 @@ public partial class BuilderWindow
         foreach (var sector in path)
         {
             var sheetSector = ExplorationSheet.GetRow(sector)!;
-            var bonus = CalculateBonusExp(PredictBonusExp(sector, routeBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
+            var bonus = CalculateBonusExp(PredictBonusExp(sector, routeBuild.GetSubmarineBuild).Guaranteed, sheetSector.ExpReward);
             exp += bonus;
         }
 
