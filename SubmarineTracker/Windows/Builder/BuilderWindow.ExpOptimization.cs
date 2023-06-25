@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
@@ -22,7 +23,7 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks = false;
 
-    private Dictionary<int, (int, List<SubmarineExplorationPretty>)[]> CachedDistances = new();
+    private ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]> CachedDistances = new();
 
     private uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
@@ -50,7 +51,7 @@ public partial class BuilderWindow
             }
 
             var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
-            if (!CachedDistances.TryGetValue(highestRank, out var distances))
+            if (!CachedDistances.TryGetValue(highestRank, out var distances) || !distances.Any(t => t.Item2.ContainsAllItems(MustInclude)))
             {
                 var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
                 if (MustInclude.Any())
@@ -59,7 +60,7 @@ public partial class BuilderWindow
                 var i = MustInclude.Any() ? MustInclude.Count : 1;
                 while (i++ < 5)
                 {
-                    foreach (var path in paths.ToArray())
+                    foreach (var path in paths.ToArray()) 
                     {
                         foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
                         {
@@ -80,7 +81,7 @@ public partial class BuilderWindow
                 }
 
                 distances = allPaths.AsParallel().Select(Voyage.CalculateDistance).ToArray();
-                CachedDistances.Add(highestRank, distances);
+                CachedDistances.AddOrUpdate(highestRank, distances, (k, v) => distances);
             }
             var build = routeBuild.GetSubmarineBuild;
             var optimalDistances = distances.Where(t => t.Item1 <= build.Range).ToArray();
