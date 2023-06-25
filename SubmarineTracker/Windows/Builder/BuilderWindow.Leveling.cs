@@ -182,6 +182,7 @@ public partial class BuilderWindow
 
         var outTree = new Dictionary<int, Journey>();
         var count = 1;
+        var lastBuild = (new Build.RouteBuild(), 0);
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
             var mapBreaks = ExplorationSheet
@@ -198,7 +199,7 @@ public partial class BuilderWindow
             {
                 var (_, bestJourney) = outTree.LastOrDefault();
                 var leftover = bestJourney?.Leftover ?? 0;
-                var curBuild = (Build.RouteBuild)(bestJourney?.Build ?? "SSSS");
+                var curBuild = lastBuild.Item1;
 
 
                 if (lastBuildRouteRank != ProgressRank)
@@ -256,15 +257,21 @@ public partial class BuilderWindow
 
                         if (bestJourney.RouteExp < exp)
                         {
-                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && outTree.Skip(count - 5).Count(t => t.Value.Build == bestJourney.Build) >= SwapAfter && (!curBuild.SameBuildWithoutRank(CurrentBuild) || IgnoreBuild)) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
+                            PluginLog.Information($"[Leveling] SameBuildWithoutRank: {curBuild.SameBuildWithoutRank(routeBuild)}, Swap: {lastBuild.Item2 >= SwapAfter}, TargetedBuild: {routeBuild.SameBuildWithoutRank(CurrentBuild)}");
+                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                             {
                                 PluginLog.Information($"[Leveling] Build: {routeBuild}");
+                                curBuild = routeBuild;
                                 bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
-                        }
-
+                        } 
                     }
                 }
+                
+                if (!lastBuild.Item1.SameBuildWithoutRank(curBuild))
+                    lastBuild.Item2 = 0;
+                lastBuild.Item1 = curBuild;
+                lastBuild.Item2++;
 
                 if (CancelSource.IsCancellationRequested)
                     break;
