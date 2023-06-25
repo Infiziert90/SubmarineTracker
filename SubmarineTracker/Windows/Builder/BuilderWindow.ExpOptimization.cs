@@ -145,11 +145,26 @@ public partial class BuilderWindow
             {
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
-                    var maps = ExplorationSheet
-                       .Where(r => r.StartingPoint)
-                       .Where(r => ExplorationSheet.GetRow(r.RowId + 1)!.RankReq <= CurrentBuild.Rank)
-                       .Select(r => ToStr(r.Map.Value!.Name))
-                       .ToArray();
+                    string[] maps;
+                    if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                    {
+                        maps = ExplorationSheet
+                                   .Where(r => r.StartingPoint)
+                                   .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
+                                   .Where(r => r.RankReq <= CurrentBuild.Rank)
+                                   .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                                   .Select(r => ToStr(r.Map.Value!.Name))
+                                   .ToArray();
+                    }
+                    else
+                    {
+                        maps = ExplorationSheet
+                               .Where(r => r.StartingPoint)
+                               .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
+                               .Where(r => r.RankReq <= CurrentBuild.Rank)
+                               .Select(r => ToStr(r.Map.Value!.Name))
+                               .ToArray();
+                    }
 
                     // Always pick highest rank map if smaller then possible
                     if (maps.Length <= CurrentBuild.Map)
@@ -213,7 +228,7 @@ public partial class BuilderWindow
                         if (Error)
                         {
                             ImGui.TextWrapped("Error: Unable to calculate, please refresh your data (Voyage Control Panel -> Submersible Management).");
-                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out fcSub))
                                 if (fcSub.UnlockedSectors.ContainsKey(startPoint))
                                     Error = false;
                         }
