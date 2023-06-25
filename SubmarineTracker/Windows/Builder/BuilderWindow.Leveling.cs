@@ -33,6 +33,8 @@ public partial class BuilderWindow
     private DateTime StartTime;
     private DateTime ProgressStartTime;
 
+    private Thread Thread;
+
     private bool LevelingTab()
     {
         if (ImGui.BeginTabItem("Leveling"))
@@ -51,6 +53,8 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.HealerGreen, "Voyages");
             if (Processing)
             {
+                if (IgnoreBuild)
+                    ImGui.TextColored(ImGuiColors.DalamudOrange, "Warning this will take a long time and you may feel the game lagging during the calculation.");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"At Rank: {ProgressRank}");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Progress for current Rank: {Progress} / {PossibleBuilds}");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Time Elapsed: {DateTime.Now - StartTime}");
@@ -61,14 +65,19 @@ public partial class BuilderWindow
             if (ImGui.Button("Calculate for Build"))
             {
                 CancelSource.Cancel();
+                Thread?.Join();
                 CancelSource = new CancellationTokenSource();
                 StartTime = DateTime.Now;
                 ProgressStartTime = DateTime.Now;
+                Thread = new Thread(DoThingsOffThread);
+                Thread.SetApartmentState(ApartmentState.MTA);
+                Thread.Start();
                 Task.Run(DoThingsOffThread, CancelSource.Token);
             }
             if (ImGui.Button("Stop calculate for Build"))
             {
                 CancelSource.Cancel();
+                Thread?.Join();
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
@@ -110,14 +119,15 @@ public partial class BuilderWindow
     {
         FinishedLevelingBuilds.Clear();
         Processing = true;
+        
+        var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
 
         try
         {
             PluginLog.Debug("Loading cached leveling data.");
-
-            var importPath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
-            var jsonString = File.ReadAllText(importPath);
-            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new(); ;
+            
+            var jsonString = File.ReadAllText(filePath);
+            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
         }
         catch (Exception e)
         {
@@ -135,43 +145,44 @@ public partial class BuilderWindow
         Progress += 1;
         var outTree = BuildRoute();
 
+        if (CancelSource.IsCancellationRequested)
+        {
+            Processing = false;
+            return;
+        }
         var rank = 1;
 
-        foreach (var (build, route) in outTree)
+        PluginLog.Information("-----------------");
+        foreach (var (i, (rankReached, leftover, routeExp, points, build)) in outTree)
         {
-            PluginLog.Information("=================");
             PluginLog.Information($"Used Build {build}");
-            PluginLog.Information($"Rank: {rank}");
-            foreach (var (i, (rankReached, leftover, routeExp, points)) in route.Voyages)
-            {
-                rank = rankReached;
-                var startPoint = Voyage.FindVoyageStartPoint(points[0]);
-                PluginLog.Information($"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
-                PluginLog.Information($"Exp gained {routeExp}");
-                PluginLog.Information($"After-Rank {rank}");
-                PluginLog.Information($"Leftover: {leftover}");
-                PluginLog.Information($"-----------------");
-            }
+            PluginLog.Information($"Pre-Rank: {rank}");
+            rank = rankReached;
+            var startPoint = Voyage.FindVoyageStartPoint(points[0]);
+            PluginLog.Information($"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+            PluginLog.Information($"Exp gained {routeExp}");
+            PluginLog.Information($"After-Rank {rank}");
+            PluginLog.Information($"Leftover: {leftover}");
+            PluginLog.Information("-----------------");
         }
 
         PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");
-        
-        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
-        var filePath = Path.Combine(Plugin.PluginInterface.AssemblyLocation.Directory?.FullName!, "routeList.json");
+        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
+        
         PluginLog.Information($"Writing routeList json");
         PluginLog.Information(filePath);
         File.WriteAllText(filePath, l);
-        
+
         Processing = false;
     }
 
-    private Dictionary<Build.RouteBuild, RouteCache> BuildRoute()
+    private Dictionary<int, Journey> BuildRoute()
     {
         var routeBuilds = BuildParts();
 
-        var outTree = CachedRouteList.Caches.TryGetValue(DurationName, out var cacheOut) ? cacheOut.Builds.ToDictionary(t => (Build.RouteBuild)t.Key, t => t.Value) : new Dictionary<Build.RouteBuild, RouteCache>();
-        var count = 0;
+        var outTree = new Dictionary<Build.RouteBuild, RouteCache>();
+        var count = 1;
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
             var mapBreaks = ExplorationSheet
@@ -182,6 +193,7 @@ public partial class BuilderWindow
             ProgressRank = 1;
 
             var lastBuildRouteRank = 0;
+            var lastMap = 0;
 
             while (ProgressRank < TargetRank)
             {
@@ -203,26 +215,44 @@ public partial class BuilderWindow
                         builds = builds.Where(t => t == CurrentBuild).ToArray();
                     }
 
-                    PossibleBuilds = builds.Length;
+                    var possibleMaps = mapBreaks.Where(t => t.Key <= ProgressRank).Select(t => t.Value - 1).Where(t => t >= lastMap).ToArray();
+
+                    PossibleBuilds = builds.Length * possibleMaps.Length;
                     Progress = 0;
 
-                    bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 });
+                    bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 }, "");
 
                     foreach (var build in builds)
                     {
                         if (CancelSource.IsCancellationRequested)
                             break;
                         var routeBuild = build;
-                        routeBuild.Map = mapBreaks.Last(t => t.Key <= ProgressRank).Value - 1;
-                        var path = FindBestPath(routeBuild);
+                        var taskJourneys = new List<Task<Journey>>();
 
-                        var exp = 0u;
-                        foreach (var sector in path)
+                        foreach (var possibleMap in possibleMaps)
                         {
-                            var sheetSector = ExplorationSheet.GetRow(sector)!;
-                            var bonus = CalculateBonusExp(PredictBonusExp(sector, routeBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
-                            exp += bonus;
+                            taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap)));
                         }
+
+                        // ReSharper disable once CoVariantArrayConversion
+                        try
+                        {
+                            Task.WaitAll(taskJourneys.ToArray(), CancelSource.Token);
+                        }
+                        catch
+                        {
+                            CancelSource.Cancel();
+                            PluginLog.Error("Failed operation when waiting for tasks");
+                            break;
+                        }
+
+                        if (CancelSource.IsCancellationRequested)
+                            break;
+
+                        var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
+                        var (_, _, exp, path, _) = best;
+
+                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 1;
 
                         if (bestJourney.RouteExp < exp)
                         {
@@ -231,12 +261,14 @@ public partial class BuilderWindow
                                 curBuild = routeBuild;
                             }
 
-                            bestJourney = new Journey(ProgressRank, exp, exp, path);
+                            bestJourney = new Journey(ProgressRank, exp, exp, path, "");
                         }
 
-                        Progress++;
                     }
                 }
+
+                if (CancelSource.IsCancellationRequested)
+                    break;
 
                 if (RankSheet[ProgressRank - 1].ExpToNext <= leftover + bestJourney!.RouteExp)
                 {
@@ -267,7 +299,7 @@ public partial class BuilderWindow
                     leftover += bestJourney.RouteExp;
                 }
 
-                bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
+                bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover, Build = curBuild.ToString() };
 
                 if (outTree.TryGetValue(curBuild, out var cache))
                 {
@@ -289,22 +321,41 @@ public partial class BuilderWindow
                     break;
             }
         }
+        
+        if (CancelSource.IsCancellationRequested)
+            return null!;
 
-        var json = outTree.GroupBy(t => t.Key.ToString())
-                          .ToDictionary(t => t.Key,
-                                        t => new RouteCache(t.SelectMany(f => f.Value.Voyages)
-                                                             .ToDictionary(f => f.Key, f => f.Value)));
+        var json = outTree.Values.SelectMany(t => t.Voyages).OrderBy(t => t.Key).ToDictionary(t => t.Key, t => t.Value);
+
 
         if (CachedRouteList.Caches.ContainsKey(DurationName))
         {
-            CachedRouteList.Caches[DurationName] = new BuildCache(json);
+            CachedRouteList.Caches[DurationName] = new RouteCache(json);
         }
         else
         {
-            CachedRouteList.Caches.Add(DurationName, new BuildCache(json));
+            CachedRouteList.Caches.Add(DurationName, new RouteCache(json));
         }
 
-        return outTree;
+        return json;
+    }
+
+    private Journey GetJourney(Build.RouteBuild routeBuild, int possibleMap)
+    {
+        routeBuild.Map = possibleMap;
+        var path = FindBestPath(routeBuild);
+
+        var exp = 0u;
+        foreach (var sector in path)
+        {
+            var sheetSector = ExplorationSheet.GetRow(sector)!;
+            var bonus = CalculateBonusExp(PredictBonusExp(sector, routeBuild.GetSubmarineBuild).Item1, sheetSector.ExpReward);
+            exp += bonus;
+        }
+
+        Progress++;
+
+        return new Journey(ProgressRank, exp, exp, path, "");
     }
 
     private List<Build.RouteBuild> BuildParts()
@@ -331,11 +382,10 @@ public partial class BuilderWindow
         return routeBuilds;
     }
 
-    public record Journey(int RankReached, uint Leftover, uint RouteExp, uint[] Route);
+    public record Journey(int RankReached, uint Leftover, uint RouteExp, uint[] Route, string Build);
     public record RouteCache(Dictionary<int, Journey> Voyages);
-    public record BuildCache(Dictionary<string, RouteCache> Builds);
     public class DurationCache
     {
-        public Dictionary<string, BuildCache> Caches = new();
+        public Dictionary<string, RouteCache> Caches = new();
     }
 }
