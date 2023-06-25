@@ -72,7 +72,6 @@ public partial class BuilderWindow
                 Thread = new Thread(DoThingsOffThread);
                 Thread.SetApartmentState(ApartmentState.MTA);
                 Thread.Start();
-                Task.Run(DoThingsOffThread, CancelSource.Token);
             }
             if (ImGui.Button("Stop calculate for Build"))
             {
