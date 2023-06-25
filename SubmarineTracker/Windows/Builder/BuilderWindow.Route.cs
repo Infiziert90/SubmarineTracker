@@ -9,7 +9,7 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Route"))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(140 * ImGuiHelpers.GlobalScale))))
             {
                 var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
                 var selectedMap = CurrentBuild.Map;

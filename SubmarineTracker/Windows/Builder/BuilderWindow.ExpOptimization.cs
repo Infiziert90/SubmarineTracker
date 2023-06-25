@@ -130,7 +130,7 @@ public partial class BuilderWindow
         {
             if (!Submarines.KnownSubmarines.ContainsKey(Plugin.ClientState.LocalContentId))
             {
-                if (ImGui.BeginChild("ExpSelector", new Vector2(0, -110)))
+                if (ImGui.BeginChild("ExpSelector", new Vector2(0, -140)))
                 {
                     Helper.NoData();
                 }
@@ -138,7 +138,7 @@ public partial class BuilderWindow
                 return;
             }
 
-            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(110 * ImGuiHelpers.GlobalScale))))
+            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(140 * ImGuiHelpers.GlobalScale))))
             {
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
@@ -254,6 +254,8 @@ public partial class BuilderWindow
                         changed = true;
                         OptionsChanged = true;
                     }
+                    ImGui.Unindent(10.0f);
+
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
@@ -330,8 +332,6 @@ public partial class BuilderWindow
                             ImGui.TextWrapped("Error: Unable to find unlocked sectors, please refresh your data (Voyage Control Panel -> Submersible Management)");
                         }
                     }
-
-                    ImGui.Unindent(10.0f);
 
                     if (changed)
                         Configuration.Save();
