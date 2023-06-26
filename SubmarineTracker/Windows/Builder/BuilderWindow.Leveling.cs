@@ -248,7 +248,7 @@ public partial class BuilderWindow
                             .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
 
-            ProgressRank = 1;
+            ProgressRank = CurrentBuild.Rank;
 
             var lastBuildRouteRank = 0;
             var lastMap = 0;
