@@ -76,6 +76,8 @@ public static class Build
         {
             return Bonus.RowId == other.Rank && Hull.RowId == other.Hull && Stern.RowId == other.Stern && Bow.RowId == other.Bow && Bridge.RowId == other.Bridge;
         }
+
+        public static implicit operator SubmarineBuild(RouteBuild build) => build.GetSubmarineBuild;
     }
 
     public struct RouteBuild : IEquatable<RouteBuild>

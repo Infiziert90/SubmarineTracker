@@ -16,8 +16,6 @@ public partial class BuilderWindow
     private int SwapAfter = 1;
     private bool IgnoreBuild;
 
-    private string Result = string.Empty;
-
     private int PossibleBuilds;
     private bool Processing;
     private int Progress;
@@ -33,6 +31,9 @@ public partial class BuilderWindow
     private DateTime ProgressStartTime;
 
     private Thread Thread = null!;
+
+    private Dictionary<int, Journey> LastCalc = new();
+    private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
 
     private bool LevelingTab()
     {
@@ -55,7 +56,7 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? CurrentBuild : "All")}");
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Target Rank: {TargetRank}");
             ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int) RankSheet.Last().RowId);
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)RankSheet.Last().RowId);
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Swap if optimal after {SwapAfter} voyages");
             ImGui.SetNextItemWidth(width);
             ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10);
@@ -69,13 +70,6 @@ public partial class BuilderWindow
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Progress for current: {Progress} / {PossibleBuilds}");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Time elapsed: {DateTime.Now - StartTime}");
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Time elapsed current calculation: {DateTime.Now - ProgressStartTime}");
-                ImGui.Unindent(10.0f);
-            }
-            else if (Result != string.Empty)
-            {
-                ImGui.TextColored(ImGuiColors.DalamudViolet, "Result:");
-                ImGui.Indent(10.0f);
-                ImGui.TextUnformatted(Result);
                 ImGui.Unindent(10.0f);
             }
 
@@ -144,6 +138,71 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
+            if (LastCalc.Any())
+            {
+                var wSize = ImGui.GetWindowSize();
+                var lastSize = new Vector2();
+                var lastIdx = LastCalc.Last().Key;
+                var lastWrapped = 0;
+                var modif = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "Last Calculation:");
+                Box.SimpleBox(modif, () =>
+                {
+                    ImGui.TextUnformatted($"Final Rank: {LastCalc[lastIdx].RankReached}");
+                    ImGui.TextUnformatted($"Voyages: {lastIdx} ({GetStringFromTimespan(GetTimesFromJourneys(LastCalc.Values))})");
+                    ImGui.TextUnformatted($"EXP total: {LastCalc.Values.Sum(x => x.RouteExp):##,###}");
+                    ImGui.TextUnformatted($"Leftover EXP: {LastCalc[lastIdx].Leftover}");
+                });
+                ImGui.SameLine();
+                ImGuiHelpers.ScaledDummy(20, 0);
+                ImGui.SameLine();
+                Box.SimpleBox(modif, () =>
+                {
+                    ImGui.TextUnformatted("---Options---");
+                    ImGui.TextUnformatted($"Limit: {LastOptions.Limit}");
+                    ImGui.TextUnformatted($"Ignore Build: {LastOptions.IgnoreBuild}");
+                    ImGui.TextUnformatted($"Ignore Unlocks: {LastOptions.IgnoreUnlocks}");
+                    ImGui.TextUnformatted($"Maximize Duration Limit: {LastOptions.MaximizeDurationLimit}");
+                });
+                ImGuiHelpers.ScaledDummy(0, 20);
+                ImGui.Indent(10);
+                ImGui.TextColored(ImGuiColors.DalamudViolet, "List:");
+                ImGui.Unindent(10);
+                foreach (var (i, (rankReached, leftover, routeExp, points, build)) in LastCalc)
+                {
+                    var startPoint = Voyage.FindVoyageStartPoint(points[0]);
+                    var size = Box.SimpleBox(modif, () =>
+                    {
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank Reached: {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
+                    });
+                    if (i != lastIdx)
+                    {
+                        ImGui.SameLine();
+                        var height = (size.W - size.Y) / 3;
+                        var offset = height / 2;
+                        var p = ImGui.GetCursorScreenPos();
+                        p = p with { Y = p.Y + height };
+                        var drawList = ImGui.GetWindowDrawList();
+                        ImGui.Dummy(new Vector2(offset, 0));
+
+                        drawList.AddTriangle(p, p with { Y = p.Y + offset, X = p.X + offset }, p with { Y = p.Y + height }, ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)), 1.0f);
+
+                        lastSize = new Vector2(size.Z - size.X + offset, size.W - size.Y);
+
+                        var x = (i + 1 - lastWrapped) * (lastSize.X + (10.0f * ImGuiHelpers.GlobalScale));
+                        if (wSize.X > x)
+                            ImGui.SameLine();
+                        else
+                        {
+                            ImGuiHelpers.ScaledDummy(0, 20);
+                            lastWrapped = i - 1;
+                        }
+                    }
+                }
+            }
 
             ImGui.EndTabItem();
             return true;
@@ -152,9 +211,23 @@ public partial class BuilderWindow
         return false;
     }
 
+    public string GetStringFromTimespan(TimeSpan span) => $"{span.Days}d {span.Hours}h {span.Minutes}m {span.Seconds}s";
+
+    public float GetRemaindExp(int rank, uint exp)
+    {
+        var expToNext = RankSheet[rank - 1].ExpToNext;
+        return rank == RankSheet.Count ? 0 : exp / (float)expToNext;
+    }
+
+    public TimeSpan GetTimesFromJourneys(IEnumerable<Journey> journeys) =>
+        journeys.Select(t =>
+        {
+            var startPoint = Voyage.FindVoyageStartPoint(t.Route[0]);
+            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Append(startPoint).Select(f => ExplorationSheet.GetRow(f)!).ToArray(), (Build.RouteBuild)t.Build));
+        }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
+
     public void DoThingsOffThread()
     {
-        Result = string.Empty;
         Processing = true;
 
         var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
@@ -186,36 +259,14 @@ public partial class BuilderWindow
             Processing = false;
             return;
         }
-        var rank = 1;
 
-        PluginLog.Information("-----------------");
-        foreach (var (i, (rankReached, leftover, routeExp, points, build)) in outTree)
-        {
-            PluginLog.Information($"Used Build {build}");
-            PluginLog.Information($"Pre-Rank: {rank}");
-            rank = rankReached;
-            var startPoint = Voyage.FindVoyageStartPoint(points[0]);
-            PluginLog.Information($"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
-            PluginLog.Information($"Exp gained {routeExp}");
-            PluginLog.Information($"After-Rank {rank}");
-            PluginLog.Information($"Leftover: {leftover}");
-            PluginLog.Information("-----------------");
+        LastCalc = outTree;
 
-            // TODO not WIP this
-            Result = $"Best Build: {build}\n" +
-                     $"Voyages: {i} {(Configuration.DurationLimit != DurationLimit.None ? $"(Days {i * DateUtil.DurationToTime(Configuration.DurationLimit).TotalHours / 24})" : "")}\n" +
-                     $"Final Rank: {rank} Leftover Exp: {leftover:N0}\n" +
-                     $"---Options---\n" +
-                     $"Limit: {DateUtil.GetDurationLimitName(Configuration.DurationLimit)}\n" +
-                     $"Ignore Build? {IgnoreBuild} IgnoreUnlocks? {IgnoreUnlocks} Maximize? {MaximizeDuration}";
-        }
-
-        PluginLog.Information($"Time Elapsed: {DateTime.Now - StartTime}");
-
+        LastOptions = (DateUtil.GetDurationLimitName(Configuration.DurationLimit), IgnoreBuild, IgnoreUnlocks, MaximizeDuration);
         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
-        PluginLog.Information($"Writing routeList json");
-        PluginLog.Information(filePath);
+        PluginLog.Debug($"Writing routeList json");
+        PluginLog.Debug(filePath);
         File.WriteAllText(filePath, l);
 
         Processing = false;
@@ -307,7 +358,7 @@ public partial class BuilderWindow
                                 curBuild = routeBuild;
                                 bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
-                            else if(curBuild.SameBuildWithoutRank(routeBuild))
+                            else if (curBuild.SameBuildWithoutRank(routeBuild))
                             {
                                 bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
                             }

@@ -46,7 +46,13 @@ public static class Box
         return iColor == 0;
     }
 
-    public static void SimpleBox(Modifier iModifier, Action iBoxContent)
+    /// <summary>
+    /// Draw a box with a border and a background color if set.
+    /// </summary>
+    /// <param name="iModifier">see <seealso cref="Modifier"/> for more info</param>
+    /// <param name="iBoxContent">The content to draw inside of the box</param>
+    /// <returns><seealso cref="Vector4"/> where x and y is min and z and w is max</returns>
+    public static Vector4 SimpleBox(Modifier iModifier, Action iBoxContent)
     {
         var hasBackground = !ColorIsTransparent(iModifier.FBackgroundColor);
         var hasBorder = !ColorIsTransparent(iModifier.FBorderColor);
@@ -96,5 +102,7 @@ public static class Box
         // the proper amount of space
         ImGui.SetCursorScreenPos(min);
         ImGui.Dummy(max - min);
+
+        return new Vector4(min.X, min.Y, max.X, max.Y);
     }
 }
