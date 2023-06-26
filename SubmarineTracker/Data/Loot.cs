@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+﻿using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
@@ -104,30 +103,26 @@ public static class Loot
             Fav = build.Favor;
         }
 
-        public unsafe void AddLoot(HousingWorkshopSubmarineGathered data)
+        public void AddLoot(HousingWorkshopSubmarineGathered data)
         {
-            // TODO Remove when CS is updated
-            var address = (nint) (&data);
-            var p = Marshal.PtrToStructure<Gathered.GatheredData>(address);
-
             Valid = true;
             Date = DateTime.Now;
 
-            Sector = p.Point;
+            Sector = data.Point;
 
-            Primary = p.ItemIdPrimary;
-            PrimaryCount = p.ItemCountPrimary;
-            PrimaryHQ = p.ItemHQPrimary;
-            PrimarySurvProc = p.PrimarySurvProc;
-            PrimaryRetProc = p.PrimaryRetProc;
+            Primary = data.ItemIdPrimary;
+            PrimaryCount = data.ItemCountPrimary;
+            PrimaryHQ = data.ItemHQPrimary;
+            PrimarySurvProc = data.SurveyLinePrimary;
+            PrimaryRetProc = data.YieldLinePrimary;
 
-            Additional = p.ItemIdAdditional;
-            AdditionalCount = p.ItemCountAdditional;
-            AdditionalHQ = p.ItemHQAdditional;
-            AdditionalSurvProc = p.AdditionalSurvProc;
-            AdditionalRetProc = p.AdditionalRetProc;
+            Additional = data.ItemIdAdditional;
+            AdditionalCount = data.ItemCountAdditional;
+            AdditionalHQ = data.ItemHQAdditional;
+            AdditionalSurvProc = data.SurveyLineAdditional;
+            AdditionalRetProc = data.YieldLineAdditional;
 
-            FavProc = p.FavorProc;
+            FavProc = data.FavorLine;
         }
 
         [JsonIgnore] public Item PrimaryItem => ItemSheet.GetRow(Primary)!;
