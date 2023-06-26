@@ -51,55 +51,30 @@ public partial class HelpyWindow
         mod.BorderColor(bColor);
 
         ImGuiHelpers.ScaledDummy(10.0f);
-        foreach (var (point, idx) in unlockPath.Select((val, i) => (val, i)))
+        BoxList.RenderList(unlockPath, mod, 2f, tuple =>
         {
-            var explorationPoint = ExplorationSheet.GetRow(point.Item1)!;
+            var (point, unlockedFrom) = tuple;
+            var explorationPoint = ExplorationSheet.GetRow(point)!;
             var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
-            var special = point.Item2.Sub ? $"Rank {rank} <Unlocks slot>" : $"Rank {rank}";
+            var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : $"Rank {rank}";
+            
+            fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
+            fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
+            var color = hasUnlocked
+                            ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
+                            : ImGuiColors.DalamudRed;
 
-            Box.SimpleBox(mod, () =>
-            {
-                fcSub.UnlockedSectors.TryGetValue(point.Item1, out var hasUnlocked);
-                fcSub.ExploredSectors.TryGetValue(point.Item1, out var hasExplored);
-                var color = hasUnlocked
-                                ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
-                                : ImGuiColors.DalamudRed;
-
-                ImGui.BeginChild($"##{point.Item1}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
-                ImGui.PushTextWrapPos();
-                ImGui.TextColored(color, $"{letter}. {dest}");
-                ImGui.PopTextWrapPos();
-                ImGui.TextColored(ImGuiColors.TankBlue, special);
-                ImGui.EndChild();
-            });
-
-            if (unlockPath.Count > idx + 1)
-            {
-                ImGui.SameLine();
-                var drawList = ImGui.GetWindowDrawList();
-                var topPadding = mod.FPadding.X;
-                var insideHeight = textHeight * ImGuiHelpers.GlobalScale;
-
-                var p = ImGui.GetCursorScreenPos();
-                ImGuiHelpers.ScaledDummy(30.0f, 0);
-
-                drawList.AddTriangle(new Vector2(p.X, p.Y + topPadding),
-                                     new Vector2(p.X + (30.0f * ImGuiHelpers.GlobalScale),
-                                                 p.Y + topPadding + (insideHeight / 2)),
-                                     new Vector2(p.X, p.Y + topPadding + insideHeight),
-                                     bColor);
-
-                var numPerLine = CalculateNumberPerLine();
-                if (idx == 0 || idx % numPerLine != numPerLine - 1)
-                    ImGui.SameLine();
-                else
-                    ImGuiHelpers.ScaledDummy(0, 20.0f);
-            }
-        }
+            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
+            ImGui.PushTextWrapPos();
+            ImGui.TextColored(color, $"{letter}. {dest}");
+            ImGui.PopTextWrapPos();
+            ImGui.TextColored(ImGuiColors.TankBlue, special);
+            ImGui.EndChild();
+        });
     }
 
     private void LastSectorTab(Submarines.FcSubmarines fcSub)
@@ -114,55 +89,30 @@ public partial class HelpyWindow
         mod.BorderColor(bColor);
 
         ImGuiHelpers.ScaledDummy(10.0f);
-        foreach (var (point, idx) in unlockPath.Select((val, i) => (val, i)))
+        BoxList.RenderList(unlockPath, mod, 2f, tuple =>
         {
-            var explorationPoint = ExplorationSheet.GetRow(point.Item1)!;
+            var (point, unlockedFrom) = tuple;
+            var explorationPoint = ExplorationSheet.GetRow(point)!;
             var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
-            var special = point.Item2.Sub ? $"Rank {rank} <Unlocks slot>" : point.Item2.Map ? $"Rank {rank} <Unlocks map>" : $"Rank {rank}";
+            var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : unlockedFrom.Map ? $"Rank {rank} <Unlocks map>" : $"Rank {rank}";
+            
+            fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
+            fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
+            var color = hasUnlocked
+                            ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
+                            : ImGuiColors.DalamudRed;
 
-            Box.SimpleBox(mod, () =>
-            {
-                fcSub.UnlockedSectors.TryGetValue(point.Item1, out var hasUnlocked);
-                fcSub.ExploredSectors.TryGetValue(point.Item1, out var hasExplored);
-                var color = hasUnlocked
-                                ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
-                                : ImGuiColors.DalamudRed;
-
-                ImGui.BeginChild($"##{point.Item1}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
-                ImGui.PushTextWrapPos();
-                ImGui.TextColored(color, $"{letter}. {dest}");
-                ImGui.PopTextWrapPos();
-                ImGui.TextColored(ImGuiColors.TankBlue, special);
-                ImGui.EndChild();
-            });
-
-            if (unlockPath.Count > idx + 1)
-            {
-                ImGui.SameLine();
-                var drawList = ImGui.GetWindowDrawList();
-                var topPadding = mod.FPadding.X;
-                var insideHeight = textHeight * ImGuiHelpers.GlobalScale;
-
-                var p = ImGui.GetCursorScreenPos();
-                ImGuiHelpers.ScaledDummy(30.0f, 0);
-
-                drawList.AddTriangle(new Vector2(p.X, p.Y + topPadding),
-                                     new Vector2(p.X + (30.0f * ImGuiHelpers.GlobalScale),
-                                                 p.Y + topPadding + (insideHeight / 2)),
-                                     new Vector2(p.X, p.Y + topPadding + insideHeight),
-                                     bColor);
-
-                var numPerLine = CalculateNumberPerLine();
-                if (idx == 0 || idx % numPerLine != numPerLine - 1)
-                    ImGui.SameLine();
-                else
-                    ImGuiHelpers.ScaledDummy(0, 20.0f);
-            }
-        }
+            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
+            ImGui.PushTextWrapPos();
+            ImGui.TextColored(color, $"{letter}. {dest}");
+            ImGui.PopTextWrapPos();
+            ImGui.TextColored(ImGuiColors.TankBlue, special);
+            ImGui.EndChild();
+        });
     }
 
     private static void InfoTab()
