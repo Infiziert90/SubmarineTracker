@@ -1,4 +1,5 @@
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface.Components;
@@ -39,19 +40,8 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Leveling"))
         {
-            ImGuiHelpers.ScaledDummy(10.0f);
-            var wip = "- Work in Progress -";
-            var width = ImGui.GetWindowWidth();
-            var textWidth = ImGui.CalcTextSize(wip).X;
-
-            ImGui.SetCursorPosX((width - textWidth) * 0.5f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
-            ImGuiHelpers.ScaledDummy(10.0f);
-            ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(5.0f);
-
             var avail = ImGui.GetContentRegionAvail().X;
-            width = avail / 2;
+            var width = avail / 2;
 
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? CurrentBuild : "All")}");
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Target Rank: {TargetRank}");
@@ -140,13 +130,10 @@ public partial class BuilderWindow
 
             if (LastCalc.Any())
             {
-                var wSize = ImGui.GetWindowSize();
-                var lastSize = new Vector2();
                 var lastIdx = LastCalc.Last().Key;
-                var lastWrapped = 0;
-                var modif = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };
+                var modifier = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Last Calculation:");
-                Box.SimpleBox(modif, () =>
+                Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted($"Final Rank: {LastCalc[lastIdx].RankReached}");
                     ImGui.TextUnformatted($"Voyages: {lastIdx} ({GetStringFromTimespan(GetTimesFromJourneys(LastCalc.Values))})");
@@ -156,7 +143,7 @@ public partial class BuilderWindow
                 ImGui.SameLine();
                 ImGuiHelpers.ScaledDummy(20, 0);
                 ImGui.SameLine();
-                Box.SimpleBox(modif, () =>
+                Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted("---Options---");
                     ImGui.TextUnformatted($"Limit: {LastOptions.Limit}");
@@ -168,40 +155,15 @@ public partial class BuilderWindow
                 ImGui.Indent(10);
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "List:");
                 ImGui.Unindent(10);
-                foreach (var (i, (rankReached, leftover, routeExp, points, build)) in LastCalc)
+                BoxList.RenderList(LastCalc, modifier, 1f, pair =>
                 {
+                    var (i, (rankReached, leftover, routeExp, points, build)) = pair;
                     var startPoint = Voyage.FindVoyageStartPoint(points[0]);
-                    var size = Box.SimpleBox(modif, () =>
-                    {
-                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
-                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
-                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp}");
-                        ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank Reached: {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
-                    });
-                    if (i != lastIdx)
-                    {
-                        ImGui.SameLine();
-                        var height = (size.W - size.Y) / 3;
-                        var offset = height / 2;
-                        var p = ImGui.GetCursorScreenPos();
-                        p = p with { Y = p.Y + height };
-                        var drawList = ImGui.GetWindowDrawList();
-                        ImGui.Dummy(new Vector2(offset, 0));
-
-                        drawList.AddTriangle(p, p with { Y = p.Y + offset, X = p.X + offset }, p with { Y = p.Y + height }, ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)), 1.0f);
-
-                        lastSize = new Vector2(size.Z - size.X + offset, size.W - size.Y);
-
-                        var x = (i + 1 - lastWrapped) * (lastSize.X + (10.0f * ImGuiHelpers.GlobalScale));
-                        if (wSize.X > x)
-                            ImGui.SameLine();
-                        else
-                        {
-                            ImGuiHelpers.ScaledDummy(0, 20);
-                            lastWrapped = i - 1;
-                        }
-                    }
-                }
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank Reached: {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
+                });
             }
 
             ImGui.EndTabItem();
@@ -286,7 +248,7 @@ public partial class BuilderWindow
                             .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
 
-            ProgressRank = 1;
+            ProgressRank = CurrentBuild.Rank;
 
             var lastBuildRouteRank = 0;
             var lastMap = 0;
