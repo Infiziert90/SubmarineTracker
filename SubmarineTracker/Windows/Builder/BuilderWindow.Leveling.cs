@@ -40,19 +40,8 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Leveling"))
         {
-            ImGuiHelpers.ScaledDummy(10.0f);
-            var wip = "- Work in Progress -";
-            var width = ImGui.GetWindowWidth();
-            var textWidth = ImGui.CalcTextSize(wip).X;
-
-            ImGui.SetCursorPosX((width - textWidth) * 0.5f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
-            ImGuiHelpers.ScaledDummy(10.0f);
-            ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(5.0f);
-
             var avail = ImGui.GetContentRegionAvail().X;
-            width = avail / 2;
+            var width = avail / 2;
 
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? CurrentBuild : "All")}");
             ImGui.TextColored(ImGuiColors.HealerGreen, $"Target Rank: {TargetRank}");
