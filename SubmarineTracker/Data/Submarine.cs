@@ -267,6 +267,39 @@ public static class Submarines
             return lowest;
         }
 
+        public int CalculateUntilRepair()
+        {
+            var dmg = VoyageDamage();
+            if (dmg == 1)
+                return -1;
+
+            var voyages = 0;
+            var health = 30000;
+            while (health > 0)
+            {
+                voyages += 1;
+                health -= dmg;
+            }
+
+            return voyages;
+        }
+
+        public int VoyageDamage()
+        {
+            var highestDamage = 1;
+            foreach (var (part, _) in PartConditions)
+            {
+                var damaged = 0;
+                foreach (var sector in Points)
+                    damaged += (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow(part)!.Rank) * 7;
+
+                if (highestDamage < damaged)
+                    highestDamage = damaged;
+            }
+
+            return highestDamage;
+        }
+
         public (uint Rank, double Exp) PredictExpGrowth()
         {
             var currentRank = RankSheet.GetRow(Rank)!;

@@ -46,4 +46,17 @@ public static class Helper
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("Open the config menu");
     }
+
+    public static void DrawArrows(ref int selected, int length, int id = 0)
+    {
+        ImGui.SameLine();
+        if (selected == 0) ImGui.BeginDisabled();
+        if (ImGuiComponents.IconButton(id, FontAwesomeIcon.ArrowLeft)) selected--;
+        if (selected == 0) ImGui.EndDisabled();
+
+        ImGui.SameLine();
+        if (selected + 1 == length) ImGui.BeginDisabled();
+        if (ImGuiComponents.IconButton(id+1, FontAwesomeIcon.ArrowRight)) selected++;
+        if (selected + 1 == length) ImGui.EndDisabled();
+    }
 }

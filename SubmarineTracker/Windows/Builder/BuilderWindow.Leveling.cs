@@ -135,21 +135,20 @@ public partial class BuilderWindow
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Last Calculation:");
                 Box.SimpleBox(modifier, () =>
                 {
-                    ImGui.TextUnformatted($"Final Rank: {LastCalc[lastIdx].RankReached}");
+                    ImGui.TextUnformatted($"Final Rank: {LastCalc[lastIdx].RankReached} ({LastCalc[lastIdx].Build})");
                     ImGui.TextUnformatted($"Voyages: {lastIdx} ({GetStringFromTimespan(GetTimesFromJourneys(LastCalc.Values))})");
-                    ImGui.TextUnformatted($"EXP total: {LastCalc.Values.Sum(x => x.RouteExp):##,###}");
-                    ImGui.TextUnformatted($"Leftover EXP: {LastCalc[lastIdx].Leftover}");
+                    ImGui.TextUnformatted($"EXP total: {LastCalc.Values.Sum(x => x.RouteExp):N0}");
+                    ImGui.TextUnformatted($"Leftover EXP: {LastCalc[lastIdx].Leftover:N0}");
                 });
                 ImGui.SameLine();
                 ImGuiHelpers.ScaledDummy(20, 0);
                 ImGui.SameLine();
                 Box.SimpleBox(modifier, () =>
                 {
-                    ImGui.TextUnformatted("---Options---");
                     ImGui.TextUnformatted($"Limit: {LastOptions.Limit}");
                     ImGui.TextUnformatted($"Ignore Build: {LastOptions.IgnoreBuild}");
                     ImGui.TextUnformatted($"Ignore Unlocks: {LastOptions.IgnoreUnlocks}");
-                    ImGui.TextUnformatted($"Maximize Duration Limit: {LastOptions.MaximizeDurationLimit}");
+                    ImGui.TextUnformatted($"Maximize Limit: {LastOptions.MaximizeDurationLimit}");
                 });
                 ImGuiHelpers.ScaledDummy(0, 20);
                 ImGui.Indent(10);
@@ -161,7 +160,7 @@ public partial class BuilderWindow
                     var startPoint = Voyage.FindVoyageStartPoint(points[0]);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp:N0}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank Reached: {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
                 });
             }

@@ -19,7 +19,7 @@ public class MainWindow : Window, IDisposable
 
     private ulong CurrentSelection = 1;
     private static readonly Vector2 IconSize = new(28, 28);
-    private static readonly int MaxLength = "Heavens' Eye Materia".Length;
+    private static readonly int MaxLength = "Heavens' Eye Materia III".Length;
 
     public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
@@ -185,7 +185,9 @@ public class MainWindow : Window, IDisposable
                         tooltip += $"Route: {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}\n";
 
                         var predictedExp = sub.PredictExpGrowth();
-                        tooltip += $"After: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%) ";
+                        tooltip += $"After: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
+
+                        tooltip += $"Repair: {sub.Build.RepairCosts} kits after {sub.CalculateUntilRepair()} voyages";
 
                         ImGui.SetTooltip(tooltip);
                     }
@@ -372,6 +374,8 @@ public class MainWindow : Window, IDisposable
                                                 name = name.Truncate(MaxLength);
                                             ImGui.SameLine();
                                             ImGui.TextUnformatted(name);
+                                            if (ImGui.IsItemHovered())
+                                                ImGui.SetTooltip(ToStr(item.Name));
 
                                             var length = ImGui.CalcTextSize($"{count}").X;
                                             ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
@@ -418,10 +422,14 @@ public class MainWindow : Window, IDisposable
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Rank}");
 
+            ImGui.TableNextRow();
+
             ImGui.TableNextColumn();
             ImGui.TextUnformatted("Build");
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Build.FullIdentifier()}");
+
+            ImGui.TableNextRow();
 
             ImGui.TableNextColumn();
             ImGui.TextUnformatted("Repair");
@@ -430,6 +438,12 @@ public class MainWindow : Window, IDisposable
             ImGui.TableNextColumn();
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.HullCondition:F}% | {sub.SternCondition:F}% | {sub.BowCondition:F}% | {sub.BridgeCondition:F}%");
+            ImGui.TableNextColumn();
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted($"Breaks after {sub.CalculateUntilRepair()} voyages");
+            ImGui.TextUnformatted($"");
+
+            ImGui.TableNextRow();
 
             if (sub.ValidExpRange())
             {

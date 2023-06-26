@@ -29,8 +29,10 @@ public class SubmarineExplorationPretty : SubmarineExploration
         return (uint)Math.Floor(Vector3.Distance( Position, other.Position ) * 3990 / (speed * 100) * 60);
     }
 
-    public uint GetDistance( SubmarineExplorationPretty other )
+    public uint GetDistance(SubmarineExplorationPretty other)
     {
         return (uint)Math.Floor( Vector3.Distance( Position, other.Position ) * 0.035 );
     }
+
+    public string ConvertDestination() => Utils.UpperCaseStr(Destination);
 }

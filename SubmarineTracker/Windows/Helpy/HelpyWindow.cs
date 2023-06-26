@@ -12,7 +12,7 @@ public partial class HelpyWindow : Window, IDisposable
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(680, 480),
+            MinimumSize = new Vector2(720, 520),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 

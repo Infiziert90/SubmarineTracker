@@ -8,7 +8,7 @@ public partial class BuilderWindow
     {
         if (ImGui.BeginTabItem("Build"))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(140 * ImGuiHelpers.GlobalScale))))
+            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
                 var existingSubs = Configuration.FCOrder
                                                    .SelectMany(id => KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))

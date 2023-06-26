@@ -10,7 +10,7 @@ public partial class LootWindow : Window, IDisposable
     private Configuration Configuration;
 
     private static ExcelSheet<Item> ItemSheet = null!;
-    private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     private int SelectedSubmarine;
     private int SelectedVoyage;
@@ -21,7 +21,7 @@ public partial class LootWindow : Window, IDisposable
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(320, 500),
+            MinimumSize = new Vector2(370, 570),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
@@ -29,7 +29,7 @@ public partial class LootWindow : Window, IDisposable
         Configuration = configuration;
 
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
     }
 
     public void Dispose() { }

@@ -141,7 +141,7 @@ public partial class BuilderWindow
                 return;
             }
 
-            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(140 * ImGuiHelpers.GlobalScale))))
+            if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {

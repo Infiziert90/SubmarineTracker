@@ -24,7 +24,7 @@ public partial class BuilderWindow : Window, IDisposable
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(470, 700),
+            MinimumSize = new Vector2(470, 750),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 

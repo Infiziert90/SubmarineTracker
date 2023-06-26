@@ -1,9 +1,13 @@
-﻿using SubmarineTracker.Data;
+﻿using Dalamud.Interface.Components;
+using SubmarineTracker.Data;
+using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
+    private static readonly int MaxLength = "Craftsman's Command Mat".Length;
+
     private void VoyageTab()
     {
         if (ImGui.BeginTabItem("Voyage"))
@@ -33,8 +37,9 @@ public partial class LootWindow
 
             var submarineVoyage = submarineLoot.Loot
                                                .SkipLast(1)
+                                               .Where(pair => !Configuration.ExcludeLegacy || pair.Value.First().Valid)
                                                .Reverse()
-                                               .Select(kv => $"{kv.Value.First().Date}")
+                                               .Select(pair => $"{pair.Value.First().Date}")
                                                .ToArray();
             if (!submarineVoyage.Any())
             {
@@ -45,6 +50,7 @@ public partial class LootWindow
             }
 
             ImGui.Combo("##voyageSelection", ref SelectedVoyage, submarineVoyage, submarineVoyage.Length);
+            Helper.DrawArrows(ref SelectedVoyage, submarineVoyage.Length);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -62,19 +68,33 @@ public partial class LootWindow
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
 
-                ImGui.TextUnformatted(Utils.UpperCaseStr(ExplorationSheet.GetRow(detailedLoot.Sector)!.Destination));
-                if (ImGui.BeginTable($"##VoyageLootTable", 3))
+                ImGui.TextUnformatted(ExplorationSheet.GetRow(detailedLoot.Sector)!.ConvertDestination());
+                ImGui.Indent(10.0f);
+                if (stats.Valid)
+                    ImGui.TextUnformatted($"DD: {ProcToText(detailedLoot.FavProc)} --- Ret: {ProcToText(detailedLoot.PrimaryRetProc)}");
+
+                if (ImGui.BeginTable($"##VoyageLootTable", 4))
                 {
-                    ImGui.TableSetupColumn("##icon", 0, 0.15f);
+                    ImGui.TableSetupColumn("##icon", 0, 0.2f);
                     ImGui.TableSetupColumn("##item");
-                    ImGui.TableSetupColumn("##amount", 0, 0.3f);
+                    ImGui.TableSetupColumn("##amount", 0, 0.2f);
+                    ImGui.TableSetupColumn("##survProc", 0, 0.4f);
 
                     ImGui.TableNextColumn();
                     DrawIcon(primaryItem.Icon);
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted(Utils.ToStr(primaryItem.Name));
+
+                    var name = Utils.ToStr(primaryItem.Name);
+                    if (MaxLength < name.Length)
+                        name = name.Truncate(MaxLength);
+                    ImGui.TextUnformatted(name);
+                    if (ImGui.IsItemHovered())
+                        ImGui.SetTooltip(Utils.ToStr(primaryItem.Name));
+
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted($"{detailedLoot.PrimaryCount}");
+                    ImGui.TextUnformatted($"x{detailedLoot.PrimaryCount}");
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"{(stats.Valid ? ProcToText(detailedLoot.PrimarySurvProc) : "")}");
                     ImGui.TableNextRow();
 
                     if (detailedLoot.ValidAdditional)
@@ -82,24 +102,24 @@ public partial class LootWindow
                         ImGui.TableNextColumn();
                         DrawIcon(additionalItem.Icon);
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Utils.ToStr(additionalItem.Name));
+
+                        name = Utils.ToStr(additionalItem.Name);
+                        if (MaxLength < name.Length)
+                            name = name.Truncate(MaxLength);
+                        ImGui.TextUnformatted(name);
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetTooltip(Utils.ToStr(additionalItem.Name));
+
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{detailedLoot.AdditionalCount}");
+                        ImGui.TextUnformatted($"x{detailedLoot.AdditionalCount}");
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{(stats.Valid ? ProcToText(detailedLoot.AdditionalSurvProc) : "")}");
                         ImGui.TableNextRow();
                     }
                 }
+                ImGui.Unindent(10.0f);
 
                 ImGui.EndTable();
-
-                if (stats.Valid)
-                {
-                    ImGui.TextUnformatted($"Favor Proc: {Data.Loot.ProcToText(detailedLoot.FavProc)}");
-                    ImGui.TextUnformatted($"Retrieval Proc: {Data.Loot.ProcToText(detailedLoot.PrimaryRetProc)}");
-                    ImGui.TextUnformatted($"Primary Surv Proc: {Data.Loot.ProcToText(detailedLoot.PrimarySurvProc)}");
-
-                    if (detailedLoot.ValidAdditional)
-                        ImGui.TextUnformatted($"Additional Surveillance Proc: {Data.Loot.ProcToText(detailedLoot.AdditionalSurvProc)}");
-                }
 
                 ImGuiHelpers.ScaledDummy(5.0f);
             }

@@ -13,22 +13,31 @@ Simple and Easy
 + Helper with lots of useful information
 + Support for multiple FCs  
 
-### Tracker
+### Tracker (/stracker)
 ![tracker](SubmarineTracker/images/tracker2.png)
 
 ### Tracker > FC Loot Overview
-![loot](SubmarineTracker/images/fcLoot.png)
+![fcLoot](SubmarineTracker/images/fcLoot.png)
 
 ### Notifications > Return
 ![notify](SubmarineTracker/images/chat.png)
-### Notifications > Repair
-![notify](SubmarineTracker/images/repair.png)
+![repair](SubmarineTracker/images/repair.png)
 
-### Builder
+### Builder (/sbuilder)
 ![builder](SubmarineTracker/images/builder.png)
 
-### Helpy
+### Builder > Leveling
+![leveling](SubmarineTracker/images/leveling.png)
+
+### Helpy (/shelpy)
 ![helpy](SubmarineTracker/images/helpy.png)
 
 ### Helpy > Storage
-![helpy](SubmarineTracker/images/storage.png)
+![storage](SubmarineTracker/images/storage.png)
+
+### Loot (/sloot)
+![loot](SubmarineTracker/images/custom.png)
+
+### Loot > Voyage
+![voyage](SubmarineTracker/images/voyage.png)
+
