@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -268,7 +269,10 @@ public partial class BuilderWindow
                     OptionsChanged |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
                     OptionsChanged |= ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
                     if (Configuration.DurationLimit != DurationLimit.None)
+                    {
                         OptionsChanged |= ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
+                        ImGuiComponents.HelpMarker(MaximizeHelp);
+                    }
                     ImGui.Unindent(10.0f);
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");

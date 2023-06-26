@@ -12,6 +12,14 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
+    private const string MaximizeHelp = "This will prioritize maximum Exp over best Exp\n" +
+                                        "Example\n" +
+                                        "-- 48H Limit --\n" +
+                                        "Route 1: 38:30h 500 Exp/Min = 1,15mil\n" +
+                                        "Route 2: 47:58h 450 Exp/Min = 1,29mil\n" +
+                                        "Route 1 is preferred for best Exp/Min\n" +
+                                        "Route 2 is preferred for maximizing Exp/Limit in under 48h";
+
     private int TargetRank = 85;
 
     private int SwapAfter = 1;
@@ -98,13 +106,7 @@ public partial class BuilderWindow
             if (Configuration.DurationLimit != DurationLimit.None)
             {
                 ImGui.Checkbox("Maximize duration limit", ref MaximizeDuration);
-                ImGuiComponents.HelpMarker("This will prioritize maximum Exp over best Exp\n" +
-                                           "e.g 48H Limit -\n" +
-                                           "Route 1: 38:30h 500 Exp/Min = 1,15mil\n" +
-                                           "Route 2: 47:58h 450 Exp/Min = 1,29mil\n" +
-                                           "Route 1 is preferred for best Exp/Min\n" +
-                                           "Route 2 is preferred for maximizing Exp/Limit in under 48h");
-
+                ImGuiComponents.HelpMarker(MaximizeHelp);
             }
 
             ImGui.Unindent(10.0f);
