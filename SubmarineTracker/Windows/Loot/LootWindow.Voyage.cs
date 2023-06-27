@@ -57,7 +57,7 @@ public partial class LootWindow
             var loot = submarineLoot.Loot.SkipLast(1).Reverse().ToArray()[SelectedVoyage];
             var stats = loot.Value.First();
             if (stats.Valid)
-                ImGui.TextUnformatted($"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
+                ImGui.TextColored(ImGuiColors.TankBlue, $"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
             else
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "-Legacy Data-");
 
@@ -68,7 +68,7 @@ public partial class LootWindow
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
 
-                ImGui.TextUnformatted(ExplorationSheet.GetRow(detailedLoot.Sector)!.ConvertDestination());
+                ImGui.TextColored(ImGuiColors.HealerGreen, ExplorationSheet.GetRow(detailedLoot.Sector)!.ConvertDestination());
                 ImGui.Indent(10.0f);
                 if (stats.Valid)
                     ImGui.TextUnformatted($"DD: {ProcToText(detailedLoot.FavProc)} --- Ret: {ProcToText(detailedLoot.PrimaryRetProc)}");
