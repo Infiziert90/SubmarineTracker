@@ -21,12 +21,9 @@ public partial class BuilderWindow
             var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
             var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
-            var durationLimitExp = 0.0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
-            {
                 expPerMinute = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
-                durationLimitExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (DateUtil.DurationToTime(Configuration.DurationLimit).TotalMinutes);
-            }
+
 
             if (ImGui.BeginTable("##buildColumn", 2, ImGuiTableFlags.SizingFixedFit))
             {
@@ -102,21 +99,6 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
-                // if (MaximizeDuration)
-                // {
-                //     ImGui.TableNextRow();
-                //
-                //     ImGui.TableNextColumn();
-                //     ImGui.TextColored(ImGuiColors.HealerGreen, $"Limit");
-                //     ImGui.TableNextColumn();
-                //     ImGui.TextUnformatted($"{DateUtil.GetDurationLimitName(Configuration.DurationLimit)}");
-                //
-                //     ImGui.TableNextColumn();
-                //     ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Duration");
-                //     ImGui.TableNextColumn();
-                //     ImGui.TextUnformatted($"{durationLimitExp:F}");
-                // }
-
                 ImGui.EndTable();
             }
         }
@@ -156,11 +138,7 @@ public partial class BuilderWindow
         if (CurrentBuild.OptimizedRoute.Any())
         {
             var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
-            ImGui.TextColored(ImGuiColors.DalamudOrange,
-                              string.Join(" -> ",
-                                          CurrentBuild.OptimizedRoute
-                                                      .Where(p => p.RowId > startPoint.RowId)
-                                                      .Select(p => NumToLetter(p.RowId - startPoint.RowId))));
+            ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
         }
         else
         {

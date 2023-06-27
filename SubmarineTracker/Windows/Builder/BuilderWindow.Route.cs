@@ -11,6 +11,15 @@ public partial class BuilderWindow
         {
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
+                if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                {
+                    Helper.NoData();
+
+                    ImGui.EndChild();
+                    ImGui.EndTabItem();
+                    return;
+                }
+
                 var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
                 var selectedMap = CurrentBuild.Map;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
@@ -18,8 +27,6 @@ public partial class BuilderWindow
                 {
                     CurrentBuild.ChangeMap(selectedMap);
                 }
-
-                var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
 
                 var explorations = ExplorationSheet
                                    .Where(r => r.Map.Row == CurrentBuild.Map + 1)

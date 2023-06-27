@@ -202,6 +202,10 @@ public partial class BuilderWindow
             var jsonString = File.ReadAllText(filePath);
             CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
         }
+        catch (FileNotFoundException)
+        {
+            PluginLog.Warning("Cache file not found.");
+        }
         catch (Exception e)
         {
             PluginLog.Error("Loading cached leveling data failed.");
@@ -267,13 +271,14 @@ public partial class BuilderWindow
                     var builds = routeBuilds.Where(t =>
                     {
                         var build = t.GetSubmarineBuild;
+                        build.UpdateRank(ProgressRank);
                         return build.HighestRankPart() <= ProgressRank && build.Speed >= 20 && build.Range >= 20;
                     }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
 
-                    if (builds.Contains(CurrentBuild) && !IgnoreBuild)
-                    {
-                        builds = builds.Where(t => t == CurrentBuild).ToArray();
-                    }
+                    // if (builds.Contains(CurrentBuild) && !IgnoreBuild)
+                    // {
+                    //     builds = builds.Where(t => t == CurrentBuild).ToArray();
+                    // }
 
                     var possibleMaps = mapBreaks.Where(t => t.Key <= ProgressRank).Select(t => t.Value - 1).Where(t => t >= lastMap).ToArray();
 
@@ -286,6 +291,7 @@ public partial class BuilderWindow
                     {
                         if (CancelSource.IsCancellationRequested)
                             break;
+
                         var routeBuild = build;
                         var taskJourneys = new List<Task<Journey>>();
 
@@ -310,11 +316,11 @@ public partial class BuilderWindow
                             break;
 
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
-                        var (_, _, exp, path, _) = best;
+                        var (_, _, exp, path, currentBuild) = best;
 
                         lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
 
-                        if (bestJourney.RouteExp < exp)
+                        if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
                         {
                             if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                             {
@@ -407,7 +413,7 @@ public partial class BuilderWindow
 
         Progress++;
 
-        return new Journey(ProgressRank, exp, exp, path, "");
+        return new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
     }
 
     private List<Build.RouteBuild> BuildParts()
@@ -422,10 +428,8 @@ public partial class BuilderWindow
                     for (var bridge = 0; bridge < PartsCount; bridge++)
                     {
                         var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
-                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank && (build.IsSubComponent(CurrentBuild) || IgnoreBuild))
-                        {
+                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank && (build.IsValidSubBuild(CurrentBuild) || IgnoreBuild))
                             routeBuilds.Add(build);
-                        }
                     }
                 }
             }

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
@@ -15,9 +16,9 @@ public static class Build
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
     }
 
-    public readonly struct SubmarineBuild
+    public struct SubmarineBuild
     {
-        public readonly SubmarineRank Bonus;
+        public SubmarineRank Bonus;
         public readonly SubmarinePart Hull;
         public readonly SubmarinePart Stern;
         public readonly SubmarinePart Bow;
@@ -42,6 +43,8 @@ public static class Build
             Bow = GetPart(build.Bow);
             Bridge = GetPart(build.Bridge);
         }
+
+        public void UpdateRank(int rank) => Bonus = GetRank(rank);
 
         public int Surveillance => Bonus.SurveillanceBonus + Hull.Surveillance + Stern.Surveillance + Bow.Surveillance + Bridge.Surveillance;
         public int Retrieval => Bonus.RetrievalBonus + Hull.Retrieval + Stern.Retrieval + Bow.Retrieval + Bridge.Retrieval;
@@ -140,6 +143,8 @@ public static class Build
         [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);
         [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort)Bow);
         [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort)Bridge);
+
+        [JsonIgnore] private int[] PartArray => new[] { Bow, Bridge, Hull, Stern };
 
         public void UpdateBuild(Submarines.Submarine sub)
         {
@@ -271,6 +276,31 @@ public static class Build
             {
                 if (curParts[i] != otherParts[i] && curParts[i] != 'S')
                     return false;
+            }
+
+            return true;
+        }
+
+        public bool IsValidSubBuild(RouteBuild original)
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                var cur = PartArray[i];
+                var org = original.PartArray[i];
+
+                // current is shark part and always valid
+                if (cur <= 3)
+                    continue;
+
+                // current is same
+                if (cur == org)
+                    continue;
+
+                // original is modded, so we try unmodded part
+                if (org > 20 && cur == org - 20)
+                    continue;
+
+                return false;
             }
 
             return true;
