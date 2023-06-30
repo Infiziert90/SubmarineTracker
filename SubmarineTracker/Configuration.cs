@@ -19,6 +19,8 @@ namespace SubmarineTracker
         public bool UseCharacterName = false;
         public bool UserResize = false;
         public bool ShowAll = true;
+        public bool ShowRouteInAll = false;
+        public bool ShowDateInAll = false;
 
         public bool ShowOnlyCurrentFC = false;
 

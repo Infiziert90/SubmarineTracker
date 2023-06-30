@@ -21,11 +21,13 @@ public class MainWindow : Window, IDisposable
     private static readonly Vector2 IconSize = new(28, 28);
     private static readonly int MaxLength = "Heavens' Eye Materia III".Length;
 
+    private static readonly Vector2 WindowMinimumSize = new(800, 550);
+
     public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(800, 550),
+            MinimumSize = WindowMinimumSize,
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
@@ -134,14 +136,15 @@ public class MainWindow : Window, IDisposable
     private void All()
     {
         Plugin.EnsureFCOrderSafety();
-        if (ImGui.BeginTable("##allTable", 2))
+        var widthCheck = Configuration.ShowRouteInAll && ImGui.GetWindowSize().X < WindowMinimumSize.X + (300.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginTable("##allTable", widthCheck ? 1 : 2))
         {
             foreach (var id in Configuration.FCOrder)
             {
                 ImGui.TableNextColumn();
                 var fc = Submarines.KnownSubmarines[id];
-                var secondRow = ImGui.GetContentRegionAvail().X / (!Configuration.UseDateTimeInstead ? 2.8f : 3.2f);
-                var thirdRow = ImGui.GetContentRegionAvail().X / (!Configuration.UseDateTimeInstead ? 1.6f : 1.9f);
+                var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Configuration.ShowDateInAll ? 3.2f : 2.8f);
+                var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}:");
                 foreach (var (sub, idx) in fc.Submarines.Select((val, i) => (val, i)))
@@ -160,19 +163,22 @@ public class MainWindow : Window, IDisposable
 
                     ImGui.SameLine(thirdRow);
 
-                    var time = "No Voyage";
+                    var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
+                    var route = $"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}";
+
+                    var time = " No Voyage ";
                     if (sub.IsOnVoyage())
                     {
                         time = " Done ";
                         var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                         if (returnTime.TotalSeconds > 0)
                         {
-                            time = !Configuration.UseDateTimeInstead
+                            time = !Configuration.ShowDateInAll
                                        ? $" {ToTime(returnTime)} "
                                        : $" {sub.ReturnTime.ToLocalTime()}";
                         }
                     }
-                    ImGui.TextColored(ImGuiColors.ParsedOrange, $"[{time}]");
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, $"[ {time}{(Configuration.ShowRouteInAll ? $"   {route}" : "")} ]");
 
                     var textSize = ImGui.CalcTextSize(time);
                     var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + 4.0f);
@@ -181,8 +187,7 @@ public class MainWindow : Window, IDisposable
                         var tooltip = condition ?  "" : "This submarine will need repairs\n";
                         tooltip += $"Rank {sub.Rank}    ({sub.Build.FullIdentifier()})\n";
 
-                        var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
-                        tooltip += $"Route: {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}\n";
+                        tooltip += $"Route: {route}\n";
 
                         var predictedExp = sub.PredictExpGrowth();
                         tooltip += $"After: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
