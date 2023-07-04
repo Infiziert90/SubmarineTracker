@@ -24,15 +24,18 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks = false;
 
-    private readonly ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>> CachedDistances = new();
+    // CharacterID -> Map -> Highest Level
+    private readonly ConcurrentDictionary<ulong, ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>> CachedDistances = new();
 
     private uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
         Error = false;
         LastComputedRank = routeBuild.Rank;
-        var mapCache = CachedDistances.GetOrAdd(routeBuild.Map, new ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>());
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
+            var charDictionary = CachedDistances.GetOrAdd(Plugin.ClientState.LocalContentId, new ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>());
+            var mapDictionary = charDictionary.GetOrAdd(routeBuild.Map, new ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>());
+
             List<SubmarineExplorationPretty> valid;
             int highestRank;
             try
@@ -52,7 +55,7 @@ public partial class BuilderWindow
             }
 
             var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
-            if (!mapCache.TryGetValue(highestRank, out var distances) || !distances.Any(t => t.Item2.ContainsAllItems(MustInclude)))
+            if (!mapDictionary.TryGetValue(highestRank, out var distances) || !distances.Any(t => t.Item2.ContainsAllItems(MustInclude)))
             {
                 var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
                 if (MustInclude.Any())
@@ -82,7 +85,7 @@ public partial class BuilderWindow
                 }
 
                 distances = allPaths.AsParallel().Select(Voyage.CalculateDistance).ToArray();
-                mapCache.AddOrUpdate(highestRank, distances, (k, v) => distances);
+                mapDictionary.AddOrUpdate(highestRank, distances, (k, v) => distances);
             }
 
             var build = routeBuild.GetSubmarineBuild;

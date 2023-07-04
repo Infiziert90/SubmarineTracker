@@ -402,17 +402,9 @@ public partial class BuilderWindow
     {
         routeBuild.Map = possibleMap;
         var path = FindBestPath(routeBuild);
-
-        var exp = 0u;
-        foreach (var sector in path)
-        {
-            var sheetSector = ExplorationSheet.GetRow(sector)!;
-            var bonus = CalculateBonusExp(PredictBonusExp(sector, routeBuild.GetSubmarineBuild).Guaranteed, sheetSector.ExpReward);
-            exp += bonus;
-        }
+        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToList()!, routeBuild.GetSubmarineBuild);
 
         Progress++;
-
         return new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
     }
 

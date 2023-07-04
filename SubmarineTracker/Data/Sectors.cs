@@ -142,32 +142,13 @@ public static class Sectors
     public static List<(int Guaranteed, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
     {
         var predictedExp = new List<(int, int)>();
-        foreach (var point in sectors)
-        {
-            if (!MapBreakpoints.TryGetValue(point, out var br))
-                return new List<(int, int)> {(-1, -1)};;
-
-            var guaranteed = 0;
-            guaranteed += br.Optimal <= build.Retrieval ? 1 : 0;
-
-            var predicted = guaranteed;
-            predicted += br.T2 <= build.Surveillance ? 1 : 0;
-            predicted += br.T3 <= build.Surveillance ? 1 : 0;
-
-            if (br.Favor <= build.Favor)
-            {
-                predicted += 1;
-                predicted += br.T2 <= build.Surveillance ? 1 : 0;
-                predicted += br.T3 <= build.Surveillance ? 1 : 0;
-            }
-
-            predictedExp.Add((guaranteed, Math.Clamp(predicted, 0, 4)));
-        }
+        foreach (var sector in sectors)
+            predictedExp.Add(PredictBonusExp(sector, build));
 
         return predictedExp;
     }
 
-    public static (int Guaranteed, int Max) PredictBonusExp(uint sector, Build.SubmarineBuild build)
+    public static (int Guaranteed, int Maximum) PredictBonusExp(uint sector, Build.SubmarineBuild build)
     {
         if (!MapBreakpoints.TryGetValue(sector, out var br))
             return (0, 0);
@@ -175,39 +156,29 @@ public static class Sectors
         var guaranteed = 0;
         guaranteed += br.Optimal <= build.Retrieval ? 1 : 0;
 
-        var predicted = guaranteed;
-        predicted += br.T2 <= build.Surveillance ? 1 : 0;
-        predicted += br.T3 <= build.Surveillance ? 1 : 0;
+        var maximum = guaranteed;
+        maximum += br.T2 <= build.Surveillance ? 1 : 0;
+        maximum += br.T3 <= build.Surveillance ? 1 : 0;
 
         if (br.Favor <= build.Favor)
         {
-            predicted += 1;
-            predicted += br.T2 <= build.Surveillance ? 1 : 0;
-            predicted += br.T3 <= build.Surveillance ? 1 : 0;
+            maximum += 1;
+            maximum += br.T2 <= build.Surveillance ? 1 : 0;
+            maximum += br.T3 <= build.Surveillance ? 1 : 0;
         }
 
-        return (guaranteed, Math.Clamp(predicted, 0, 4));
+        return (guaranteed, Math.Clamp(maximum, 0, 4));
     }
 
     public static uint CalculateExpForSectors(List<SubmarineExplorationPretty> sectors, Build.SubmarineBuild build)
     {
-        var bonuses = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
-
-        if (!bonuses.Any())
-            return 0;
+        var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
+        if (!bonusEachSector.Any())
+            return 0u;
 
         var expGain = 0u;
-        foreach (var (bonus, sector) in bonuses.Zip(sectors))
-        {
-            expGain += (bonus.Guaranteed) switch
-            {
-                1 => (uint) (sector.ExpReward * 1.25),
-                2 => (uint) (sector.ExpReward * 1.50),
-                3 => (uint) (sector.ExpReward * 1.75),
-                4 => (uint) (sector.ExpReward * 2.00),
-                _ => sector.ExpReward
-            };
-        }
+        foreach (var (bonus, sector) in bonusEachSector.Zip(sectors))
+            expGain += CalculateBonusExp(bonus.Guaranteed, sector.ExpReward);
 
         return expGain;
     }

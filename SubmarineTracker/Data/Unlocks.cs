@@ -2,6 +2,8 @@ namespace SubmarineTracker.Data;
 
 public static class Unlocks
 {
+    public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
+
     public static readonly Dictionary<uint, UnlockedFrom> PointToUnlockPoint = new()
     {
         { 0, new UnlockedFrom(9999) },              // Map A
@@ -111,8 +113,6 @@ public static class Unlocks
         { 100, new UnlockedFrom(96) },              // Bellflower Flood                    <-       The Forsaken Isle
         { 101, new UnlockedFrom(97) },              // The Lilac Sea 2                     <-       Fortune's Ford
     };
-
-    public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalPoint)
     {
