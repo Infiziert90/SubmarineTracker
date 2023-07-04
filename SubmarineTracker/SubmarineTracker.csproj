@@ -2,8 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>Infi</Authors>
-        <Version>1.7.0.2</Version>
-        <Description>Simple Submarine Tracker and Builder, with support for multiple FCs</Description>
+        <Version>1.7.1.0</Version>
+        <Description>You do not talk about Fight Club, same for Submarines</Description>
         <PackageProjectUrl>https://github.com/Infiziert90/SubmarineTracker</PackageProjectUrl>
     </PropertyGroup>
 

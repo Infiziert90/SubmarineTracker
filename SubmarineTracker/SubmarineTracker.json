@@ -1,8 +1,8 @@
 {
     "Author": "Infi",
     "Name": "Submarine Tracker",
-    "Punchline": "Simple Submarine Tracker and Builder",
-    "Description": "Simple and Easy\n+ Tracks current builds, routes and times\n+ Loot overview for each FC \n+ Builder to improve your builds\n+ Save and load builds\n+ Optimized EXP calculator for the selected build\n+ Unlockable exploration points are highlighted\n+ Breakpoint support\n+ Configurable notification for returning subs\n+ Helper with lots of useful information\n+ Support for multiple FCs",
+    "Punchline": "You do not talk about Fight Club, same for Submarines",
+    "Description": "Simple and Easy\n+ Tracker for current builds, routes and times \n+ Builder to improve, solve builds and optimize EXP\n+ Configurable Notification for return/repair \n+ Helper with useful information\n+ Custom loot overview with history and export\n+ Supports multiple FCs",
     "InternalName": "SubmarineTracker",
     "ApplicableVersion": "any",
     "Tags": [
@@ -14,6 +14,7 @@
         "Notifications",
         "Helper",
         "Solver",
-        "Routes"
+        "Routes",
+        "Sub"
     ]
 }
