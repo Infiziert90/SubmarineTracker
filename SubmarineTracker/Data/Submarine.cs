@@ -165,7 +165,7 @@ public static class Submarines
     {
         public uint Register;
         public uint Return;
-        public DateTime ReturnTime;
+        public DateTime ReturnTime = DateTime.UnixEpoch;
         public readonly List<uint> Points = new();
 
         public ushort HullDurability = 30000;
@@ -304,6 +304,11 @@ public static class Submarines
         {
             var currentRank = RankSheet.GetRow(Rank)!;
             var leftover = CExp + Sectors.CalculateExpForSectors(ToSheetList(Points), Build);
+
+            // This happens whenever the user has a new sub with no voyage
+            if (leftover == 0)
+                return (Rank, 0.0);
+
             while (leftover > 0)
             {
                 if (currentRank.RowId == LastRank)

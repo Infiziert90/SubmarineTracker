@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
@@ -138,6 +137,8 @@ public static class Build
         [JsonIgnore] public List<SubmarineExplorationPretty> OptimizedRoute = new();
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
+
+        [JsonIgnore] public int FuelCost => OptimizedRoute.Any() ? OptimizedRoute.Select(p => (int) p.CeruleumTankReq).Sum() : 0;
 
         [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort)Hull);
         [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);

@@ -24,6 +24,12 @@ public partial class BuilderWindow
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
                 expPerMinute = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
 
+            // build cache if needed
+            Storage.BuildStorageCache();
+
+            var tanks = 0u;
+            if (Storage.StorageCache.TryGetValue(Plugin.ClientState.LocalContentId, out var cachedItems) && cachedItems.TryGetValue((uint)Items.Tanks, out var temp))
+                tanks = temp.Count;
 
             if (ImGui.BeginTable("##buildColumn", 2, ImGuiTableFlags.SizingFixedFit))
             {
@@ -99,13 +105,18 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
+                ImGui.TableNextColumn();
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
+
                 ImGui.EndTable();
             }
         }
         ImGui.EndChild();
     }
 
-    public void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
+    public static void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
     {
         if (minRequired == 0)
         {

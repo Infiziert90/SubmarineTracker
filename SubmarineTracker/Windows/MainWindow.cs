@@ -1,7 +1,4 @@
-using System.Net;
-using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
@@ -163,12 +160,13 @@ public class MainWindow : Window, IDisposable
 
                     ImGui.SameLine(thirdRow);
 
-                    var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
-                    var route = $"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}";
-
+                    var route = "";
                     var time = " No Voyage ";
                     if (sub.IsOnVoyage())
                     {
+                        var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
+                        route = $"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}";
+
                         time = " Done ";
                         var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                         if (returnTime.TotalSeconds > 0)
@@ -178,9 +176,11 @@ public class MainWindow : Window, IDisposable
                                        : $" {sub.ReturnTime.ToLocalTime()}";
                         }
                     }
-                    ImGui.TextColored(ImGuiColors.ParsedOrange, $"[ {time}{(Configuration.ShowRouteInAll ? $"   {route}" : "")} ]");
 
-                    var textSize = ImGui.CalcTextSize(time);
+                    var fullText = $"[ {time}{(Configuration.ShowRouteInAll ? $"   {route}" : "")} ]";
+                    ImGui.TextColored(ImGuiColors.ParsedOrange, fullText);
+
+                    var textSize = ImGui.CalcTextSize(fullText);
                     var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + 4.0f);
                     if (ImGui.IsMouseHoveringRect(begin, end))
                     {

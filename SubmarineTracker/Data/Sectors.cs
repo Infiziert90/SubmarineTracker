@@ -193,6 +193,9 @@ public static class Sectors
     {
         var bonuses = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
 
+        if (!bonuses.Any())
+            return 0;
+
         var expGain = 0u;
         foreach (var (bonus, sector) in bonuses.Zip(sectors))
         {
