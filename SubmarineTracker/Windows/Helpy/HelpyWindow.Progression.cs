@@ -61,14 +61,14 @@ public partial class HelpyWindow
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
             var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : $"Rank {rank}";
-            
+
             fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
             fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
             var color = hasUnlocked
                             ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
                             : ImGuiColors.DalamudRed;
 
-            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
+            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight));
             ImGui.PushTextWrapPos();
             ImGui.TextColored(color, $"{letter}. {dest}");
             ImGui.PopTextWrapPos();
@@ -99,14 +99,14 @@ public partial class HelpyWindow
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
             var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : unlockedFrom.Map ? $"Rank {rank} <Unlocks map>" : $"Rank {rank}";
-            
+
             fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
             fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
             var color = hasUnlocked
                             ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
                             : ImGuiColors.DalamudRed;
 
-            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight * ImGuiHelpers.GlobalScale));
+            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight));
             ImGui.PushTextWrapPos();
             ImGui.TextColored(color, $"{letter}. {dest}");
             ImGui.PopTextWrapPos();
