@@ -22,7 +22,6 @@ public static class Storage
         foreach (var key in Submarines.KnownSubmarines.Keys)
         {
             StorageCache.Add(key, new Dictionary<uint, CachedItem>());
-
             foreach (var item in possibleItems.Select(e => e.GetItem()))
             {
                 var count = Plugin.AllaganToolsConsumer.GetCount(item.RowId, key);

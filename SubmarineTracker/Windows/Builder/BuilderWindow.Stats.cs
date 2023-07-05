@@ -1,3 +1,4 @@
+using Dalamud.Logging;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -24,12 +25,15 @@ public partial class BuilderWindow
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
                 expPerMinute = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
 
-            // build cache if needed
-            Storage.BuildStorageCache();
-
             var tanks = 0u;
-            if (Storage.StorageCache.TryGetValue(Plugin.ClientState.LocalContentId, out var cachedItems) && cachedItems.TryGetValue((uint)Items.Tanks, out var temp))
-                tanks = temp.Count;
+            if (Plugin.AllaganToolsConsumer.IsAvailable)
+            {
+                // build cache if needed
+                Storage.BuildStorageCache();
+                if (Storage.StorageCache.TryGetValue(Plugin.ClientState.LocalContentId, out var cachedItems) &&
+                    cachedItems.TryGetValue((uint)Items.Tanks, out var temp))
+                    tanks = temp.Count;
+            }
 
             if (ImGui.BeginTable("##buildColumn", 2, ImGuiTableFlags.SizingFixedFit))
             {

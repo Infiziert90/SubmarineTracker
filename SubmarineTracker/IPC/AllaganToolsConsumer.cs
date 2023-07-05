@@ -60,7 +60,7 @@ public class AllaganToolsConsumer
         }
         catch
         {
-            Plugin.ChatGui.PrintError("AllaganTools plugin is not responding");
+            Plugin.ChatGui.PrintError(Utils.ErrorMessage("AllaganTools plugin is not responding"));
             return uint.MaxValue;
         }
     }
