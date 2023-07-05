@@ -315,10 +315,18 @@ public partial class BuilderWindow
                         if (CancelSource.IsCancellationRequested)
                             break;
 
+                        if (!taskJourneys.Any())
+                        {
+                            PluginLog.Error($"No journeys returned, cancelling current build!");
+                            break;
+                        };
+
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
                         var (_, _, exp, path, currentBuild) = best;
 
-                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
+                        // we can still continue if this would be false
+                        if (path.Any())
+                            lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
 
                         if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
                         {
