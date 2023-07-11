@@ -69,7 +69,7 @@ public partial class ConfigWindow
                         Configuration.FCOrder.Remove(deletion);
                         Configuration.Save();
 
-                        CharacterConfiguration.DeleteCharacter(deletion);
+                        Plugin.ConfigurationBase.DeleteCharacter(deletion);
                     }
 
                     ImGui.EndTable();

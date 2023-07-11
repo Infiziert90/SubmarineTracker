@@ -47,6 +47,8 @@ namespace SubmarineTracker
         private HelpyWindow HelpyWindow { get; init; }
         private NotifyOverlay NotifyOverlay { get; init; }
 
+        public ConfigurationBase ConfigurationBase;
+
         public static readonly string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
@@ -59,6 +61,8 @@ namespace SubmarineTracker
 
         public Plugin()
         {
+            ConfigurationBase = new ConfigurationBase(this);
+
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Configuration.Initialize(PluginInterface);
 
@@ -96,15 +100,7 @@ namespace SubmarineTracker
 
             TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
 
-            try
-            {
-                CharacterConfiguration.LoadCharacters();
-            }
-            catch
-            {
-                Dispose(false);
-                throw;
-            }
+            ConfigurationBase.Load();
             LoadFCOrder();
 
             Framework.Update += FrameworkUpdate;
@@ -118,6 +114,7 @@ namespace SubmarineTracker
 
         public void Dispose(bool full)
         {
+            ConfigurationBase.Dispose();
             this.WindowSystem.RemoveAllWindows();
 
             ConfigWindow.Dispose();
@@ -212,7 +209,7 @@ namespace SubmarineTracker
 
             fc.Refresh = true;
             LoadFCOrder();
-            CharacterConfiguration.SaveCharacter();
+            ConfigurationBase.SaveCharacterConfig();
         }
 
         #region Draws

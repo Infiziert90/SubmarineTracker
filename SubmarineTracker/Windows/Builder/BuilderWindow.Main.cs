@@ -35,7 +35,9 @@ public partial class BuilderWindow : Window, IDisposable
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
-        Initialize();
+
+        InitializeShip();
+        InitializeLeveling();
     }
 
     public void Dispose() { }

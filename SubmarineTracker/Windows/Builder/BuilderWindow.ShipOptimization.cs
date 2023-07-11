@@ -16,7 +16,7 @@ public partial class BuilderWindow
 
     private bool IgnoreBreakpoints = false;
 
-    public void Initialize()
+    public void InitializeShip()
     {
         AllBuilds.Clear();
 

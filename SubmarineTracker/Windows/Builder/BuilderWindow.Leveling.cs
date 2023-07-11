@@ -1,5 +1,4 @@
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface.Components;
@@ -43,6 +42,9 @@ public partial class BuilderWindow
 
     private Dictionary<int, Journey> LastCalc = new();
     private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
+
+    private static string MiscFolder = null!;
+    private static void InitializeLeveling() => MiscFolder = Path.Combine(Plugin.PluginInterface.ConfigDirectory.FullName, "Misc");
 
     private bool LevelingTab()
     {
@@ -193,14 +195,12 @@ public partial class BuilderWindow
     {
         Processing = true;
 
-        var filePath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "routeList.json");
-
+        Directory.CreateDirectory(MiscFolder);
+        var filePath = Path.Combine(MiscFolder, "routeList.json");
         try
         {
             PluginLog.Debug("Loading cached leveling data.");
-
-            var jsonString = File.ReadAllText(filePath);
-            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(jsonString) ?? new();
+            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(File.ReadAllText(filePath)) ?? new DurationCache();
         }
         catch (FileNotFoundException)
         {

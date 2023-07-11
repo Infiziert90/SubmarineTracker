@@ -32,11 +32,11 @@ public static class Helper
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Sync))
         {
             Storage.Refresh = true;
-            CharacterConfiguration.LoadCharacters();
+            plugin.ConfigurationBase.Load();
             plugin.LoadFCOrder();
         }
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Reload all saved FCs from your disk");
+            ImGui.SetTooltip("Reload all data from disk and refresh all cached data");
 
         ImGui.SameLine(avail - (33.0f * ImGuiHelpers.GlobalScale));
 
