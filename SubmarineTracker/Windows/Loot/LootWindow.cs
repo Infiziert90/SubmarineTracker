@@ -62,10 +62,4 @@ public partial class LootWindow : Window, IDisposable
         }
         ImGui.EndChild();
     }
-
-    private static void DrawIcon(uint iconId)
-    {
-        var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
-        ImGui.Image(texture.ImGuiHandle, IconSize);
-    }
 }

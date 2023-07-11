@@ -20,6 +20,7 @@ using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
+using SubmarineTracker.Windows.Overlay;
 
 namespace SubmarineTracker
 {
@@ -45,7 +46,7 @@ namespace SubmarineTracker
         private BuilderWindow BuilderWindow { get; init; }
         private LootWindow LootWindow { get; init; }
         private HelpyWindow HelpyWindow { get; init; }
-        private NotifyOverlay NotifyOverlay { get; init; }
+        private OverlayWindow OverlayWindow { get; init; }
 
         public ConfigurationBase ConfigurationBase;
 
@@ -84,14 +85,14 @@ namespace SubmarineTracker
             BuilderWindow = new BuilderWindow(this, Configuration);
             LootWindow = new LootWindow(this, Configuration);
             HelpyWindow = new HelpyWindow(this, Configuration);
-            NotifyOverlay = new NotifyOverlay(this, Configuration, Notify);
+            OverlayWindow = new OverlayWindow(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(BuilderWindow);
             WindowSystem.AddWindow(LootWindow);
             WindowSystem.AddWindow(HelpyWindow);
-            WindowSystem.AddWindow(NotifyOverlay);
+            WindowSystem.AddWindow(OverlayWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 
@@ -106,8 +107,8 @@ namespace SubmarineTracker
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
 
-            if (Configuration.NotifyOverlayAlways || Configuration.NotifyOverlayOnStartup)
-                NotifyOverlay.IsOpen = true;
+            if (Configuration.OverlayOpen)
+                OverlayWindow.IsOpen = true;
         }
 
         public void Dispose() => Dispose(true);
@@ -168,6 +169,16 @@ namespace SubmarineTracker
             ConfigWindow.IsOpen ^= true;
         }
 
+        [Command("/soverlay")]
+        [HelpMessage("Opens the overlay")]
+        private void OnOverlayCommand(string command, string args)
+        {
+            OverlayWindow.IsOpen ^= true;
+
+            Configuration.OverlayOpen ^= true;
+            Configuration.Save();
+        }
+
         public unsafe void FrameworkUpdate(Framework _)
         {
             var instance = HousingManager.Instance();
@@ -221,11 +232,6 @@ namespace SubmarineTracker
         public void DrawConfigUI()
         {
             ConfigWindow.IsOpen = true;
-        }
-
-        public void OpenNotify()
-        {
-            NotifyOverlay.IsOpen = true;
         }
         #endregion
 

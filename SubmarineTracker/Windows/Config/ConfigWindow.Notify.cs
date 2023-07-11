@@ -11,12 +11,6 @@ public partial class ConfigWindow
             ImGuiHelpers.ScaledDummy(5.0f);
             var changed = false;
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Overlay:");
-            ImGui.Indent(10.0f);
-            changed |= ImGui.Checkbox("Show On Return", ref Configuration.NotifyOverlayAlways);
-            changed |= ImGui.Checkbox("Show On Game Start", ref Configuration.NotifyOverlayOnStartup);
-            ImGui.Unindent(10.0f);
-
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("For Repairs", ref Configuration.NotifyForRepairs);

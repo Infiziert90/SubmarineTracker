@@ -24,6 +24,21 @@ public static class Helper
         ImGui.PopStyleColor();
     }
 
+    public static string GenerateVoyageText(Submarines.Submarine sub)
+    {
+        var time = "No Voyage";
+        if (sub.IsOnVoyage())
+        {
+            time = "Done";
+
+            var returnTime = sub.LeftoverTime();
+            if (returnTime.TotalSeconds > 0)
+                time = $"{Utils.ToTime(returnTime)}";
+        }
+
+        return time;
+    }
+
     public static void MainMenuIcon(Plugin plugin)
     {
         var avail = ImGui.GetContentRegionAvail().X;
@@ -58,5 +73,11 @@ public static class Helper
         if (selected + 1 == length) ImGui.BeginDisabled();
         if (ImGuiComponents.IconButton(id+1, FontAwesomeIcon.ArrowRight)) selected++;
         if (selected + 1 == length) ImGui.EndDisabled();
+    }
+
+    public static void DrawIcon(uint iconId, Vector2 iconSize)
+    {
+        var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
+        ImGui.Image(texture.ImGuiHandle, iconSize);
     }
 }

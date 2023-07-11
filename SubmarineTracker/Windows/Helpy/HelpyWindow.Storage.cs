@@ -38,7 +38,7 @@ public partial class HelpyWindow
                     foreach (var cached in Storage.StorageCache[key].Values)
                     {
                         ImGui.TableNextColumn();
-                        DrawIcon(cached.Item.Icon);
+                        Helper.DrawIcon(cached.Item.Icon, IconSize);
                         ImGui.TableNextColumn();
                         var count = $"{cached.Count}x";
                         var width = ImGui.CalcTextSize(count).X;
@@ -57,11 +57,5 @@ public partial class HelpyWindow
             }
         }
         ImGui.EndTabItem();
-    }
-
-    private static void DrawIcon(uint iconId)
-    {
-        var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
-        ImGui.Image(texture.ImGuiHandle, IconSize);
     }
 }

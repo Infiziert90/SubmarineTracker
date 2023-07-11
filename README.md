@@ -11,9 +11,12 @@ Simple and Easy
 ### Tracker (/stracker)
 ![tracker](SubmarineTracker/images/tracker2.png)
 
-### Notifications > Return
+### Chat Notification
 ![notify](SubmarineTracker/images/chat.png)
 ![repair](SubmarineTracker/images/repair.png)
+
+### Overlay (/soverlay)
+![overlay](SubmarineTracker/images/overlay.png)
 
 ### Builder (/sbuilder)
 ![builder](SubmarineTracker/images/builder.png)

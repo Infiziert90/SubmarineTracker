@@ -1,5 +1,4 @@
-﻿using Dalamud.Interface.Components;
-using SubmarineTracker.Data;
+﻿using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
@@ -81,7 +80,7 @@ public partial class LootWindow
                     ImGui.TableSetupColumn("##survProc", 0, 0.4f);
 
                     ImGui.TableNextColumn();
-                    DrawIcon(primaryItem.Icon);
+                    Helper.DrawIcon(primaryItem.Icon, IconSize);
                     ImGui.TableNextColumn();
 
                     var name = Utils.ToStr(primaryItem.Name);
@@ -100,7 +99,7 @@ public partial class LootWindow
                     if (detailedLoot.ValidAdditional)
                     {
                         ImGui.TableNextColumn();
-                        DrawIcon(additionalItem.Icon);
+                        Helper.DrawIcon(additionalItem.Icon, IconSize);
                         ImGui.TableNextColumn();
 
                         name = Utils.ToStr(additionalItem.Name);

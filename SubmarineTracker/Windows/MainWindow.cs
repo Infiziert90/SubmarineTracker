@@ -89,19 +89,16 @@ public class MainWindow : Window, IDisposable
                     if (!fc.Submarines.Any())
                         continue;
 
-                    var text = $"{fc.Tag}@{fc.World}##{key}";
-                    if (Configuration.UseCharacterName && fc.CharacterName != "")
-                        text = $"{fc.CharacterName}@{fc.World}##{key}";
-
+                    var text = Helper.BuildNameHeader(fc, Configuration.UseCharacterName);
                     if (current == key)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);
-                        if (ImGui.Button(text, new Vector2(buttonWidth, 0)))
+                        if (ImGui.Button($"{text}##{key}", new Vector2(buttonWidth, 0)))
                             CurrentSelection = key;
                         ImGui.PopStyleColor();
                     }
                     else
-                        if (ImGui.Button(text, new Vector2(buttonWidth, 0)))
+                        if (ImGui.Button($"{text}##{key}", new Vector2(buttonWidth, 0)))
                             CurrentSelection = key;
                 }
             }
@@ -372,7 +369,7 @@ public class MainWindow : Window, IDisposable
                                             ImGui.Indent(10.0f);
                                             if (idx % 2 == 1)
                                                 ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
-                                            DrawIcon(item.Icon);
+                                            Helper.DrawIcon(item.Icon, IconSize);
 
                                             var name = ToStr(item.Name);
                                             if (MaxLength < name.Length)
@@ -511,25 +508,25 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupColumn("##partName");
 
                 ImGui.TableNextColumn();
-                DrawIcon(sub.HullIconId);
+                Helper.DrawIcon(sub.HullIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.HullName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                DrawIcon(sub.SternIconId);
+                Helper.DrawIcon(sub.SternIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.SternName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                DrawIcon(sub.BowIconId);
+                Helper.DrawIcon(sub.BowIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.BowName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                DrawIcon(sub.BridgeIconId);
+                Helper.DrawIcon(sub.BridgeIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.BridgeName);
                 ImGui.TableNextRow();
@@ -547,12 +544,6 @@ public class MainWindow : Window, IDisposable
         ImGui.TableNextColumn();
         ImGuiHelpers.ScaledDummy(10.0f);
         ImGui.TableNextRow();
-    }
-
-    private static void DrawIcon(uint iconId)
-    {
-        var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
-        ImGui.Image(texture.ImGuiHandle, IconSize);
     }
 
     private static string GetMapName(uint key) => ToStr(ExplorationSheet.First(r => r.RowId == key).Map.Value!.Name);

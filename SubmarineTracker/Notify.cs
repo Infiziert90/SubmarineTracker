@@ -10,7 +10,6 @@ public class Notify
     private Plugin Plugin;
     private Configuration Configuration;
 
-    public List<string> OverlayNotifications = new();
     private List<string> FinishedNotifications = new();
 
     public Notify(Plugin plugin)
@@ -50,10 +49,7 @@ public class Notify
                     if (Configuration.UseCharacterName && fc.CharacterName != "")
                         text = $"{sub.Name}@{fc.CharacterName}";
 
-                    OverlayNotifications.Add($"{text} has returned.");
                     Plugin.ChatGui.Print(GenerateMessage(text));
-
-                    Plugin.OpenNotify();
                 }
             }
         }

@@ -33,9 +33,9 @@ public static class Submarines
     public class FcSubmarines
     {
         public string CharacterName = "";
-        public string Tag = null!;
-        public string World = null!;
-        public List<Submarine> Submarines = null!;
+        public string Tag = "";
+        public string World = "";
+        public List<Submarine> Submarines = new();
 
         public Dictionary<uint, Loot.SubmarineLoot> SubLoot = new();
         public Dictionary<uint, bool> UnlockedSectors = new();
@@ -107,6 +107,8 @@ public static class Submarines
                 ExploredSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationExplored((byte)submarineExploration.RowId);
             }
         }
+
+        public Submarine GetLongestReturn() => Submarines.OrderByDescending(sub => sub.Return).First();
 
         #region Loot
         [JsonIgnore] public bool Refresh = true;
@@ -334,6 +336,8 @@ public static class Submarines
         public bool IsValid() => Rank > 0;
         public bool ValidExpRange() => NExp > 0;
         public bool IsOnVoyage() => Points.Any();
+        public bool IsDone() => LeftoverTime().TotalSeconds < 0;
+        public TimeSpan LeftoverTime() => ReturnTime - DateTime.Now.ToUniversalTime();
 
         #region equals
         public bool VoyageEqual(List<uint> l, List<uint> r) => l.SequenceEqual(r);

@@ -27,8 +27,8 @@ namespace SubmarineTracker
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;
 
-        public bool NotifyOverlayAlways = false;
-        public bool NotifyOverlayOnStartup = false;
+        public bool OverlayOpen = false;
+
         public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
         public bool NotifyForRepairs = true;

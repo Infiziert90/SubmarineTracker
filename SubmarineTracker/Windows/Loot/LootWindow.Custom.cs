@@ -71,7 +71,7 @@ public partial class LootWindow
                     foreach (var (item, count) in bigList)
                     {
                         ImGui.TableNextColumn();
-                        DrawIcon(item.Icon);
+                        Helper.DrawIcon(item.Icon, IconSize);
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted(Utils.ToStr(item.Name));
                         ImGui.TableNextColumn();
