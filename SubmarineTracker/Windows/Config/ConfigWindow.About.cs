@@ -42,6 +42,13 @@ public partial class ConfigWindow
                 if (ImGui.Button("Issues"))
                     Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/SubmarineTracker/issues");
                 ImGui.PopStyleColor();
+
+                ImGui.SameLine();
+
+                ImGui.PushStyleColor(ImGuiCol.Button, Helper.CustomFullyDone);
+                if (ImGui.Button("Ko-Fi Tip"))
+                    Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
+                ImGui.PopStyleColor();
             }
 
             ImGui.EndChild();

@@ -9,11 +9,6 @@ public class OverlayWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
-    private readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
-    private readonly Vector4 CustomFullyDone = new(0.12549f, 0.74902f, 0.33333f, 0.6f);
-    private readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
-    private readonly Vector4 CustomOnRoute = new(0.85882f, 0.22745f, 0.20392f, 0.6f);
-
     private (int OnRoute, int Done, int Halt) VoyageStats = (0, 0, 0);
 
     public OverlayWindow(Plugin plugin, Configuration configuration) : base("Submarines: 0|0|0###submarineOverlay")
@@ -51,7 +46,7 @@ public class OverlayWindow : Window, IDisposable
         }
         WindowName = $"Submarines: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}###submarineOverlay";
 
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, TransparentBackground);
+        ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
 
     public override void Draw()
@@ -73,8 +68,8 @@ public class OverlayWindow : Window, IDisposable
         var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
         ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
-                                                  ? CustomPartlyDone : VoyageStats.OnRoute == 0
-                                                      ? CustomFullyDone : CustomOnRoute);
+                                                  ? Helper.CustomPartlyDone : VoyageStats.OnRoute == 0
+                                                      ? Helper.CustomFullyDone : Helper.CustomOnRoute);
         var mainHeader = ImGui.CollapsingHeader("All###overlayAll");
         ImGui.PopStyleColor();
 
@@ -94,7 +89,7 @@ public class OverlayWindow : Window, IDisposable
             var anySubDone = fc.Submarines.Any(s => s.IsDone());
             var longestSub = fc.GetLongestReturn();
 
-            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? CustomFullyDone : anySubDone ? CustomPartlyDone : CustomOnRoute);
+            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
             var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{id}");
             ImGui.PopStyleColor();
 

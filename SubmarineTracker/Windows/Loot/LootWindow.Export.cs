@@ -114,6 +114,7 @@ public partial class LootWindow
             ImGuiHelpers.ScaledDummy(10.0f);
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);
+
             ImGui.Checkbox("Export All", ref ExportAll);
             if (!ExportAll)
             {

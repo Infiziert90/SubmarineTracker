@@ -30,6 +30,8 @@ public partial class LootWindow : Window, IDisposable
 
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+
+        InitializeAnalyse();
     }
 
     public void Dispose() { }
@@ -46,6 +48,8 @@ public partial class LootWindow : Window, IDisposable
                 CustomLootTab();
 
                 VoyageTab();
+
+                AnalyseTab();
 
                 ExportTab();
             }

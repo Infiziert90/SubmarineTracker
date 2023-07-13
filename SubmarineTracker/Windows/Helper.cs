@@ -5,6 +5,11 @@ namespace SubmarineTracker.Windows;
 
 public static class Helper
 {
+    public static readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
+    public static readonly Vector4 CustomFullyDone = new(0.12549f, 0.74902f, 0.33333f, 0.6f);
+    public static readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
+    public static readonly Vector4 CustomOnRoute = new(0.85882f, 0.22745f, 0.20392f, 0.6f);
+
     public static void NoData()
     {
         ImGuiHelpers.ScaledDummy(10.0f);
