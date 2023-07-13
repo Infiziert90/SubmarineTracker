@@ -10,8 +10,11 @@ public class OverlayWindow : Window, IDisposable
     private Configuration Configuration;
 
     private readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
-    private readonly Vector4 TransparentCustomGreen = new(0.957f, 0.635f, 0.38f, 0.6f);
-    private readonly Vector4 TransparentCustomCyan = new(0.165f, 0.616f, 0.561f, 0.6f);
+    private readonly Vector4 CustomFullyDone = new(0.12549f, 0.74902f, 0.33333f, 0.6f);
+    private readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
+    private readonly Vector4 CustomOnRoute = new(0.85882f, 0.22745f, 0.20392f, 0.6f);
+
+    private (int OnRoute, int Done, int Halt) VoyageStats = (0, 0, 0);
 
     public OverlayWindow(Plugin plugin, Configuration configuration) : base("Submarines: 0|0|0###submarineOverlay")
     {
@@ -31,22 +34,22 @@ public class OverlayWindow : Window, IDisposable
 
     public override void PreDraw()
     {
-        (int OnRoute, int Done, int Halt) voyageStats = (0, 0, 0);
+        VoyageStats = (0, 0, 0);
         foreach (var sub in Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
         {
             if (sub.IsOnVoyage())
             {
                 if (sub.IsDone())
-                    voyageStats.Done += 1;
+                    VoyageStats.Done += 1;
                 else
-                    voyageStats.OnRoute += 1;
+                    VoyageStats.OnRoute += 1;
 
                 continue;
             }
 
-            voyageStats.Halt += 1;
+            VoyageStats.Halt += 1;
         }
-        WindowName = $"Submarines: {voyageStats.Done} | {voyageStats.Halt} | {voyageStats.OnRoute}###submarineOverlay";
+        WindowName = $"Submarines: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}###submarineOverlay";
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, TransparentBackground);
     }
@@ -66,10 +69,13 @@ public class OverlayWindow : Window, IDisposable
         if (timerSub == null)
             return;
 
-        var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale);
+        var scrollbarSpacing = ImGui.GetScrollMaxY() > 0.0f ? ImGui.GetStyle().ScrollbarSize : 0;
+        var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
-        ImGui.PushStyleColor(ImGuiCol.Header, timerSub.IsDone() ? TransparentCustomGreen : TransparentCustomCyan);
-        var mainHeader = ImGui.CollapsingHeader("All");
+        ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
+                                                  ? CustomPartlyDone : VoyageStats.OnRoute == 0
+                                                      ? CustomFullyDone : CustomOnRoute);
+        var mainHeader = ImGui.CollapsingHeader("All###overlayAll");
         ImGui.PopStyleColor();
 
         SetHeaderText(timerSub, windowWidth, y);
@@ -85,10 +91,11 @@ public class OverlayWindow : Window, IDisposable
                 continue;
 
             y = ImGui.GetCursorPosY();
+            var anySubDone = fc.Submarines.Any(s => s.IsDone());
             var longestSub = fc.GetLongestReturn();
 
-            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? TransparentCustomGreen : TransparentCustomCyan);
-            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}##{id}");
+            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? CustomFullyDone : anySubDone ? CustomPartlyDone : CustomOnRoute);
+            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{id}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);
@@ -99,9 +106,11 @@ public class OverlayWindow : Window, IDisposable
             ImGui.Indent(10.0f);
             foreach (var sub in fc.Submarines)
             {
-                ImGui.TextColored(sub.PredictDurability() > 0
-                                      ? ImGuiColors.TankBlue
-                                      : ImGuiColors.DalamudYellow, sub.Name);
+                var notNeedsRepair = sub.PredictDurability() > 0;
+                ImGui.TextColored(notNeedsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, sub.Name);
+
+                if (!notNeedsRepair && ImGui.IsItemHovered())
+                    ImGui.SetTooltip("This submarine will need repairs");
 
                 var timeText = Helper.GenerateVoyageText(sub);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;

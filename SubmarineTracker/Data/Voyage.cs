@@ -15,6 +15,11 @@ public static class Voyage
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
     }
 
+    public static uint SectorToMap(uint sector)
+    {
+        return ExplorationSheet.GetRow(FindVoyageStartPoint(sector))!.Map.Row;
+    }
+
     public static uint FindVoyageStartPoint(uint point)
     {
         var startPoints = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).ToList();

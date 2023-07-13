@@ -6,6 +6,7 @@ using Dalamud.Logging;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Sectors;
+using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Builder;
 
@@ -42,6 +43,9 @@ public partial class BuilderWindow
 
     private Dictionary<int, Journey> LastCalc = new();
     private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
+
+    private bool AllowedChanged;
+    private List<SubmarineExplorationPretty> AllowedSectors = new();
 
     private static string MiscFolder = null!;
     private static void InitializeLeveling() => MiscFolder = Path.Combine(Plugin.PluginInterface.ConfigDirectory.FullName, "Misc");
@@ -132,6 +136,56 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
+            ImGui.TextColored(ImGuiColors.DalamudViolet, $"--Experimental-- Allowed Sectors: {AllowedSectors.Count}");
+
+            if (AllowedChanged)
+            {
+                AllowedChanged = false;
+                ExcelSheetSelector.FilteredSearchSheet = null!;
+            }
+
+            var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
+            ImGui.PushFont(UiBuilder.IconFont);
+            ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
+            ImGui.PopFont();
+            ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> explorationPopupOptions = new()
+            {
+                FormatRow = e => $"{NumToLetter(e.RowId - Voyage.FindVoyageStartPoint(e.RowId))}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+                FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
+            };
+
+            if (ExcelSheetSelector.ExcelSheetPopup("LevelingMustIncludeAddPopup", out var row, explorationPopupOptions))
+            {
+                var point = ExplorationSheet.GetRow(row)!;
+                if (!AllowedSectors.Contains(point))
+                {
+                    AllowedSectors.Add(point);
+                    AllowedChanged = true;
+                }
+            }
+
+            ImGui.SameLine();
+            if (ImGui.BeginListBox("##AllowedSectors", new Vector2(-1, listHeight)))
+            {
+                foreach (var p in AllowedSectors.ToArray().OrderBy(p => p.RowId))
+                {
+                    if (ImGui.Selectable($"{MapToThreeLetter(p.RowId, true)} - {NumToLetter(p.RowId, true)}. {UpperCaseStr(p.Destination)}"))
+                    {
+                        AllowedChanged = true;
+                        AllowedSectors.Remove(p);
+                    }
+                }
+                ImGui.EndListBox();
+            }
+
+            if (ImGui.Button("Clear"))
+            {
+                AllowedChanged = true;
+                AllowedSectors.Clear();
+            }
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
             if (LastCalc.Any())
             {
                 var lastIdx = LastCalc.Last().Key;
@@ -163,7 +217,7 @@ public partial class BuilderWindow
                     var (i, (rankReached, leftover, routeExp, points, build)) = pair;
                     var startPoint = Voyage.FindVoyageStartPoint(points[0]);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {Utils.MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp:N0}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Rank Reached: {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
                 });
@@ -252,6 +306,13 @@ public partial class BuilderWindow
                             .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
                             .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
                             .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
+            if (AllowedSectors.Any())
+            {
+                mapBreaks = ExplorationSheet
+                            .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
+                            .Where(r => AllowedSectors.Contains(r))
+                            .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
+            }
 
             ProgressRank = CurrentBuild.Rank;
 

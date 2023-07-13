@@ -1,4 +1,3 @@
-using Dalamud.Logging;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -22,8 +21,12 @@ public partial class BuilderWindow
             var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
             var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
+            var totalExp = 0u;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
-                expPerMinute = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild) / (optimizedDuration / 60.0);
+            {
+                totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild);
+                expPerMinute = totalExp / (optimizedDuration / 60.0);
+            }
 
             var tanks = 0u;
             if (Plugin.AllaganToolsConsumer.IsAvailable)
@@ -113,6 +116,13 @@ public partial class BuilderWindow
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
+
+                ImGui.TableNextRow();
+
+                ImGui.TableNextColumn();
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Total Exp");
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted($"{totalExp:N0}");
 
                 ImGui.EndTable();
             }

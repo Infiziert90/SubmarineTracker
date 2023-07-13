@@ -41,9 +41,16 @@ public partial class BuilderWindow
             try
             {
                 valid = ExplorationSheet
+                        .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
+                        .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                        .ToList();
+                if (AllowedSectors.Any())
+                {
+                    valid = ExplorationSheet
                             .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
-                            .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                            .Where(r => AllowedSectors.Contains(r))
                             .ToList();
+                }
                 highestRank = valid.Max(r => r.RankReq);
             }
             catch (KeyNotFoundException)

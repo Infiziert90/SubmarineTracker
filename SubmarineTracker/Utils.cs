@@ -1,3 +1,4 @@
+using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
 using SubmarineTracker.Data;
@@ -8,8 +9,30 @@ public static class Utils
 {
     public static string ToStr(SeString content) => content.ToString();
     public static string ToStr(Lumina.Text.SeString content) => content.ToDalamudString().ToString();
-    public static string UpperCaseStr(Lumina.Text.SeString content) => string.Join(" ", content.ToDalamudString().ToString().Split(' ').Select(t => string.Concat(t[0].ToString().ToUpper(), t.AsSpan(1))));
     public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
+
+    public static string UpperCaseStr(Lumina.Text.SeString s, sbyte article = 0)
+    {
+        if (article == 1)
+            return s.ToDalamudString().ToString();
+
+        var sb = new StringBuilder(s.ToDalamudString().ToString());
+        var lastSpace = true;
+        for (var i = 0; i < sb.Length; ++i)
+        {
+            if (sb[i] == ' ')
+            {
+                lastSpace = true;
+            }
+            else if (lastSpace)
+            {
+                lastSpace = false;
+                sb[i]     = char.ToUpperInvariant(sb[i]);
+            }
+        }
+
+        return sb.ToString();
+    }
 
     public static string MapToShort(int key) => MapToShort((uint)key);
     public static string MapToShort(uint key)
@@ -24,9 +47,12 @@ public static class Utils
         };
     }
 
-    public static string MapToThreeLetter(int key) => MapToThreeLetter((uint) key);
-    public static string MapToThreeLetter(uint key)
+    public static string MapToThreeLetter(int key, bool resolveToMap = false) => MapToThreeLetter((uint) key, resolveToMap);
+    public static string MapToThreeLetter(uint key, bool resolveToMap = false)
     {
+        if (resolveToMap)
+            key = Voyage.SectorToMap(key);
+
         return key switch
         {
             1 => "DSS",
@@ -38,8 +64,11 @@ public static class Utils
         };
     }
 
-    public static string NumToLetter(uint num)
+    public static string NumToLetter(uint num, bool findStart = false)
     {
+        if (findStart)
+            num -= Voyage.FindVoyageStartPoint(num);
+
         var index = (int)(num - 1);  // 0 indexed
 
         const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
