@@ -23,6 +23,8 @@ public partial class LootWindow
 
             var selectedSubmarine = SelectedSubmarine;
             ImGui.Combo("##existingSubs", ref selectedSubmarine, existingSubs, existingSubs.Length);
+            Helper.DrawArrows(ref selectedSubmarine, existingSubs.Length, 1);
+
             if (selectedSubmarine != SelectedSubmarine)
             {
                 SelectedSubmarine = selectedSubmarine;
@@ -49,7 +51,7 @@ public partial class LootWindow
             }
 
             ImGui.Combo("##voyageSelection", ref SelectedVoyage, submarineVoyage, submarineVoyage.Length);
-            Helper.DrawArrows(ref SelectedVoyage, submarineVoyage.Length);
+            Helper.DrawArrows(ref SelectedVoyage, submarineVoyage.Length, 2);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 

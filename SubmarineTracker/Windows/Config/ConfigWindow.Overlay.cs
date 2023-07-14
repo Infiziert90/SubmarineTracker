@@ -1,4 +1,6 @@
-﻿namespace SubmarineTracker.Windows.Config;
+﻿using Dalamud.Interface.Components;
+
+namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
@@ -15,7 +17,10 @@ public partial class ConfigWindow
             if (Configuration.OverlayStartUp)
             {
                 ImGui.Indent(10.0f);
+                ImGui.BeginDisabled();
                 changed |= ImGui.Checkbox("Open unminimized", ref Configuration.OverlayUnminimized);
+                ImGui.EndDisabled();
+                ImGuiComponents.HelpMarker("Disabled for now");
                 ImGui.Unindent(10.0f);
             }
             ImGui.Unindent(10.0f);

@@ -111,11 +111,11 @@ namespace SubmarineTracker
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
             {
                 OverlayWindow.IsOpen = true;
-                if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
-                {
-                    OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;
-                    OverlayWindow.Collapsed = false;
-                }
+                // if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
+                // {
+                //     OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;
+                //     OverlayWindow.Collapsed = false;
+                // }
             }
         }
 
