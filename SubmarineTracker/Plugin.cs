@@ -107,10 +107,11 @@ namespace SubmarineTracker
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
 
-            if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone())))
+            var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
+            if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
             {
                 OverlayWindow.IsOpen = true;
-                if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true })
+                if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
                 {
                     OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;
                     OverlayWindow.Collapsed = false;
