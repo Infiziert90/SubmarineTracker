@@ -29,7 +29,7 @@ public static class Helper
         ImGui.PopStyleColor();
     }
 
-    public static string GenerateVoyageText(Submarines.Submarine sub)
+    public static string GenerateVoyageText(Submarines.Submarine sub, bool useTime = false)
     {
         var time = "No Voyage";
         if (sub.IsOnVoyage())
@@ -38,7 +38,7 @@ public static class Helper
 
             var returnTime = sub.LeftoverTime();
             if (returnTime.TotalSeconds > 0)
-                time = $"{Utils.ToTime(returnTime)}";
+                time = $"{(useTime ? Utils.ToTime(returnTime) : sub.ReturnTime.ToLocalTime())}";
         }
 
         return time;

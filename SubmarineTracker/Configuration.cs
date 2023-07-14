@@ -27,12 +27,16 @@ namespace SubmarineTracker
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;
 
-        public bool OverlayOpen = false;
-
         public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
         public bool NotifyForRepairs = true;
         public bool ShowRepairToast = true;
+
+        public bool OverlayOpen = false;
+        public bool OverlayStartUp = true;
+        public bool OverlayUnminimized = true;
+        public bool OverlayFirstReturn = false;
+        public bool OverlayShowDate = false;
 
         public bool ExcludeLegacy = false;
         public Dictionary<uint, int> CustomLootWithValue = new();

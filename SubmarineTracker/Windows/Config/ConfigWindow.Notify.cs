@@ -8,8 +8,8 @@ public partial class ConfigWindow
     {
         if (ImGui.BeginTabItem("Notify"))
         {
-            ImGuiHelpers.ScaledDummy(5.0f);
             var changed = false;
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
             ImGui.Indent(10.0f);

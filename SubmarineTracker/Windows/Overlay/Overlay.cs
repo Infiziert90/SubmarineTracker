@@ -53,11 +53,12 @@ public class OverlayWindow : Window, IDisposable
     {
         Plugin.EnsureFCOrderSafety();
 
+        var showLast = !Configuration.OverlayFirstReturn;
         Submarines.Submarine? timerSub = null;
         foreach (var fc in Submarines.KnownSubmarines.Values)
         {
-            var timer = fc.GetLongestReturn();
-            if (timerSub == null || timer.ReturnTime > timerSub.ReturnTime)
+            var timer = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
+            if (timerSub == null || (showLast ? timer.ReturnTime > timerSub.ReturnTime : timer.ReturnTime < timerSub.ReturnTime))
                 timerSub = timer;
         }
 
@@ -70,7 +71,7 @@ public class OverlayWindow : Window, IDisposable
         ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
                                                   ? Helper.CustomPartlyDone : VoyageStats.OnRoute == 0
                                                       ? Helper.CustomFullyDone : Helper.CustomOnRoute);
-        var mainHeader = ImGui.CollapsingHeader("All###overlayAll");
+        var mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
         ImGui.PopStyleColor();
 
         SetHeaderText(timerSub, windowWidth, y);
@@ -87,7 +88,7 @@ public class OverlayWindow : Window, IDisposable
 
             y = ImGui.GetCursorPosY();
             var anySubDone = fc.Submarines.Any(s => s.IsDone());
-            var longestSub = fc.GetLongestReturn();
+            var longestSub = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
             var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{id}");
@@ -107,7 +108,7 @@ public class OverlayWindow : Window, IDisposable
                 if (!notNeedsRepair && ImGui.IsItemHovered())
                     ImGui.SetTooltip("This submarine will need repairs");
 
-                var timeText = Helper.GenerateVoyageText(sub);
+                var timeText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;
                 ImGui.SameLine(windowWidth - timeWidth);
                 ImGui.TextUnformatted(timeText);
@@ -119,9 +120,16 @@ public class OverlayWindow : Window, IDisposable
         ImGui.Unindent(10.0f);
     }
 
+    public override void OnOpen()
+    {
+        Configuration.OverlayOpen = true;
+        Configuration.Save();
+    }
+
     public override void OnClose()
     {
         Configuration.OverlayOpen = false;
+        Configuration.Save();
     }
 
     public override void PostDraw()
@@ -132,7 +140,7 @@ public class OverlayWindow : Window, IDisposable
     public void SetHeaderText(Submarines.Submarine sub, float windowWidth, float lastY)
     {
         var cursorPos = ImGui.GetCursorPos();
-        var longestText = Helper.GenerateVoyageText(sub);
+        var longestText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
         var longestWidth = ImGui.CalcTextSize(longestText).X;
         ImGui.SetCursorPos(new Vector2(windowWidth - longestWidth, lastY));
         ImGui.AlignTextToFramePadding();

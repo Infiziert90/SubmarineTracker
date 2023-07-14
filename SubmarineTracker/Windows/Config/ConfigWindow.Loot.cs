@@ -1,10 +1,23 @@
 ﻿using Dalamud.Interface.Components;
+using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
+using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
+    private static ExcelSheetSelector.ExcelSheetPopupOptions<Item> ItemPopupOptions = null!;
+
+    private void InitializeLoot()
+    {
+        ItemPopupOptions = new ExcelSheetSelector.ExcelSheetPopupOptions<Item>
+        {
+            FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
+            FilteredSheet = Plugin.Data.GetExcelSheet<Item>()!.Skip(1).Where(i => ToStr(i.Name) != "")
+        };
+    }
+
     private void Loot()
     {
         if (ImGui.BeginTabItem("Loot"))
@@ -47,7 +60,7 @@ public partial class ConfigWindow
                 {
                     var resolvedItem = ItemSheet.GetRow(item)!;
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted($"{Utils.ToStr(resolvedItem.Name)}");
+                    ImGui.TextUnformatted($"{ToStr(resolvedItem.Name)}");
 
                     ImGui.TableNextColumn();
                     var val = value;

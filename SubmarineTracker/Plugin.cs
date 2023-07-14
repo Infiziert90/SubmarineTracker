@@ -50,7 +50,7 @@ namespace SubmarineTracker
 
         public ConfigurationBase ConfigurationBase;
 
-        public static readonly string Authors = "Infi";
+        public const string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
@@ -107,8 +107,15 @@ namespace SubmarineTracker
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
 
-            if (Configuration.OverlayOpen)
+            if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone())))
+            {
                 OverlayWindow.IsOpen = true;
+                if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true })
+                {
+                    OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;
+                    OverlayWindow.Collapsed = false;
+                }
+            }
         }
 
         public void Dispose() => Dispose(true);
@@ -116,7 +123,7 @@ namespace SubmarineTracker
         public void Dispose(bool full)
         {
             ConfigurationBase.Dispose();
-            this.WindowSystem.RemoveAllWindows();
+            WindowSystem.RemoveAllWindows();
 
             ConfigWindow.Dispose();
             MainWindow.Dispose();
@@ -226,7 +233,7 @@ namespace SubmarineTracker
         #region Draws
         private void DrawUI()
         {
-            this.WindowSystem.Draw();
+            WindowSystem.Draw();
         }
 
         public void DrawConfigUI()
