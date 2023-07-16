@@ -33,10 +33,15 @@ namespace SubmarineTracker
         public bool ShowRepairToast = true;
 
         public bool OverlayOpen = false;
-        public bool OverlayStartUp = true;
+        public bool OverlayStartUp = false;
+        public bool OverlayAlwaysOpen = false;
         public bool OverlayUnminimized = true;
         public bool OverlayFirstReturn = false;
         public bool OverlayShowDate = false;
+        public bool OverlayOnlyReturned = false;
+        public bool OverlaySort = false;
+        public bool OverlayLockSize = false;
+        public bool OverlayLockLocation = false;
 
         public bool ExcludeLegacy = false;
         public Dictionary<uint, int> CustomLootWithValue = new();

@@ -46,7 +46,7 @@ namespace SubmarineTracker
         private BuilderWindow BuilderWindow { get; init; }
         private LootWindow LootWindow { get; init; }
         private HelpyWindow HelpyWindow { get; init; }
-        private OverlayWindow OverlayWindow { get; init; }
+        public OverlayWindow OverlayWindow { get; init; }
 
         public ConfigurationBase ConfigurationBase;
 

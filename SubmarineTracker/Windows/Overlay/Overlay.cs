@@ -20,12 +20,19 @@ public class OverlayWindow : Window, IDisposable
         };
 
         RespectCloseHotkey = false;
+        DisableWindowSounds = true;
 
         Plugin = plugin;
         Configuration = configuration;
     }
 
     public void Dispose() { }
+
+    public override void Update()
+    {
+        Flags = (Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0)
+                | (Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
+    }
 
     public override void PreDraw()
     {
@@ -79,19 +86,30 @@ public class OverlayWindow : Window, IDisposable
         if (!mainHeader)
             return;
 
-        ImGui.Indent(10.0f);
-        foreach (var id in Configuration.FCOrder)
-        {
-            var fc = Submarines.KnownSubmarines[id];
-            if (!fc.Submarines.Any())
-                continue;
+        var fcList = !Configuration.OverlaySort
+                         ? Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any()).ToArray()
+                         : Submarines.KnownSubmarines.Values.Where(fc => fc.Submarines.Any()).OrderByDescending(fc => fc.ReturnTimes().Min()).ToArray();
 
+        if (Configuration.OverlayOnlyReturned)
+            fcList = fcList.Where(fc => fc.AnySubDone()).ToArray();
+
+        if (!fcList.Any())
+        {
+            ImGui.Indent(10.0f);
+            ImGui.TextColored(ImGuiColors.DalamudOrange,"No sub has returned");
+            ImGui.Unindent(10.0f);
+            return;
+        }
+
+        ImGui.Indent(10.0f);
+        foreach (var fc in fcList)
+        {
             y = ImGui.GetCursorPosY();
             var anySubDone = fc.Submarines.Any(s => s.IsDone());
             var longestSub = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
-            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{id}");
+            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);

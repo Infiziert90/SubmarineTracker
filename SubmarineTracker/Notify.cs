@@ -50,6 +50,9 @@ public class Notify
                         text = $"{sub.Name}@{fc.CharacterName}";
 
                     Plugin.ChatGui.Print(GenerateMessage(text));
+
+                    if (Configuration.OverlayAlwaysOpen)
+                        Plugin.OverlayWindow.IsOpen = true;
                 }
             }
         }

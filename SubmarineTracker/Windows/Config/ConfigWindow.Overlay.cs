@@ -11,10 +11,13 @@ public partial class ConfigWindow
             var changed = false;
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Startup:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Open:");
             ImGui.Indent(10.0f);
-            changed |= ImGui.Checkbox("Open If Subs Have Returned", ref Configuration.OverlayStartUp);
-            if (Configuration.OverlayStartUp)
+            changed |= ImGui.Checkbox("On Startup", ref Configuration.OverlayStartUp);
+            ImGuiComponents.HelpMarker("Opens the overlay on startup, if at least one sub is done");
+            changed |= ImGui.Checkbox("On Return", ref Configuration.OverlayAlwaysOpen);
+            ImGuiComponents.HelpMarker("Always opens the overlay if one submarine returns");
+            if (Configuration.OverlayStartUp || Configuration.OverlayAlwaysOpen)
             {
                 ImGui.Indent(10.0f);
                 ImGui.BeginDisabled();
@@ -27,10 +30,18 @@ public partial class ConfigWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Headers:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "General:");
             ImGui.Indent(10.0f);
-            changed |= ImGui.Checkbox("Show First Return Instead", ref Configuration.OverlayFirstReturn);
-            changed |= ImGui.Checkbox("Show Return Date", ref Configuration.OverlayShowDate);
+            changed |= ImGui.Checkbox("Show As Date", ref Configuration.OverlayShowDate);
+            changed |= ImGui.Checkbox("Show First Return Time", ref Configuration.OverlayFirstReturn);
+            changed |= ImGui.Checkbox("Sort By Lowest Time", ref Configuration.OverlaySort);
+            changed |= ImGui.Checkbox("Only Show Returned", ref Configuration.OverlayOnlyReturned);
+            ImGui.Unindent(10.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Window:");
+            ImGui.Indent(10.0f);
+            changed |= ImGui.Checkbox("Lock Size", ref Configuration.OverlayLockSize);
+            changed |= ImGui.Checkbox("Lock Position", ref Configuration.OverlayLockLocation);
             ImGui.Unindent(10.0f);
 
             if (changed)

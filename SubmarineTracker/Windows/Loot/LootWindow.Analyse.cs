@@ -43,7 +43,7 @@ public partial class LootWindow
         {
             var submarineLoot = Submarines.KnownSubmarines.Values
                                           .Select(fc => fc.SubLoot)
-                                          .SelectMany(dict => dict.Values.SkipLast(1))
+                                          .SelectMany(dict => dict.Values)
                                           .SelectMany(loot => loot.Loot.Values.SelectMany(l => l).Where(detailed => !Configuration.ExcludeLegacy || detailed.Valid).Where(detailed => detailed.Primary > 0));
 
 
@@ -54,6 +54,19 @@ public partial class LootWindow
         ImGuiComponents.IconButton(FontAwesomeIcon.Search);
         if (ExcelSheetSelector.ExcelSheetPopup("LootSectorAnalyseAddPopup", out var row, Options))
             SelectedSector = ExplorationSheet.GetRow(row)!;
+
+        ImGui.SameLine();
+
+        if (ImGuiComponents.IconButton(9, FontAwesomeIcon.ArrowCircleUp))
+        {
+            LootCache.Clear();
+
+            ImGui.EndTabItem();
+            return;
+        }
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Rebuild cache");
 
         ImGui.TextColored(ImGuiColors.ParsedOrange, $"Searched for {MapToThreeLetter(SelectedSector.RowId, true)} - {NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
         if (!LootCache.TryGetValue(SelectedSector.RowId, out var history))

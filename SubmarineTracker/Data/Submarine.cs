@@ -108,6 +108,7 @@ public static class Submarines
             }
         }
 
+        public uint[] ReturnTimes() => Submarines.Select(sub => sub.Return).ToArray();
         public Submarine GetLastReturn() => Submarines.OrderByDescending(sub => sub.Return).First();
         public Submarine GetFirstReturn() => Submarines.OrderBy(sub => sub.Return).First();
         public bool AnySubDone() => Submarines.Any(sub => sub.IsDone());
