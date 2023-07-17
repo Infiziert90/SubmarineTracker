@@ -90,14 +90,18 @@ public class OverlayWindow : Window, IDisposable
 
 
         Plugin.EnsureFCOrderSafety();
-        var fcList = !Configuration.OverlaySort
-                         ? Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any()).ToArray()
-                         : Submarines.KnownSubmarines.Values.Where(fc => fc.Submarines.Any()).OrderByDescending(fc => fc.ReturnTimes().Min()).ToArray();
+        var fcList = Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any());
+        if (Configuration.OverlaySortReverse)
+            fcList = fcList.OrderByDescending(fc => fc.ReturnTimes().Min());
+        else if (Configuration.OverlaySort)
+            fcList = fcList.OrderBy(fc => fc.ReturnTimes().Min());
 
         if (Configuration.OverlayOnlyReturned)
-            fcList = fcList.Where(fc => fc.AnySubDone()).ToArray();
+            fcList = fcList.Where(fc => fc.AnySubDone());
 
-        if (!fcList.Any())
+
+        var sortedFcList = fcList.ToArray();
+        if (!sortedFcList.Any())
         {
             ImGui.Indent(10.0f);
             ImGui.TextColored(ImGuiColors.DalamudOrange,"No sub has returned");
@@ -106,7 +110,7 @@ public class OverlayWindow : Window, IDisposable
         }
 
         ImGui.Indent(10.0f);
-        foreach (var fc in fcList)
+        foreach (var fc in sortedFcList)
         {
             y = ImGui.GetCursorPosY();
             var anySubDone = fc.Submarines.Any(s => s.IsDone());

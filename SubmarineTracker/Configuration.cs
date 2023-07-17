@@ -40,6 +40,7 @@ namespace SubmarineTracker
         public bool OverlayShowDate = false;
         public bool OverlayOnlyReturned = false;
         public bool OverlaySort = false;
+        public bool OverlaySortReverse = false;
         public bool OverlayLockSize = false;
         public bool OverlayLockLocation = false;
 

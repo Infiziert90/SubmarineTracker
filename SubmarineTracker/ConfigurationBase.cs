@@ -35,8 +35,37 @@ public class ConfigurationBase : IDisposable
     public void Load()
     {
         foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
+        {
+            // TODO: Delete after 17.08, cleaning possible corruptions
+            if (!file.Name.Contains(".json") || file.Name == "routeList.json")
+            {
+                try { file.Delete(); }
+                catch { PluginLog.Warning("Unable to delete leftover file."); }
+
+                continue;
+            }
+            //
+
             if (ulong.TryParse(Path.GetFileNameWithoutExtension(file.Name), out var id))
-                Submarines.KnownSubmarines[id] = new Submarines.FcSubmarines(LoadConfig(id));
+            {
+                var fc = new Submarines.FcSubmarines(LoadConfig(id));
+
+                // TODO: Delete after 17.08, cleaning possible corruptions
+                if (!fc.Submarines.Any())
+                {
+                    try
+                    { file.Delete(); }
+                    catch
+                    { PluginLog.Warning("Unable to delete corrupted file."); }
+
+                    continue;
+                }
+                //
+
+                Submarines.KnownSubmarines[id] = fc;
+            }
+
+        }
     }
 
     private static string LoadFile(FileSystemInfo fileInfo)

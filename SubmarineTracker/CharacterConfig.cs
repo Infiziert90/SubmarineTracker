@@ -8,7 +8,7 @@ namespace SubmarineTracker;
 public class CharacterConfiguration
 {
     // Increase with version bump
-    public int Version { get; set; } = 2;
+    public int Version { get; set; } = 3;
 
     public ulong LocalContentId;
 

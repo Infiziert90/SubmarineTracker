@@ -34,7 +34,17 @@ public partial class ConfigWindow
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("Show As Date", ref Configuration.OverlayShowDate);
             changed |= ImGui.Checkbox("Show First Return Time", ref Configuration.OverlayFirstReturn);
-            changed |= ImGui.Checkbox("Sort By Lowest Time", ref Configuration.OverlaySort);
+            if (ImGui.Checkbox("Sort By Lowest Time", ref Configuration.OverlaySort))
+            {
+                changed = true;
+                Configuration.OverlaySortReverse = false;
+            }
+            if (Configuration.OverlaySort)
+            {
+                ImGui.Indent(10.0f);
+                changed |= ImGui.Checkbox("Reverse Sort", ref Configuration.OverlaySortReverse);
+                ImGui.Unindent(10.0f);
+            }
             changed |= ImGui.Checkbox("Only Show Returned", ref Configuration.OverlayOnlyReturned);
             ImGui.Unindent(10.0f);
 
