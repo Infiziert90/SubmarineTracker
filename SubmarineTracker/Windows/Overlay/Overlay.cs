@@ -1,10 +1,9 @@
-using System.Reflection.Metadata.Ecma335;
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Overlay;
 
-// Inspired by Accountant Plugin from Ottermandias
+// Inspired by Accountant from Ottermandias
 public class OverlayWindow : Window, IDisposable
 {
     private Plugin Plugin;
@@ -120,7 +119,7 @@ public class OverlayWindow : Window, IDisposable
                 continue;
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
-            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{fc.Submarines.First().Register}");
+            var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.OverlayCharacterName)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);

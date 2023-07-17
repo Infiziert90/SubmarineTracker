@@ -16,8 +16,8 @@ public partial class ConfigWindow
             changed |= ImGui.Checkbox("Show 'All' Button", ref Configuration.ShowAll);
             ImGuiComponents.HelpMarker("Adds an 'All' button for easy overview of all FCs.\n" +
                                        "Note: Messy with too many FCs.");
-            changed |= ImGui.Checkbox("Use Character Names", ref Configuration.UseCharacterName);
-            ImGuiComponents.HelpMarker("Use character names instead of FC tags in the overview.\n" +
+            changed |= ImGui.Checkbox("Use Character Name", ref Configuration.UseCharacterName);
+            ImGuiComponents.HelpMarker("Use character name instead of FC tag in the overview.\n" +
                                        "Be aware this option can lead to cut-off button text.");
             changed |= ImGui.Checkbox("Let Me Resize", ref Configuration.UserResize);
             ImGuiComponents.HelpMarker("This allows you to resize the FC buttons,\n" +

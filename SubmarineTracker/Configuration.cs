@@ -35,7 +35,8 @@ namespace SubmarineTracker
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;
         public bool OverlayAlwaysOpen = false;
-        public bool OverlayUnminimized = true;
+        public bool OverlayUnminimized = false;
+        public bool OverlayCharacterName = false;
         public bool OverlayFirstReturn = false;
         public bool OverlayShowDate = false;
         public bool OverlayOnlyReturned = false;
