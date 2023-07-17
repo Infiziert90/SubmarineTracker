@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
 
@@ -58,13 +59,14 @@ public class OverlayWindow : Window, IDisposable
 
     public override void Draw()
     {
-        Plugin.EnsureFCOrderSafety();
-
         var showLast = !Configuration.OverlayFirstReturn;
         Submarines.Submarine? timerSub = null;
         foreach (var fc in Submarines.KnownSubmarines.Values)
         {
             var timer = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
+            if (timer == null)
+                continue;
+
             if (timerSub == null || (showLast ? timer.ReturnTime > timerSub.ReturnTime : timer.ReturnTime < timerSub.ReturnTime))
                 timerSub = timer;
         }
@@ -86,6 +88,8 @@ public class OverlayWindow : Window, IDisposable
         if (!mainHeader)
             return;
 
+
+        Plugin.EnsureFCOrderSafety();
         var fcList = !Configuration.OverlaySort
                          ? Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any()).ToArray()
                          : Submarines.KnownSubmarines.Values.Where(fc => fc.Submarines.Any()).OrderByDescending(fc => fc.ReturnTimes().Min()).ToArray();
@@ -107,6 +111,9 @@ public class OverlayWindow : Window, IDisposable
             y = ImGui.GetCursorPosY();
             var anySubDone = fc.Submarines.Any(s => s.IsDone());
             var longestSub = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
+
+            if (longestSub == null)
+                continue;
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
             var header = ImGui.CollapsingHeader($"{Helper.BuildNameHeader(fc, Configuration.UseCharacterName)}###overlayFC{fc.Submarines.First().Register}");
