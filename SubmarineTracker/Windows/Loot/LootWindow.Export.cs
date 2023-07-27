@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -37,8 +39,8 @@ public partial class LootWindow
         public uint PrimaryRetProc { get; set; }
         public uint FavProc { get; set; }
 
-        [Format("s")]
-        public DateTime Date { get; set; }
+        [Format("s")] public DateTime Date { get; set; }
+        public string Hash { get; set; } = "";
 
         public ExportLoot() {}
 
@@ -60,8 +62,21 @@ public partial class LootWindow
             AdditionalSurvProc = loot.AdditionalSurvProc;
             PrimaryRetProc = loot.PrimaryRetProc;
             FavProc = loot.FavProc;
-
             Date = loot.Date;
+
+            using var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            {
+                writer.Write(Date.Ticks);
+                writer.Write(Sector);
+            }
+            stream.Position = 0;
+
+            using (var hash = SHA256.Create())
+            {
+                var result = hash.ComputeHash(stream);
+                Hash = string.Join("", result.Select(b => $"{b:X2}"));
+            }
         }
     }
 
@@ -87,6 +102,8 @@ public partial class LootWindow
                 Map(m => m.Date).Ignore();
             else
                 Map(m => m.Date).Index(13).Name("Date");
+
+            Map(m => m.Hash).Index(99);
         }
     }
 
