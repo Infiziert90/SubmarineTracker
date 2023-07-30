@@ -23,6 +23,7 @@ namespace SubmarineTracker
         public bool ShowDateInAll = false;
 
         public bool ShowOnlyCurrentFC = false;
+        public bool AutoSelectCurrent = true;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;

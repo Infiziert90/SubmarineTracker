@@ -43,7 +43,7 @@ namespace SubmarineTracker
 
         private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
-        private BuilderWindow BuilderWindow { get; init; }
+        public BuilderWindow BuilderWindow { get; init; }
         private LootWindow LootWindow { get; init; }
         private HelpyWindow HelpyWindow { get; init; }
         public OverlayWindow OverlayWindow { get; init; }
@@ -200,6 +200,12 @@ namespace SubmarineTracker
             // 6.4 triggers HousingManager + WorkshopTerritory in Island Sanctuary
             if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
                 return;
+
+            if (Configuration.AutoSelectCurrent)
+            {
+                var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
+                BuilderWindow.VoyageInterfaceSelection = current.Value != null ? current.Value->RegisterTime : 0;
+            }
 
             var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
 

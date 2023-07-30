@@ -17,7 +17,7 @@ public static class Helper
                      "Please visit your Company Workshop and access Submersible Management at the Voyage Control Panel.");
     }
 
-    public static string BuildNameHeader(Submarines.FcSubmarines fc, bool useCharacterName)
+    public static string BuildFcName(Submarines.FcSubmarines fc, bool useCharacterName)
     {
         return !useCharacterName ? $"{fc.Tag}@{fc.World}" : $"{fc.CharacterName}@{fc.World}";;
     }
@@ -65,6 +65,15 @@ public static class Helper
 
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("Open the config menu");
+    }
+
+    public static void DrawComboWithArrows(ref int selected, ref string[] comboArray, int id = 0)
+    {
+        var windowWidth = ImGui.GetWindowWidth() / 2;
+        ImGui.PushItemWidth(windowWidth - (5.0f * ImGuiHelpers.GlobalScale));
+        ImGui.Combo("##existingSubs", ref selected, comboArray, comboArray.Length);
+        ImGui.PopItemWidth();
+        DrawArrows(ref selected, comboArray.Length, id);
     }
 
     public static void DrawArrows(ref int selected, int length, int id = 0)

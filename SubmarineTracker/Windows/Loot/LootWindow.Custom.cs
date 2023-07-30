@@ -1,14 +1,19 @@
 ﻿using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
+using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
+    private int FcSelection;
+
     private void CustomLootTab()
     {
         if (ImGui.BeginTabItem("Custom"))
         {
+
+
             if (!Configuration.CustomLootWithValue.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "No Custom Loot");
@@ -20,12 +25,27 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
+            Plugin.EnsureFCOrderSafety();
+            var existingFCs = Configuration.FCOrder
+                                            .Select(id => $"{Helper.BuildFcName(KnownSubmarines[id], Configuration.UseCharacterName)}##{id}")
+                                            .Prepend("All")
+                                            .ToArray();
+
+            Helper.DrawComboWithArrows(ref FcSelection, ref existingFCs);
+            ImGuiHelpers.ScaledDummy(5.0f);
+            ImGui.Separator();
+            ImGuiHelpers.ScaledDummy(5.0f);
+
             var numSubs = 0;
             var numVoyages = 0;
             var moneyMade = 0L;
             var bigList = new Dictionary<Item, int>();
-            foreach (var fc in Submarines.KnownSubmarines.Values)
+            foreach (var (id, fc) in KnownSubmarines)
             {
+                if (FcSelection != 0 && ulong.TryParse(existingFCs[FcSelection].Split("##")[1], out var selectedFcId))
+                    if (selectedFcId != id)
+                        continue;
+
                 fc.RebuildStats(Configuration.ExcludeLegacy);
                 var dateLimit = DateUtil.LimitToDate(Configuration.DateLimit);
 
@@ -50,11 +70,10 @@ public partial class LootWindow
                 }
             }
 
+            var useLimit = Configuration.DateLimit != DateLimit.None;
             if (!bigList.Any())
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, Configuration.DateLimit != DateLimit.None
-                                                                ? "None of the selected items have been looted in the time frame."
-                                                                : "None of the selected items have been looted yet.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, $"None of the selected items have been looted {(useLimit ? "in the time frame" : "yet")}.");
                 ImGui.EndTabItem();
                 return;
             }
@@ -68,14 +87,14 @@ public partial class LootWindow
                     ImGui.TableSetupColumn("##item");
                     ImGui.TableSetupColumn("##amount", 0, 0.3f);
 
-                    foreach (var (item, count) in bigList)
+                    foreach (var (item, count) in bigList.OrderBy(pair => pair.Key.RowId))
                     {
                         ImGui.TableNextColumn();
                         Helper.DrawIcon(item.Icon, IconSize);
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted(Utils.ToStr(item.Name));
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{count}");
+                        ImGui.TextUnformatted($"{count:N0}");
                         ImGui.TableNextRow();
 
                         moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
@@ -89,9 +108,7 @@ public partial class LootWindow
 
             if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
             {
-                var limit = Configuration.DateLimit != DateLimit.None
-                                ? $"over {DateUtil.GetDateLimitName(Configuration.DateLimit)}"
-                                : "";
+                var limit = useLimit ? $"over {DateUtil.GetDateLimitName(Configuration.DateLimit)}" : "";
                 ImGui.TextWrapped($"The above rewards have been obtained {limit} from a total of {numVoyages} voyages via {numSubs} submarines.");
                 ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
             }

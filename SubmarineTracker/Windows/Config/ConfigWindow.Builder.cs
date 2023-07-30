@@ -14,6 +14,8 @@ public partial class ConfigWindow
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("Show Only Current FC", ref Configuration.ShowOnlyCurrentFC);
+            changed |= ImGui.Checkbox("Auto Select Current Submarine", ref Configuration.AutoSelectCurrent);
+            ImGuiComponents.HelpMarker("Automatically selects submarine, if the voyage interface is opened.");
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
@@ -50,7 +52,10 @@ public partial class ConfigWindow
             }
 
             if (changed)
+            {
+                Plugin.BuilderWindow.VoyageInterfaceSelection = 0;
                 Configuration.Save();
+            }
 
             ImGui.EndTabItem();
         }
