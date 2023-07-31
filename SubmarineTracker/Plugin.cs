@@ -204,7 +204,13 @@ namespace SubmarineTracker
             if (Configuration.AutoSelectCurrent)
             {
                 var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
-                BuilderWindow.VoyageInterfaceSelection = current.Value != null ? current.Value->RegisterTime : 0;
+
+                if (current.Value != null)
+                {
+                    BuilderWindow.VoyageInterfaceSelection = current.Value->RegisterTime;
+                    if (BuilderWindow.CurrentBuild.Rank != current.Value->RankId)
+                        BuilderWindow.CacheValid = false;
+                }
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
