@@ -227,5 +227,8 @@ public partial class BuilderWindow : Window, IDisposable
     public void Reset()
     {
         CurrentBuild = Build.RouteBuild.Empty;
+
+        VoyageInterfaceSelection = 0;
+        CacheValid = false;
     }
 }

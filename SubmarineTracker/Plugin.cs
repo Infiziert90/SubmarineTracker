@@ -211,6 +211,14 @@ namespace SubmarineTracker
                     if (BuilderWindow.CurrentBuild.Rank != current.Value->RankId)
                         BuilderWindow.CacheValid = false;
                 }
+                else
+                {
+                    BuilderWindow.VoyageInterfaceSelection = 0;
+                }
+            }
+            else
+            {
+                BuilderWindow.VoyageInterfaceSelection = 0;
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
