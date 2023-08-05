@@ -9,10 +9,12 @@ public static class Voyage
     private const int FixedVoyageTime = 43200; // 12h
 
     private static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
+    private static List<uint> ReversedStartPoints = null!;
 
     public static void Initialize()
     {
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
+        ReversedStartPoints = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).Reverse().ToList();
     }
 
     public static uint SectorToMap(uint sector)
@@ -22,15 +24,10 @@ public static class Voyage
 
     public static uint FindVoyageStartPoint(uint point)
     {
-        var startPoints = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).ToList();
-        startPoints.Reverse();
-
         // This works because we reversed the list of start points
-        foreach (var possibleStart in startPoints)
-        {
+        foreach (var possibleStart in ReversedStartPoints)
             if (point > possibleStart)
                 return possibleStart;
-        }
 
         return 0;
     }

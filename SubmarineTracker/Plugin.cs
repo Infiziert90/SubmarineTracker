@@ -41,11 +41,11 @@ namespace SubmarineTracker
         public Configuration Configuration { get; init; }
         public WindowSystem WindowSystem = new("Submarine Tracker");
 
-        private ConfigWindow ConfigWindow { get; init; }
-        private MainWindow MainWindow { get; init; }
+        public ConfigWindow ConfigWindow { get; init; }
+        public MainWindow MainWindow { get; init; }
         public BuilderWindow BuilderWindow { get; init; }
-        private LootWindow LootWindow { get; init; }
-        private HelpyWindow HelpyWindow { get; init; }
+        public LootWindow LootWindow { get; init; }
+        public HelpyWindow HelpyWindow { get; init; }
         public OverlayWindow OverlayWindow { get; init; }
 
         public ConfigurationBase ConfigurationBase;
@@ -78,6 +78,8 @@ namespace SubmarineTracker
             TexturesCache.Initialize();
             ImportantItemsMethods.Initialize();
 
+            Helper.Initialize(this);
+
             AllaganToolsConsumer = new AllaganToolsConsumer();
 
             ConfigWindow = new ConfigWindow(this);
@@ -97,7 +99,7 @@ namespace SubmarineTracker
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
-            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
 
             TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
 
@@ -130,6 +132,9 @@ namespace SubmarineTracker
             MainWindow.Dispose();
             BuilderWindow.Dispose();
             LootWindow.Dispose();
+
+            PluginInterface.UiBuilder.Draw -= DrawUI;
+            PluginInterface.UiBuilder.OpenConfigUi -= OpenConfig;
 
             CommandManager.Dispose();
 
@@ -251,16 +256,21 @@ namespace SubmarineTracker
             ConfigurationBase.SaveCharacterConfig();
         }
 
-        #region Draws
-        private void DrawUI()
+        public void Sync()
         {
-            WindowSystem.Draw();
+            Storage.Refresh = true;
+            ConfigurationBase.Load();
+            LoadFCOrder();
         }
 
-        public void DrawConfigUI()
-        {
-            ConfigWindow.IsOpen = true;
-        }
+        #region Draws
+        private void DrawUI() => WindowSystem.Draw();
+
+        public void OpenTracker() => MainWindow.IsOpen = true;
+        public void OpenBuilder() => BuilderWindow.IsOpen = true;
+        public void OpenLoot() => LootWindow.IsOpen = true;
+        public void OpenHelpy() => HelpyWindow.IsOpen = true;
+        public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 
         public void LoadFCOrder()

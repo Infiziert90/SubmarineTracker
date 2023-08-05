@@ -1,5 +1,6 @@
 using Dalamud.Interface.Components;
-using SubmarineTracker.Data;
+
+using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows;
 
@@ -10,6 +11,24 @@ public static class Helper
     public static readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
     public static readonly Vector4 CustomOnRoute = new(0.85882f, 0.22745f, 0.20392f, 0.6f);
 
+    private static PopupMenu SettingsMenu = null!;
+
+    public static void Initialize(Plugin plugin)
+    {
+        SettingsMenu = new PopupMenu("configMenu",
+                                     PopupMenu.PopupMenuButtons.LeftRight,
+                                     new List<PopupMenu.IPopupMenuItem>
+                                     {
+                                         new PopupMenu.PopupMenuItemSelectable("Tracker Window", plugin.OpenTracker,"Open the tracker window."),
+                                         new PopupMenu.PopupMenuItemSelectable("Builder Window", plugin.OpenBuilder,"Open the builder window."),
+                                         new PopupMenu.PopupMenuItemSelectable("Loot Window", plugin.OpenLoot,"Open the loot window."),
+                                         new PopupMenu.PopupMenuItemSelectable("Helpy Window", plugin.OpenHelpy,"Open the helper window."),
+                                         new PopupMenu.PopupMenuItemSelectable("Config Window", plugin.OpenConfig,"Open the config window."),
+                                         new PopupMenu.PopupMenuItemSeparator(),
+                                         new PopupMenu.PopupMenuItemSelectable("Sync", plugin.Sync,"Syncs all data from disk and refresh cached data"),
+                                     });
+    }
+
     public static void NoData()
     {
         ImGuiHelpers.ScaledDummy(10.0f);
@@ -17,9 +36,9 @@ public static class Helper
                      "Please visit your Company Workshop and access Submersible Management at the Voyage Control Panel.");
     }
 
-    public static string BuildFcName(Submarines.FcSubmarines fc, bool useCharacterName)
+    public static string BuildFcName(FcSubmarines fc, bool useCharName)
     {
-        return !useCharacterName ? $"{fc.Tag}@{fc.World}" : $"{fc.CharacterName}@{fc.World}";;
+        return !useCharName ? $"{fc.Tag}@{fc.World}" : $"{fc.CharacterName}@{fc.World}";
     }
 
     public static void WrappedError(string text)
@@ -29,7 +48,7 @@ public static class Helper
         ImGui.PopStyleColor();
     }
 
-    public static string GenerateVoyageText(Submarines.Submarine sub, bool useTime = false)
+    public static string GenerateVoyageText(Submarine sub, bool useTime = false)
     {
         var time = "No Voyage";
         if (sub.IsOnVoyage())
@@ -47,46 +66,44 @@ public static class Helper
     public static void MainMenuIcon(Plugin plugin)
     {
         var avail = ImGui.GetContentRegionAvail().X;
-        ImGui.SameLine(avail - (60.0f * ImGuiHelpers.GlobalScale));
-
-        if (ImGuiComponents.IconButton(FontAwesomeIcon.Sync))
-        {
-            Storage.Refresh = true;
-            plugin.ConfigurationBase.Load();
-            plugin.LoadFCOrder();
-        }
-        if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Reload all data from disk and refresh all cached data");
 
         ImGui.SameLine(avail - (33.0f * ImGuiHelpers.GlobalScale));
-
-        if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog))
-            plugin.DrawConfigUI();
-
-        if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Open the config menu");
+        ImGuiComponents.IconButton(FontAwesomeIcon.Cog);
+        SettingsMenu.Draw();
     }
 
-    public static void DrawComboWithArrows(ref int selected, ref string[] comboArray, int id = 0)
+    public static bool DrawButtonWithTooltip(FontAwesomeIcon icon, string tooltip)
     {
-        var windowWidth = ImGui.GetWindowWidth() / 2;
-        ImGui.PushItemWidth(windowWidth - (5.0f * ImGuiHelpers.GlobalScale));
-        ImGui.Combo("##existingSubs", ref selected, comboArray, comboArray.Length);
+        var clicked = ImGuiComponents.IconButton(icon);
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip(tooltip);
+
+        return clicked;
+    }
+
+    public static void DrawComboWithArrows(string label, ref int selected, ref string[] comboArray, int id = 0)
+    {
+        ImGui.PushItemWidth((ImGui.GetWindowWidth() / 2) - (5.0f * ImGuiHelpers.GlobalScale));
+        ImGui.Combo(label, ref selected, comboArray, comboArray.Length);
         ImGui.PopItemWidth();
         DrawArrows(ref selected, comboArray.Length, id);
     }
 
     public static void DrawArrows(ref int selected, int length, int id = 0)
     {
-        ImGui.SameLine();
-        if (selected == 0) ImGui.BeginDisabled();
-        if (ImGuiComponents.IconButton(id, FontAwesomeIcon.ArrowLeft)) selected--;
-        if (selected == 0) ImGui.EndDisabled();
+        // Prevents changing values from triggering EndDisable
+        var isMin = selected != 0;
+        var isMax = selected + 1 != length;
 
         ImGui.SameLine();
-        if (selected + 1 == length) ImGui.BeginDisabled();
+        if (isMin) ImGui.BeginDisabled();
+        if (ImGuiComponents.IconButton(id, FontAwesomeIcon.ArrowLeft)) selected--;
+        if (isMin) ImGui.EndDisabled();
+
+        ImGui.SameLine();
+        if (isMax) ImGui.BeginDisabled();
         if (ImGuiComponents.IconButton(id+1, FontAwesomeIcon.ArrowRight)) selected++;
-        if (selected + 1 == length) ImGui.EndDisabled();
+        if (isMax) ImGui.EndDisabled();
     }
 
     public static void DrawIcon(uint iconId, Vector2 iconSize)

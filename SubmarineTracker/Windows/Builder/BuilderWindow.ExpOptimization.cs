@@ -22,7 +22,9 @@ public partial class BuilderWindow
     private int LastSeenRank;
     private bool OptionsChanged;
 
-    private bool IgnoreUnlocks = false;
+    private bool IgnoreUnlocks;
+
+    private ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions = null;
 
     // CharacterID -> Map -> Highest Level
     private readonly ConcurrentDictionary<ulong, ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>> CachedDistances = new();
@@ -156,8 +158,7 @@ public partial class BuilderWindow
 
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
-                    string[] maps;
-                    maps = ExplorationSheet
+                    var maps = ExplorationSheet
                            .Where(r => r.StartingPoint)
                            .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
                            .Where(r => r.RankReq <= CurrentBuild.Rank)
@@ -165,7 +166,7 @@ public partial class BuilderWindow
                            .Select(r => ToStr(r.Map.Value!.Name))
                            .ToArray();
 
-                    // Always pick highest rank map if smaller then possible
+                    // Always pick highest rank map if smaller than possible
                     if (maps.Length <= CurrentBuild.Map)
                     {
                         CurrentBuild.Map = maps.Length - 1;
@@ -173,13 +174,14 @@ public partial class BuilderWindow
                     }
 
                     var selectedMap = CurrentBuild.Map;
-                    ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
+                    Helper.DrawComboWithArrows("##mapSelection", ref selectedMap, ref maps);
 
                     var mapChanged = selectedMap != CurrentBuild.Map;
                     if (mapChanged)
+                    {
                         Reset(selectedMap);
-
-                    CurrentBuild.Map = selectedMap;
+                        CurrentBuild.Map = selectedMap;
+                    }
 
                     var beginCalculation = false;
                     if (Configuration.CalculateOnInteraction)
@@ -187,10 +189,9 @@ public partial class BuilderWindow
                         if (Calculate)
                             beginCalculation = true;
                     }
-                    else
+                    else if (mapChanged || LastComputedRank != CurrentBuild.Rank || OptionsChanged)
                     {
-                        if (mapChanged || LastComputedRank != CurrentBuild.Rank || OptionsChanged)
-                            beginCalculation = true;
+                        beginCalculation = true;
                     }
 
                     if (beginCalculation && !ComputingPath && !Error)
@@ -227,20 +228,17 @@ public partial class BuilderWindow
                         if (Error)
                         {
                             ImGui.TextWrapped("Error: Unable to calculate, please refresh your data (Voyage Control Panel -> Submersible Management).");
-                            if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out fcSub))
-                                if (fcSub.UnlockedSectors.ContainsKey(startPoint))
-                                    Error = false;
+                            if (fcSub.UnlockedSectors.ContainsKey(startPoint))
+                                Error = false;
                         }
 
                         if (BestPath.Any())
                         {
-                            foreach (var location in BestPath)
-                            {
-                                var p = ExplorationSheet.GetRow(location)!;
-                                if (location > startPoint)
-                                    ImGui.Text($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}");
-                            }
-                            CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.ToList().Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                            foreach (var location in BestPath.Select(s => ExplorationSheet.GetRow(s)!))
+                                if (location.RowId > startPoint)
+                                    ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+
+                            CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
                         }
 
                         ImGui.EndListBox();
@@ -305,47 +303,50 @@ public partial class BuilderWindow
                     if (LastSeenMap != CurrentBuild.Map || LastSeenRank != CurrentBuild.Rank)
                     {
                         MustInclude.Clear();
-                        ExcelSheetSelector.FilteredSearchSheet = null!;
+                        ExplorationPopupOptions = null;
                     }
 
                     LastSeenMap = CurrentBuild.Map;
                     LastSeenRank = CurrentBuild.Rank;
 
-                    try
+                    var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                    if (ExplorationPopupOptions == null)
                     {
-                        var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
-                        ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> ExplorationPopupOptions = new()
+                        if (!fcSub.UnlockedSectors.ContainsKey(startPoint))
+                            Error = true;
+
+                        ExcelSheetSelector.FilteredSearchSheet = null!;
+                        ExplorationPopupOptions = new()
                         {
                             FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
-                            FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == CurrentBuild.Map + 1 && !r.StartingPoint && fcSub!.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            FilteredSheet = ExplorationSheet.Where(r => !Error && r.Map.Row == CurrentBuild.Map + 1 && fcSub!.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                         };
+                    }
 
-                        if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, MustInclude.Count >= 5))
+                    if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, Error || MustInclude.Count >= 5))
+                    {
+                        var point = ExplorationSheet.GetRow(row)!;
+                        if (!MustInclude.Contains(point))
                         {
-                            var point = ExplorationSheet.GetRow(row)!;
-                            if (!MustInclude.Contains(point))
+                            MustInclude.Add(point);
+                            OptionsChanged = true;
+                        }
+                    }
+
+                    ImGui.SameLine();
+
+                    if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
+                    {
+                        foreach (var p in MustInclude.ToArray())
+                        {
+                            if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
                             {
-                                MustInclude.Add(point);
+                                MustInclude.Remove(p);
                                 OptionsChanged = true;
                             }
                         }
 
-                        ImGui.SameLine();
-                        if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
-                        {
-                            foreach (var p in MustInclude.ToArray())
-                                if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                                {
-                                    MustInclude.Remove(p);
-                                    OptionsChanged = true;
-                                }
-
-                            ImGui.EndListBox();
-                        }
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        ImGui.TextWrapped("Error: Unable to find unlocked sectors, please refresh your data (Voyage Control Panel -> Submersible Management)");
+                        ImGui.EndListBox();
                     }
 
                     if (OptionsChanged)

@@ -57,16 +57,13 @@ public partial class LootWindow
 
         ImGui.SameLine();
 
-        if (ImGuiComponents.IconButton(9, FontAwesomeIcon.ArrowCircleUp))
+        if (Helper.DrawButtonWithTooltip(FontAwesomeIcon.ArrowCircleUp, "Rebuild cache"))
         {
             LootCache.Clear();
 
             ImGui.EndTabItem();
             return;
         }
-
-        if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Rebuild cache");
 
         ImGui.TextColored(ImGuiColors.ParsedOrange, $"Searched for {MapToThreeLetter(SelectedSector.RowId, true)} - {NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
         if (!LootCache.TryGetValue(SelectedSector.RowId, out var history))

@@ -31,7 +31,7 @@ public partial class LootWindow
                                             .Prepend("All")
                                             .ToArray();
 
-            Helper.DrawComboWithArrows(ref FcSelection, ref existingFCs);
+            Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs);
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);

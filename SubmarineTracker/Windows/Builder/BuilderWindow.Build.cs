@@ -17,8 +17,9 @@ public partial class BuilderWindow
             {
                 CacheValid = true;
 
-                SelectedSub = fcSub!.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
+                SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
                 CurrentBuild.UpdateBuild(SelectedSub);
+                BestPath = Array.Empty<uint>();
             }
         }
         else
@@ -37,7 +38,7 @@ public partial class BuilderWindow
                                                     .SelectMany(id => KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
                                                     .ToArray();
                     if (Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
-                        existingSubs = fcSub!.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
+                        existingSubs = fcSub.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
                     existingSubs = existingSubs.Prepend("Custom").ToArray();
 
                     if (existingSubs.Length < CurrentBuild.OriginalSub)
@@ -51,9 +52,7 @@ public partial class BuilderWindow
                     // Calculate first so rank can be changed afterwards
                     if (existingSubs[CurrentBuild.OriginalSub] != "Custom")
                     {
-                        sub = KnownSubmarines.Values.SelectMany(fc => fc.Submarines)
-                                             .First(sub => $"{sub.Name} ({sub.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
-
+                        sub = KnownSubmarines.Values.SelectMany(fc => fc.Submarines).First(sub => $"{sub.Name} ({sub.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
                         CurrentBuild.UpdateBuild(sub);
                     }
 
