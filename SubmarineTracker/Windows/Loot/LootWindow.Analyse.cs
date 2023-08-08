@@ -18,7 +18,7 @@ public partial class LootWindow
         Options = new ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
-            FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint)
+            FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0)
         };
     }
 
@@ -45,7 +45,6 @@ public partial class LootWindow
                                           .Select(fc => fc.SubLoot)
                                           .SelectMany(dict => dict.Values)
                                           .SelectMany(loot => loot.Loot.Values.SelectMany(l => l).Where(detailed => !Configuration.ExcludeLegacy || detailed.Valid).Where(detailed => detailed.Primary > 0));
-
 
             foreach (var loot in submarineLoot)
                 LootCache.GetOrCreate(loot.Sector).Add(loot);

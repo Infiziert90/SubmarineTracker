@@ -92,8 +92,8 @@ public static class Helper
     public static void DrawArrows(ref int selected, int length, int id = 0)
     {
         // Prevents changing values from triggering EndDisable
-        var isMin = selected != 0;
-        var isMax = selected + 1 != length;
+        var isMin = selected == 0;
+        var isMax = selected + 1 == length;
 
         ImGui.SameLine();
         if (isMin) ImGui.BeginDisabled();
