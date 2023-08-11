@@ -1,4 +1,5 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using Dalamud.Interface.Components;
+using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
 
@@ -7,6 +8,15 @@ namespace SubmarineTracker.Windows.Loot;
 public partial class LootWindow
 {
     private int FcSelection;
+
+    private static readonly DateTime CustomMinimalDate = new(2023, 4, 1);
+    private DateTime CustomMinDate = CustomMinimalDate;
+    private DateTime CustomMaxDate = DateTime.Now;
+
+    private string CustomMinString = "";
+    private string CustomMaxString = "";
+
+    private bool HeaderOpen;
 
     private void CustomLootTab()
     {
@@ -47,14 +57,13 @@ public partial class LootWindow
                         continue;
 
                 fc.RebuildStats(Configuration.ExcludeLegacy);
-                var dateLimit = DateUtil.LimitToDate(Configuration.DateLimit);
 
                 numSubs += fc.Submarines.Count;
-                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot
-                                                                             .Where(loot => loot.Value.First().Date >= dateLimit)
-                                                                             .Where(loot => !Configuration.ExcludeLegacy || loot.Value.First().Valid)).Count();
+                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Select(pair => pair.Value.First())
+                                                                             .Where(loot => DateCompare(loot.Date))
+                                                                             .Where(loot => !Configuration.ExcludeLegacy || loot.Valid)).Count();
 
-                foreach (var (item, count) in fc.TimeLoot.Where(r => r.Key >= dateLimit).SelectMany(kv => kv.Value))
+                foreach (var (item, count) in fc.TimeLoot.Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
                 {
                     if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
                         continue;
@@ -70,7 +79,7 @@ public partial class LootWindow
                 }
             }
 
-            var useLimit = Configuration.DateLimit != DateLimit.None;
+            var useLimit = (Configuration.DateLimit != DateLimit.None || (CustomMinDate != CustomMinimalDate && CustomMaxDate != DateTime.Now));
             if (!bigList.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, $"None of the selected items have been looted {(useLimit ? "in the time frame" : "yet")}.");
@@ -78,8 +87,9 @@ public partial class LootWindow
                 return;
             }
 
-            var textHeight = ImGui.CalcTextSize("XXXX").Y * 4.2f; // giving space for 4.2 lines
-            if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight)))
+            var textHeight = ImGui.CalcTextSize("XXXX").Y * 6.0f; // giving space for 6.0 lines
+            var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
+            if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight + optionHeight)))
             {
                 if (ImGui.BeginTable($"##customLootTable", 3))
                 {
@@ -103,19 +113,83 @@ public partial class LootWindow
 
                 ImGui.EndTable();
             }
-
             ImGui.EndChild();
 
             if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
             {
-                var limit = useLimit ? $"over {DateUtil.GetDateLimitName(Configuration.DateLimit)}" : "";
-                ImGui.TextWrapped($"The above rewards have been obtained {limit} from a total of {numVoyages} voyages via {numSubs} submarines.");
+                var limit = useLimit ? Configuration.DateLimit != DateLimit.None ? $"over {Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
+                ImGui.TextWrapped($"The above rewards have been obtained {limit} from a total of {numVoyages} voyages ({numSubs} submarines).");
                 ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
-            }
 
+                ImGuiHelpers.ScaledDummy(3.0f);
+
+                HeaderOpen = ImGui.CollapsingHeader("Options");
+                if (HeaderOpen)
+                {
+                    ImGui.AlignTextToFramePadding();
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Fixed:");
+                    ImGui.SameLine();
+                    if (ImGui.BeginCombo($"##lootOptionCombo", Configuration.DateLimit.GetName()))
+                    {
+                        foreach (var dateLimit in (DateLimit[]) Enum.GetValues(typeof(DateLimit)))
+                        {
+                            if (ImGui.Selectable(dateLimit.GetName()))
+                            {
+                                Configuration.DateLimit = dateLimit;
+                                Configuration.Save();
+                            }
+                        }
+
+                        ImGui.EndCombo();
+                    }
+                    ImGuiComponents.HelpMarker("Selecting None will allow you to pick a specific time frame.");
+
+                    if (Configuration.DateLimit == DateLimit.None)
+                    {
+                        ImGui.AlignTextToFramePadding();
+                        ImGui.TextUnformatted("From");
+                        DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format);
+
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted("To");
+                        DateWidget.DatePickerWithInput("ToDate", 2, ref CustomMaxString, ref CustomMaxDate, Format);
+                        ImGui.SameLine();
+                        if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
+                            CustomReset();
+
+                        if (DateWidget.Validate(CustomMinimalDate, ref CustomMinDate, ref CustomMaxDate))
+                            CustomRefresh();
+                    }
+                }
+            }
             ImGui.EndChild();
 
             ImGui.EndTabItem();
         }
+    }
+
+    public bool DateCompare(DateTime date)
+    {
+        if (Configuration.DateLimit != DateLimit.None)
+        {
+            var dateLimit = Configuration.DateLimit.ToDate();
+            return date >= dateLimit;
+        }
+
+        return date >= CustomMinDate && date <= CustomMaxDate;
+    }
+
+    private void CustomRefresh()
+    {
+        CustomMinString = CustomMinDate.ToString(Format);
+        CustomMaxString = CustomMaxDate.ToString(Format);
+    }
+
+    public void CustomReset()
+    {
+        CustomMinDate = CustomMinimalDate;
+        CustomMaxDate = DateTime.Now;
+
+        CustomRefresh();
     }
 }

@@ -49,6 +49,7 @@ namespace SubmarineTracker
         public bool ExcludeLegacy = false;
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;
+        public DateFormat DateFormat = DateFormat.Iso;
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 

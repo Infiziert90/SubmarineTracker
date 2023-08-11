@@ -20,6 +20,13 @@ public partial class LootWindow
 
     private static CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
 
+    private static readonly DateTime ExportMinimalDate = new(2023, 6, 11);
+    private DateTime ExportMinDate = ExportMinimalDate;
+    private DateTime ExportMaxDate = DateTime.Now;
+
+    private string ExportMinString = "";
+    private string ExportMaxString = "";
+
     public class ExportLoot
     {
         public uint Sector { get; set; }
@@ -132,7 +139,7 @@ public partial class LootWindow
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.Checkbox("Export All", ref ExportAll);
+            ImGui.Checkbox("Export All FCs", ref ExportAll);
             if (!ExportAll)
             {
                 ImGui.Indent(10.0f);
@@ -150,6 +157,21 @@ public partial class LootWindow
                 ImGui.Unindent(10.0f);
             }
             ImGui.Checkbox("Exclude Date", ref ExcludeDate);
+
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextUnformatted("From");
+            DateWidget.DatePickerWithInput("FromDate", 1, ref ExportMinString, ref ExportMinDate, Format);
+
+            ImGui.SameLine();
+            ImGui.TextUnformatted("To");
+            DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format);
+            ImGui.SameLine();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
+                ExportReset();
+
+            if (DateWidget.Validate(ExportMinimalDate, ref ExportMinDate, ref ExportMaxDate))
+                ExportRefresh();
+
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Output Folder:");
@@ -175,7 +197,17 @@ public partial class LootWindow
                                            .SelectMany(kv => kv.Values)
                                            .SelectMany(subLoot => subLoot.Loot)
                                            .SelectMany(innerLoot => innerLoot.Value)
-                                           .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 });
+                                           .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+                                           .Where(detailedLoot => detailedLoot.Date > ExportMinDate && detailedLoot.Date < ExportMaxDate)
+                                           .ToList();
+
+                if (!fcLootList.Any())
+                {
+                    Plugin.ChatGui.Print(Utils.ErrorMessage($"Nothing to export in the selected time frame."));
+
+                    ImGui.EndTabItem();
+                    return;
+                }
 
                 if (Directory.Exists(OutputPath))
                 {
@@ -211,9 +243,21 @@ public partial class LootWindow
                 }
             }
 
-            ImGuiHelpers.ScaledDummy(5.0f);
-
             ImGui.EndTabItem();
         }
+    }
+
+    private void ExportRefresh()
+    {
+        ExportMinString = ExportMinDate.ToString(Format);
+        ExportMaxString = ExportMaxDate.ToString(Format);
+    }
+
+    public void ExportReset()
+    {
+        ExportMinDate = ExportMinimalDate;
+        ExportMaxDate = DateTime.Now;
+
+        ExportRefresh();
     }
 }

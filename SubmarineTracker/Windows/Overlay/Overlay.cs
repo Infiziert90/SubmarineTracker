@@ -1,3 +1,4 @@
+using System.IO;
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
 
@@ -150,14 +151,28 @@ public class OverlayWindow : Window, IDisposable
 
     public override void OnOpen()
     {
-        Configuration.OverlayOpen = true;
-        Configuration.Save();
+        try
+        {
+            Configuration.OverlayOpen = true;
+            Configuration.Save();
+        }
+        catch (IOException)
+        {
+            // We just ignore
+        }
     }
 
     public override void OnClose()
     {
-        Configuration.OverlayOpen = false;
-        Configuration.Save();
+        try
+        {
+            Configuration.OverlayOpen = false;
+            Configuration.Save();
+        }
+        catch (IOException)
+        {
+            // We just ignore
+        }
     }
 
     public override void PostDraw()

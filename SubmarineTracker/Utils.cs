@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
@@ -167,5 +168,11 @@ public static class Extensions
     public static void Swap<T>(this List<T> list, int i, int j)
     {
         (list[i], list[j]) = (list[j], list[i]);
+    }
+
+    public static string ToLongDateWithoutWeekday(this DateTime d)
+    {
+        return d.ToString(CultureInfo.CurrentCulture.DateTimeFormat.GetAllDateTimePatterns('D')
+                                     .FirstOrDefault(a => !a.Contains("ddd") && !a.Contains("dddd")) ?? "D");
     }
 }

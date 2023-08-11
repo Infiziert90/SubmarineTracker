@@ -116,7 +116,7 @@ public partial class BuilderWindow
                         Sectors.CalculateExpForSectors(t.Item2, CurrentBuild.GetSubmarineBuild)
                     );
                 })
-              .Where(t => t.Item2 < DateUtil.DurationToTime(Configuration.DurationLimit))
+              .Where(t => t.Item2 < Configuration.DurationLimit.ToTime())
               .OrderByDescending(t => MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
               .Select(t => t.Item1)
               .FirstOrDefault();
@@ -274,11 +274,11 @@ public partial class BuilderWindow
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
-                    if (ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
+                    if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
                     {
                         foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                         {
-                            if (ImGui.Selectable(DateUtil.GetDurationLimitName(durationLimit)))
+                            if (ImGui.Selectable(durationLimit.GetName()))
                             {
                                 Configuration.DurationLimit = durationLimit;
                                 Configuration.Save();

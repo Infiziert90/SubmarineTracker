@@ -120,11 +120,11 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
             ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width);
-            if (ImGui.BeginCombo($"##durationLimitCombo", DateUtil.GetDurationLimitName(Configuration.DurationLimit)))
+            if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
             {
                 foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                 {
-                    if (ImGui.Selectable(DateUtil.GetDurationLimitName(durationLimit)))
+                    if (ImGui.Selectable(durationLimit.GetName()))
                     {
                         Configuration.DurationLimit = durationLimit;
                         Configuration.Save();
@@ -267,7 +267,7 @@ public partial class BuilderWindow
         }
 
         // Add durations limit if they not exist
-        DurationName = DateUtil.GetDurationLimitName(Configuration.DurationLimit) + (IgnoreBuild ? "" : " - " + CurrentBuild);
+        DurationName = Configuration.DurationLimit.GetName() + (IgnoreBuild ? "" : " - " + CurrentBuild);
 
         PossibleBuilds = 0;
         Progress = 0;
@@ -283,7 +283,7 @@ public partial class BuilderWindow
 
         LastCalc = outTree;
 
-        LastOptions = (DateUtil.GetDurationLimitName(Configuration.DurationLimit), IgnoreBuild, IgnoreUnlocks, MaximizeDuration);
+        LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, MaximizeDuration);
         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
         PluginLog.Debug($"Writing routeList json");

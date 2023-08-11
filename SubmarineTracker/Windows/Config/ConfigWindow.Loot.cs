@@ -92,14 +92,14 @@ public partial class ConfigWindow
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Time Frame:");
-            if (ImGui.BeginCombo($"##lootOptionCombo", DateUtil.GetDateLimitName(Configuration.DateLimit)))
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Date Format:");
+            if (ImGui.BeginCombo($"##dateFormatCombo", Configuration.DateFormat.GetFormatPreview()))
             {
-                foreach (var dateLimit in (DateLimit[])Enum.GetValues(typeof(DateLimit)))
+                foreach (var dateFormat in (DateFormat[]) Enum.GetValues(typeof(DateFormat)))
                 {
-                    if (ImGui.Selectable(DateUtil.GetDateLimitName(dateLimit)))
+                    if (ImGui.Selectable(dateFormat.GetFormatPreview()))
                     {
-                        Configuration.DateLimit = dateLimit;
+                        Configuration.DateFormat = dateFormat;
                         Configuration.Save();
                     }
                 }
