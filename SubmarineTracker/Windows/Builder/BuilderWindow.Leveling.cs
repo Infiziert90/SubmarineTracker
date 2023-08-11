@@ -35,6 +35,8 @@ public partial class BuilderWindow
 
     private string DurationName = string.Empty;
     private bool MaximizeDuration;
+    private bool IgnoreShark;
+    private bool IgnoreUnmodded;
 
     private DateTime StartTime;
     private DateTime ProgressStartTime;
@@ -136,6 +138,16 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
+            ImGui.Checkbox($"--Not Supported-- Ignore Shark", ref IgnoreShark);
+            ImGuiComponents.HelpMarker("Leveling expects that a shark part exists, so it takes that as prio over worse parts" +
+                                       "\nThis option disables the behaviour" +
+                                       "\nNOTE: This can lead to errors, there is no support if it happens." +
+                                       "\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop." +
+                                       "\ne.g SSUW must be Rank higher or equal to 25");
+            ImGui.Checkbox($"--Not Supported-- Ignore Unmodded", ref IgnoreUnmodded);
+            ImGuiComponents.HelpMarker("Leveling expects that an unmodded part exists, so it takes that as prio over modded" +
+                                       "\nThis option disables the behaviour" +
+                                       "\nNOTE: This can lead to errors, there is no support if it happens.");
             ImGui.TextColored(ImGuiColors.DalamudViolet, $"--Experimental-- Allowed Sectors: {AllowedSectors.Count}");
 
             if (AllowedChanged)
@@ -489,7 +501,7 @@ public partial class BuilderWindow
                     for (var bridge = 0; bridge < PartsCount; bridge++)
                     {
                         var build = new Build.RouteBuild(1, (hull * 4) + 3, (stern * 4) + 4, (bow * 4) + 1, (bridge * 4) + 2);
-                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank && (build.IsValidSubBuild(CurrentBuild) || IgnoreBuild))
+                        if (build.GetSubmarineBuild.HighestRankPart() < TargetRank && (build.IsValidSubBuild(CurrentBuild, IgnoreShark, IgnoreUnmodded) || IgnoreBuild))
                             routeBuilds.Add(build);
                     }
                 }

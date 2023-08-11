@@ -282,7 +282,7 @@ public static class Build
             return true;
         }
 
-        public bool IsValidSubBuild(RouteBuild original)
+        public bool IsValidSubBuild(RouteBuild original, bool ignoreShark, bool ignoreUnmodded)
         {
             for (var i = 0; i < 4; i++)
             {
@@ -290,7 +290,7 @@ public static class Build
                 var org = original.PartArray[i];
 
                 // current is shark part and always valid
-                if (cur <= 3)
+                if (!ignoreShark && cur <= 3)
                     continue;
 
                 // current is same
@@ -298,7 +298,7 @@ public static class Build
                     continue;
 
                 // original is modded, so we try unmodded part
-                if (org > 20 && cur == org - 20)
+                if (!ignoreUnmodded && org > 20 && cur == org - 20)
                     continue;
 
                 return false;
