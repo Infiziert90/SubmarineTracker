@@ -113,6 +113,7 @@ namespace SubmarineTracker
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
             {
                 OverlayWindow.IsOpen = true;
+                // TODO Check for a valid way to uncollapse something once
                 // if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
                 // {
                 //     OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;

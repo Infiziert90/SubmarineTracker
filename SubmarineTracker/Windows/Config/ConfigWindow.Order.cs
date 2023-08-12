@@ -26,22 +26,18 @@ public partial class ConfigWindow
                     {
                         var fc = Submarines.KnownSubmarines[id];
                         ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(Helper.GetFCName(fc));
 
-                        var text = $"{fc.Tag}@{fc.World}";
-                        if (Configuration.UseCharacterName && fc.CharacterName != "")
-                            text = $"{fc.CharacterName}@{fc.World}";
-
-                        ImGui.TextUnformatted(text);
+                        var first = Configuration.FCOrder.First() == id;
+                        var last = Configuration.FCOrder.Last() == id;
 
                         ImGui.TableNextColumn();
-                        var first = Configuration.FCOrder.First() == id;
                         if (first) ImGui.BeginDisabled();
                         if (ImGuiComponents.IconButton($"##{id}Up", FontAwesomeIcon.ArrowUp))
                             changedOrder = (idx, idx - 1);
                         if (first) ImGui.EndDisabled();
 
                         ImGui.TableNextColumn();
-                        var last = Configuration.FCOrder.Last() == id;
                         if (last) ImGui.BeginDisabled();
                         if (ImGuiComponents.IconButton($"##{id}Down", FontAwesomeIcon.ArrowDown))
                             changedOrder = (idx, idx + 1);

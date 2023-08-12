@@ -89,7 +89,7 @@ public class MainWindow : Window, IDisposable
                     if (!fc.Submarines.Any())
                         continue;
 
-                    var text = Helper.BuildFcName(fc, Configuration.UseCharacterName);
+                    var text = Helper.GetFCName(fc);
                     if (current == key)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);
@@ -140,7 +140,7 @@ public class MainWindow : Window, IDisposable
                 var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Configuration.ShowDateInAll ? 3.2f : 2.8f);
                 var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
-                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.BuildFcName(fc, Configuration.UseCharacterName)}:");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.GetFCName(fc)}:");
                 foreach (var (sub, idx) in fc.Submarines.Select((val, i) => (val, i)))
                 {
                     ImGui.Indent(10.0f);
@@ -201,6 +201,7 @@ public class MainWindow : Window, IDisposable
                 }
                 ImGuiHelpers.ScaledDummy(5.0f);
             }
+
             ImGui.EndTable();
         }
     }

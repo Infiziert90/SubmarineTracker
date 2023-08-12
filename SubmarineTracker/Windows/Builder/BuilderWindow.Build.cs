@@ -92,8 +92,9 @@ public partial class BuilderWindow
                     BuildTableEntries("MWhale", 28);
                     BuildTableEntries("MCoelac.", 32);
                     BuildTableEntries("MSyldra", 36, last: true);
+
+                    ImGui.EndTable();
                 }
-                ImGui.EndTable();
             }
             ImGui.EndChild();
 

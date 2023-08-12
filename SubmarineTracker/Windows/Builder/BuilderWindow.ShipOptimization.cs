@@ -257,72 +257,74 @@ public partial class BuilderWindow
                 return true;
             }
 
-            ImGui.BeginTable("##shipTable", hasRoute ? 13 : 12, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable);
-            ImGui.TableSetupColumn("Cost");
-            ImGui.TableSetupColumn("Repair");
-            ImGui.TableSetupColumn("Hull", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("Stern", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("Bow", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("Bridge", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("Surveillance", ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Retrieval", ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Favor", ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Speed", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending);
-            ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
-            if (hasRoute)
-                ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
-            ImGui.TableHeadersRow();
-
-            var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
-            using (var clipper = new ListClipper(tableContent.Length, itemHeight: ImGui.CalcTextSize("W").Y * 1.1f))
+            if (ImGui.BeginTable("##shipTable", hasRoute ? 13 : 12, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable))
             {
-                foreach (var i in clipper.Rows)
+                ImGui.TableSetupColumn("Cost");
+                ImGui.TableSetupColumn("Repair");
+                ImGui.TableSetupColumn("Hull", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn("Stern", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn("Bow", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn("Bridge", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn("Surveillance", ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn("Retrieval", ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn("Favor", ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn("Speed", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
+                if (hasRoute)
+                    ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
+                ImGui.TableHeadersRow();
+
+                var tableContent = SortBuilds(ImGui.TableGetSortSpecs().Specs).ToArray();
+                using (var clipper = new ListClipper(tableContent.Length, itemHeight: ImGui.CalcTextSize("W").Y * 1.1f))
                 {
-                    var (build, time) = tableContent[i];
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.BuildCost}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.RepairCosts}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.HullIdentifier}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.SternIdentifier}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.BowIdentifier}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.BridgeIdentifier}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.Surveillance}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.Retrieval}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.Favor}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.Speed}");
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{build.Range}");
-                    if (hasRoute)
+                    foreach (var i in clipper.Rows)
                     {
+                        var (build, time) = tableContent[i];
                         ImGui.TableNextColumn();
-                        ImGui.Text($"{ToTime(time)}");
+                        ImGui.Text($"{build.BuildCost}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.RepairCosts}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.HullIdentifier}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.SternIdentifier}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.BowIdentifier}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.BridgeIdentifier}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.Surveillance}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.Retrieval}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.Favor}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.Speed}");
+                        ImGui.TableNextColumn();
+                        ImGui.Text($"{build.Range}");
+                        if (hasRoute)
+                        {
+                            ImGui.TableNextColumn();
+                            ImGui.Text($"{ToTime(time)}");
+                        }
+
+                        ImGui.TableNextColumn();
+                        if (ImGuiComponents.IconButton(i, FontAwesomeIcon.ArrowRightFromBracket))
+                        {
+                            CurrentBuild.UpdateBuild(build, SelectedRank);
+                            CurrentBuild.OriginalSub = 0;
+                        }
+
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetTooltip("Import this build");
+
+                        ImGui.TableNextRow();
                     }
-
-                    ImGui.TableNextColumn();
-                    if (ImGuiComponents.IconButton(i, FontAwesomeIcon.ArrowRightFromBracket))
-                    {
-                        CurrentBuild.UpdateBuild(build, SelectedRank);
-                        CurrentBuild.OriginalSub = 0;
-                    }
-
-                    if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("Import this build");
-
-                    ImGui.TableNextRow();
                 }
-            }
 
-            ImGui.EndTable();
+                ImGui.EndTable();
+            }
 
             ImGui.EndTabItem();
         }

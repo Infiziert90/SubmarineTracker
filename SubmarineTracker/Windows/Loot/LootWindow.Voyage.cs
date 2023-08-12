@@ -117,10 +117,10 @@ public partial class LootWindow
                         ImGui.TextUnformatted($"{(stats.Valid ? ProcToText(detailedLoot.AdditionalSurvProc) : "")}");
                         ImGui.TableNextRow();
                     }
+
+                    ImGui.EndTable();
                 }
                 ImGui.Unindent(10.0f);
-
-                ImGui.EndTable();
 
                 ImGuiHelpers.ScaledDummy(5.0f);
             }

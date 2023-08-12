@@ -2,15 +2,16 @@ using Dalamud.Game;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using SubmarineTracker.Data;
+using SubmarineTracker.Windows;
 
 namespace SubmarineTracker;
 
 public class Notify
 {
-    private Plugin Plugin;
-    private Configuration Configuration;
+    private readonly Plugin Plugin;
+    private readonly Configuration Configuration;
 
-    private List<string> FinishedNotifications = new();
+    private readonly HashSet<string> FinishedNotifications = new();
 
     public Notify(Plugin plugin)
     {
@@ -23,33 +24,22 @@ public class Notify
         if (!Submarines.KnownSubmarines.Any())
             return;
 
+        var localId = Plugin.ClientState.LocalContentId;
         foreach (var (id, fc) in Submarines.KnownSubmarines)
         {
             foreach (var sub in fc.Submarines)
             {
-                if (!Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok))
-                    ok = false;
-
-                if (!Configuration.NotifyForAll && !ok)
+                var found = Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok);
+                if (!Configuration.NotifyForAll && !(found && ok))
                     continue;
 
                 // this state happens after the rewards got picked up
-                if (sub.Return == 0)
+                if (sub.Return == 0 || sub.ReturnTime > DateTime.Now.ToUniversalTime())
                     continue;
 
-                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                if (returnTime.TotalSeconds > 0)
-                    continue;
-
-                if (!FinishedNotifications.Contains($"{sub.Name}{id}{sub.Return}"))
+                if (FinishedNotifications.Add($"Notify{sub.Name}{id}{sub.Return}"))
                 {
-                    FinishedNotifications.Add($"{sub.Name}{id}{sub.Return}");
-
-                    var text = $"{sub.Name}@{fc.World}";
-                    if (Configuration.UseCharacterName && fc.CharacterName != "")
-                        text = $"{sub.Name}@{fc.CharacterName}";
-
-                    Plugin.ChatGui.Print(GenerateMessage(text));
+                    Plugin.ChatGui.Print(GenerateMessage(Helper.GetSubName(sub, fc)));
 
                     if (Configuration.OverlayAlwaysOpen)
                         Plugin.OverlayWindow.IsOpen = true;
@@ -57,34 +47,22 @@ public class Notify
             }
         }
 
-        if (!Configuration.NotifyForRepairs)
+        if (!Configuration.NotifyForRepairs || !Submarines.KnownSubmarines.TryGetValue(localId, out var currentFC))
             return;
 
-        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var currentFC))
+        foreach (var sub in currentFC.Submarines)
         {
-            foreach (var (sub, idx) in currentFC.Submarines.Select((val, i) => (val, i)))
+            // We want this state, as it signals a returned submarine
+            if (sub.Return != 0 || sub.NoRepairNeeded)
+                continue;
+
+            // using just date here because subs can't come back the same day and be broken again
+            if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{localId}{DateTime.Now.Date}"))
             {
-                // We want this state, as it signals a returned submarine
-                if (sub.Return != 0)
-                    continue;
+                Plugin.ChatGui.Print(RepairMessage(Helper.GetSubName(sub, currentFC)));
 
-                if (sub.NoRepairNeeded)
-                    continue;
-
-                // using just date here because subs can't come back the same day and be broken again
-                if (!FinishedNotifications.Contains($"Repair{sub.Name}{idx}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}"))
-                {
-                    FinishedNotifications.Add($"Repair{sub.Name}{idx}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}");
-
-                    var text = $"{sub.Name}@{currentFC.World}";
-                    if (Configuration.UseCharacterName && currentFC.CharacterName != "")
-                        text = $"{sub.Name}@{currentFC.CharacterName}";
-
-                    Plugin.ChatGui.Print(RepairMessage(text));
-
-                    if (Configuration.ShowRepairToast)
-                        Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
-                }
+                if (Configuration.ShowRepairToast)
+                    Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
             }
         }
     }

@@ -120,7 +120,7 @@ public class OverlayWindow : Window, IDisposable
                 continue;
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
-            var header = ImGui.CollapsingHeader($"{Helper.BuildFcName(fc, Configuration.OverlayCharacterName)}###overlayFC{fc.Submarines.First().Register}");
+            var header = ImGui.CollapsingHeader($"{Helper.GetOverlayName(fc)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);

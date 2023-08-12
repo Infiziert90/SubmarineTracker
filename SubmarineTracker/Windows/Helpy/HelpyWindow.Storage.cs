@@ -22,11 +22,7 @@ public partial class HelpyWindow
 
             foreach (var (key, fc) in Submarines.KnownSubmarines)
             {
-                var text = $"{fc.Tag}@{fc.World}";
-                if (Configuration.UseCharacterName && fc.CharacterName != "")
-                    text = $"{fc.CharacterName}@{fc.World}";
-
-                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{text}:");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.GetFCName(fc)}:");
 
                 ImGui.Indent(10.0f);
                 if (ImGui.BeginTable($"##submarineOverview##{key}", 3))
@@ -49,8 +45,9 @@ public partial class HelpyWindow
                         ImGui.TextUnformatted(Utils.ToStr(cached.Item.Name));
                         ImGui.TableNextRow();
                     }
+
+                    ImGui.EndTable();
                 }
-                ImGui.EndTable();
                 ImGui.Unindent(10.0f);
 
                 ImGuiHelpers.ScaledDummy(10.0f);

@@ -37,7 +37,7 @@ public partial class LootWindow
 
             Plugin.EnsureFCOrderSafety();
             var existingFCs = Configuration.FCOrder
-                                            .Select(id => $"{Helper.BuildFcName(KnownSubmarines[id], Configuration.UseCharacterName)}##{id}")
+                                            .Select(id => $"{Helper.GetFCName(KnownSubmarines[id])}##{id}")
                                             .Prepend("All")
                                             .ToArray();
 
@@ -109,9 +109,9 @@ public partial class LootWindow
 
                         moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
                     }
-                }
 
-                ImGui.EndTable();
+                    ImGui.EndTable();
+                }
             }
             ImGui.EndChild();
 

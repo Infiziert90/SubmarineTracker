@@ -6,6 +6,8 @@ namespace SubmarineTracker.Windows;
 
 public static class Helper
 {
+    private static Configuration Configuration = null!;
+
     public static readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
     public static readonly Vector4 CustomFullyDone = new(0.12549f, 0.74902f, 0.33333f, 0.6f);
     public static readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
@@ -27,6 +29,8 @@ public static class Helper
                                          new PopupMenu.PopupMenuItemSeparator(),
                                          new PopupMenu.PopupMenuItemSelectable("Sync", plugin.Sync,"Syncs all data from disk and refresh cached data"),
                                      });
+
+        Configuration = plugin.Configuration;
     }
 
     public static void NoData()
@@ -36,9 +40,19 @@ public static class Helper
                      "Please visit your Company Workshop and access Submersible Management at the Voyage Control Panel.");
     }
 
-    public static string BuildFcName(FcSubmarines fc, bool useCharName)
+    public static string GetFCName(FcSubmarines fc)
     {
-        return !useCharName ? $"{fc.Tag}@{fc.World}" : $"{fc.CharacterName}@{fc.World}";
+        return $"{(!Configuration.UseCharacterName ? fc.Tag : fc.CharacterName)}@{fc.World}";
+    }
+
+    public static string GetOverlayName(FcSubmarines fc)
+    {
+        return $"{(!Configuration.OverlayCharacterName ? fc.Tag : fc.CharacterName)}@{fc.World}";
+    }
+
+    public static string GetSubName(Submarine sub, FcSubmarines fc)
+    {
+        return $"{sub.Name}@{(!Configuration.UseCharacterName ? fc.World : fc.CharacterName)}";
     }
 
     public static void WrappedError(string text)

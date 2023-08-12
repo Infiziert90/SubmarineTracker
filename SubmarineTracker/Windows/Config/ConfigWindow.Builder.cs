@@ -42,13 +42,13 @@ public partial class ConfigWindow
                     ImGui.TableNextRow();
                 }
 
-                ImGui.EndTable();
-
                 if (deletion != string.Empty)
                 {
                     Configuration.SavedBuilds.Remove(deletion);
                     Configuration.Save();
                 }
+
+                ImGui.EndTable();
             }
 
             if (changed)

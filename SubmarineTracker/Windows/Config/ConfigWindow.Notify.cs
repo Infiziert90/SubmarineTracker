@@ -40,11 +40,7 @@ public partial class ConfigWindow
                             Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
                             var notify = Configuration.NotifySpecific[key];
 
-                            var text = $"{sub.Name}@{fc.World}";
-                            if (Configuration.UseCharacterName && fc.CharacterName != "")
-                                text = $"{sub.Name}@{fc.CharacterName}";
-
-                            if (ImGui.Checkbox($"{text}##{id}{sub.Register}", ref notify))
+                            if (ImGui.Checkbox($"{Helper.GetSubName(sub, fc)}##{id}{sub.Register}", ref notify))
                             {
                                 Configuration.NotifySpecific[key] = notify;
                                 Configuration.Save();

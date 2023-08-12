@@ -145,12 +145,8 @@ public partial class LootWindow
                 ImGui.Indent(10.0f);
                 foreach (var (key, fc) in Submarines.KnownSubmarines)
                 {
-                    var text = $"{fc.Tag}@{fc.World}";
-                    if (Configuration.UseCharacterName && fc.CharacterName != "")
-                        text = $"{fc.CharacterName}@{fc.World}";
-
                     ExportSpecific.TryGetValue(key, out var check);
-                    if (ImGui.Checkbox($"{text}##{key}", ref check))
+                    if (ImGui.Checkbox($"{Helper.GetFCName(fc)}##{key}", ref check))
                         ExportSpecific[key] = check;
 
                 }
