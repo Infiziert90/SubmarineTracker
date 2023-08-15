@@ -34,6 +34,8 @@ public partial class ConfigWindow
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("Use Character Name", ref Configuration.OverlayCharacterName);
             ImGuiComponents.HelpMarker("Use character name instead of FC tag.\nBe aware this option can lead to cut-off text.");
+            changed |= ImGui.Checkbox("Show Rank", ref Configuration.OverlayShowRank);
+            changed |= ImGui.Checkbox("Show Build", ref Configuration.OverlayShowBuild);
             changed |= ImGui.Checkbox("Show As Date", ref Configuration.OverlayShowDate);
             changed |= ImGui.Checkbox("Show First Return Time", ref Configuration.OverlayFirstReturn);
             if (ImGui.Checkbox("Sort By Lowest Time", ref Configuration.OverlaySort))

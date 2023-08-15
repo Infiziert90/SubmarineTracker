@@ -45,6 +45,8 @@ namespace SubmarineTracker
         public bool OverlaySortReverse = false;
         public bool OverlayLockSize = false;
         public bool OverlayLockLocation = false;
+        public bool OverlayShowRank = false;
+        public bool OverlayShowBuild = false;
 
         public bool ExcludeLegacy = false;
         public Dictionary<uint, int> CustomLootWithValue = new();

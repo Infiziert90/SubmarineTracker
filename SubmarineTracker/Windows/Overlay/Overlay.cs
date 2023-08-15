@@ -131,11 +131,12 @@ public class OverlayWindow : Window, IDisposable
             ImGui.Indent(10.0f);
             foreach (var sub in fc.Submarines)
             {
-                var notNeedsRepair = sub.PredictDurability() > 0;
-                ImGui.TextColored(notNeedsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, sub.Name);
+                var needsRepair = sub.PredictDurability() <= 0;
+                var subText = $"{(Configuration.OverlayShowRank ? $"Rank {sub.Rank}. " : "")}{sub.Name}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
-                if (!notNeedsRepair && ImGui.IsItemHovered())
-                    ImGui.SetTooltip("This submarine will need repairs");
+                if (needsRepair && ImGui.IsItemHovered())
+                    ImGui.SetTooltip("This submarine needs repair on return.");
 
                 var timeText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;
