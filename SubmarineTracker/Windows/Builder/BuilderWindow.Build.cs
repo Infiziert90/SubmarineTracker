@@ -19,6 +19,9 @@ public partial class BuilderWindow
 
                 SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
                 CurrentBuild.UpdateBuild(SelectedSub);
+
+                // Reset BestEXP to allow automatic calculation trigger
+                LastComputedRank = 0;
                 BestPath = Array.Empty<uint>();
             }
         }
