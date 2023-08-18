@@ -52,6 +52,10 @@ namespace SubmarineTracker
         public Dictionary<uint, int> CustomLootWithValue = new();
         public DateLimit DateLimit = DateLimit.None;
 
+        public bool ExportExcludeDate = true;
+        public bool ExportExcludeHash;
+        public string ExportOutputPath = string.Empty;
+
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
         public List<ulong> FCOrder = new();

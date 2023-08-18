@@ -15,11 +15,7 @@ namespace SubmarineTracker.Windows.Loot;
 public partial class LootWindow
 {
     private bool ExportAll = true;
-    private bool ExcludeDate = true;
-    private bool ExcludeHash = false;
-
     private Dictionary<ulong, bool> ExportSpecific = new();
-    private string OutputPath = string.Empty;
 
     private static CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
 
@@ -145,6 +141,7 @@ public partial class LootWindow
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);
 
+            var changed = false;
             ImGui.Checkbox("Export All FCs", ref ExportAll);
             if (!ExportAll)
             {
@@ -158,8 +155,8 @@ public partial class LootWindow
                 }
                 ImGui.Unindent(10.0f);
             }
-            ImGui.Checkbox("Exclude Date", ref ExcludeDate);
-            ImGui.Checkbox("Exclude Hash", ref ExcludeHash);
+            changed |= ImGui.Checkbox("Exclude Date", ref Configuration.ExportExcludeDate);
+            changed |= ImGui.Checkbox("Exclude Hash", ref Configuration.ExportExcludeHash);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -176,14 +173,21 @@ public partial class LootWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Output Folder:");
-            ImGui.InputText("##OutputPathInput", ref OutputPath, 255);
+            changed |= ImGui.InputText("##OutputPathInput", ref Configuration.ExportOutputPath, 255);
             ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
                 ImGui.OpenPopup("OutputPathDialog");
 
             if (ImGui.BeginPopup("OutputPathDialog"))
             {
-                Plugin.FileDialogManager.OpenFolderDialog("Pick folder", (b, s) => { if (b) OutputPath = s; }, null, true);
+                Plugin.FileDialogManager.OpenFolderDialog("Pick folder", (b, s) =>
+                {
+                    if (b)
+                    {
+                        Configuration.ExportOutputPath = s;
+                        Configuration.Save();
+                    }
+                }, null, true);
                 ImGui.EndPopup();
             }
 
@@ -205,6 +209,9 @@ public partial class LootWindow
                 if (CheckList(ref fcLootList))
                     ExportToClipboard(fcLootList);
             }
+
+            if (changed)
+                Configuration.Save();
 
             ImGui.EndTabItem();
         }
@@ -245,7 +252,7 @@ public partial class LootWindow
             using var writer = new StringWriter();
             using var csv = new CsvWriter(writer, CsvConfig);
 
-            csv.Context.RegisterClassMap(new ExportLootMap(ExcludeDate, ExcludeHash));
+            csv.Context.RegisterClassMap(new ExportLootMap(Configuration.ExportExcludeDate, Configuration.ExportExcludeHash));
 
             csv.WriteHeader<ExportLoot>();
             csv.NextRecord();
@@ -269,15 +276,15 @@ public partial class LootWindow
 
     private void ExportToFile(List<DetailedLoot> fcLootList)
     {
-        if (Directory.Exists(OutputPath))
+        if (Directory.Exists(Configuration.ExportOutputPath))
         {
             try
             {
-                var file = Path.Combine(OutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
+                var file = Path.Combine(Configuration.ExportOutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
                 using var writer = new StreamWriter(file);
                 using var csv = new CsvWriter(writer, CsvConfig);
 
-                csv.Context.RegisterClassMap(new ExportLootMap(ExcludeDate, ExcludeHash));
+                csv.Context.RegisterClassMap(new ExportLootMap(Configuration.ExportExcludeDate, Configuration.ExportExcludeHash));
 
                 csv.WriteHeader<ExportLoot>();
                 csv.NextRecord();
