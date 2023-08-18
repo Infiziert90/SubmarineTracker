@@ -49,22 +49,25 @@ public static class DateWidget
         return needsRefresh;
     }
 
-    public static void DatePickerWithInput(string label, int id, ref string dateString, ref DateTime date, string format, bool closeWhenMouseLeavesIt = true)
+    public static void DatePickerWithInput(string label, int id, ref string dateString, ref DateTime date, string format, bool sameLine = false, bool closeWhenMouseLeavesIt = true)
     {
-        ImGui.SameLine();
+        if (sameLine)
+            ImGui.SameLine();
+
         ImGui.SetNextItemWidth(80.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.InputTextWithHint($"##{label}Input", format.ToUpper(), ref dateString, 32, ImGuiInputTextFlags.CallbackCompletion))
         {
             if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var tmp))
                 date = tmp;
         }
-        ImGui.SameLine();
+        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+
         ImGuiComponents.IconButton(id, FontAwesomeIcon.Calendar);
         if (DatePicker(label, ref date, closeWhenMouseLeavesIt))
             dateString = date.ToString(format);
     }
 
-    public static bool DatePicker(string label, ref DateTime dateOut, bool closeWhenMouseLeavesIt, string leftArrow = "", string rightArrow = "", string upArrowString = "", string downArrowString = "")
+    public static bool DatePicker(string label, ref DateTime dateOut, bool closeWhenMouseLeavesIt, string leftArrow = "", string rightArrow = "")
     {
         var id = ImGui.GetID(label);
         var style = ImGui.GetStyle();
@@ -110,33 +113,28 @@ public static class DateWidget
 
         ImGui.PushID(1234);
         if (ImGui.SmallButton(arrowLeft))
-        {
             dateOut = dateOut.AddMonths(-1);
-        }
         ImGui.SameLine();
+
         ImGui.TextUnformatted($"{Center(MonthNames[dateOut.Month - 1], 9)}");
+
         ImGui.SameLine();
         if (ImGui.SmallButton(arrowRight))
-        {
             dateOut = dateOut.AddMonths(1);
-        }
         ImGui.PopID();
 
         ImGui.SameLine(ImGui.GetWindowWidth() - yearPartWidth - style.WindowPadding.X - style.ItemSpacing.X * 4.0f);
 
         ImGui.PushID(1235);
         if (ImGui.SmallButton(arrowLeft))
-        {
             dateOut = dateOut.AddYears(-1);
-        }
         ImGui.SameLine();
 
         ImGui.Text($"{dateOut.Year}");
+
         ImGui.SameLine();
         if (ImGui.SmallButton(arrowRight))
-        {
             dateOut = dateOut.AddYears(1);
-        }
         ImGui.PopID();
 
         ImGui.Spacing();

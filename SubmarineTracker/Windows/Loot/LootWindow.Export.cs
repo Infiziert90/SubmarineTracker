@@ -8,6 +8,7 @@ using CsvHelper.Configuration.Attributes;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using SubmarineTracker.Data;
+using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -15,6 +16,8 @@ public partial class LootWindow
 {
     private bool ExportAll = true;
     private bool ExcludeDate = true;
+    private bool ExcludeHash = false;
+
     private Dictionary<ulong, bool> ExportSpecific = new();
     private string OutputPath = string.Empty;
 
@@ -51,7 +54,7 @@ public partial class LootWindow
 
         public ExportLoot() {}
 
-        public ExportLoot(Data.Loot.DetailedLoot loot)
+        public ExportLoot(DetailedLoot loot)
         {
             Sector = loot.Sector;
 
@@ -89,7 +92,7 @@ public partial class LootWindow
 
     public sealed class ExportLootMap : ClassMap<ExportLoot>
     {
-        public ExportLootMap(bool ignoreDate)
+        public ExportLootMap(bool ignoreDate, bool ignoreHash)
         {
             Map(m => m.Sector).Index(0).Name("Sector");
             Map(m => m.Primary).Index(1).Name("Primary");
@@ -110,7 +113,10 @@ public partial class LootWindow
             else
                 Map(m => m.Date).Index(13).Name("Date");
 
-            Map(m => m.Hash).Index(99);
+            if (ignoreHash)
+                Map(m => m.Hash).Ignore();
+            else
+                Map(m => m.Hash).Index(99).Name("Hash");
         }
     }
 
@@ -153,15 +159,14 @@ public partial class LootWindow
                 ImGui.Unindent(10.0f);
             }
             ImGui.Checkbox("Exclude Date", ref ExcludeDate);
+            ImGui.Checkbox("Exclude Hash", ref ExcludeHash);
 
-            ImGui.AlignTextToFramePadding();
-            ImGui.TextUnformatted("From");
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "FromTo:");
             DateWidget.DatePickerWithInput("FromDate", 1, ref ExportMinString, ref ExportMinDate, Format);
-
-            ImGui.SameLine();
-            ImGui.TextUnformatted("To");
-            DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format);
-            ImGui.SameLine();
+            DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format, true);
+            ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
                 ExportReset();
 
@@ -172,7 +177,7 @@ public partial class LootWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Output Folder:");
             ImGui.InputText("##OutputPathInput", ref OutputPath, 255);
-            ImGui.SameLine();
+            ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
                 ImGui.OpenPopup("OutputPathDialog");
 
@@ -184,62 +189,117 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            if (ImGui.Button("Export"))
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Export:");
+            if (ImGui.Button("File"))
             {
-                // some of the corrupted loot data is still around, so we check that Rank is actually above 0
-                var fcLootList = Submarines.KnownSubmarines
-                                           .Where(kv => ExportAll || (ExportSpecific.TryGetValue(kv.Key, out var check) && check))
-                                           .Select(kv => kv.Value.SubLoot)
-                                           .SelectMany(kv => kv.Values)
-                                           .SelectMany(subLoot => subLoot.Loot)
-                                           .SelectMany(innerLoot => innerLoot.Value)
-                                           .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
-                                           .Where(detailedLoot => detailedLoot.Date > ExportMinDate && detailedLoot.Date < ExportMaxDate)
-                                           .ToList();
+                var fcLootList = BuildExportList();
+                if (CheckList(ref fcLootList))
+                    ExportToFile(fcLootList);
+            }
 
-                if (!fcLootList.Any())
-                {
-                    Plugin.ChatGui.Print(Utils.ErrorMessage($"Nothing to export in the selected time frame."));
+            ImGui.SameLine();
 
-                    ImGui.EndTabItem();
-                    return;
-                }
-
-                if (Directory.Exists(OutputPath))
-                {
-                    try
-                    {
-                        var file = Path.Combine(OutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
-                        using var writer = new StreamWriter(file);
-                        using var csv = new CsvWriter(writer, CsvConfig);
-
-                        csv.Context.RegisterClassMap(new ExportLootMap(ExcludeDate));
-
-                        csv.WriteHeader<ExportLoot>();
-                        csv.NextRecord();
-
-                        foreach (var detailedLoot in fcLootList)
-                        {
-                            csv.WriteRecord(new ExportLoot(detailedLoot));
-                            csv.NextRecord();
-                        }
-
-                        Plugin.ChatGui.Print(Utils.SuccessMessage($"Export done."));
-                        Plugin.ChatGui.Print(Utils.SuccessMessage($"Output: {file}"));
-                    }
-                    catch (Exception e)
-                    {
-                        PluginLog.Error(e.StackTrace);
-                        Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
-                    }
-                }
-                else
-                {
-                    Plugin.ChatGui.Print(Utils.ErrorMessage("Invalid Path"));
-                }
+            if (ImGui.Button("Clipboard"))
+            {
+                var fcLootList = BuildExportList();
+                if (CheckList(ref fcLootList))
+                    ExportToClipboard(fcLootList);
             }
 
             ImGui.EndTabItem();
+        }
+    }
+
+    private List<DetailedLoot> BuildExportList()
+    {
+        var min = new DateTime(ExportMinDate.Year, ExportMinDate.Month, ExportMinDate.Day, 0, 0, 0);
+        var max = new DateTime(ExportMaxDate.Year, ExportMaxDate.Month, ExportMaxDate.Day, 23, 59, 59);
+
+        // some of the corrupted loot data is still around, so we check that Rank is above 0
+        return Submarines.KnownSubmarines
+                                   .Where(kv => ExportAll || (ExportSpecific.TryGetValue(kv.Key, out var check) && check))
+                                   .Select(kv => kv.Value.SubLoot)
+                                   .SelectMany(kv => kv.Values)
+                                   .SelectMany(subLoot => subLoot.Loot)
+                                   .SelectMany(innerLoot => innerLoot.Value)
+                                   .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+                                   .Where(detailedLoot => detailedLoot.Date > min && detailedLoot.Date < max)
+                                   .ToList();
+    }
+
+    private bool CheckList(ref List<DetailedLoot> fcLootList)
+    {
+        if (!fcLootList.Any())
+        {
+            Plugin.ChatGui.Print(Utils.ErrorMessage($"Nothing to export in the selected time frame."));
+            return false;
+        }
+
+        return true;
+    }
+
+    private void ExportToClipboard(List<DetailedLoot> fcLootList)
+    {
+        try
+        {
+            using var writer = new StringWriter();
+            using var csv = new CsvWriter(writer, CsvConfig);
+
+            csv.Context.RegisterClassMap(new ExportLootMap(ExcludeDate, ExcludeHash));
+
+            csv.WriteHeader<ExportLoot>();
+            csv.NextRecord();
+
+            foreach (var detailedLoot in fcLootList)
+            {
+                csv.WriteRecord(new ExportLoot(detailedLoot));
+                csv.NextRecord();
+            }
+
+            ImGui.SetClipboardText(writer.ToString());
+
+            Plugin.ChatGui.Print(Utils.SuccessMessage($"Export to clipboard done."));
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+            Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
+        }
+    }
+
+    private void ExportToFile(List<DetailedLoot> fcLootList)
+    {
+        if (Directory.Exists(OutputPath))
+        {
+            try
+            {
+                var file = Path.Combine(OutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
+                using var writer = new StreamWriter(file);
+                using var csv = new CsvWriter(writer, CsvConfig);
+
+                csv.Context.RegisterClassMap(new ExportLootMap(ExcludeDate, ExcludeHash));
+
+                csv.WriteHeader<ExportLoot>();
+                csv.NextRecord();
+
+                foreach (var detailedLoot in fcLootList)
+                {
+                    csv.WriteRecord(new ExportLoot(detailedLoot));
+                    csv.NextRecord();
+                }
+
+                Plugin.ChatGui.Print(Utils.SuccessMessage($"Export done."));
+                Plugin.ChatGui.Print(Utils.SuccessMessage($"Output: {file}"));
+            }
+            catch (Exception e)
+            {
+                PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+                Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
+            }
+        }
+        else
+        {
+            Plugin.ChatGui.Print(Utils.ErrorMessage("Invalid Path"));
         }
     }
 

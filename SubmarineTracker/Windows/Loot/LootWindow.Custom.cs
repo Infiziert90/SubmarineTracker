@@ -147,13 +147,12 @@ public partial class LootWindow
                     if (Configuration.DateLimit == DateLimit.None)
                     {
                         ImGui.AlignTextToFramePadding();
-                        ImGui.TextUnformatted("From");
-                        DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format);
+                        ImGui.TextColored(ImGuiColors.DalamudViolet, "FromTo:");
+                        ImGui.SameLine();
 
-                        ImGui.SameLine();
-                        ImGui.TextUnformatted("To");
-                        DateWidget.DatePickerWithInput("ToDate", 2, ref CustomMaxString, ref CustomMaxDate, Format);
-                        ImGui.SameLine();
+                        DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format);
+                        DateWidget.DatePickerWithInput("ToDate", 2, ref CustomMaxString, ref CustomMaxDate, Format, true);
+                        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
                         if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
                             CustomReset();
 

@@ -22,33 +22,8 @@ public enum DateLimit
     Year = 9,
 }
 
-public enum DateFormat
-{
-    Europe = 0,
-    Murica = 1,
-    Iso = 2,
-}
-
 public static class DateUtil
 {
-    private static readonly DateTime Preview = new(2023, 4, 30);
-
-    public static string ToFormatString(this DateFormat n)
-    {
-        return n switch
-        {
-            DateFormat.Europe => "dd/MM/yyyy",
-            DateFormat.Murica => "MM/dd/yyyy",
-            DateFormat.Iso => "yyyy/MM/dd",
-            _ => "yyyy/MM/dd",
-        };
-    }
-
-    public static string GetFormatPreview(this DateFormat n)
-    {
-        return Preview.ToString(n.ToFormatString());
-    }
-
     public static string GetName(this DurationLimit n)
     {
         return n switch

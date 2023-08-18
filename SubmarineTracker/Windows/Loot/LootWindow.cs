@@ -1,7 +1,7 @@
+using System.Globalization;
 using Dalamud.Interface.Windowing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -18,7 +18,6 @@ public partial class LootWindow : Window, IDisposable
 
     private static Vector2 IconSize = new(28, 28);
 
-    private DateFormat UsedFormat = DateFormat.Iso;
     private string Format = string.Empty;
 
     public LootWindow(Plugin plugin, Configuration configuration) : base("Custom Loot Overview")
@@ -43,15 +42,7 @@ public partial class LootWindow : Window, IDisposable
     public override void Draw()
     {
         Plugin.FileDialogManager.Draw();
-
-        Format = Configuration.DateFormat.ToFormatString();
-        if (UsedFormat != Configuration.DateFormat)
-        {
-            UsedFormat = Configuration.DateFormat;
-
-            ExportRefresh();
-            CustomRefresh();
-        }
+        Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))

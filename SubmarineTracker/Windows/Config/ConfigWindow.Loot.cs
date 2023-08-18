@@ -88,25 +88,6 @@ public partial class ConfigWindow
                 ImGui.EndTable();
             }
 
-            ImGuiHelpers.ScaledDummy(5);
-            ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(5);
-
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Date Format:");
-            if (ImGui.BeginCombo($"##dateFormatCombo", Configuration.DateFormat.GetFormatPreview()))
-            {
-                foreach (var dateFormat in (DateFormat[]) Enum.GetValues(typeof(DateFormat)))
-                {
-                    if (ImGui.Selectable(dateFormat.GetFormatPreview()))
-                    {
-                        Configuration.DateFormat = dateFormat;
-                        Configuration.Save();
-                    }
-                }
-
-                ImGui.EndCombo();
-            }
-
             if (changed)
             {
                 foreach (var fc in Submarines.KnownSubmarines.Values)
