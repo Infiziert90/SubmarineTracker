@@ -30,8 +30,13 @@ namespace SubmarineTracker
 
         public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
+        public bool NotifyForReturns = true;
         public bool NotifyForRepairs = true;
         public bool ShowRepairToast = true;
+        public bool WebhookDispatch = true;
+        public bool WebhookReturn = true;
+        public string WebhookUrl = string.Empty;
+
 
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;

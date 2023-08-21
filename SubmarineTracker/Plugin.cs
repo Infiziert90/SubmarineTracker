@@ -54,7 +54,7 @@ namespace SubmarineTracker
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
-        private Notify Notify;
+        public Notify Notify;
 
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
 
@@ -78,6 +78,7 @@ namespace SubmarineTracker
             TexturesCache.Initialize();
             ImportantItemsMethods.Initialize();
 
+            Webhook.Init(Configuration);
             Helper.Initialize(this);
 
             AllaganToolsConsumer = new AllaganToolsConsumer();
@@ -249,8 +250,13 @@ namespace SubmarineTracker
             fc.GetUnlockedAndExploredSectors();
 
             foreach (var sub in workshopData.Where(data => data.RankId != 0))
-                if (sub.ReturnTime != 0)
-                    fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
+            {
+                if (sub.ReturnTime == 0)
+                    continue;
+
+                Notify.TriggerDispatch(sub.RegisterTime, sub.ReturnTime);
+                fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
+            }
 
             fc.Refresh = true;
             LoadFCOrder();

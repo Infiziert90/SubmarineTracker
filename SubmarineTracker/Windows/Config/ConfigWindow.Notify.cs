@@ -1,4 +1,5 @@
-﻿using SubmarineTracker.Data;
+﻿using Dalamud.Interface.Components;
+using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Config;
 
@@ -13,6 +14,7 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Notifications:");
             ImGui.Indent(10.0f);
+            changed |= ImGui.Checkbox("For Returns", ref Configuration.NotifyForReturns);
             changed |= ImGui.Checkbox("For Repairs", ref Configuration.NotifyForRepairs);
             if (Configuration.NotifyForRepairs)
             {
@@ -20,7 +22,34 @@ public partial class ConfigWindow
                 changed |= ImGui.Checkbox("Show Repair Toast", ref Configuration.ShowRepairToast);
                 ImGui.Unindent(10.0f);
             }
+            ImGui.Unindent(10.0f);
 
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Webhook:");
+            ImGui.Indent(10.0f);
+            changed |= ImGui.Checkbox("Send Dispatch", ref Configuration.WebhookDispatch);
+            ImGuiComponents.HelpMarker("Sends a webhook message on dispatch, containing a timestamp when this submarine will return.");
+            changed |= ImGui.Checkbox("Send Return", ref Configuration.WebhookReturn);
+            ImGuiComponents.HelpMarker("Sends a webhook message on return.");
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextUnformatted("URL");
+            ImGui.SameLine();
+            changed |= ImGui.InputText("##Url", ref Configuration.WebhookUrl, 255);
+            ImGui.SameLine();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.QuestionCircle))
+            {
+                try {
+                    Dalamud.Utility.Util.OpenLink("https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks");
+                } catch {
+                    // ignored
+                }
+            }
+
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Click to open discord webhook guide website");
+            ImGui.Unindent(10.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Submarines:");
+            ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("For All Returns", ref Configuration.NotifyForAll);
             ImGui.Unindent(10.0f);
 

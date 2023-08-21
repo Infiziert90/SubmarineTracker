@@ -1,8 +1,10 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Dalamud.Game;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
-using SubmarineTracker.Data;
 using SubmarineTracker.Windows;
+using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker;
 
@@ -11,6 +13,7 @@ public class Notify
     private readonly Plugin Plugin;
     private readonly Configuration Configuration;
 
+    private bool IsInitialized;
     private readonly HashSet<string> FinishedNotifications = new();
 
     public Notify(Plugin plugin)
@@ -19,13 +22,24 @@ public class Notify
         Configuration = plugin.Configuration;
     }
 
+    public void Init()
+    {
+        // We call this in the first framework update to ensure all subs have loaded
+        IsInitialized = true;
+        foreach (var sub in KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
+            FinishedNotifications.Add($"Dispatch{sub.Register}{sub.Return}");
+    }
+
     public void NotifyLoop(Framework _)
     {
-        if (!Submarines.KnownSubmarines.Any())
+        if (!KnownSubmarines.Any())
             return;
 
+        if (!IsInitialized)
+            Init();
+
         var localId = Plugin.ClientState.LocalContentId;
-        foreach (var (id, fc) in Submarines.KnownSubmarines)
+        foreach (var (id, fc) in KnownSubmarines)
         {
             foreach (var sub in fc.Submarines)
             {
@@ -39,15 +53,16 @@ public class Notify
 
                 if (FinishedNotifications.Add($"Notify{sub.Name}{id}{sub.Return}"))
                 {
-                    Plugin.ChatGui.Print(GenerateMessage(Helper.GetSubName(sub, fc)));
+                    if (Configuration.NotifyForReturns)
+                        SendReturn(sub, fc);
 
-                    if (Configuration.OverlayAlwaysOpen)
-                        Plugin.OverlayWindow.IsOpen = true;
+                    if (Configuration.WebhookReturn)
+                        Task.Run(() => SendReturnWebhook(sub, fc));
                 }
             }
         }
 
-        if (!Configuration.NotifyForRepairs || !Submarines.KnownSubmarines.TryGetValue(localId, out var currentFC))
+        if (!Configuration.NotifyForRepairs || !KnownSubmarines.TryGetValue(localId, out var currentFC))
             return;
 
         foreach (var sub in currentFC.Submarines)
@@ -58,13 +73,77 @@ public class Notify
 
             // using just date here because subs can't come back the same day and be broken again
             if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{localId}{DateTime.Now.Date}"))
-            {
-                Plugin.ChatGui.Print(RepairMessage(Helper.GetSubName(sub, currentFC)));
-
-                if (Configuration.ShowRepairToast)
-                    Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
-            }
+                SendRepair(sub, currentFC);
         }
+    }
+
+    public void TriggerDispatch(uint key, uint returnTime)
+    {
+        if (!Configuration.WebhookDispatch)
+            return;
+
+        if (!FinishedNotifications.Add($"Dispatch{key}{returnTime}"))
+            return;
+
+        var fc = KnownSubmarines[Plugin.ClientState.LocalContentId];
+        var sub = fc.Submarines.Find(s => s.Register == key)!;
+
+        SendDispatchWebhook(sub, fc, returnTime);
+    }
+
+    public void SendDispatchWebhook(Submarine sub, FcSubmarines fc, uint returnTime)
+    {
+        var content = new Webhook.WebhookContent();
+        content.Embeds.Add(new
+        {
+            title = Helper.GetSubName(sub, fc),
+            description=$"Returns <t:{returnTime}:R>",
+            color=int.Parse("E6C71F", System.Globalization.NumberStyles.HexNumber)
+        });
+
+        Webhook.PostMessage(content);
+    }
+
+    public void SendReturnWebhook(Submarine sub, FcSubmarines fc)
+    {
+        // No need to send messages if the user isn't logged in (also prevents sending on startup)
+        if (!Plugin.ClientState.IsLoggedIn)
+            return;
+
+        // Prevent that multibox user send multiple webhook triggers
+        using var mutex = new Mutex(false, "Global\\SubmarineTrackerMutex");
+        if (!mutex.WaitOne(0, false))
+            return;
+
+        var content = new Webhook.WebhookContent();
+        content.Embeds.Add(new
+        {
+            title = Helper.GetSubName(sub, fc),
+            description=$"Returned at {sub.ReturnTime.ToLongTimeString()}",
+            color=int.Parse("80E61F", System.Globalization.NumberStyles.HexNumber)
+        });
+
+        Webhook.PostMessage(content);
+
+        // Ensure that the other process had time to catch up
+        Thread.Sleep(500);
+        mutex.ReleaseMutex();
+    }
+
+    public void SendReturn(Submarine sub, FcSubmarines fc)
+    {
+        Plugin.ChatGui.Print(GenerateMessage(Helper.GetSubName(sub, fc)));
+
+        if (Configuration.OverlayAlwaysOpen)
+            Plugin.OverlayWindow.IsOpen = true;
+    }
+
+    public void SendRepair(Submarine sub, FcSubmarines fc)
+    {
+        Plugin.ChatGui.Print(RepairMessage(Helper.GetSubName(sub, fc)));
+
+        if (Configuration.ShowRepairToast)
+            Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
     }
 
     public static SeString GenerateMessage(string text)
