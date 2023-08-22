@@ -15,6 +15,8 @@ public partial class HelpyWindow
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "AllaganTools not available.");
                 ImGui.EndTabItem();
+
+                return;
             }
 
             // build cache if needed
