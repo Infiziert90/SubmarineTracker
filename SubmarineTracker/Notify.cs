@@ -98,7 +98,7 @@ public class Notify
         {
             title = Helper.GetSubName(sub, fc),
             description=$"Returns <t:{returnTime}:R>",
-            color=int.Parse("E6C71F", System.Globalization.NumberStyles.HexNumber)
+            color=15124255
         });
 
         Webhook.PostMessage(content);
@@ -120,7 +120,7 @@ public class Notify
         {
             title = Helper.GetSubName(sub, fc),
             description=$"Returned at {sub.ReturnTime.ToLongTimeString()}",
-            color=int.Parse("80E61F", System.Globalization.NumberStyles.HexNumber)
+            color=8447519
         });
 
         Webhook.PostMessage(content);
