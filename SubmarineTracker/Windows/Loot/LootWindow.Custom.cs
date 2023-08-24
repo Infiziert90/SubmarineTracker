@@ -80,37 +80,38 @@ public partial class LootWindow
             }
 
             var useLimit = (Configuration.DateLimit != DateLimit.None || (CustomMinDate != CustomMinimalDate && CustomMaxDate != DateTime.Now));
-            if (!bigList.Any())
-            {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, $"None of the selected items have been looted {(useLimit ? "in the time frame" : "yet")}.");
-                ImGui.EndTabItem();
-                return;
-            }
 
             var textHeight = ImGui.CalcTextSize("XXXX").Y * 6.0f; // giving space for 6.0 lines
             var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
             if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight + optionHeight)))
             {
-                if (ImGui.BeginTable($"##customLootTable", 3))
+                if (!bigList.Any())
                 {
-                    ImGui.TableSetupColumn("##icon", 0, 0.15f);
-                    ImGui.TableSetupColumn("##item");
-                    ImGui.TableSetupColumn("##amount", 0, 0.3f);
-
-                    foreach (var (item, count) in bigList.OrderBy(pair => pair.Key.RowId))
+                    Helper.WrappedError($"None of the selected items have been looted {(useLimit ? "in the time frame" : "yet")}.");
+                }
+                else
+                {
+                    if (ImGui.BeginTable($"##customLootTable", 3))
                     {
-                        ImGui.TableNextColumn();
-                        Helper.DrawIcon(item.Icon, IconSize);
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Utils.ToStr(item.Name));
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{count:N0}");
-                        ImGui.TableNextRow();
+                        ImGui.TableSetupColumn("##icon", 0, 0.15f);
+                        ImGui.TableSetupColumn("##item");
+                        ImGui.TableSetupColumn("##amount", 0, 0.3f);
 
-                        moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
+                        foreach (var (item, count) in bigList.OrderBy(pair => pair.Key.RowId))
+                        {
+                            ImGui.TableNextColumn();
+                            Helper.DrawIcon(item.Icon, IconSize);
+                            ImGui.TableNextColumn();
+                            ImGui.TextUnformatted(Utils.ToStr(item.Name));
+                            ImGui.TableNextColumn();
+                            ImGui.TextUnformatted($"{count:N0}");
+                            ImGui.TableNextRow();
+
+                            moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
+                        }
+
+                        ImGui.EndTable();
                     }
-
-                    ImGui.EndTable();
                 }
             }
             ImGui.EndChild();
