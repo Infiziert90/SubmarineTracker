@@ -183,7 +183,7 @@ public static class Submarines
 
         public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx) : this("", 0, 0, 0, 0, 0, 0, 0)
         {
-            Name = MemoryHelper.ReadSeStringNullTerminated((nint)data.Name).ToString();
+            Name = MemoryHelper.ReadSeStringNullTerminated((nint) data.Name).ToString();
             Rank = data.RankId;
             Hull = data.HullId;
             Stern = data.SternId;

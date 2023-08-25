@@ -100,7 +100,7 @@ public partial class LootWindow
                         foreach (var (item, count) in bigList.OrderBy(pair => pair.Key.RowId))
                         {
                             ImGui.TableNextColumn();
-                            Helper.DrawIcon(item.Icon, IconSize);
+                            Helper.DrawScaledIcon(item.Icon, IconSize);
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted(Utils.ToStr(item.Name));
                             ImGui.TableNextColumn();

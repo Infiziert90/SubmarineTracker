@@ -370,7 +370,7 @@ public class MainWindow : Window, IDisposable
                                             ImGui.Indent(10.0f);
                                             if (idx % 2 == 1)
                                                 ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
-                                            Helper.DrawIcon(item.Icon, IconSize);
+                                            Helper.DrawScaledIcon(item.Icon, IconSize);
 
                                             var name = ToStr(item.Name);
                                             if (MaxLength < name.Length)
@@ -509,25 +509,25 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupColumn("##partName");
 
                 ImGui.TableNextColumn();
-                Helper.DrawIcon(sub.HullIconId, IconSize);
+                Helper.DrawScaledIcon(sub.HullIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.HullName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                Helper.DrawIcon(sub.SternIconId, IconSize);
+                Helper.DrawScaledIcon(sub.SternIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.SternName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                Helper.DrawIcon(sub.BowIconId, IconSize);
+                Helper.DrawScaledIcon(sub.BowIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.BowName);
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                Helper.DrawIcon(sub.BridgeIconId, IconSize);
+                Helper.DrawScaledIcon(sub.BridgeIconId, IconSize);
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.ParsedGold, sub.BridgeName);
                 ImGui.TableNextRow();

@@ -120,8 +120,9 @@ public static class Helper
         if (isMax) ImGui.EndDisabled();
     }
 
-    public static void DrawIcon(uint iconId, Vector2 iconSize)
+    public static void DrawScaledIcon(uint iconId, Vector2 iconSize)
     {
+        iconSize *= ImGuiHelpers.GlobalScale;
         var texture = TexturesCache.Instance!.GetTextureFromIconId(iconId);
         ImGui.Image(texture.ImGuiHandle, iconSize);
     }

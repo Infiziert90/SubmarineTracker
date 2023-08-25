@@ -162,7 +162,7 @@ public partial class LootWindow
             foreach (var sortedEntry in sortedList)
             {
                 ImGui.TableNextColumn();
-                Helper.DrawIcon(sortedEntry.Icon, IconSize);
+                Helper.DrawScaledIcon(sortedEntry.Icon, IconSize);
 
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted(sortedEntry.Name);

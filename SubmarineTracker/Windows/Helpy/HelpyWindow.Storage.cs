@@ -36,7 +36,7 @@ public partial class HelpyWindow
                     foreach (var cached in Storage.StorageCache[key].Values)
                     {
                         ImGui.TableNextColumn();
-                        Helper.DrawIcon(cached.Item.Icon, IconSize);
+                        Helper.DrawScaledIcon(cached.Item.Icon, IconSize);
                         ImGui.TableNextColumn();
                         var count = $"{cached.Count}x";
                         var width = ImGui.CalcTextSize(count).X;

@@ -82,7 +82,7 @@ public partial class LootWindow
                     ImGui.TableSetupColumn("##survProc", 0, 0.4f);
 
                     ImGui.TableNextColumn();
-                    Helper.DrawIcon(primaryItem.Icon, IconSize);
+                    Helper.DrawScaledIcon(primaryItem.Icon, IconSize);
                     ImGui.TableNextColumn();
 
                     var name = Utils.ToStr(primaryItem.Name);
@@ -101,7 +101,7 @@ public partial class LootWindow
                     if (detailedLoot.ValidAdditional)
                     {
                         ImGui.TableNextColumn();
-                        Helper.DrawIcon(additionalItem.Icon, IconSize);
+                        Helper.DrawScaledIcon(additionalItem.Icon, IconSize);
                         ImGui.TableNextColumn();
 
                         name = Utils.ToStr(additionalItem.Name);
