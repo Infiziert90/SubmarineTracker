@@ -8,11 +8,13 @@ public static class Build
 {
     private static ExcelSheet<SubmarineRank> RankSheet = null!;
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
+    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public static void Initialize()
     {
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
     }
 
     public struct SubmarineBuild
@@ -184,6 +186,39 @@ public static class Build
         {
             OptimizedDistance = 0;
             OptimizedRoute = new List<SubmarineExplorationPretty>();
+        }
+
+        public int CalculateUntilRepair()
+        {
+            var dmg = VoyageDamage();
+            if (dmg == 1)
+                return -1;
+
+            var voyages = 0;
+            var health = 30000;
+            while (health > 0)
+            {
+                voyages += 1;
+                health -= dmg;
+            }
+
+            return voyages;
+        }
+
+        public int VoyageDamage()
+        {
+            var highestDamage = 1;
+            foreach (var part in PartArray)
+            {
+                var damaged = 0;
+                foreach (var sector in Sectors)
+                    damaged += (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow((uint) part)!.Rank) * 7;
+
+                if (highestDamage < damaged)
+                    highestDamage = damaged;
+            }
+
+            return highestDamage;
         }
 
         public bool SameBuildWithoutRank(RouteBuild other)

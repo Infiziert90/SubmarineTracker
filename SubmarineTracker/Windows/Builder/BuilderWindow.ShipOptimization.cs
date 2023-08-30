@@ -240,6 +240,8 @@ public partial class BuilderWindow
                 ImGui.Checkbox("Use Normal", ref Target.UseNormal);
                 ImGui.SameLine();
                 ImGui.Checkbox("Ignore Favor", ref Target.IgnoreFavor);
+                ImGui.SameLine();
+                ImGui.Checkbox("No Modded Parts", ref Target.NoModded);
 
                 ImGuiHelpers.ScaledDummy(10.0f);
             }
@@ -348,6 +350,7 @@ public partial class BuilderWindow
         public bool UseT2 = false;
         public bool UseNormal = false;
         public bool IgnoreFavor = false;
+        public bool NoModded = false;
 
         public TargetValues(List<Build.SubmarineBuild> allBuilds) : this()
         {
@@ -400,12 +403,14 @@ public partial class BuilderWindow
             var useT2 = this.UseT2;
             var useN = this.UseNormal;
             var ignoreF = IgnoreFavor;
+            var noModded = NoModded;
 
             return build =>
                 build.Surveillance >= (useT2 ? breakpoints.T2 : breakpoints.T3) &&
                 build.Retrieval >= (useN ? breakpoints.Normal : breakpoints.Optimal) &&
                 build.Speed <= tmpThis.MaxSpeed &&
-                (ignoreF || build.Favor >= breakpoints.Favor);
+                (ignoreF || build.Favor >= breakpoints.Favor) &&
+                (!noModded || build.HighestRankPart() < 50);
         }
     }
 }

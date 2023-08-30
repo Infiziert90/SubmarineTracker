@@ -22,10 +22,12 @@ public partial class BuilderWindow
             var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             var totalExp = 0u;
+            var repairAfter = 0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
             {
                 totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild);
                 expPerMinute = totalExp / (optimizedDuration / 60.0);
+                repairAfter = CurrentBuild.CalculateUntilRepair();
             }
 
             var tanks = 0u;
@@ -60,11 +62,11 @@ public partial class BuilderWindow
 
             if (ImGui.BeginTable("##statsColumn", 6))
             {
-                ImGui.TableSetupColumn("##stat1", 0, 0.7f);
-                ImGui.TableSetupColumn("##count1", 0, 0.5f);
-                ImGui.TableSetupColumn("##stat2", 0, 0.5f);
+                ImGui.TableSetupColumn("##stat1", 0, 0.55f);
+                ImGui.TableSetupColumn("##count1", 0, 0.72f);
+                ImGui.TableSetupColumn("##stat2", 0, 0.44f);
                 ImGui.TableSetupColumn("##count2", 0, 0.5f);
-                ImGui.TableSetupColumn("##stat3", 0, 0.3f);
+                ImGui.TableSetupColumn("##stat3", 0, 0.4f);
                 ImGui.TableSetupColumn("##count3", 0, 0.5f);
 
                 ImGui.TableNextColumn();
@@ -95,10 +97,9 @@ public partial class BuilderWindow
                 SelectRequiredColor(CurrentBuild.OptimizedDistance, build.Range);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{build.RepairCosts}");
-
+                ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
 
                 ImGui.TableNextRow();
 
@@ -108,21 +109,21 @@ public partial class BuilderWindow
                 ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
 
                 ImGui.TableNextColumn();
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp");
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted($"{totalExp:N0}");
+
+                ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
-                ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");
-                ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
-
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Total Exp");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{totalExp:N0}");
+                ImGui.TextUnformatted($"{build.RepairCosts} after {repairAfter} voyages");
 
                 ImGui.EndTable();
             }
