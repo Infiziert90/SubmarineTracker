@@ -65,7 +65,7 @@ public static class Voyage
             allDurations.Add(voyage + survey);
         }
 
-        return (uint)allDurations.Sum() + FixedVoyageTime;
+        return (uint) allDurations.Sum() + FixedVoyageTime;
     }
 
     public static (int Distance, List<SubmarineExplorationPretty> Points) CalculateDistance(IEnumerable<SubmarineExplorationPretty> walkingPoints)

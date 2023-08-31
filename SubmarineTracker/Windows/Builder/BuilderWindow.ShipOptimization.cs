@@ -68,30 +68,18 @@ public partial class BuilderWindow
         uint distance = 0;
         var hasRoute = CurrentBuild.Sectors.Count > 0;
         if (hasRoute)
-        {
-            var route = CurrentBuild.Sectors.Select(t => ExplorationSheet.GetRow(t)!).ToArray();
-            var start = ExplorationSheet.First(t => t.Map.Row == route.First().Map.Row);
-            distance += start.GetDistance(route.First()) + route.First().SurveyDistance;
-            for (var i = 1; i < route.Length; i++)
-            {
-                distance += route[i - 1].GetDistance(route[i]) + route[i - 1].SurveyDistance;
-            }
-        }
+            distance = (uint) CurrentBuild.OptimizedDistance;
 
         var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute && !IgnoreBreakpoints ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Build.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
         if (hasRoute)
         {
             builds = builds.Select(tuple =>
             {
-                var (build, time) = tuple;
+                var (build, _) = tuple;
                 var route = CurrentBuild.OptimizedRoute.ToArray();
                 var start = ExplorationSheet.First(t => t.Map.Row == route.First().Map.Row);
-                time = time.Add(TimeSpan.FromSeconds(route.First().GetSurveyTime(build.Speed) + start.GetVoyageTime(route.First(), build.Speed)));
-                for (var i = 1; i < route.Length; i++)
-                {
-                    time = time.Add(TimeSpan.FromSeconds(route[i].GetSurveyTime(build.Speed) + route[i - 1].GetVoyageTime(route[i], build.Speed)));
-                }
-                return new Tuple<Build.SubmarineBuild, TimeSpan>(build, time);
+
+                return new Tuple<Build.SubmarineBuild, TimeSpan>(build, TimeSpan.FromSeconds(Voyage.CalculateDuration(route.Prepend(start), build)));
             });
         }
 
@@ -399,7 +387,6 @@ public partial class BuilderWindow
         public Func<Build.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
         {
             var breakpoints = Sectors.CalculateBreakpoint(path);
-            var tmpThis = this;
             var useT2 = this.UseT2;
             var useN = this.UseNormal;
             var ignoreF = IgnoreFavor;
@@ -408,7 +395,6 @@ public partial class BuilderWindow
             return build =>
                 build.Surveillance >= (useT2 ? breakpoints.T2 : breakpoints.T3) &&
                 build.Retrieval >= (useN ? breakpoints.Normal : breakpoints.Optimal) &&
-                build.Speed <= tmpThis.MaxSpeed &&
                 (ignoreF || build.Favor >= breakpoints.Favor) &&
                 (!noModded || build.HighestRankPart() < 50);
         }
