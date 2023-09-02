@@ -15,10 +15,18 @@ public partial class ConfigWindow
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox("Show Only Current FC", ref Configuration.ShowOnlyCurrentFC);
             changed |= ImGui.Checkbox("Auto Select Current Submarine", ref Configuration.AutoSelectCurrent);
-            ImGuiComponents.HelpMarker("Automatically selects submarine, if the voyage interface is opened.");
+            ImGuiComponents.HelpMarker("Automatically selects the current selected submarine in the games voyage interface.");
+            if (Configuration.AutoSelectCurrent)
+            {
+                changed |= ImGui.Checkbox("Show Route Overlay", ref Configuration.ShowRouteOverlay);
+                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface.");
+                changed |= ImGui.SliderInt("Highest Level", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
+                ImGuiComponents.HelpMarker("No route suggestions above this rank.");
+            }
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
+
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Saved Builds:");
             if (ImGui.BeginTable("##DeleteBuildsTable", 2))
             {

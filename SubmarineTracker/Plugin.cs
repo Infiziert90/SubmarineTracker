@@ -21,6 +21,7 @@ using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
 using SubmarineTracker.Windows.Overlay;
+using SubmarineTracker.Windows.RouteOverlay;
 
 namespace SubmarineTracker
 {
@@ -33,6 +34,7 @@ namespace SubmarineTracker
         [PluginService] public static ClientState ClientState { get; private set; } = null!;
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
+        [PluginService] public static GameGui GameGui { get; private set; } = null!;
 
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
@@ -47,6 +49,7 @@ namespace SubmarineTracker
         public LootWindow LootWindow { get; init; }
         public HelpyWindow HelpyWindow { get; init; }
         public OverlayWindow OverlayWindow { get; init; }
+        public RouteOverlay RouteOverlay { get; init; }
 
         public ConfigurationBase ConfigurationBase;
 
@@ -89,6 +92,7 @@ namespace SubmarineTracker
             LootWindow = new LootWindow(this, Configuration);
             HelpyWindow = new HelpyWindow(this, Configuration);
             OverlayWindow = new OverlayWindow(this, Configuration);
+            RouteOverlay = new RouteOverlay(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
@@ -96,6 +100,7 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(LootWindow);
             WindowSystem.AddWindow(HelpyWindow);
             WindowSystem.AddWindow(OverlayWindow);
+            WindowSystem.AddWindow(RouteOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 

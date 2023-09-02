@@ -8,7 +8,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private List<SubmarineExplorationPretty> MustInclude = new();
+    public List<SubmarineExplorationPretty> MustInclude = new();
 
     private uint[] BestPath = Array.Empty<uint>();
     private bool ComputingPath;
@@ -24,12 +24,12 @@ public partial class BuilderWindow
 
     private bool IgnoreUnlocks;
 
-    private ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions = null;
+    public ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions;
 
     // CharacterID -> Map -> Highest Level
     private readonly ConcurrentDictionary<ulong, ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>> CachedDistances = new();
 
-    private uint[] FindBestPath(Build.RouteBuild routeBuild)
+    public uint[] FindBestPath(Build.RouteBuild routeBuild)
     {
         Error = false;
         LastComputedRank = routeBuild.Rank;
@@ -117,7 +117,7 @@ public partial class BuilderWindow
                     );
                 })
               .Where(t => t.Item2 < Configuration.DurationLimit.ToTime())
-              .OrderByDescending(t => MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
+              .OrderByDescending(t => Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
               .Select(t => t.Item1)
               .FirstOrDefault();
 
@@ -262,11 +262,11 @@ public partial class BuilderWindow
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
                     ImGui.Indent(10.0f);
-                    OptionsChanged |= ImGui.Checkbox("Disable automatic calculation", ref Configuration.CalculateOnInteraction);
-                    OptionsChanged |= ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
+                    OptionsChanged |= ImGui.Checkbox("Disable Automatic Calculation", ref Configuration.CalculateOnInteraction);
+                    OptionsChanged |= ImGui.Checkbox("Ignore Unlocks", ref IgnoreUnlocks);
                     if (Configuration.DurationLimit != DurationLimit.None)
                     {
-                        OptionsChanged |= ImGui.Checkbox("Maximize Duration limit", ref MaximizeDuration);
+                        OptionsChanged |= ImGui.Checkbox("Maximize Duration  Limit", ref Configuration.MaximizeDuration);
                         ImGuiComponents.HelpMarker(MaximizeHelp);
                     }
                     ImGui.Unindent(10.0f);

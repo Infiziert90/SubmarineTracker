@@ -211,8 +211,8 @@ public static class Build
             foreach (var part in PartArray)
             {
                 var damaged = 0;
-                foreach (var sector in Sectors)
-                    damaged += (335 + ExplorationSheet.GetRow(sector)!.RankReq - PartSheet.GetRow((uint) part)!.Rank) * 7;
+                foreach (var sector in OptimizedRoute)
+                    damaged += (335 + sector.RankReq - PartSheet.GetRow((uint) part)!.Rank) * 7;
 
                 if (highestDamage < damaged)
                     highestDamage = damaged;

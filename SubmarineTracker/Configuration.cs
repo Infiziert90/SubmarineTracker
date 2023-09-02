@@ -24,6 +24,9 @@ namespace SubmarineTracker
 
         public bool ShowOnlyCurrentFC = false;
         public bool AutoSelectCurrent = true;
+        public bool ShowRouteOverlay = true;
+        public bool MaximizeDuration = true;
+        public int HighestLevel = 90;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;

@@ -11,24 +11,7 @@ public partial class BuilderWindow
     private void BuildTab(ref Submarine sub)
     {
         // Always refresh submarine if we have interface selection
-        if (VoyageInterfaceSelection != 0)
-        {
-            if (!CacheValid && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
-            {
-                CacheValid = true;
-
-                SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
-                CurrentBuild.UpdateBuild(SelectedSub);
-
-                // Reset BestEXP to allow automatic calculation trigger
-                LastComputedRank = 0;
-                BestPath = Array.Empty<uint>();
-            }
-        }
-        else
-        {
-            CacheValid = false;
-        }
+        RefreshCache();
 
         if (ImGui.BeginTabItem("Build"))
         {
@@ -120,5 +103,28 @@ public partial class BuilderWindow
 
         if(!last)
             ImGui.TableNextRow();
+    }
+
+    public void RefreshCache()
+    {
+        // Always refresh submarine if we have interface selection
+        if (VoyageInterfaceSelection != 0)
+        {
+            if (!CacheValid && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+            {
+                CacheValid = true;
+
+                SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
+                CurrentBuild.UpdateBuild(SelectedSub);
+
+                // Reset BestEXP to allow automatic calculation trigger
+                LastComputedRank = 0;
+                BestPath = Array.Empty<uint>();
+            }
+        }
+        else
+        {
+            CacheValid = false;
+        }
     }
 }

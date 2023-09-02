@@ -34,7 +34,6 @@ public partial class BuilderWindow
     private CancellationTokenSource CancelSource = new();
 
     private string DurationName = string.Empty;
-    private bool MaximizeDuration;
     private bool IgnoreShark;
     private bool IgnoreUnmodded;
 
@@ -83,7 +82,7 @@ public partial class BuilderWindow
             if (ImGui.Button($"Calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
-                Thread?.Join();
+                Thread.Join();
                 CancelSource = new CancellationTokenSource();
                 StartTime = DateTime.Now;
                 ProgressStartTime = DateTime.Now;
@@ -97,7 +96,7 @@ public partial class BuilderWindow
             if (ImGui.Button($"Stop calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
-                Thread?.Join();
+                Thread.Join();
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
@@ -113,7 +112,7 @@ public partial class BuilderWindow
             ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
             if (Configuration.DurationLimit != DurationLimit.None)
             {
-                ImGui.Checkbox("Maximize duration limit", ref MaximizeDuration);
+                ImGui.Checkbox("Maximize duration limit", ref Configuration.MaximizeDuration);
                 ImGuiComponents.HelpMarker(MaximizeHelp);
             }
 
@@ -295,7 +294,7 @@ public partial class BuilderWindow
 
         LastCalc = outTree;
 
-        LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, MaximizeDuration);
+        LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, Configuration.MaximizeDuration);
         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
         PluginLog.Debug($"Writing routeList json");
@@ -392,7 +391,7 @@ public partial class BuilderWindow
                         {
                             PluginLog.Error($"No journeys returned, cancelling current build!");
                             break;
-                        };
+                        }
 
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
                         var (_, _, exp, path, currentBuild) = best;

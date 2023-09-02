@@ -1,4 +1,3 @@
-using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -11,10 +10,9 @@ public partial class BuilderWindow : Window, IDisposable
     private Plugin Plugin;
     private Configuration Configuration;
 
-    public static List<SubmarineRank> RankSheet = null!;
-    public static ExcelSheet<SubmarinePart> PartSheet = null!;
-    public static ExcelSheet<SubmarineMap> MapSheet = null!;
-    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    public readonly List<SubmarineRank> RankSheet;
+    public readonly ExcelSheet<SubmarineMap> MapSheet;
+    public readonly ExcelSheet<SubmarineExplorationPretty> ExplorationSheet;
 
     public Build.RouteBuild CurrentBuild = new();
 
@@ -31,9 +29,8 @@ public partial class BuilderWindow : Window, IDisposable
         Plugin = plugin;
         Configuration = configuration;
 
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0).ToList();
-        PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
+        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0).ToList();
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
 
         InitializeShip();
