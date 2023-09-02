@@ -36,32 +36,11 @@ public class ConfigurationBase : IDisposable
     {
         foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
         {
-            // TODO: Delete after 17.08, cleaning possible corruptions
-            if (!file.Name.Contains(".json") || file.Name == "routeList.json")
-            {
-                try { file.Delete(); }
-                catch { PluginLog.Warning("Unable to delete leftover file."); }
-
-                continue;
-            }
-            //
-
             if (ulong.TryParse(Path.GetFileNameWithoutExtension(file.Name), out var id))
             {
                 var fc = new Submarines.FcSubmarines(LoadConfig(id));
 
-                // TODO: Delete after 17.08, cleaning possible corruptions
-                if (!fc.Submarines.Any())
-                {
-                    try
-                    { file.Delete(); }
-                    catch
-                    { PluginLog.Warning("Unable to delete corrupted file."); }
-
-                    continue;
-                }
-                //
-
+                fc.Refresh = true;
                 Submarines.KnownSubmarines[id] = fc;
             }
 

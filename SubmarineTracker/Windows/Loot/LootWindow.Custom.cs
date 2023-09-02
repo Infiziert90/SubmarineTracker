@@ -68,14 +68,8 @@ public partial class LootWindow
                     if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
                         continue;
 
-                    if (!bigList.ContainsKey(item))
-                    {
-                        bigList.Add(item, count);
-                    }
-                    else
-                    {
+                    if (!bigList.TryAdd(item, count))
                         bigList[item] += count;
-                    }
                 }
             }
 

@@ -270,6 +270,9 @@ namespace SubmarineTracker
 
         public void Sync()
         {
+            foreach (var fc in Submarines.KnownSubmarines.Values)
+                fc.Refresh = true;
+
             Storage.Refresh = true;
             ConfigurationBase.Load();
             LoadFCOrder();

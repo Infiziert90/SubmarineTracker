@@ -20,7 +20,7 @@ public partial class ConfigWindow
             {
                 changed |= ImGui.Checkbox("Show Route Overlay", ref Configuration.ShowRouteOverlay);
                 ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface.");
-                changed |= ImGui.SliderInt("Highest Level", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
+                changed |= ImGui.SliderInt("Highest Rank", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
                 ImGuiComponents.HelpMarker("No route suggestions above this rank.");
             }
             ImGui.Unindent(10.0f);
