@@ -82,7 +82,7 @@ public partial class BuilderWindow
             if (ImGui.Button($"Calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
-                Thread.Join();
+                Thread?.Join();
                 CancelSource = new CancellationTokenSource();
                 StartTime = DateTime.Now;
                 ProgressStartTime = DateTime.Now;
@@ -96,7 +96,7 @@ public partial class BuilderWindow
             if (ImGui.Button($"Stop calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
                 CancelSource.Cancel();
-                Thread.Join();
+                Thread?.Join();
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
