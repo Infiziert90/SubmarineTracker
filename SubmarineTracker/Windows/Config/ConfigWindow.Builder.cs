@@ -18,10 +18,23 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker("Automatically selects the current selected submarine in the games voyage interface.");
             if (Configuration.AutoSelectCurrent)
             {
+                ImGuiHelpers.ScaledIndent(10.0f);
+                changed |= ImGui.Checkbox("Show Next Overlay", ref Configuration.ShowNextOverlay);
+                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface" +
+                                           "\n" +
+                                           "\nSuggest the next sector to unlock or explore" +
+                                           "\nVisible if:" +
+                                           "\n  a) The map has unlocks left, or" +
+                                           "\n  b) A sector must be explored to unlock the next map");
                 changed |= ImGui.Checkbox("Show Route Overlay", ref Configuration.ShowRouteOverlay);
-                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface.");
+                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface." +
+                                           "\n" +
+                                           "\nSuggest the best route to take" +
+                                           "\nEmpty if:" +
+                                           "\n  a) Highest Rank threshold has been passed");
                 changed |= ImGui.SliderInt("Highest Rank", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
                 ImGuiComponents.HelpMarker("No route suggestions above this rank.");
+                ImGuiHelpers.ScaledIndent(-10.0f);
             }
             ImGui.Unindent(10.0f);
 

@@ -25,7 +25,7 @@ public class RouteOverlay : Window, IDisposable
     {
         Size = new Vector2(300, 350);
 
-        Flags = ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar;
+        Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         RespectCloseHotkey = false;
         DisableWindowSounds = true;
 
@@ -39,18 +39,18 @@ public class RouteOverlay : Window, IDisposable
 
     public override unsafe void PreOpenCheck()
     {
+        IsOpen = false;
         if (!Configuration.AutoSelectCurrent || !Configuration.ShowRouteOverlay)
-        {
-            Reset();
             return;
-        }
 
+        // Always refresh submarine if we have interface selection
+        Plugin.BuilderWindow.RefreshCache();
         try
         {
             var addonPtr = Plugin.GameGui.GetAddonByName("AirShipExploration");
             if (addonPtr == nint.Zero)
             {
-                Reset();
+                Map = -1;
                 return;
             }
 
@@ -61,10 +61,7 @@ public class RouteOverlay : Window, IDisposable
             // Check if submarine voyage log is open and not Airship
             var map = (int) explorationBaseNode->AtkValues[2].UInt;
             if (map < 63191)
-            {
-                Reset();
                 return;
-            }
 
             var selectedMap = map - 63191; // 63191 = Deep-sea Site
             if (selectedMap != Map)
@@ -73,7 +70,9 @@ public class RouteOverlay : Window, IDisposable
                 BestPath = Array.Empty<uint>();
                 Plugin.BuilderWindow.MustInclude.Clear();
                 Plugin.BuilderWindow.ExplorationPopupOptions = null;
+
                 Map = selectedMap;
+                Plugin.BuilderWindow.CurrentBuild.ChangeMap(selectedMap);
             }
 
             IsOpen = true;
@@ -81,7 +80,7 @@ public class RouteOverlay : Window, IDisposable
         catch
         {
             // Something went wrong, we don't draw
-            Reset();
+            Map = -1;
         }
     }
 
@@ -92,10 +91,6 @@ public class RouteOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        // Always refresh submarine if we have interface selection
-        Plugin.BuilderWindow.RefreshCache();
-        Plugin.BuilderWindow.CurrentBuild.ChangeMap(Map);
-
         if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())
@@ -222,11 +217,5 @@ public class RouteOverlay : Window, IDisposable
     public override void PostDraw()
     {
         ImGui.PopStyleColor();
-    }
-
-    private void Reset()
-    {
-        Map = -1;
-        IsOpen = false;
     }
 }

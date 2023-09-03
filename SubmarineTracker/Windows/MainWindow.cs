@@ -161,7 +161,7 @@ public class MainWindow : Window, IDisposable
                     var time = " No Voyage ";
                     if (sub.IsOnVoyage())
                     {
-                        var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
+                        var startPoint = Voyage.FindVoyageStart(sub.Points.First());
                         route = $"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}";
 
                         time = " Done ";
@@ -285,7 +285,7 @@ public class MainWindow : Window, IDisposable
 
                         if (Configuration.ShowRouteInOverview)
                         {
-                            var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
+                            var startPoint = Voyage.FindVoyageStart(sub.Points.First());
                             time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
                         }
 
@@ -483,7 +483,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
-                var startPoint = Voyage.FindVoyageStartPoint(sub.Points.First());
+                var startPoint = Voyage.FindVoyageStart(sub.Points.First());
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted("Map");
                 ImGui.TableNextColumn();

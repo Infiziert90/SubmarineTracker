@@ -48,8 +48,7 @@ public partial class ConfigWindow
                             deletion = id;
 
                         if (ImGui.IsItemHovered())
-                            ImGui.SetTooltip(
-                                "Deleting an FC entry will additionally remove it's loot history.\nHold Control to delete");
+                            ImGui.SetTooltip("Deleting an FC entry will additionally remove it's loot history.\nHold Control to delete");
 
                         ImGui.TableNextRow();
                     }

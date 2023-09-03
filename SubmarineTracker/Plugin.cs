@@ -50,6 +50,7 @@ namespace SubmarineTracker
         public HelpyWindow HelpyWindow { get; init; }
         public OverlayWindow OverlayWindow { get; init; }
         public RouteOverlay RouteOverlay { get; init; }
+        public NextOverlay NextOverlay { get; init; }
 
         public ConfigurationBase ConfigurationBase;
 
@@ -93,6 +94,7 @@ namespace SubmarineTracker
             HelpyWindow = new HelpyWindow(this, Configuration);
             OverlayWindow = new OverlayWindow(this, Configuration);
             RouteOverlay = new RouteOverlay(this, Configuration);
+            NextOverlay = new NextOverlay(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
@@ -101,6 +103,7 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(HelpyWindow);
             WindowSystem.AddWindow(OverlayWindow);
             WindowSystem.AddWindow(RouteOverlay);
+            WindowSystem.AddWindow(NextOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 

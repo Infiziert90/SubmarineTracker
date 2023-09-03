@@ -114,7 +114,7 @@ public partial class BuilderWindow
         if (!Unlocks.PointToUnlockPoint.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(0);
 
-        fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Point, out var otherUnlocked);
+        fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out var otherUnlocked);
 
         ImGui.BeginTooltip();
         ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
@@ -126,16 +126,16 @@ public partial class BuilderWindow
         {
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
             ImGui.SameLine();
-            if (unlockedFrom.Point != 9876)
+            if (unlockedFrom.Sector != 9876)
             {
-                if (unlockedFrom.Point != 9000)
+                if (unlockedFrom.Sector != 9000)
                 {
-                    var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Point)!;
-                    var mapPoint = Voyage.FindVoyageStartPoint(unlockPoint.RowId);
+                    var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Sector)!;
+                    var mapPoint = Voyage.FindVoyageStart(unlockPoint.RowId);
                     ImGui.TextColored(otherUnlocked
                                           ? ImGuiColors.HealerGreen
                                           : ImGuiColors.DalamudRed,
-                                      $"{NumToLetter(unlockedFrom.Point - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+                                      $"{NumToLetter(unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
 
                     if (unlockedFrom.Sub)
                         ImGui.TextColored(ImGuiColors.TankBlue, $"#Extra Sub Slot");

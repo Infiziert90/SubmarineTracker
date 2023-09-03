@@ -197,7 +197,7 @@ public partial class BuilderWindow : Window, IDisposable
                 CurrentBuild = value;
                 if (CurrentBuild.Sectors.Any())
                 {
-                    var startPoint = Voyage.FindVoyageStartPoint(CurrentBuild.Sectors.First());
+                    var startPoint = Voyage.FindVoyageStart(CurrentBuild.Sectors.First());
                     var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
                     CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
                 }

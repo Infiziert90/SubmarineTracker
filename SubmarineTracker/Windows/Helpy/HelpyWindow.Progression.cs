@@ -1,11 +1,16 @@
-using Lumina.Excel;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow
 {
-    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    private List<(uint, Unlocks.UnlockedFrom)> UnlockPath = null!;
+
+    private void InitProgression()
+    {
+        UnlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last(s => s.Value.Sector != 9876).Key);
+        UnlockPath.Reverse();
+    }
 
     private void ProgressionTab(Submarines.FcSubmarines fcSub)
     {
@@ -13,27 +18,14 @@ public partial class HelpyWindow
         {
             if (ImGui.BeginTabBar("##progressionTabBar"))
             {
-                if (ImGui.BeginTabItem("4 Submarines"))
-                {
-                    AllSlotsTab(fcSub);
+                AllSlotsTab(fcSub);
 
-                    ImGui.EndTabItem();
-                }
+                LastSectorTab(fcSub);
 
-                if (ImGui.BeginTabItem("Last Sector"))
-                {
-                    LastSectorTab(fcSub);
+                InfoTab();
 
-                    ImGui.EndTabItem();
-                }
-
-                if (ImGui.BeginTabItem("Info"))
-                {
-                    InfoTab();
-                    ImGui.EndTabItem();
-                }
+                ImGui.EndTabBar();
             }
-            ImGui.EndTabBar();
 
             ImGui.EndTabItem();
         }
@@ -41,6 +33,9 @@ public partial class HelpyWindow
 
     private void AllSlotsTab(Submarines.FcSubmarines fcSub)
     {
+        if (!ImGui.BeginTabItem("4 Submarines"))
+            return;
+
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
         var unlockPath = Unlocks.FindUnlockPath(20);
         unlockPath.Reverse();
@@ -55,7 +50,7 @@ public partial class HelpyWindow
         {
             var (point, unlockedFrom) = tuple;
             var explorationPoint = ExplorationSheet.GetRow(point)!;
-            var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
+            var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
@@ -75,13 +70,16 @@ public partial class HelpyWindow
             ImGui.TextColored(ImGuiColors.TankBlue, special);
             ImGui.EndChild();
         });
+
+        ImGui.EndTabItem();
     }
 
     private void LastSectorTab(Submarines.FcSubmarines fcSub)
     {
+        if (!ImGui.BeginTabItem("Last Sector"))
+            return;
+
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
-        var unlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last(s => s.Value.Point != 9876).Key);
-        unlockPath.Reverse();
 
         var mod = new Box.Modifier();
         mod.Padding(10 * ImGuiHelpers.GlobalScale);
@@ -89,11 +87,11 @@ public partial class HelpyWindow
         mod.BorderColor(bColor);
 
         ImGuiHelpers.ScaledDummy(10.0f);
-        BoxList.RenderList(unlockPath, mod, 2f, tuple =>
+        BoxList.RenderList(UnlockPath, mod, 2f, tuple =>
         {
             var (point, unlockedFrom) = tuple;
             var explorationPoint = ExplorationSheet.GetRow(point)!;
-            var startPoint = Voyage.FindVoyageStartPoint(explorationPoint.RowId);
+            var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
 
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
@@ -113,10 +111,15 @@ public partial class HelpyWindow
             ImGui.TextColored(ImGuiColors.TankBlue, special);
             ImGui.EndChild();
         });
+
+        ImGui.EndTabItem();
     }
 
     private static void InfoTab()
     {
+        if (!ImGui.BeginTabItem("Info"))
+            return;
+
         ImGuiHelpers.ScaledDummy(5.0f);
 
         ImGui.TextColored(ImGuiColors.DalamudViolet, "How to unlock new Sectors?");
@@ -140,6 +143,8 @@ public partial class HelpyWindow
         ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
         ImGui.SameLine(spacing);
         ImGui.TextUnformatted("Not unlocked");
+
+        ImGui.EndTabItem();
     }
 
     private static int CalculateNumberPerLine() => (int) (ImGui.GetWindowWidth() / (215.0f * ImGuiHelpers.GlobalScale));

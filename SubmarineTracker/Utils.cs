@@ -35,9 +35,12 @@ public static class Utils
         return sb.ToString();
     }
 
-    public static string MapToShort(int key) => MapToShort((uint)key);
-    public static string MapToShort(uint key)
+    public static string MapToShort(int key, bool resolveToMap = false) => MapToShort((uint)key, resolveToMap);
+    public static string MapToShort(uint key, bool resolveToMap = false)
     {
+        if (resolveToMap)
+            key = Voyage.FindMapFromSector(key);
+
         return key switch
         {
             1 => "Deep-sea",
@@ -52,7 +55,7 @@ public static class Utils
     public static string MapToThreeLetter(uint key, bool resolveToMap = false)
     {
         if (resolveToMap)
-            key = Voyage.SectorToMap(key);
+            key = Voyage.FindMapFromSector(key);
 
         return key switch
         {
@@ -68,7 +71,7 @@ public static class Utils
     public static string NumToLetter(uint num, bool findStart = false)
     {
         if (findStart)
-            num -= Voyage.FindVoyageStartPoint(num);
+            num -= Voyage.FindVoyageStart(num);
 
         var index = (int)(num - 1);  // 0 indexed
 
@@ -89,7 +92,7 @@ public static class Utils
         var route = "No Route";
         if (build.Sectors.Any())
         {
-            var startPoint = Voyage.FindVoyageStartPoint(build.Sectors.First());
+            var startPoint = Voyage.FindVoyageStart(build.Sectors.First());
             route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";;
         }
 

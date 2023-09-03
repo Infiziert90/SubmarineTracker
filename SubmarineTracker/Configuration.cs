@@ -27,6 +27,7 @@ namespace SubmarineTracker
         public bool ShowRouteOverlay = true;
         public bool MaximizeDuration = true;
         public int HighestLevel = 90;
+        public bool ShowNextOverlay = true;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;

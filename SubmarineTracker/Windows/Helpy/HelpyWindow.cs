@@ -1,4 +1,5 @@
 using Dalamud.Interface.Windowing;
+using Lumina.Excel;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;
@@ -7,6 +8,8 @@ public partial class HelpyWindow : Window, IDisposable
 {
     private Plugin Plugin;
     private Configuration Configuration;
+
+    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public HelpyWindow(Plugin plugin, Configuration configuration) : base("Helpy")
     {
@@ -20,6 +23,8 @@ public partial class HelpyWindow : Window, IDisposable
         Configuration = configuration;
 
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+
+        InitProgression();
     }
 
     public void Dispose() { }

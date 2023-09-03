@@ -3,9 +3,10 @@
 Simple and Easy  
 + Tracker for current builds, routes and times 
 + Builder to improve, solve builds and optimize EXP
-+ Configurable Notification for return/repair 
-+ Helper with useful information
++ Configurable notification for return and repairs 
++ Helpy filled useful information
 + Custom loot overview with history and export
++ Multiple overlays to help with daily tasks 
 + Supports multiple FCs  
 
 ### Tracker (/stracker)
@@ -14,6 +15,9 @@ Simple and Easy
 ### Chat Notification
 ![notify](SubmarineTracker/images/chat.png)
 ![repair](SubmarineTracker/images/repair.png)
+
+### Next / Route Overlay
+![interface](SubmarineTracker/images/interface.gif)
 
 ### Overlay (/soverlay)
 ![overlay](SubmarineTracker/images/overlay.png)

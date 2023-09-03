@@ -2,7 +2,7 @@ namespace SubmarineTracker.Data;
 
 public static class Unlocks
 {
-    public record UnlockedFrom(uint Point, bool Sub = false, bool Map = false);
+    public record UnlockedFrom(uint Sector, bool Sub = false, bool Map = false);
 
     public static readonly Dictionary<uint, UnlockedFrom> PointToUnlockPoint = new()
     {
@@ -14,27 +14,27 @@ public static class Unlocks
         { 5, new UnlockedFrom(2) },                 // E    Deep-sea Site 3		        <-      Deep-sea Site 1
         { 6, new UnlockedFrom(3) },                 // F    The Southern Rimilala Trench	<-      Deep-sea Site 2
         { 7, new UnlockedFrom(4) },                 // G    The Umbrella Narrow		    <-      The Lightless Basin
-        { 8, new UnlockedFrom(7) },                 // H    Offender's Rot		            <-      The Umbrella Narrow
-        { 9, new UnlockedFrom(5) },                 // I    Neolith Island		            <-      Deep-sea Site 3
+        { 8, new UnlockedFrom(7) },                 // H    Offender's Rot		        <-      The Umbrella Narrow
+        { 9, new UnlockedFrom(5) },                 // I    Neolith Island		        <-      Deep-sea Site 3
         { 10, new UnlockedFrom(5, Sub: true) },     // J    Unidentified Derelict		    <-      Deep-sea Site 3
         { 11, new UnlockedFrom(9) },                // K    The Cobalt Shoals		        <-      Neolith Island
         { 12, new UnlockedFrom(8) },                // L    The Mystic Basin		        <-      Offender's Rot
         { 13, new UnlockedFrom(8) },                // M    Deep-sea Site 4		        <-      Offender's Rot
         { 14, new UnlockedFrom(10) },               // N    The Central Rimilala Trench	<-      Unidentified Derelict
         { 15, new UnlockedFrom(14, Sub: true) },    // O    The Wreckage Of Discovery I	<-      The Central Rimilala Trench
-        { 16, new UnlockedFrom(11) },               // P    Komura		                    <-      The Cobalt Shoals
+        { 16, new UnlockedFrom(11) },               // P    Komura		                <-      The Cobalt Shoals
         { 17, new UnlockedFrom(16) },               // Q    Kanayama		                <-      Komura
         { 18, new UnlockedFrom(12) },               // R    Concealed Bay		            <-      The Mystic Basin
         { 19, new UnlockedFrom(15) },               // S    Deep-sea Site 5		        <-      The Wreckage Of Discovery I
         { 20, new UnlockedFrom(19, Sub: true) },    // T    Purgatory		                <-      Deep-sea Site 5
         { 21, new UnlockedFrom(19) },               // U    Deep-sea Site 6		        <-      Deep-sea Site 5
-        { 22, new UnlockedFrom(21) },               // V    The Rimilala Shelf		        <-      Deep-sea Site 6
+        { 22, new UnlockedFrom(21) },               // V    The Rimilala Shelf		    <-      Deep-sea Site 6
         { 23, new UnlockedFrom(14) },               // W    Deep-sea Site 7		        <-      The Central Rimilala Trench
         { 24, new UnlockedFrom(23) },               // X    Glittersand Basin		        <-      Deep-sea Site 7
-        { 25, new UnlockedFrom(20) },               // Y    Flickering Dip		            <-      Purgatory
+        { 25, new UnlockedFrom(20) },               // Y    Flickering Dip		        <-      Purgatory
         { 26, new UnlockedFrom(25) },               // Z    The Wreckage Of The Headway	<-      Flickering Dip
-        { 27, new UnlockedFrom(26) },               // AA   The Upwell		                <-      The Wreckage Of The Headway
-        { 28, new UnlockedFrom(27) },               // AB   The Rimilala Trench Bottom		<-      The Upwell
+        { 27, new UnlockedFrom(26) },               // AA   The Upwell		            <-      The Wreckage Of The Headway
+        { 28, new UnlockedFrom(27) },               // AB   The Rimilala Trench Bottom    <-      The Upwell
         { 29, new UnlockedFrom(27) },               // AC   Stone Temple		            <-      The Upwell
         { 30, new UnlockedFrom(28, Map: true) },    // AD   Sunken Vault		            <-      The Rimilala Trench Bottom
 
@@ -114,26 +114,25 @@ public static class Unlocks
         { 101, new UnlockedFrom(97) },              // The Lilac Sea 2                     <-       Fortune's Ford
     };
 
-    public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalPoint)
+    public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)
     {
-        if (!PointToUnlockPoint.TryGetValue(finalPoint, out var final))
+        if (!PointToUnlockPoint.TryGetValue(finalSector, out var final))
             return new List<(uint, UnlockedFrom)>();
 
         // Unknown unlock at the time
-        if (final.Point == 9876)
+        if (final.Sector == 9876)
             return new List<(uint, UnlockedFrom)>();
 
-        var wayPoints = new List<(uint, UnlockedFrom)> { (finalPoint, final) };
-
-        var point = final.Point;
-        while (point != 9000)
+        var sector = final.Sector;
+        var sectorPath = new List<(uint, UnlockedFrom)> { (finalSector, final) };
+        while (sector != 9000)
         {
-            var newPoint = PointToUnlockPoint[point];
-            wayPoints.Add((point, newPoint));
+            var newSector = PointToUnlockPoint[sector];
+            sectorPath.Add((sector, newSector));
 
-            point = newPoint.Point;
+            sector = newSector.Sector;
         }
 
-        return wayPoints;
+        return sectorPath;
     }
 }

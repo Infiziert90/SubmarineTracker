@@ -161,7 +161,7 @@ public partial class BuilderWindow
             ImGui.PopFont();
             ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> explorationPopupOptions = new()
             {
-                FormatRow = e => $"{NumToLetter(e.RowId - Voyage.FindVoyageStartPoint(e.RowId))}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+                FormatRow = e => $"{NumToLetter(e.RowId - Voyage.FindVoyageStart(e.RowId))}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
                 FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
             };
 
@@ -226,7 +226,7 @@ public partial class BuilderWindow
                 BoxList.RenderList(LastCalc, modifier, 1f, pair =>
                 {
                     var (i, (rankReached, leftover, routeExp, points, build)) = pair;
-                    var startPoint = Voyage.FindVoyageStartPoint(points[0]);
+                    var startPoint = Voyage.FindVoyageStart(points[0]);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp Gained: {routeExp:N0}");
@@ -252,7 +252,7 @@ public partial class BuilderWindow
     public TimeSpan GetTimesFromJourneys(IEnumerable<Journey> journeys) =>
         journeys.Select(t =>
         {
-            var startPoint = Voyage.FindVoyageStartPoint(t.Route[0]);
+            var startPoint = Voyage.FindVoyageStart(t.Route[0]);
             return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Append(startPoint).Select(f => ExplorationSheet.GetRow(f)!).ToArray(), (Build.RouteBuild)t.Build));
         }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
 
