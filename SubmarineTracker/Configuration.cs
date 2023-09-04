@@ -28,6 +28,7 @@ namespace SubmarineTracker
         public bool MaximizeDuration = true;
         public int HighestLevel = 90;
         public bool ShowNextOverlay = true;
+        public bool ShowUnlockOverlay = true;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;

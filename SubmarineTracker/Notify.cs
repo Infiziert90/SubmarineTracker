@@ -135,7 +135,7 @@ public class Notify
         Plugin.ChatGui.Print(GenerateMessage(Helper.GetSubName(sub, fc)));
 
         if (Configuration.OverlayAlwaysOpen)
-            Plugin.OverlayWindow.IsOpen = true;
+            Plugin.ReturnOverlay.IsOpen = true;
     }
 
     public void SendRepair(Submarine sub, FcSubmarines fc)

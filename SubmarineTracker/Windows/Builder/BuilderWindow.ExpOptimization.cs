@@ -8,7 +8,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    public List<SubmarineExplorationPretty> MustInclude = new();
+    public readonly HashSet<SubmarineExplorationPretty> MustInclude = new();
 
     private uint[] BestPath = Array.Empty<uint>();
     private bool ComputingPath;
@@ -326,11 +326,8 @@ public partial class BuilderWindow
                     if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, Error || MustInclude.Count >= 5))
                     {
                         var point = ExplorationSheet.GetRow(row)!;
-                        if (!MustInclude.Contains(point))
-                        {
-                            MustInclude.Add(point);
+                        if (MustInclude.Add(point))
                             OptionsChanged = true;
-                        }
                     }
 
                     ImGui.SameLine();

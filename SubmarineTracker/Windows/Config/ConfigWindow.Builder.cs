@@ -26,12 +26,19 @@ public partial class ConfigWindow
                                            "\nVisible if:" +
                                            "\n  a) The map has unlocks left, or" +
                                            "\n  b) A sector must be explored to unlock the next map");
+                changed |= ImGui.Checkbox("Show Unlock Overlay", ref Configuration.ShowUnlockOverlay);
+                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface" +
+                                           "\n" +
+                                           "\nShows all unlocks that are still open" +
+                                           "\nVisible if:" +
+                                           "\n  a) The map has unlocks left");
                 changed |= ImGui.Checkbox("Show Route Overlay", ref Configuration.ShowRouteOverlay);
                 ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface." +
                                            "\n" +
                                            "\nSuggest the best route to take" +
                                            "\nEmpty if:" +
-                                           "\n  a) Highest Rank threshold has been passed");
+                                           "\n  a) Highest Rank threshold has been passed" +
+                                           "\n  b) MustInclude is empty");
                 changed |= ImGui.SliderInt("Highest Rank", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
                 ImGuiComponents.HelpMarker("No route suggestions above this rank.");
                 ImGuiHelpers.ScaledIndent(-10.0f);

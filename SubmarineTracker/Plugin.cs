@@ -20,8 +20,7 @@ using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
-using SubmarineTracker.Windows.Overlay;
-using SubmarineTracker.Windows.RouteOverlay;
+using SubmarineTracker.Windows.Overlays;
 
 namespace SubmarineTracker
 {
@@ -48,9 +47,10 @@ namespace SubmarineTracker
         public BuilderWindow BuilderWindow { get; init; }
         public LootWindow LootWindow { get; init; }
         public HelpyWindow HelpyWindow { get; init; }
-        public OverlayWindow OverlayWindow { get; init; }
+        public ReturnOverlay ReturnOverlay { get; init; }
         public RouteOverlay RouteOverlay { get; init; }
         public NextOverlay NextOverlay { get; init; }
+        public UnlockOverlay UnlockOverlay { get; init; }
 
         public ConfigurationBase ConfigurationBase;
 
@@ -92,18 +92,22 @@ namespace SubmarineTracker
             BuilderWindow = new BuilderWindow(this, Configuration);
             LootWindow = new LootWindow(this, Configuration);
             HelpyWindow = new HelpyWindow(this, Configuration);
-            OverlayWindow = new OverlayWindow(this, Configuration);
+
+            ReturnOverlay = new ReturnOverlay(this, Configuration);
             RouteOverlay = new RouteOverlay(this, Configuration);
             NextOverlay = new NextOverlay(this, Configuration);
+            UnlockOverlay = new UnlockOverlay(this, Configuration);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
             WindowSystem.AddWindow(BuilderWindow);
             WindowSystem.AddWindow(LootWindow);
             WindowSystem.AddWindow(HelpyWindow);
-            WindowSystem.AddWindow(OverlayWindow);
+
+            WindowSystem.AddWindow(ReturnOverlay);
             WindowSystem.AddWindow(RouteOverlay);
             WindowSystem.AddWindow(NextOverlay);
+            WindowSystem.AddWindow(UnlockOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
 
@@ -121,7 +125,7 @@ namespace SubmarineTracker
             var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
             {
-                OverlayWindow.IsOpen = true;
+                ReturnOverlay.IsOpen = true;
                 // TODO Check for a valid way to uncollapse something once
                 // if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
                 // {
@@ -196,7 +200,7 @@ namespace SubmarineTracker
         [HelpMessage("Opens the overlay")]
         private void OnOverlayCommand(string command, string args)
         {
-            OverlayWindow.IsOpen ^= true;
+            ReturnOverlay.IsOpen ^= true;
 
             Configuration.OverlayOpen ^= true;
             Configuration.Save();

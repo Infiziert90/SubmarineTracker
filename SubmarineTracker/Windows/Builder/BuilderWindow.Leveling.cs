@@ -81,6 +81,9 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(10.0f);
             if (ImGui.Button($"Calculate for {(!IgnoreBuild ? "Build" : "All")}"))
             {
+                // Reset here to prevent an empty calculation from happening
+                MustInclude.Clear();
+
                 CancelSource.Cancel();
                 Thread?.Join();
                 CancelSource = new CancellationTokenSource();

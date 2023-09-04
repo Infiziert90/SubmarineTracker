@@ -2,17 +2,17 @@ using System.IO;
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
 
-namespace SubmarineTracker.Windows.Overlay;
+namespace SubmarineTracker.Windows.Overlays;
 
 // Inspired by Accountant from Ottermandias
-public class OverlayWindow : Window, IDisposable
+public class ReturnOverlay : Window, IDisposable
 {
-    private Plugin Plugin;
-    private Configuration Configuration;
+    private readonly Plugin Plugin;
+    private readonly Configuration Configuration;
 
     private (int OnRoute, int Done, int Halt) VoyageStats = (0, 0, 0);
 
-    public OverlayWindow(Plugin plugin, Configuration configuration) : base("Submarines: 0|0|0###submarineOverlay")
+    public ReturnOverlay(Plugin plugin, Configuration configuration) : base("Submarines: 0|0|0###submarineOverlay")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {

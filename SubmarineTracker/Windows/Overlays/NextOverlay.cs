@@ -4,7 +4,7 @@ using Lumina.Excel;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
-namespace SubmarineTracker.Windows.RouteOverlay;
+namespace SubmarineTracker.Windows.Overlays;
 
 public class NextOverlay : Window, IDisposable
 {

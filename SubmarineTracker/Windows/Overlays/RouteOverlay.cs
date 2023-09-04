@@ -5,7 +5,7 @@ using Lumina.Excel;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
-namespace SubmarineTracker.Windows.RouteOverlay;
+namespace SubmarineTracker.Windows.Overlays;
 
 public class RouteOverlay : Window, IDisposable
 {
@@ -91,10 +91,10 @@ public class RouteOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank)
+        if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !Plugin.BuilderWindow.MustInclude.Any())
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip("Submarine above threshold\nCheck your config for higher level suggestions.");
+                ImGui.SetTooltip("Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions.");
 
             Calculate = false;
             return;
@@ -196,8 +196,7 @@ public class RouteOverlay : Window, IDisposable
         if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, Plugin.BuilderWindow.MustInclude.Count >= 5))
         {
             var point = ExplorationSheet.GetRow(row)!;
-            if (!Plugin.BuilderWindow.MustInclude.Contains(point))
-                Plugin.BuilderWindow.MustInclude.Add(point);
+            Plugin.BuilderWindow.MustInclude.Add(point);
         }
 
         ImGui.SameLine();
