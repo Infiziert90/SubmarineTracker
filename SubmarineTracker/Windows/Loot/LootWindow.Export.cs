@@ -21,7 +21,7 @@ public partial class LootWindow
 
     private static readonly DateTime ExportMinimalDate = new(2023, 6, 11);
     private DateTime ExportMinDate = ExportMinimalDate;
-    private DateTime ExportMaxDate = DateTime.Now;
+    private DateTime ExportMaxDate = DateTime.Now.AddDays(5);
 
     private string ExportMinString = "";
     private string ExportMaxString = "";

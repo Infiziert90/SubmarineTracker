@@ -170,7 +170,7 @@ public static class Sectors
         return (guaranteed, Math.Clamp(maximum, 0, 4));
     }
 
-    public static uint CalculateExpForSectors(List<SubmarineExplorationPretty> sectors, Build.SubmarineBuild build)
+    public static uint CalculateExpForSectors(SubmarineExplorationPretty[] sectors, Build.SubmarineBuild build)
     {
         var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
         if (!bonusEachSector.Any())

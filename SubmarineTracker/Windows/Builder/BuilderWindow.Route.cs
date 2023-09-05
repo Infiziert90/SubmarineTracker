@@ -99,7 +99,7 @@ public partial class BuilderWindow
 
                 if (CurrentBuild.Sectors.Any())
                 {
-                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
+                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow);
                     CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
                 }
             }

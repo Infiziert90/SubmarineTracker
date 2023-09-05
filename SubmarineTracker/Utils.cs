@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
@@ -93,7 +94,7 @@ public static class Utils
         if (build.Sectors.Any())
         {
             var startPoint = Voyage.FindVoyageStart(build.Sectors.First());
-            route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";;
+            route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";
         }
 
         return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.FullIdentifier()})" +
@@ -131,6 +132,30 @@ public static class Utils
         return !b.Except(a).Any();
     }
 
+    public class ArrayComparer : IEqualityComparer<uint[]>
+    {
+        public bool Equals(uint[]? x, uint[]? y)
+        {
+            if (x == null)
+                return false;
+            if (y == null)
+                return false;
+
+            return x.Length == y.Length && !x.Except(y).Any();
+        }
+
+        public int GetHashCode(uint[] obj)
+        {
+            var hash = 19;
+            foreach (var element in obj.OrderBy(x => x))
+            {
+                hash = (hash * 31) + element.GetHashCode();
+            }
+
+            return hash;
+        }
+    }
+
     public class ListComparer : IEqualityComparer<List<uint>>
     {
         public bool Equals(List<uint>? x, List<uint>? y)
@@ -152,6 +177,53 @@ public static class Utils
             }
 
             return hash;
+        }
+    }
+
+    public static uint GetUniqueId(uint x, uint y)
+    {
+        return x > y ? y | (x << 8) : x | (y << 8);
+    }
+
+    // From: https: //stackoverflow.com/a/36634935
+    public static class Permutations
+    {
+        public static List<T[]> GetAllPermutation<T>(T[] items)
+        {
+            var countOfItem = items.Length;
+
+            if (countOfItem <= 1)
+                return new List<T[]> { Array.Empty<T>() };
+
+            var indexes = new int[countOfItem];
+            var permutations = new List<T[]> { items.ToArray() };
+            for (var i = 1; i < countOfItem;)
+            {
+                if (indexes[i] < i)
+                {
+                    if ((i & 1) == 1)
+                        Swap(ref items[i], ref items[indexes[i]]);
+                    else
+                        Swap(ref items[i], ref items[0]);
+
+                    permutations.Add(items.ToArray());
+
+                    indexes[i]++;
+                    i = 1;
+                }
+                else
+                {
+                    indexes[i++] = 0;
+                }
+            }
+
+            return permutations;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Swap<T>(ref T a, ref T b)
+        {
+            (a, b) = (b, a);
         }
     }
 }

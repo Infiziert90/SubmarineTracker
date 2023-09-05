@@ -77,7 +77,7 @@ namespace SubmarineTracker
 
             Loot.Initialize();
             Build.Initialize();
-            Voyage.Initialize();
+            Voyage.Initialize(this);
             Submarines.Initialize();
             TexturesCache.Initialize();
             ImportantItemsMethods.Initialize();

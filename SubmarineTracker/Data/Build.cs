@@ -8,13 +8,11 @@ public static class Build
 {
     private static ExcelSheet<SubmarineRank> RankSheet = null!;
     private static ExcelSheet<SubmarinePart> PartSheet = null!;
-    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public static void Initialize()
     {
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
     }
 
     public struct SubmarineBuild
@@ -135,8 +133,8 @@ public static class Build
 
         [JsonIgnore] public int OriginalSub = 0;
 
-        [JsonIgnore] public int OptimizedDistance = 0;
-        [JsonIgnore] public List<SubmarineExplorationPretty> OptimizedRoute = new();
+        [JsonIgnore] public uint OptimizedDistance = 0;
+        [JsonIgnore] public SubmarineExplorationPretty[] OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
 
@@ -173,10 +171,10 @@ public static class Build
 
             Sectors.Clear();
             OptimizedDistance = 0;
-            OptimizedRoute = new List<SubmarineExplorationPretty>();
+            OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
         }
 
-        public void UpdateOptimized((int Distance, List<SubmarineExplorationPretty> Points) optimized)
+        public void UpdateOptimized((uint Distance, SubmarineExplorationPretty[] Points) optimized)
         {
             OptimizedDistance = optimized.Distance;
             OptimizedRoute = optimized.Points;
@@ -185,7 +183,7 @@ public static class Build
         public void NotOptimized()
         {
             OptimizedDistance = 0;
-            OptimizedRoute = new List<SubmarineExplorationPretty>();
+            OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
         }
 
         public int CalculateUntilRepair()

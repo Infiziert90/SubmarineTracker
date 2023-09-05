@@ -94,7 +94,7 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
                 ImGui.TableNextColumn();
-                SelectRequiredColor(CurrentBuild.OptimizedDistance, build.Range);
+                SelectRequiredColor((int) CurrentBuild.OptimizedDistance, build.Range);
 
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");

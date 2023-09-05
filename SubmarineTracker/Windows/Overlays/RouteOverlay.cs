@@ -18,6 +18,7 @@ public class RouteOverlay : Window, IDisposable
     private bool Calculate;
     private bool ComputingPath;
     private DateTime ComputeStart = DateTime.Now;
+    public readonly HashSet<SubmarineExplorationPretty> MustInclude = new();
 
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
@@ -68,7 +69,7 @@ public class RouteOverlay : Window, IDisposable
             {
                 Calculate = true;
                 BestPath = Array.Empty<uint>();
-                Plugin.BuilderWindow.MustInclude.Clear();
+                MustInclude.Clear();
                 Plugin.BuilderWindow.ExplorationPopupOptions = null;
 
                 Map = selectedMap;
@@ -91,7 +92,7 @@ public class RouteOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !Plugin.BuilderWindow.MustInclude.Any())
+        if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !MustInclude.Any())
         {
             if (ImGui.IsWindowHovered())
                 ImGui.SetTooltip("Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions.");
@@ -100,6 +101,7 @@ public class RouteOverlay : Window, IDisposable
             return;
         }
 
+        var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
         if (Calculate && !ComputingPath)
         {
             Calculate = false;
@@ -107,9 +109,12 @@ public class RouteOverlay : Window, IDisposable
             BestPath = Array.Empty<uint>();
             ComputeStart = DateTime.Now;
             ComputingPath = true;
+
             Task.Run(() =>
             {
-                var path = Plugin.BuilderWindow.FindBestPath(Plugin.BuilderWindow.CurrentBuild);
+                var mustInclude = MustInclude.Select(s => s.RowId).ToArray();
+                var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
+                var path = Voyage.FindBestPath(Plugin.BuilderWindow.CurrentBuild, unlocked, mustInclude);
                 if (!path.Any())
                     Plugin.BuilderWindow.CurrentBuild.NotOptimized();
 
@@ -173,16 +178,15 @@ public class RouteOverlay : Window, IDisposable
                 Configuration.Save();
         }
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {Plugin.BuilderWindow.MustInclude.Count} / 5");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-        if (Plugin.BuilderWindow.MustInclude.Count >= 5) ImGui.BeginDisabled();
+        if (MustInclude.Count >= 5) ImGui.BeginDisabled();
         ImGui.PushFont(UiBuilder.IconFont);
         ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
         ImGui.PopFont();
-        if (Plugin.BuilderWindow.MustInclude.Count >= 5) ImGui.EndDisabled();
+        if (MustInclude.Count >= 5) ImGui.EndDisabled();
 
-        var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
         if (Plugin.BuilderWindow.ExplorationPopupOptions == null)
         {
             ExcelSheetSelector.FilteredSearchSheet = null!;
@@ -193,21 +197,16 @@ public class RouteOverlay : Window, IDisposable
             };
         }
 
-        if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, Plugin.BuilderWindow.MustInclude.Count >= 5))
-        {
-            var point = ExplorationSheet.GetRow(row)!;
-            Plugin.BuilderWindow.MustInclude.Add(point);
-        }
+        if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
+            MustInclude.Add(ExplorationSheet.GetRow(row)!);
 
         ImGui.SameLine();
 
         if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
         {
-            foreach (var p in Plugin.BuilderWindow.MustInclude.ToArray())
-            {
+            foreach (var p in MustInclude.ToArray())
                 if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                    Plugin.BuilderWindow.MustInclude.Remove(p);
-            }
+                    MustInclude.Remove(p);
 
             ImGui.EndListBox();
         }

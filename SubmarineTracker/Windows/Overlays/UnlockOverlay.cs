@@ -136,7 +136,7 @@ public class UnlockOverlay : Window, IDisposable
         if (ImGui.Button("Must Include"))
         {
             foreach (var (_, from) in PossibleUnlocks)
-                Plugin.BuilderWindow.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!);
+                Plugin.RouteOverlay.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!);
         }
     }
 

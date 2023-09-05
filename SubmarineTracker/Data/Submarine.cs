@@ -125,7 +125,6 @@ public static class Submarines
             else
                 return;
 
-
             AllLoot.Clear();
             foreach (var point in PossiblePoints)
             {
@@ -162,7 +161,6 @@ public static class Submarines
                 }
             }
         }
-
         #endregion
     }
 
@@ -308,7 +306,7 @@ public static class Submarines
         public (uint Rank, double Exp) PredictExpGrowth()
         {
             var currentRank = RankSheet.GetRow(Rank)!;
-            var leftover = CExp + Sectors.CalculateExpForSectors(ToSheetList(Points), Build);
+            var leftover = CExp + Sectors.CalculateExpForSectors(ToSheetArray(Points), Build);
 
             // This happens whenever the user has a new sub with no voyage
             if (leftover == 0)
@@ -460,5 +458,5 @@ public static class Submarines
         { 40, 24367 }
     };
 
-    public static List<SubmarineExplorationPretty> ToSheetList(IEnumerable<uint> sectors) => sectors.Select(s => ExplorationSheet.GetRow(s)!).ToList();
+    public static SubmarineExplorationPretty[] ToSheetArray(IEnumerable<uint> sectors) => sectors.Select(s => ExplorationSheet.GetRow(s)!).ToArray();
 }

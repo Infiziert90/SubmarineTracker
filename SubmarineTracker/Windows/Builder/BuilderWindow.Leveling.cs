@@ -47,6 +47,7 @@ public partial class BuilderWindow
 
     private bool AllowedChanged;
     private List<SubmarineExplorationPretty> AllowedSectors = new();
+    private uint[] Unlocked = Array.Empty<uint>();
 
     private static string MiscFolder = null!;
     private static void InitializeLeveling() => MiscFolder = Path.Combine(Plugin.PluginInterface.ConfigDirectory.FullName, "Misc");
@@ -316,9 +317,10 @@ public partial class BuilderWindow
         var lastBuild = (new Build.RouteBuild(), 0);
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
+            Unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
             var mapBreaks = ExplorationSheet
                             .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                            .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                            .Where(r => IgnoreUnlocks || Unlocked.Contains(r.RowId))
                             .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
             if (AllowedSectors.Any())
             {
@@ -484,8 +486,11 @@ public partial class BuilderWindow
     private Journey GetJourney(Build.RouteBuild routeBuild, int possibleMap)
     {
         routeBuild.Map = possibleMap;
-        var path = FindBestPath(routeBuild);
-        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToList()!, routeBuild.GetSubmarineBuild);
+
+
+        var allowedSectors = AllowedSectors.Select(s => s.RowId).ToArray();
+        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors);
+        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild);
 
         Progress++;
         return new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());

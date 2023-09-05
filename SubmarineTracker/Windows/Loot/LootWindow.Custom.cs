@@ -11,7 +11,7 @@ public partial class LootWindow
 
     private static readonly DateTime CustomMinimalDate = new(2023, 4, 1);
     private DateTime CustomMinDate = CustomMinimalDate;
-    private DateTime CustomMaxDate = DateTime.Now;
+    private DateTime CustomMaxDate = DateTime.Now.AddDays(5);
 
     private string CustomMinString = "";
     private string CustomMaxString = "";
@@ -22,8 +22,6 @@ public partial class LootWindow
     {
         if (ImGui.BeginTabItem("Custom"))
         {
-
-
             if (!Configuration.CustomLootWithValue.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "No Custom Loot");

@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
@@ -14,7 +13,6 @@ public partial class BuilderWindow
     private bool ComputingPath;
     private int LastComputedRank;
     private DateTime ComputeStart = DateTime.Now;
-    private bool Error;
 
     private bool Calculate;
 
@@ -25,121 +23,6 @@ public partial class BuilderWindow
     private bool IgnoreUnlocks;
 
     public ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions;
-
-    // CharacterID -> Map -> Highest Level
-    private readonly ConcurrentDictionary<ulong, ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>> CachedDistances = new();
-
-    public uint[] FindBestPath(Build.RouteBuild routeBuild)
-    {
-        Error = false;
-        LastComputedRank = routeBuild.Rank;
-        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
-        {
-            var charDictionary = CachedDistances.GetOrAdd(Plugin.ClientState.LocalContentId, new ConcurrentDictionary<int, ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>>());
-            var mapDictionary = charDictionary.GetOrAdd(routeBuild.Map, new ConcurrentDictionary<int, (int, List<SubmarineExplorationPretty>)[]>());
-
-            List<SubmarineExplorationPretty> valid;
-            int highestRank;
-            try
-            {
-                valid = ExplorationSheet
-                        .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
-                        .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
-                        .ToList();
-                if (AllowedSectors.Any())
-                {
-                    valid = ExplorationSheet
-                            .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
-                            .Where(r => AllowedSectors.Contains(r))
-                            .ToList();
-                }
-                highestRank = valid.Max(r => r.RankReq);
-            }
-            catch (KeyNotFoundException)
-            {
-                Error = true;
-                ComputingPath = false;
-                Calculate = false;
-                return Array.Empty<uint>();
-            }
-
-            var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
-            if (!mapDictionary.TryGetValue(highestRank, out var distances) || !distances.Any(t => t.Item2.ContainsAllItems(MustInclude)))
-            {
-                var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId }.ToList()).ToHashSet(new ListComparer());
-                if (MustInclude.Any())
-                    paths = new[] { MustInclude.Select(t => t.RowId).Prepend(startPoint.RowId).ToList() }.ToHashSet(new ListComparer());
-
-                var i = MustInclude.Any() ? MustInclude.Count : 1;
-                while (i++ < 5)
-                {
-                    foreach (var path in paths.ToArray())
-                    {
-                        foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
-                        {
-                            var pathNew = path.ToList();
-                            pathNew.Add(validPoint.RowId);
-                            paths.Add(pathNew.ToList());
-                        }
-                    }
-                }
-
-                var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
-
-                if (!allPaths.Any())
-                {
-                    ComputingPath = false;
-                    Calculate = false;
-                    return Array.Empty<uint>();
-                }
-
-                distances = allPaths.AsParallel().Select(Voyage.CalculateDistance).ToArray();
-                mapDictionary.AddOrUpdate(highestRank, distances, (k, v) => distances);
-            }
-
-            var build = routeBuild.GetSubmarineBuild;
-            var optimalDistances = distances.Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(MustInclude)).ToArray();
-            if (!optimalDistances.Any())
-            {
-                ComputingPath = false;
-                Calculate = false;
-                return Array.Empty<uint>();
-            }
-
-            var bestPath = optimalDistances.AsParallel().Select(t =>
-                {
-                    var path = t.Item2.Prepend(startPoint).ToArray();
-
-                    return new Tuple<uint[], TimeSpan, double>(
-                        t.Item2.Select(t => t.RowId).ToArray(),
-                        TimeSpan.FromSeconds(Voyage.CalculateDuration(path, build)),
-                        Sectors.CalculateExpForSectors(t.Item2, CurrentBuild.GetSubmarineBuild)
-                    );
-                })
-              .Where(t => t.Item2 < Configuration.DurationLimit.ToTime())
-              .OrderByDescending(t => Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
-              .Select(t => t.Item1)
-              .FirstOrDefault();
-
-            if (bestPath == null)
-            {
-                ComputingPath = false;
-                Calculate = false;
-                return Array.Empty<uint>();
-            }
-
-            ComputingPath = false;
-            Calculate = false;
-
-            return bestPath;
-        }
-
-        Error = true;
-        ComputingPath = false;
-        Calculate = false;
-
-        return Array.Empty<uint>();
-    }
 
     private void ExpTab()
     {
@@ -194,7 +77,7 @@ public partial class BuilderWindow
                         beginCalculation = true;
                     }
 
-                    if (beginCalculation && !ComputingPath && !Error)
+                    if (beginCalculation && !ComputingPath)
                     {
                         // Don't set it false until we sure it got begins calculation
                         OptionsChanged = false;
@@ -204,10 +87,16 @@ public partial class BuilderWindow
                         ComputingPath = true;
                         Task.Run(() =>
                         {
-                            var path = FindBestPath(CurrentBuild);
+                            LastComputedRank = CurrentBuild.Rank;
+                            Calculate = false;
+
+                            var mustInclude = MustInclude.Select(s => s.RowId).ToArray();
+                            var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
+                            var path = Voyage.FindBestPath(CurrentBuild, unlocked, mustInclude, ignoreUnlocks: IgnoreUnlocks);
                             if (!path.Any())
                                 CurrentBuild.NotOptimized();
 
+                            ComputingPath = false;
                             BestPath = path;
                         });
                     }
@@ -220,17 +109,6 @@ public partial class BuilderWindow
                         {
                             ImGui.Text($"Loading {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                         }
-                        else if (!BestPath.Any())
-                        {
-                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found, check speed and range ...");
-                        }
-
-                        if (Error)
-                        {
-                            ImGui.TextWrapped("Error: Unable to calculate, please refresh your data (Voyage Control Panel -> Submersible Management).");
-                            if (fcSub.UnlockedSectors.ContainsKey(startPoint))
-                                Error = false;
-                        }
 
                         if (BestPath.Any())
                         {
@@ -239,6 +117,10 @@ public partial class BuilderWindow
                                     ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
 
                             CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                        }
+                        else
+                        {
+                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found, check speed and range ...");
                         }
 
                         ImGui.EndListBox();
@@ -310,20 +192,18 @@ public partial class BuilderWindow
                     LastSeenRank = CurrentBuild.Rank;
 
                     var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                    var error = !fcSub.UnlockedSectors.ContainsKey(startPoint);
                     if (ExplorationPopupOptions == null)
                     {
-                        if (!fcSub.UnlockedSectors.ContainsKey(startPoint))
-                            Error = true;
-
                         ExcelSheetSelector.FilteredSearchSheet = null!;
                         ExplorationPopupOptions = new()
                         {
                             FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
-                            FilteredSheet = ExplorationSheet.Where(r => !Error && r.Map.Row == CurrentBuild.Map + 1 && fcSub!.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            FilteredSheet = ExplorationSheet.Where(r => !error && r.Map.Row == CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                         };
                     }
 
-                    if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, Error || MustInclude.Count >= 5))
+                    if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, error || MustInclude.Count >= 5))
                     {
                         var point = ExplorationSheet.GetRow(row)!;
                         if (MustInclude.Add(point))
@@ -359,7 +239,6 @@ public partial class BuilderWindow
 
     private void Reset(int newMap)
     {
-        Error = false;
         ComputingPath = false;
         BestPath = Array.Empty<uint>();
         MustInclude.Clear();
