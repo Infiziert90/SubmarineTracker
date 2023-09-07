@@ -68,13 +68,13 @@ public partial class BuilderWindow
                     ImGui.TableHeadersRow();
 
                     BuildTableEntries("Shark", 0);
-                    BuildTableEntries("Uniki", 4);
+                    BuildTableEntries("Unkui", 4);
                     BuildTableEntries("Whale", 8);
                     BuildTableEntries("Coelac.", 12);
                     BuildTableEntries("Syldra", 16);
 
                     BuildTableEntries("MShark", 20);
-                    BuildTableEntries("MUniki", 24);
+                    BuildTableEntries("MUnkui", 24);
                     BuildTableEntries("MWhale", 28);
                     BuildTableEntries("MCoelac.", 32);
                     BuildTableEntries("MSyldra", 36, last: true);
