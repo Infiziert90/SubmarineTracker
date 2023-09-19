@@ -1,3 +1,4 @@
+using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows.Builder;
@@ -110,11 +111,18 @@ public partial class BuilderWindow
         // Always refresh submarine if we have interface selection
         if (VoyageInterfaceSelection != 0)
         {
-            if (!CacheValid && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+            if (!KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                return;
+
+            SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
+            var build = new Build.RouteBuild(SelectedSub);
+
+            if (build != CurrentBuild)
+                CacheValid = false;
+
+            if (!CacheValid)
             {
                 CacheValid = true;
-
-                SelectedSub = fcSub.Submarines.FirstOrDefault(sub => sub.Register == VoyageInterfaceSelection) ?? new Submarine();
                 CurrentBuild.UpdateBuild(SelectedSub);
 
                 // Reset BestEXP to allow automatic calculation trigger

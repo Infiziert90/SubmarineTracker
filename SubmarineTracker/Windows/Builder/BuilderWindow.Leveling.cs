@@ -229,7 +229,7 @@ public partial class BuilderWindow
                 ImGui.Unindent(10);
                 BoxList.RenderList(LastCalc, modifier, 1f, pair =>
                 {
-                    var (i, (rankReached, leftover, routeExp, points, build)) = pair;
+                    var (i, (_, rankReached, leftover, routeExp, points, build)) = pair;
                     var startPoint = Voyage.FindVoyageStart(points[0]);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {build}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"Voyage {i}: {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
@@ -257,7 +257,10 @@ public partial class BuilderWindow
         journeys.Select(t =>
         {
             var startPoint = Voyage.FindVoyageStart(t.Route[0]);
-            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Append(startPoint).Select(f => ExplorationSheet.GetRow(f)!).ToArray(), (Build.RouteBuild)t.Build));
+            var build = (Build.RouteBuild) t.Build;
+            build.Rank = t.OldRank;
+
+            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Append(startPoint).Select(f => ExplorationSheet.GetRow(f)!), build));
         }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
 
     public void DoThingsOffThread()
@@ -362,7 +365,7 @@ public partial class BuilderWindow
                     PossibleBuilds = builds.Length * possibleMaps.Length;
                     Progress = 0;
 
-                    bestJourney ??= new Journey(ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
+                    bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
 
                     foreach (var build in builds)
                     {
@@ -399,7 +402,7 @@ public partial class BuilderWindow
                         }
 
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
-                        var (_, _, exp, path, currentBuild) = best;
+                        var (_, _, _, exp, path, currentBuild) = best;
 
                         // we can still continue if this would be false
                         if (path.Any())
@@ -410,11 +413,11 @@ public partial class BuilderWindow
                             if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                             {
                                 curBuild = routeBuild;
-                                bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
+                                bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
                             else if (curBuild.SameBuildWithoutRank(routeBuild))
                             {
-                                bestJourney = new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
+                                bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
                             }
                         }
                     }
@@ -493,7 +496,7 @@ public partial class BuilderWindow
         var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild);
 
         Progress++;
-        return new Journey(ProgressRank, exp, exp, path, routeBuild.ToString());
+        return new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
     }
 
     private List<Build.RouteBuild> BuildParts()
@@ -518,7 +521,7 @@ public partial class BuilderWindow
         return routeBuilds;
     }
 
-    public record Journey(int RankReached, uint Leftover, uint RouteExp, uint[] Route, string Build);
+    public record Journey(int OldRank, int RankReached, uint Leftover, uint RouteExp, uint[] Route, string Build);
     public record RouteCache(Dictionary<int, Journey> Voyages);
     public class DurationCache
     {

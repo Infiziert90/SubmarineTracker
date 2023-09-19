@@ -131,6 +131,15 @@ public static class Build
             Bridge = bridge.GetPartId();
         }
 
+        public RouteBuild(Submarines.Submarine sub)
+        {
+            Rank = sub.Rank;
+            Hull = sub.Hull;
+            Stern = sub.Stern;
+            Bow = sub.Bow;
+            Bridge = sub.Bridge;
+        }
+
         [JsonIgnore] public int OriginalSub = 0;
 
         [JsonIgnore] public uint OptimizedDistance = 0;
