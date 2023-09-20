@@ -208,6 +208,9 @@ namespace SubmarineTracker
 
         public unsafe void FrameworkUpdate(Framework _)
         {
+            // Check if we have an upload trigger
+            Upload();
+
             var instance = HousingManager.Instance();
             if (instance == null || instance->WorkshopTerritory == null)
                 return;
@@ -223,7 +226,9 @@ namespace SubmarineTracker
             // Notify the user once about upload opt out
             if (Configuration.UploadNotification)
             {
+                // User received the notice, so we schedule the first upload 1h after
                 Configuration.UploadNotification = false;
+                Configuration.UploadNotificationReceived = DateTime.Now.AddHours(1);
                 Configuration.Save();
 
                 ChatGui.Print(Utils.SuccessMessage("Important"));
@@ -309,11 +314,16 @@ namespace SubmarineTracker
 
         public void LoadFCOrder()
         {
+            var changed = false;
             foreach (var id in Submarines.KnownSubmarines.Keys)
                 if (!Configuration.FCOrder.Contains(id))
+                {
+                    changed = true;
                     Configuration.FCOrder.Add(id);
+                }
 
-            Configuration.Save();
+            if (changed)
+                Configuration.Save();
         }
 
         public void EnsureFCOrderSafety()
@@ -330,6 +340,30 @@ namespace SubmarineTracker
 
             if (notSafe)
                 Configuration.Save();
+        }
+
+        public void Upload()
+        {
+            // Check that we have permissions and a upload trigger is set
+            if (Configuration is { UploadPermission: true, TriggerUpload: true })
+            {
+                // Check that the user had enough time to opt out after notification
+                if (Configuration.UploadNotificationReceived > DateTime.Now)
+                    return;
+
+                Configuration.TriggerUpload = false;
+                Configuration.UploadCounter += 1;
+                Configuration.Save();
+
+                var fcLootList = Submarines.KnownSubmarines
+                                 .Select(kv => kv.Value.SubLoot)
+                                 .SelectMany(kv => kv.Values)
+                                 .SelectMany(subLoot => subLoot.Loot)
+                                 .SelectMany(innerLoot => innerLoot.Value)
+                                 .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+                                 .ToList();
+                Export.UploadFullExport(fcLootList);
+            }
         }
     }
 }

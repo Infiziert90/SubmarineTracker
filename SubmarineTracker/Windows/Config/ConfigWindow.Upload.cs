@@ -20,9 +20,8 @@ public partial class ConfigWindow
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, "Has there been any uploads?");
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? $"Yes, a total of {Configuration.UploadCounter} uploads" : "No")}");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? $"Yes, {Configuration.UploadCounter} file uploads" : "No")}");
             ImGuiHelpers.ScaledIndent(-10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"(The upload function hasn't been implemented yet)");
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();

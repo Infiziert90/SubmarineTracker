@@ -1,5 +1,7 @@
+using System.IO;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
+using Newtonsoft.Json;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker
@@ -67,8 +69,10 @@ namespace SubmarineTracker
         public string ExportOutputPath = string.Empty;
 
         public bool UploadNotification = true;
+        public DateTime UploadNotificationReceived = DateTime.MaxValue;
         public bool UploadPermission = true;
         public uint UploadCounter = 0;
+        public bool TriggerUpload = true;
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
@@ -84,7 +88,22 @@ namespace SubmarineTracker
 
         public void Save()
         {
-            this.PluginInterface!.SavePluginConfig(this);
+            var dir = Directory.GetParent(PluginInterface!.GetPluginConfigDirectory());
+            var path = new FileInfo(Path.Combine(dir!.FullName, PluginInterface.InternalName + ".json"));
+            WriteAllTextSafe(path.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings()
+            {
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                TypeNameHandling = TypeNameHandling.Objects
+            }));
+        }
+
+        internal static void WriteAllTextSafe(string path, string text)
+        {
+            string str = path + ".tmp";
+            if (File.Exists(str))
+                File.Delete(str);
+            File.WriteAllText(str, text);
+            File.Move(str, path, true);
         }
     }
 }

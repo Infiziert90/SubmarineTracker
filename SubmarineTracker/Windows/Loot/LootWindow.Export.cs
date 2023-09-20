@@ -1,10 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
+﻿using System.IO;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using SubmarineTracker.Data;
@@ -17,104 +11,12 @@ public partial class LootWindow
     private bool ExportAll = true;
     private Dictionary<ulong, bool> ExportSpecific = new();
 
-    private static CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
-
     private static readonly DateTime ExportMinimalDate = new(2023, 6, 11);
     private DateTime ExportMinDate = ExportMinimalDate;
     private DateTime ExportMaxDate = DateTime.Now.AddDays(5);
 
     private string ExportMinString = "";
     private string ExportMaxString = "";
-
-    public class ExportLoot
-    {
-        public uint Sector { get; set; }
-
-        public uint Primary { get; set; }
-        public ushort PrimaryCount { get; set; }
-        public uint Additional { get; set; }
-        public ushort AdditionalCount { get; set; }
-
-        public int Rank { get; set; }
-        public int Surv { get; set; }
-        public int Ret { get; set; }
-        public int Fav { get; set; }
-
-        public uint PrimarySurvProc { get; set; }
-        public uint AdditionalSurvProc { get; set; }
-        public uint PrimaryRetProc { get; set; }
-        public uint FavProc { get; set; }
-
-        [Format("s")] public DateTime Date { get; set; }
-        public string Hash { get; set; } = "";
-
-        public ExportLoot() {}
-
-        public ExportLoot(DetailedLoot loot)
-        {
-            Sector = loot.Sector;
-
-            Primary = loot.Primary;
-            PrimaryCount = loot.PrimaryCount;
-            Additional = loot.Additional;
-            AdditionalCount = loot.AdditionalCount;
-
-            Rank = loot.Rank;
-            Surv = loot.Surv;
-            Ret = loot.Ret;
-            Fav = loot.Fav;
-
-            PrimarySurvProc = loot.PrimarySurvProc;
-            AdditionalSurvProc = loot.AdditionalSurvProc;
-            PrimaryRetProc = loot.PrimaryRetProc;
-            FavProc = loot.FavProc;
-            Date = loot.Date;
-
-            using var stream = new MemoryStream();
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(Date.Ticks);
-                writer.Write(Sector);
-            }
-            stream.Position = 0;
-
-            using (var hash = SHA256.Create())
-            {
-                var result = hash.ComputeHash(stream);
-                Hash = string.Join("", result.Select(b => $"{b:X2}"));
-            }
-        }
-    }
-
-    public sealed class ExportLootMap : ClassMap<ExportLoot>
-    {
-        public ExportLootMap(bool ignoreDate, bool ignoreHash)
-        {
-            Map(m => m.Sector).Index(0).Name("Sector");
-            Map(m => m.Primary).Index(1).Name("Primary");
-            Map(m => m.PrimaryCount).Index(2).Name("PrimaryCount");
-            Map(m => m.Additional).Index(3).Name("Additional");
-            Map(m => m.AdditionalCount).Index(4).Name("AdditionalCount");
-            Map(m => m.Rank).Index(5).Name("Rank");
-            Map(m => m.Surv).Index(6).Name("Surv");
-            Map(m => m.Ret).Index(7).Name("Ret");
-            Map(m => m.Fav).Index(8).Name("Fav");
-            Map(m => m.PrimarySurvProc).Index(9).Name("PrimarySurvProc");
-            Map(m => m.AdditionalSurvProc).Index(10).Name("AdditionalSurvProc");
-            Map(m => m.PrimaryRetProc).Index(11).Name("PrimaryRetProc");
-            Map(m => m.FavProc).Index(12).Name("FavProc");
-
-            if (ignoreDate)
-                Map(m => m.Date).Ignore();
-            else
-                Map(m => m.Date).Index(13).Name("Date");
-
-            if (ignoreHash)
-                Map(m => m.Hash).Ignore();
-            else
-                Map(m => m.Hash).Index(99).Name("Hash");
-        }
-    }
 
     private void ExportTab()
     {
@@ -247,30 +149,11 @@ public partial class LootWindow
 
     private void ExportToClipboard(List<DetailedLoot> fcLootList)
     {
-        try
+        var s = Export.ExportToString(fcLootList, Configuration.ExportExcludeDate, Configuration.ExportExcludeHash);
+        if (s != string.Empty)
         {
-            using var writer = new StringWriter();
-            using var csv = new CsvWriter(writer, CsvConfig);
-
-            csv.Context.RegisterClassMap(new ExportLootMap(Configuration.ExportExcludeDate, Configuration.ExportExcludeHash));
-
-            csv.WriteHeader<ExportLoot>();
-            csv.NextRecord();
-
-            foreach (var detailedLoot in fcLootList)
-            {
-                csv.WriteRecord(new ExportLoot(detailedLoot));
-                csv.NextRecord();
-            }
-
-            ImGui.SetClipboardText(writer.ToString());
-
-            Plugin.ChatGui.Print(Utils.SuccessMessage($"Export to clipboard done."));
-        }
-        catch (Exception e)
-        {
-            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
-            Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
+            ImGui.SetClipboardText(s);
+            Plugin.ChatGui.Print(Utils.SuccessMessage("Successfully exported to clipboard."));
         }
     }
 
@@ -281,22 +164,18 @@ public partial class LootWindow
             try
             {
                 var file = Path.Combine(Configuration.ExportOutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
-                using var writer = new StreamWriter(file);
-                using var csv = new CsvWriter(writer, CsvConfig);
+                var s = Export.ExportToString(fcLootList, Configuration.ExportExcludeDate, Configuration.ExportExcludeHash);
 
-                csv.Context.RegisterClassMap(new ExportLootMap(Configuration.ExportExcludeDate, Configuration.ExportExcludeHash));
-
-                csv.WriteHeader<ExportLoot>();
-                csv.NextRecord();
-
-                foreach (var detailedLoot in fcLootList)
+                if (s != string.Empty)
                 {
-                    csv.WriteRecord(new ExportLoot(detailedLoot));
-                    csv.NextRecord();
-                }
+                    if (File.Exists(file))
+                        File.Delete(file);
 
-                Plugin.ChatGui.Print(Utils.SuccessMessage($"Export done."));
-                Plugin.ChatGui.Print(Utils.SuccessMessage($"Output: {file}"));
+                    File.WriteAllText(file, s);
+
+                    Plugin.ChatGui.Print(Utils.SuccessMessage($"Export done."));
+                    Plugin.ChatGui.Print(Utils.SuccessMessage($"Output: {file}"));
+                }
             }
             catch (Exception e)
             {

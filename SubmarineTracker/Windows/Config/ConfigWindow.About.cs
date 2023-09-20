@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows.Config;
@@ -45,6 +46,19 @@ public partial class ConfigWindow
 
                 if (ImGui.Button("Return Webhook"))
                     Task.Run(() => Plugin.Notify.SendReturnWebhook(TestSub, TestFC));
+
+                if (ImGui.Button("Test Upload"))
+                {
+                    // some of the corrupted loot data is still around, so we check that Rank is above 0
+                    var fcLootList = KnownSubmarines
+                                     .Select(kv => kv.Value.SubLoot)
+                                     .SelectMany(kv => kv.Values)
+                                     .SelectMany(subLoot => subLoot.Loot)
+                                     .SelectMany(innerLoot => innerLoot.Value)
+                                     .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+                                     .ToList();
+                    Task.Run(() => Export.UploadFullExport(fcLootList));
+                }
                 ImGui.Unindent(10.0f);
                 #endif
             }

@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>Infi</Authors>
-        <Version>1.7.7.0</Version>
+        <Version>1.7.7.1</Version>
         <Description>You do not talk about Fight Club, same for Submarines</Description>
         <PackageProjectUrl>https://github.com/Infiziert90/SubmarineTracker</PackageProjectUrl>
     </PropertyGroup>
@@ -37,14 +37,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="DalamudPackager" Version="2.1.11" />
+        <PackageReference Include="CsvHelper" Version="30.0.1" />
+        <PackageReference Include="DalamudPackager" Version="2.1.11" />
+        <PackageReference Include="supabase-csharp" Version="0.13.3" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Newtonsoft.Json">
-            <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
             <Private>false</Private>
         </Reference>
         <Reference Include="Dalamud">
