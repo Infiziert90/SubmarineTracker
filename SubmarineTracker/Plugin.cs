@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Threading.Tasks;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -232,9 +233,9 @@ namespace SubmarineTracker
                 Configuration.Save();
 
                 ChatGui.Print(Utils.SuccessMessage("Important"));
-                ChatGui.Print(Utils.SuccessMessage("This plugin can upload anonymized, submarine specific, data. " +
-                                                   "For more information visit the upload tab in the plugins configuration menu. " +
-                                                   "You can opt out of these uploads at any time."));
+                ChatGui.Print(Utils.SuccessMessage("This plugin will collect anonymized, submarine specific data. " +
+                                                   "For more information on the exact data collected please see the upload tab in the plugin configuration menu.  " +
+                                                   "You can opt out of any and all forms of data collection."));
             }
 
             if (Configuration.AutoSelectCurrent)
@@ -355,14 +356,18 @@ namespace SubmarineTracker
                 Configuration.UploadCounter += 1;
                 Configuration.Save();
 
-                var fcLootList = Submarines.KnownSubmarines
-                                 .Select(kv => kv.Value.SubLoot)
-                                 .SelectMany(kv => kv.Values)
-                                 .SelectMany(subLoot => subLoot.Loot)
-                                 .SelectMany(innerLoot => innerLoot.Value)
-                                 .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
-                                 .ToList();
-                Export.UploadFullExport(fcLootList);
+                Task.Run(() =>
+                {
+                    var fcLootList = Submarines.KnownSubmarines
+                                               .Select(kv => kv.Value.SubLoot)
+                                               .SelectMany(kv => kv.Values)
+                                               .SelectMany(subLoot => subLoot.Loot)
+                                               .SelectMany(innerLoot => innerLoot.Value)
+                                               .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+                                               .ToList();
+
+                    Export.UploadFullExport(fcLootList);
+                });
             }
         }
     }

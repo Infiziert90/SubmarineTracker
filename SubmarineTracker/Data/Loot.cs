@@ -88,10 +88,6 @@ public static class Loot
         public bool AdditionalHQ;
         public DateTime Date = DateTime.MinValue;
 
-        // TODO remove with migration code v2
-        [Obsolete("Renamed to sector")]
-        public uint Point;
-
         [JsonConstructor]
         public DetailedLoot() { }
 
