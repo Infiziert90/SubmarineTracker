@@ -220,6 +220,18 @@ namespace SubmarineTracker
             if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
                 return;
 
+            // Notify the user once about upload opt out
+            if (Configuration.UploadNotification)
+            {
+                Configuration.UploadNotification = false;
+                Configuration.Save();
+
+                ChatGui.Print(Utils.SuccessMessage("Important"));
+                ChatGui.Print(Utils.SuccessMessage("This plugin can upload anonymized data. " +
+                                                   "For more information visit the upload tab in the plugins configuration menu. " +
+                                                   "You can opt out of these uploads at any time."));
+            }
+
             if (Configuration.AutoSelectCurrent)
             {
                 var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];

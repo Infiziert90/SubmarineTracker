@@ -43,9 +43,7 @@ public partial class ConfigWindow : Window, IDisposable
 
             Order();
 
-            #if DEBUG
-            Debug();
-            #endif
+            Upload();
 
             About();
         }

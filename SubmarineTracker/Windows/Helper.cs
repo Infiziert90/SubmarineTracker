@@ -57,7 +57,12 @@ public static class Helper
 
     public static void WrappedError(string text)
     {
-        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+        WrappedText(ImGuiColors.DalamudOrange, text);
+    }
+
+    public static void WrappedText(Vector4 color, string text)
+    {
+        ImGui.PushStyleColor(ImGuiCol.Text, color);
         ImGui.TextWrapped(text);
         ImGui.PopStyleColor();
     }

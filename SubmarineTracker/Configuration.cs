@@ -66,6 +66,10 @@ namespace SubmarineTracker
         public bool ExportExcludeHash;
         public string ExportOutputPath = string.Empty;
 
+        public bool UploadNotification = true;
+        public bool UploadPermission = true;
+        public uint UploadCounter = 0;
+
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
         public List<ulong> FCOrder = new();
