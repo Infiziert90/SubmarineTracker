@@ -227,7 +227,7 @@ namespace SubmarineTracker
                 Configuration.Save();
 
                 ChatGui.Print(Utils.SuccessMessage("Important"));
-                ChatGui.Print(Utils.SuccessMessage("This plugin can upload anonymized data. " +
+                ChatGui.Print(Utils.SuccessMessage("This plugin can upload anonymized, submarine specific, data. " +
                                                    "For more information visit the upload tab in the plugins configuration menu. " +
                                                    "You can opt out of these uploads at any time."));
             }

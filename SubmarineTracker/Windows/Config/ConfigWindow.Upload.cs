@@ -9,7 +9,7 @@ public partial class ConfigWindow
             var changed = false;
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!");
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, "What data?");
             ImGuiHelpers.ScaledIndent(10.0f);
