@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿// ReSharper disable ExplicitCallerInfoArgument
+
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -6,6 +8,9 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Dalamud.Logging;
+using Postgrest;
+using Postgrest.Attributes;
+using Postgrest.Models;
 using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Data;
@@ -17,26 +22,44 @@ public static class Export
 
     private static CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
 
-    public class Loot
+    [Table("Loot")]
+    public class Loot : BaseModel
     {
+        [Column("sector")]
         public uint Sector { get; set; }
 
+        [Column("primary")]
         public uint Primary { get; set; }
+        [Column("primary_count")]
         public ushort PrimaryCount { get; set; }
+        [Column("additional")]
         public uint Additional { get; set; }
+        [Column("additional_count")]
         public ushort AdditionalCount { get; set; }
 
+        [Column("rank")]
         public int Rank { get; set; }
+        [Column("surv")]
         public int Surv { get; set; }
+        [Column("ret")]
         public int Ret { get; set; }
+        [Column("fav")]
         public int Fav { get; set; }
 
+        [Column("primary_surv_proc")]
         public uint PrimarySurvProc { get; set; }
+        [Column("additional_surv_proc")]
         public uint AdditionalSurvProc { get; set; }
+        [Column("primary_ret_proc")]
         public uint PrimaryRetProc { get; set; }
+        [Column("fav_proc")]
         public uint FavProc { get; set; }
 
-        [Format("s")] public DateTime Date { get; set; }
+        [Format("s")]
+        [Column(ignoreOnInsert: true, ignoreOnUpdate: true)]
+        public DateTime Date { get; set; }
+
+        [Column("hash")]
         public string Hash { get; set; } = "";
 
         public Loot() {}
@@ -147,13 +170,37 @@ public static class Export
                 await client.InitializeAsync();
 
                 var bucket = client.Storage.From("Loot Data");
-                await bucket.Upload(Encoding.UTF8.GetBytes(s), $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
+                var result = await bucket.Upload(Encoding.UTF8.GetBytes(s), $"{DateTime.Now.Ticks}_dump.csv");
+
+                PluginLog.Debug(result);
             }
             catch (Exception e)
             {
                 PluginLog.Error(e.Message);
-                PluginLog.Error(e.StackTrace ?? "No Stacktrace1");
+                PluginLog.Error(e.StackTrace ?? "No Stacktrace");
             }
+        }
+    }
+
+    public static async void UploadEntry(DetailedLoot newLoot)
+    {
+        var lootEntry = new Loot(newLoot);
+        try
+        {
+            var client = new Supabase.Client(SupabaseUrl, SupabaseAnonKey);
+            await client.InitializeAsync();
+
+            var result = await client.From<Loot>().Insert(lootEntry, options: new QueryOptions {
+                Returning = QueryOptions.ReturnType.Minimal
+            });
+
+            PluginLog.Debug(result.ResponseMessage?.StatusCode.ToString() ?? "Unknown");
+            PluginLog.Debug(result.Content ?? "None");
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error(e.Message);
+            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
         }
     }
 }

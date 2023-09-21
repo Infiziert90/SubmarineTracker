@@ -76,7 +76,7 @@ namespace SubmarineTracker
 
             Notify = new Notify(this);
 
-            Loot.Initialize();
+            Loot.Initialize(this);
             Build.Initialize();
             Voyage.Initialize(this);
             Submarines.Initialize();
@@ -368,6 +368,21 @@ namespace SubmarineTracker
 
                     Export.UploadFullExport(fcLootList);
                 });
+            }
+        }
+
+        public void EntryUpload(Loot.DetailedLoot loot)
+        {
+            if (Configuration.UploadPermission)
+            {
+                // Check that the user had enough time to opt out after notification
+                if (Configuration.UploadNotificationReceived > DateTime.Now)
+                    return;
+
+                Configuration.UploadCounter += 1;
+                Configuration.Save();
+
+                Task.Run(() => Export.UploadEntry(loot));
             }
         }
     }

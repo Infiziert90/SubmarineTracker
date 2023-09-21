@@ -88,9 +88,7 @@ namespace SubmarineTracker
 
         public void Save()
         {
-            var dir = Directory.GetParent(PluginInterface!.GetPluginConfigDirectory());
-            var path = new FileInfo(Path.Combine(dir!.FullName, PluginInterface.InternalName + ".json"));
-            WriteAllTextSafe(path.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings()
+            WriteAllTextSafe(PluginInterface!.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
                 TypeNameHandling = TypeNameHandling.Objects
@@ -99,7 +97,7 @@ namespace SubmarineTracker
 
         internal static void WriteAllTextSafe(string path, string text)
         {
-            string str = path + ".tmp";
+            var str = path + ".tmp";
             if (File.Exists(str))
                 File.Delete(str);
             File.WriteAllText(str, text);

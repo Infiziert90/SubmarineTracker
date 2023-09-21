@@ -20,7 +20,7 @@ public partial class ConfigWindow
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, "Has there been any uploads?");
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? $"Yes, {Configuration.UploadCounter} file uploads" : "No")}");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? $"Yes, {Configuration.UploadCounter} uploads" : "No")}");
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);

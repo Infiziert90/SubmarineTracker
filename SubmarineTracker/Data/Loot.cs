@@ -1,4 +1,5 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+﻿using System.Threading.Tasks;
+using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
@@ -7,10 +8,12 @@ namespace SubmarineTracker.Data;
 
 public static class Loot
 {
+    private static Plugin Plugin = null!;
     private static ExcelSheet<Item> ItemSheet = null!;
 
-    public static void Initialize()
+    public static void Initialize(Plugin plugin)
     {
+        Plugin = plugin;
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
     }
 
@@ -119,6 +122,8 @@ public static class Loot
             AdditionalRetProc = data.YieldLineAdditional;
 
             FavProc = data.FavorLine;
+
+            Plugin.EntryUpload(this);
         }
 
         [JsonIgnore] public Item PrimaryItem => ItemSheet.GetRow(Primary)!;
