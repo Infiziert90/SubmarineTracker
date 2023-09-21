@@ -20,7 +20,13 @@ public static class Export
     private const string SupabaseUrl = "https://xzwnvwjxgmaqtrxewngh.supabase.co";
     private const string SupabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6d252d2p4Z21hcXRyeGV3bmdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODk3NzcwMDIsImV4cCI6MjAwNTM1MzAwMn0.aNYTnhY_Sagi9DyH5Q9tCz9lwaRCYzMC12SZ7q7jZBc";
 
-    private static CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+    private static readonly Supabase.Client Client;
+    private static readonly CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+
+    static Export()
+    {
+        Client = new Supabase.Client(SupabaseUrl, SupabaseAnonKey);
+    }
 
     [Table("Loot")]
     public class Loot : BaseModel
@@ -166,10 +172,8 @@ public static class Export
         {
             try
             {
-                var client = new Supabase.Client(SupabaseUrl, SupabaseAnonKey);
-                await client.InitializeAsync();
-
-                var bucket = client.Storage.From("Loot Data");
+                await Client.InitializeAsync();
+                var bucket = Client.Storage.From("Loot Data");
                 var result = await bucket.Upload(Encoding.UTF8.GetBytes(s), $"{DateTime.Now.Ticks}_dump.csv");
 
                 PluginLog.Debug(result);
@@ -187,10 +191,8 @@ public static class Export
         var lootEntry = new Loot(newLoot);
         try
         {
-            var client = new Supabase.Client(SupabaseUrl, SupabaseAnonKey);
-            await client.InitializeAsync();
-
-            var result = await client.From<Loot>().Insert(lootEntry, options: new QueryOptions {
+            await Client.InitializeAsync();
+            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions {
                 Returning = QueryOptions.ReturnType.Minimal
             });
 
