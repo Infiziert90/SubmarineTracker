@@ -42,7 +42,7 @@ public partial class ConfigWindow
                     Plugin.Notify.SendRepair(TestSub, TestFC);
 
                 if (ImGui.Button("Dispatch Webhook"))
-                    Plugin.Notify.SendDispatchWebhook(TestSub, TestFC, (uint) ((DateTimeOffset) DateTime.Now.AddMinutes(10).ToUniversalTime()).ToUnixTimeSeconds());
+                    Plugin.Notify.SendDispatchWebhook(TestSub, TestFC, (uint) ((DateTimeOffset) DateTime.Now.ToUniversalTime()).ToUnixTimeSeconds());
 
                 if (ImGui.Button("Return Webhook"))
                     Task.Run(() => Plugin.Notify.SendReturnWebhook(TestSub, TestFC));

@@ -48,7 +48,8 @@ public static class Utils
             2 => "Sea of Ash",
             3 => "Sea of Jade",
             4 => "Sirensong",
-            _ => ""
+            5 => "Lilac Sea",
+            _ => "Unknown"
         };
     }
 
@@ -127,6 +128,7 @@ public static class Utils
 
         return val;
     }
+
     public static bool ContainsAllItems<T>(this IEnumerable<T> a, IEnumerable<T> b)
     {
         return !b.Except(a).Any();
@@ -145,30 +147,6 @@ public static class Utils
         }
 
         public int GetHashCode(uint[] obj)
-        {
-            var hash = 19;
-            foreach (var element in obj.OrderBy(x => x))
-            {
-                hash = (hash * 31) + element.GetHashCode();
-            }
-
-            return hash;
-        }
-    }
-
-    public class ListComparer : IEqualityComparer<List<uint>>
-    {
-        public bool Equals(List<uint>? x, List<uint>? y)
-        {
-            if (x == null)
-                return false;
-            if (y == null)
-                return false;
-
-            return x.Count == y.Count && !x.Except(y).Any();
-        }
-
-        public int GetHashCode(List<uint> obj)
         {
             var hash = 19;
             foreach (var element in obj.OrderBy(x => x))

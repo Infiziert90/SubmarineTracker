@@ -119,7 +119,7 @@ public class Notify
         content.Embeds.Add(new
         {
             title = Helper.GetSubName(sub, fc),
-            description=$"Returned at {sub.ReturnTime.ToLongTimeString()}",
+            description=$"Returned at <t:{sub.Return}:f>",
             color=8447519
         });
 
