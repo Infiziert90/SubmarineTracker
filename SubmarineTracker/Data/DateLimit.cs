@@ -6,6 +6,7 @@ public enum DurationLimit
     H24 = 1,
     H36 = 2,
     H48 = 3,
+    Custom = 99,
 }
 
 public enum DateLimit
@@ -32,17 +33,19 @@ public static class DateUtil
             DurationLimit.H24 => "24 Hours",
             DurationLimit.H36 => "36 Hours",
             DurationLimit.H48 => "48 Hours",
+            DurationLimit.Custom => "Custom",
             _ => "Unknown"
         };
     }
 
-    public static TimeSpan ToTime(this DurationLimit n)
+    public static TimeSpan ToTime(this DurationLimit n, int customHour = 0, int customMin = 0)
     {
         return n switch
         {
             DurationLimit.H24 => TimeSpan.FromHours(24),
             DurationLimit.H36 => TimeSpan.FromHours(36),
             DurationLimit.H48 => TimeSpan.FromHours(48),
+            DurationLimit.Custom => new TimeSpan(0, customHour, customMin, 0),
             _ => TimeSpan.MaxValue
         };
     }

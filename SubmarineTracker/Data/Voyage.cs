@@ -127,7 +127,7 @@ public static class Voyage
                     Sectors.CalculateExpForSectors(tuple.Item2.ToArray(), build)
                 );
             })
-          .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime())
+          .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))
           .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
           .Select(t => t.Item1)
           .FirstOrDefault();

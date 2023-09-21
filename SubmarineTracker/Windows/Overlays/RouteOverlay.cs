@@ -24,7 +24,7 @@ public class RouteOverlay : Window, IDisposable
 
     public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay")
     {
-        Size = new Vector2(300, 350);
+        Size = new Vector2(300, 380);
 
         Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         RespectCloseHotkey = false;
@@ -176,6 +176,28 @@ public class RouteOverlay : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Checkbox("Maximize Duration", ref Configuration.MaximizeDuration))
                 Configuration.Save();
+        }
+
+        if (Configuration.DurationLimit == DurationLimit.Custom)
+        {
+            ImGui.AlignTextToFramePadding();
+            ImGui.SetNextItemWidth(width / 2.5f);
+            if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
+            {
+                Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
+                Configuration.Save();
+            }
+            ImGui.SameLine();
+            ImGui.TextUnformatted(":");
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(width / 2.5f);
+            if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
+            {
+                Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
+                Configuration.Save();
+            }
+            ImGui.SameLine();
+            ImGui.TextUnformatted("hours & minutes");
         }
 
         ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");

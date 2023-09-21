@@ -31,9 +31,12 @@ namespace SubmarineTracker
         public int HighestLevel = 90;
         public bool ShowNextOverlay = true;
         public bool ShowUnlockOverlay = true;
+        public bool MainRouteAutoInclude = true;
 
         public bool CalculateOnInteraction = false;
         public DurationLimit DurationLimit = DurationLimit.None;
+        public int CustomHour = 42;
+        public int CustomMinute = 30;
 
         public bool NotifyForAll = true;
         public Dictionary<string, bool> NotifySpecific = new ();
@@ -43,7 +46,6 @@ namespace SubmarineTracker
         public bool WebhookDispatch = true;
         public bool WebhookReturn = true;
         public string WebhookUrl = string.Empty;
-
 
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;

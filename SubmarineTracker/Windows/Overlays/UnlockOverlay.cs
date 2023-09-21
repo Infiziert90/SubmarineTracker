@@ -66,6 +66,9 @@ public class UnlockOverlay : Window, IDisposable
                 if (!Unlocks.PointToUnlockPoint.TryGetValue(sector.RowId, out var unlockedFrom))
                     continue;
 
+                if (unlockedFrom.Main)
+                    continue;
+
                 fcSub.UnlockedSectors.TryGetValue(sector.RowId, out var hasUnlocked);
                 if (hasUnlocked)
                     continue;

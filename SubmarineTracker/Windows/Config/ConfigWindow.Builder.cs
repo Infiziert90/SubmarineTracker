@@ -41,6 +41,8 @@ public partial class ConfigWindow
                                            "\n  b) MustInclude is empty");
                 changed |= ImGui.SliderInt("Highest Rank", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
                 ImGuiComponents.HelpMarker("No route suggestions above this rank.");
+                changed |= ImGui.Checkbox("Auto Include Main Sector", ref Configuration.MainRouteAutoInclude);
+                ImGuiComponents.HelpMarker("Auto includes the next main route sector, if there is one.");
                 ImGuiHelpers.ScaledIndent(-10.0f);
             }
             ImGui.Unindent(10.0f);

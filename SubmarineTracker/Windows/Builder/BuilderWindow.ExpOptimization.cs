@@ -153,6 +153,7 @@ public partial class BuilderWindow
                     }
                     ImGui.Unindent(10.0f);
 
+                    ImGui.AlignTextToFramePadding();
                     ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
@@ -171,6 +172,32 @@ public partial class BuilderWindow
 
                         ImGui.EndCombo();
                     }
+
+                    if (Configuration.DurationLimit == DurationLimit.Custom)
+                    {
+                        ImGui.AlignTextToFramePadding();
+                        ImGui.TextColored(ImGuiColors.DalamudViolet, "Custom");
+                        ImGui.SameLine(length);
+
+                        ImGui.SetNextItemWidth(width / 5f);
+                        if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
+                        {
+                            Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
+                            Configuration.Save();
+                        }
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted(":");
+                        ImGui.SameLine();
+                        ImGui.SetNextItemWidth(width / 5f);
+                        if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
+                        {
+                            Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
+                            Configuration.Save();
+                        }
+                        ImGui.SameLine();
+                        ImGui.TextUnformatted("hours & minutes");
+                    }
+
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
 
