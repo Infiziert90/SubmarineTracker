@@ -18,7 +18,7 @@ public class NextOverlay : Window, IDisposable
 
     public NextOverlay(Plugin plugin, Configuration configuration) : base("Next Overlay")
     {
-        Size = new Vector2(300, 80);
+        Size = new Vector2(300, 60);
 
         Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         RespectCloseHotkey = false;
@@ -126,9 +126,6 @@ public class NextOverlay : Window, IDisposable
 
         ImGui.SetCursorPosX((avail - textWidth2) * 0.5f);
         ImGui.TextColored(ImGuiColors.HealerGreen, visitText);
-
-        if (ImGui.Checkbox("Auto Include", ref Configuration.MainRouteAutoInclude))
-            Configuration.Save();
 
         if (Configuration.MainRouteAutoInclude)
             Plugin.RouteOverlay.MustInclude.Add(unlockedFrom);

@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel;
@@ -153,6 +154,7 @@ public class RouteOverlay : Window, IDisposable
             Calculate = true;
         }
 
+        var length = ImGui.CalcTextSize($"Must Include {MustInclude.Count} / 5").X + 25.0f;
         var width = ImGui.GetContentRegionAvail().X / 3;
 
         ImGui.AlignTextToFramePadding();
@@ -173,7 +175,7 @@ public class RouteOverlay : Window, IDisposable
         }
         if (Configuration.DurationLimit != DurationLimit.None)
         {
-            ImGui.SameLine();
+            ImGui.SameLine(length);
             if (ImGui.Checkbox("Maximize Duration", ref Configuration.MaximizeDuration))
                 Configuration.Save();
         }
@@ -200,7 +202,12 @@ public class RouteOverlay : Window, IDisposable
             ImGui.TextUnformatted("hours & minutes");
         }
 
+        ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
+        ImGui.SameLine(length);
+        if (ImGui.Checkbox("Auto Include", ref Configuration.MainRouteAutoInclude))
+            Configuration.Save();
+        ImGuiComponents.HelpMarker("Auto include the next main sector, if there is one");
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
         if (MustInclude.Count >= 5) ImGui.BeginDisabled();
