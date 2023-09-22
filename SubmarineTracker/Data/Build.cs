@@ -228,6 +228,11 @@ public static class Build
             return highestDamage;
         }
 
+        public bool SameBuild(RouteBuild other)
+        {
+            return Rank == other.Rank && SameBuildWithoutRank(other);
+        }
+
         public bool SameBuildWithoutRank(RouteBuild other)
         {
             return Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;

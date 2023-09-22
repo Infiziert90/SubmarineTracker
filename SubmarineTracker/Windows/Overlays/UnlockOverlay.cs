@@ -63,7 +63,7 @@ public class UnlockOverlay : Window, IDisposable
             PossibleUnlocks.Clear();
             foreach (var sector in ExplorationSheet.Where(s => s.Map.Row == selectedMap + 1))
             {
-                if (!Unlocks.PointToUnlockPoint.TryGetValue(sector.RowId, out var unlockedFrom))
+                if (!Unlocks.SectorToUnlock.TryGetValue(sector.RowId, out var unlockedFrom))
                     continue;
 
                 if (unlockedFrom.Main)
@@ -139,7 +139,8 @@ public class UnlockOverlay : Window, IDisposable
         if (ImGui.Button("Must Include"))
         {
             foreach (var (_, from) in PossibleUnlocks)
-                Plugin.RouteOverlay.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!);
+                if (Plugin.RouteOverlay.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!))
+                    Plugin.RouteOverlay.Calculate = true;
         }
     }
 

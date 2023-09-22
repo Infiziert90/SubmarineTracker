@@ -29,7 +29,7 @@ public class NextOverlay : Window, IDisposable
 
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
 
-        UnlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last(s => s.Value.Sector != 9876).Key);
+        UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != 9876).Key);
         UnlockPath.Reverse();
     }
 
@@ -106,7 +106,7 @@ public class NextOverlay : Window, IDisposable
         }
 
         var isMap = false;
-        if (Unlocks.PointToUnlockPoint.TryGetValue(nextSector.UnlockedFrom.Sector, out var previousSector))
+        if (Unlocks.SectorToUnlock.TryGetValue(nextSector.UnlockedFrom.Sector, out var previousSector))
             isMap |= previousSector.Map;
 
         var unlockText = $"Next Sector: {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";
@@ -127,8 +127,8 @@ public class NextOverlay : Window, IDisposable
         ImGui.SetCursorPosX((avail - textWidth2) * 0.5f);
         ImGui.TextColored(ImGuiColors.HealerGreen, visitText);
 
-        if (Configuration.MainRouteAutoInclude)
-            Plugin.RouteOverlay.MustInclude.Add(unlockedFrom);
+        if (Configuration.MainRouteAutoInclude && Plugin.RouteOverlay.MustInclude.Add(unlockedFrom))
+            Plugin.RouteOverlay.Calculate = true;
     }
 
     public override void PostDraw()

@@ -11,7 +11,7 @@ public partial class BuilderWindow
 
     private uint[] BestPath = Array.Empty<uint>();
     private bool ComputingPath;
-    private int LastComputedRank;
+    private Build.RouteBuild LastComputedBuild;
     private DateTime ComputeStart = DateTime.Now;
 
     private bool Calculate;
@@ -72,7 +72,7 @@ public partial class BuilderWindow
                         if (Calculate)
                             beginCalculation = true;
                     }
-                    else if (mapChanged || LastComputedRank != CurrentBuild.Rank || OptionsChanged)
+                    else if (mapChanged || !LastComputedBuild.SameBuild(CurrentBuild) || OptionsChanged)
                     {
                         beginCalculation = true;
                     }
@@ -87,7 +87,7 @@ public partial class BuilderWindow
                         ComputingPath = true;
                         Task.Run(() =>
                         {
-                            LastComputedRank = CurrentBuild.Rank;
+                            LastComputedBuild = new Build.RouteBuild(CurrentBuild);
                             Calculate = false;
 
                             var mustInclude = MustInclude.Select(s => s.RowId).ToArray();

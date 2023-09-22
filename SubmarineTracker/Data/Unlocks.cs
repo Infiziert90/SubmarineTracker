@@ -4,7 +4,7 @@ public static class Unlocks
 {
     public record UnlockedFrom(uint Sector, bool Sub = false, bool Map = false, bool Main = false);
 
-    public static readonly Dictionary<uint, UnlockedFrom> PointToUnlockPoint = new()
+    public static readonly Dictionary<uint, UnlockedFrom> SectorToUnlock = new()
     {
         { 0, new UnlockedFrom(9999) },                          // Map A
         { 1, new UnlockedFrom(9000) },                          // A    Default
@@ -116,7 +116,7 @@ public static class Unlocks
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)
     {
-        if (!PointToUnlockPoint.TryGetValue(finalSector, out var final))
+        if (!SectorToUnlock.TryGetValue(finalSector, out var final))
             return new List<(uint, UnlockedFrom)>();
 
         // Unknown unlock at the time
@@ -127,7 +127,7 @@ public static class Unlocks
         var sectorPath = new List<(uint, UnlockedFrom)> { (finalSector, final) };
         while (sector != 9000)
         {
-            var newSector = PointToUnlockPoint[sector];
+            var newSector = SectorToUnlock[sector];
             sectorPath.Add((sector, newSector));
 
             sector = newSector.Sector;

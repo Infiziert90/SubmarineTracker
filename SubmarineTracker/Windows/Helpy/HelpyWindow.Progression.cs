@@ -8,7 +8,7 @@ public partial class HelpyWindow
 
     private void InitProgression()
     {
-        UnlockPath = Unlocks.FindUnlockPath(Unlocks.PointToUnlockPoint.Last(s => s.Value.Sector != 9876).Key);
+        UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != 9876).Key);
         UnlockPath.Reverse();
     }
 

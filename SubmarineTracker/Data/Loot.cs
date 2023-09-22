@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+﻿using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;

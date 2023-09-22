@@ -126,7 +126,7 @@ public partial class BuilderWindow
                 CurrentBuild.UpdateBuild(SelectedSub);
 
                 // Reset BestEXP to allow automatic calculation trigger
-                LastComputedRank = 0;
+                LastComputedBuild = Build.RouteBuild.Empty;
                 BestPath = Array.Empty<uint>();
             }
         }

@@ -196,8 +196,8 @@ public static class Export
                 Returning = QueryOptions.ReturnType.Minimal
             });
 
-            PluginLog.Debug(result.ResponseMessage?.StatusCode.ToString() ?? "Unknown");
-            PluginLog.Debug(result.Content ?? "None");
+            PluginLog.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
+            PluginLog.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
         }
         catch (Exception e)
         {

@@ -112,27 +112,23 @@ public static class Voyage
             return Array.Empty<uint>();
 
         var build = routeBuild.GetSubmarineBuild;
-        var must = mustInclude.Select(s => ExplorationSheet.GetRow(s)!);
-        var optimalDistances = allPaths.AsParallel().Select(CalculateDistance).Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(must)).ToArray();
-        if (!optimalDistances.Any())
-            return Array.Empty<uint>();
+        var must = mustInclude.Select(s => ExplorationSheet.GetRow(s)!).ToArray();
+        var bestPath = allPaths.AsParallel()
+                               .Select(CalculateDistance)
+                               .Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(must))
+                               .Select(t =>
+                               {
+                                   return new Tuple<uint[], TimeSpan, double>(
+                                       t.Item2.Select(s => s.RowId).ToArray(),
+                                       TimeSpan.FromSeconds(CalculateDuration(t.Item2.Prepend(startPoint), build)),
+                                       Sectors.CalculateExpForSectors(t.Item2.ToArray(), build)
+                                   );
+                               })
+                               .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))
+                               .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
+                               .FirstOrDefault();
 
-        var bestPath = optimalDistances.AsParallel().Select(tuple =>
-            {
-                var path = tuple.Item2.Prepend(startPoint).ToArray();
-
-                return new Tuple<uint[], TimeSpan, double>(
-                    tuple.Item2.Select(t => t.RowId).ToArray(),
-                    TimeSpan.FromSeconds(CalculateDuration(path, build)),
-                    Sectors.CalculateExpForSectors(tuple.Item2.ToArray(), build)
-                );
-            })
-          .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))
-          .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
-          .Select(t => t.Item1)
-          .FirstOrDefault();
-
-        return bestPath ?? Array.Empty<uint>();
+        return bestPath?.Item1 ?? Array.Empty<uint>();
     }
 
     private static readonly ConcurrentDictionary<uint, uint> Distances = new();

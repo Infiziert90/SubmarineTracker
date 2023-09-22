@@ -111,7 +111,7 @@ public partial class BuilderWindow
 
     private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
     {
-        if (!Unlocks.PointToUnlockPoint.TryGetValue(location.RowId, out var unlockedFrom))
+        if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(0);
 
         fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out var otherUnlocked);

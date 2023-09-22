@@ -16,16 +16,17 @@ public class RouteOverlay : Window, IDisposable
     private int Map = -1;
 
     private uint[] BestPath = Array.Empty<uint>();
-    private bool Calculate;
     private bool ComputingPath;
     private DateTime ComputeStart = DateTime.Now;
+
+    public bool Calculate;
     public readonly HashSet<SubmarineExplorationPretty> MustInclude = new();
 
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
     public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay")
     {
-        Size = new Vector2(300, 380);
+        Size = new Vector2(300, 330);
 
         Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         RespectCloseHotkey = false;
@@ -77,6 +78,7 @@ public class RouteOverlay : Window, IDisposable
                 Plugin.BuilderWindow.CurrentBuild.ChangeMap(selectedMap);
             }
 
+            Size = Configuration.DurationLimit != DurationLimit.Custom ? new Vector2(300, 330) : new Vector2(300, 350);
             IsOpen = true;
         }
         catch
@@ -106,8 +108,8 @@ public class RouteOverlay : Window, IDisposable
         if (Calculate && !ComputingPath)
         {
             Calculate = false;
-
             BestPath = Array.Empty<uint>();
+
             ComputeStart = DateTime.Now;
             ComputingPath = true;
 
@@ -148,12 +150,7 @@ public class RouteOverlay : Window, IDisposable
             ImGui.EndListBox();
         }
 
-        if (ImGui.Button("Recalculate"))
-        {
-            BestPath = Array.Empty<uint>();
-            Calculate = true;
-        }
-
+        var changed = false;
         var length = ImGui.CalcTextSize($"Must Include {MustInclude.Count} / 5").X + 25.0f;
         var width = ImGui.GetContentRegionAvail().X / 3;
 
@@ -167,7 +164,7 @@ public class RouteOverlay : Window, IDisposable
                 if (ImGui.Selectable(durationLimit.GetName()))
                 {
                     Configuration.DurationLimit = durationLimit;
-                    Configuration.Save();
+                    changed = true;
                 }
             }
 
@@ -176,37 +173,29 @@ public class RouteOverlay : Window, IDisposable
         if (Configuration.DurationLimit != DurationLimit.None)
         {
             ImGui.SameLine(length);
-            if (ImGui.Checkbox("Maximize Duration", ref Configuration.MaximizeDuration))
-                Configuration.Save();
+            changed |= ImGui.Checkbox("Maximize Duration", ref Configuration.MaximizeDuration);
         }
 
         if (Configuration.DurationLimit == DurationLimit.Custom)
         {
             ImGui.AlignTextToFramePadding();
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Hours & Minutes");
+            ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width / 2.5f);
-            if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
-            {
-                Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
-                Configuration.Save();
-            }
+            changed |= ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0);
+
             ImGui.SameLine();
             ImGui.TextUnformatted(":");
             ImGui.SameLine();
+
             ImGui.SetNextItemWidth(width / 2.5f);
-            if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
-            {
-                Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
-                Configuration.Save();
-            }
-            ImGui.SameLine();
-            ImGui.TextUnformatted("hours & minutes");
+            changed |= ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0);
         }
 
         ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
         ImGui.SameLine(length);
-        if (ImGui.Checkbox("Auto Include", ref Configuration.MainRouteAutoInclude))
-            Configuration.Save();
+        changed |= ImGui.Checkbox("Auto Include", ref Configuration.MainRouteAutoInclude);
         ImGuiComponents.HelpMarker("Auto include the next main sector, if there is one");
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
@@ -227,7 +216,7 @@ public class RouteOverlay : Window, IDisposable
         }
 
         if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
-            MustInclude.Add(ExplorationSheet.GetRow(row)!);
+            changed |= MustInclude.Add(ExplorationSheet.GetRow(row)!);
 
         ImGui.SameLine();
 
@@ -235,9 +224,18 @@ public class RouteOverlay : Window, IDisposable
         {
             foreach (var p in MustInclude.ToArray())
                 if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                    MustInclude.Remove(p);
+                    changed |= MustInclude.Remove(p);
 
             ImGui.EndListBox();
+        }
+
+        if (changed)
+        {
+            Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
+            Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
+
+            Calculate = true;
+            Configuration.Save();
         }
     }
 
