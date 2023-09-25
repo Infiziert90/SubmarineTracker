@@ -121,9 +121,7 @@ public class MainWindow : Window, IDisposable
         ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-        {
             Helper.MainMenuIcon(Plugin);
-        }
         ImGui.EndChild();
     }
 
@@ -387,16 +385,18 @@ public class MainWindow : Window, IDisposable
                                     ImGui.EndTabItem();
                                 }
                             }
+
+                            ImGui.EndTabBar();
                         }
-                        ImGui.EndTabBar();
                     }
                 }
                 ImGui.EndChild();
 
                 ImGui.EndTabItem();
             }
+
+            ImGui.EndTabBar();
         }
-        ImGui.EndTabBar();
     }
 
     private void DetailedSub(Submarines.Submarine sub)

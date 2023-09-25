@@ -45,8 +45,9 @@ public partial class HelpyWindow : Window, IDisposable
                 ProgressionTab(fcSub);
 
                 StorageTab();
+
+                ImGui.EndTabBar();
             }
-            ImGui.EndTabBar();
         }
         ImGui.EndChild();
 
@@ -54,9 +55,7 @@ public partial class HelpyWindow : Window, IDisposable
         ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-        {
             Helper.MainMenuIcon(Plugin);
-        }
         ImGui.EndChild();
     }
 }

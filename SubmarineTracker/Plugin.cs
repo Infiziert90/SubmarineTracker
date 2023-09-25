@@ -60,6 +60,10 @@ namespace SubmarineTracker
         public const string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
+        private const string GithubIssue = "https://github.com/Infiziert90/SubmarineTracker/issues";
+        private const string DiscordThread = "https://canary.discord.com/channels/581875019861328007/1094255662860599428";
+        private const string KoFiLink = "https://ko-fi.com/infiii";
+
         private readonly PluginCommandManager<Plugin> CommandManager;
 
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
@@ -307,6 +311,10 @@ namespace SubmarineTracker
             LoadFCOrder();
         }
 
+        public static void IssuePage() => Dalamud.Utility.Util.OpenLink(GithubIssue);
+        public static void DiscordSupport() => Dalamud.Utility.Util.OpenLink(DiscordThread);
+        public static void Kofi() => Dalamud.Utility.Util.OpenLink(KoFiLink);
+
         #region Draws
         private void DrawUI() => WindowSystem.Draw();
 
@@ -314,6 +322,7 @@ namespace SubmarineTracker
         public void OpenBuilder() => BuilderWindow.IsOpen = true;
         public void OpenLoot() => LootWindow.IsOpen = true;
         public void OpenHelpy() => HelpyWindow.IsOpen = true;
+        public void OpenOverlay() => ReturnOverlay.IsOpen = true;
         public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 

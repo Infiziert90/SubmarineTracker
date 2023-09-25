@@ -29,24 +29,62 @@ public partial class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.BeginTabBar("##ConfigTabBar"))
+        var aboutOpen = false;
+        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginChild("ConfigContent", new Vector2(0, -buttonHeight)))
         {
-            Tracker();
+            if (ImGui.BeginTabBar("##ConfigTabBar"))
+            {
+                Tracker();
 
-            Builder();
+                Builder();
 
-            Loot();
+                Loot();
 
-            Overlay();
+                Overlay();
 
-            Notify();
+                Notify();
 
-            Order();
+                Order();
 
-            Upload();
+                Upload();
 
-            About();
+                aboutOpen = About();
+
+                ImGui.EndTabBar();
+            }
         }
-        ImGui.EndTabBar();
+        ImGui.EndChild();
+
+        ImGui.Separator();
+        ImGuiHelpers.ScaledDummy(1.0f);
+
+        if (ImGui.BeginChild("ConfigBottomBar", new Vector2(0, 0), false, 0))
+        {
+            if (aboutOpen)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
+                if (ImGui.Button("Discord Thread"))
+                    Plugin.DiscordSupport();
+                ImGui.PopStyleColor();
+
+                ImGui.SameLine();
+
+                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
+                if (ImGui.Button("Issues"))
+                    Plugin.IssuePage();
+                ImGui.PopStyleColor();
+
+                ImGui.SameLine();
+
+                ImGui.PushStyleColor(ImGuiCol.Button, Helper.CustomFullyDone);
+                if (ImGui.Button("Ko-Fi Tip"))
+                    Plugin.Kofi();
+                ImGui.PopStyleColor();
+            }
+
+            Helper.MainMenuIcon(Plugin);
+        }
+        ImGui.EndChild();
     }
 }

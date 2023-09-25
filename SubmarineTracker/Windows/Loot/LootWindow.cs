@@ -53,8 +53,9 @@ public partial class LootWindow : Window, IDisposable
                 AnalyseTab();
 
                 ExportTab();
+
+                ImGui.EndTabBar();
             }
-            ImGui.EndTabBar();
         }
         ImGui.EndChild();
 
@@ -62,9 +63,7 @@ public partial class LootWindow : Window, IDisposable
         ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-        {
             Helper.MainMenuIcon(Plugin);
-        }
         ImGui.EndChild();
     }
 }

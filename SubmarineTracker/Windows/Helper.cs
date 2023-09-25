@@ -6,13 +6,12 @@ namespace SubmarineTracker.Windows;
 public static class Helper
 {
     private static Configuration Configuration = null!;
+    private static PopupMenu SettingsMenu = null!;
 
     public static readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
     public static readonly Vector4 CustomFullyDone = new(0.12549f, 0.74902f, 0.33333f, 0.6f);
     public static readonly Vector4 CustomPartlyDone = new(1.0f, 0.81569f, 0.27451f, 0.6f);
     public static readonly Vector4 CustomOnRoute = new(0.85882f, 0.22745f, 0.20392f, 0.6f);
-
-    private static PopupMenu SettingsMenu = null!;
 
     public static void Initialize(Plugin plugin)
     {
@@ -24,9 +23,14 @@ public static class Helper
                                          new PopupMenu.PopupMenuItemSelectable("Builder Window", plugin.OpenBuilder,"Open the builder window."),
                                          new PopupMenu.PopupMenuItemSelectable("Loot Window", plugin.OpenLoot,"Open the loot window."),
                                          new PopupMenu.PopupMenuItemSelectable("Helpy Window", plugin.OpenHelpy,"Open the helper window."),
+                                         new PopupMenu.PopupMenuItemSelectable("Return Overlay", plugin.OpenOverlay,"Open the return overlay."),
                                          new PopupMenu.PopupMenuItemSelectable("Config Window", plugin.OpenConfig,"Open the config window."),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable("Sync", plugin.Sync,"Syncs all data from disk and refresh cached data"),
+                                         new PopupMenu.PopupMenuItemSelectable("Discord Thread", Plugin.DiscordSupport,"Open the discord support thread."),
+                                         new PopupMenu.PopupMenuItemSelectable("Issues", Plugin.IssuePage,"Open the issue page in your browser."),
+                                         new PopupMenu.PopupMenuItemSelectable("Ko-Fi Tip", Plugin.Kofi,"Open the kofi page in your browser."),
+                                         new PopupMenu.PopupMenuItemSeparator(),
+                                         new PopupMenu.PopupMenuItemSelectable("Sync", plugin.Sync,"Syncs all data from disk and refresh cached data."),
                                      });
 
         Configuration = plugin.Configuration;

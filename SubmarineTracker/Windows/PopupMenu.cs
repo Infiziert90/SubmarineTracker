@@ -1,4 +1,6 @@
-﻿namespace SubmarineTracker.Windows;
+﻿using static ImGuiNET.ImGuiHoveredFlags;
+
+namespace SubmarineTracker.Windows;
 
 // From: https://github.com/Critical-Impact/InventoryTools/blob/a9df0be1c6f1499198a724bcdf36422f240ad6f2/InventoryTools/Ui/Widgets/PopupMenu.cs
 public class PopupMenu
@@ -43,10 +45,8 @@ public class PopupMenu
             }
 
             if (Tooltip != "")
-            {
                 if (ImGui.IsItemHovered())
                     ImGui.SetTooltip(Tooltip);
-            }
         }
     }
 
@@ -55,7 +55,9 @@ public class PopupMenu
     {
         public void DrawPopup()
         {
+            ImGuiHelpers.ScaledDummy(1.0f);
             ImGui.Separator();
+            ImGuiHelpers.ScaledDummy(1.0f);
         }
     }
 
@@ -72,10 +74,8 @@ public class PopupMenu
                               ImGui.IsMouseReleased(ImGuiMouseButton.Right) && OpenButtons is PopupMenuButtons.All or PopupMenuButtons.Right or PopupMenuButtons.LeftRight ||
                               ImGui.IsMouseReleased(ImGuiMouseButton.Middle) && OpenButtons is PopupMenuButtons.All or PopupMenuButtons.Middle;
 
-        if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled & ImGuiHoveredFlags.AllowWhenOverlapped & ImGuiHoveredFlags.AllowWhenBlockedByPopup & ImGuiHoveredFlags.AllowWhenBlockedByActiveItem & ImGuiHoveredFlags.AnyWindow) && isMouseReleased)
-        {
+        if (ImGui.IsItemHovered(AllowWhenDisabled & AllowWhenOverlapped & AllowWhenBlockedByPopup & AllowWhenBlockedByActiveItem & AnyWindow) && isMouseReleased)
             ImGui.OpenPopup($"RightClick{Id}");
-        }
 
         if (ImGui.BeginPopup($"RightClick{Id}"))
         {

@@ -62,8 +62,9 @@ public partial class BuilderWindow : Window, IDisposable
                 shipTabOpen |= LevelingTab();
 
                 infoTabOpen |= InfoTab();
+
+                ImGui.EndTabBar();
             }
-            ImGui.EndTabBar();
 
             if (!infoTabOpen && !shipTabOpen)
             {
