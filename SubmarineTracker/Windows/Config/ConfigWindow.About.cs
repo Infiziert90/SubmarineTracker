@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Submarines;
 
+using static SubmarineTracker.Data.Submarines;
 namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
@@ -11,20 +12,20 @@ public partial class ConfigWindow
 
     private bool About()
     {
-        if (!ImGui.BeginTabItem("About"))
+        if (!ImGui.BeginTabItem($"{Loc.Localize("Config Tab - About", "About")}##About"))
             return false;
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextUnformatted("Author:");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Author", "Author:"));
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.Authors);
 
-        ImGui.TextUnformatted("Discord:");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Discord", "Discord:"));
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedGold, "@infi");
 
-        ImGui.TextUnformatted("Version:");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Version", "Version:"));
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.Version);
 
@@ -50,6 +51,14 @@ public partial class ConfigWindow
 
         if (ImGui.Button("Test Entry Upload"))
             Task.Run(() => Export.UploadEntry(GenerateLootList().Last()));
+
+        if(ImGui.Button("Export Loc"))
+        {
+            var pwd = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
+            Loc.ExportLocalizable();
+            Directory.SetCurrentDirectory(pwd);
+        }
         ImGui.Unindent(10.0f);
         #endif
 

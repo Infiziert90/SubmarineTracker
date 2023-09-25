@@ -6,53 +6,53 @@ public partial class ConfigWindow
 {
     private void Builder()
     {
-        if (ImGui.BeginTabItem("Builder"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Config Tab - Builder", "Builder")}##Builder"))
         {
             ImGuiHelpers.ScaledDummy(5.0f);
             var changed = false;
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
             ImGui.Indent(10.0f);
-            changed |= ImGui.Checkbox("Show Only Current FC", ref Configuration.ShowOnlyCurrentFC);
-            changed |= ImGui.Checkbox("Auto Select Current Submarine", ref Configuration.AutoSelectCurrent);
-            ImGuiComponents.HelpMarker("Automatically selects the current selected submarine in the games voyage interface.");
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Current FC", "Show Only Current FC"), ref Configuration.ShowOnlyCurrentFC);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Auto Selection", "Auto Select Current Submarine"), ref Configuration.AutoSelectCurrent);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Auto Selection", "Automatically selects the current selected submarine in the games voyage interface."));
             if (Configuration.AutoSelectCurrent)
             {
                 ImGuiHelpers.ScaledIndent(10.0f);
-                changed |= ImGui.Checkbox("Show Next Overlay", ref Configuration.ShowNextOverlay);
-                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface" +
-                                           "\n" +
-                                           "\nSuggest the next sector to unlock or explore" +
-                                           "\nVisible if:" +
-                                           "\n  a) The map has unlocks left, or" +
-                                           "\n  b) A sector must be explored to unlock the next map");
-                changed |= ImGui.Checkbox("Show Unlock Overlay", ref Configuration.ShowUnlockOverlay);
-                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface" +
-                                           "\n" +
-                                           "\nShows all unlocks that are still open" +
-                                           "\nVisible if:" +
-                                           "\n  a) The map has unlocks left");
-                changed |= ImGui.Checkbox("Show Route Overlay", ref Configuration.ShowRouteOverlay);
-                ImGuiComponents.HelpMarker("Overlay attached to the voyage selection interface." +
-                                           "\n" +
-                                           "\nSuggest the best route to take" +
-                                           "\nEmpty if:" +
-                                           "\n  a) Highest Rank threshold has been passed" +
-                                           "\n  b) MustInclude is empty");
-                changed |= ImGui.SliderInt("Highest Rank", ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, "Rank %d");
-                ImGuiComponents.HelpMarker("No route suggestions above this rank.");
-                changed |= ImGui.Checkbox("Auto Include Main Sector", ref Configuration.MainRouteAutoInclude);
-                ImGuiComponents.HelpMarker("Auto includes the next main route sector, if there is one.");
+                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Next Overlay", "Show Next Overlay"), ref Configuration.ShowNextOverlay);
+                ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Next Overlay", "Overlay attached to the voyage selection interface" +
+                                                   "\n" +
+                                                   "\nSuggest the next sector to unlock or explore" +
+                                                   "\nVisible if:" +
+                                                   "\n  a) The map has unlocks left, or" +
+                                                   "\n  b) A sector must be explored to unlock the next map"));
+                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Unlock Overlay", "Show Unlock Overlay"), ref Configuration.ShowUnlockOverlay);
+                ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Unlock Overlay", "Overlay attached to the voyage selection interface" +
+                                                   "\n" +
+                                                   "\nShows all unlocks that are still open" +
+                                                   "\nVisible if:" +
+                                                   "\n  a) The map has unlocks left"));
+                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Route Overlay", "Show Route Overlay"), ref Configuration.ShowRouteOverlay);
+                ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Route Overlay", "Overlay attached to the voyage selection interface." +
+                                                   "\n" +
+                                                   "\nSuggest the best route to take" +
+                                                   "\nEmpty if:" +
+                                                   "\n  a) Highest Rank threshold has been passed" +
+                                                   "\n  b) MustInclude is empty"));
+                changed |= ImGui.SliderInt(Loc.Localize("Config Tab Slider - Rank", "Highest Rank"), ref Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
+                ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Rank", "No route suggestions above this rank."));
+                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Include Main", "Auto Include Main Sector"), ref Configuration.MainRouteAutoInclude);
+                ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Include Main", "Auto includes the next main route sector, if there is one."));
                 ImGuiHelpers.ScaledIndent(-10.0f);
             }
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Saved Builds:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Saved Builds", "Saved Builds:"));
             if (ImGui.BeginTable("##DeleteBuildsTable", 2))
             {
-                ImGui.TableSetupColumn("Build");
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Build", "Build"));
                 ImGui.TableSetupColumn("##Del", 0, 0.1f);
 
                 ImGui.TableHeadersRow();

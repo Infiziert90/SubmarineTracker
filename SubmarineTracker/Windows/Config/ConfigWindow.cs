@@ -64,26 +64,26 @@ public partial class ConfigWindow : Window, IDisposable
             if (aboutOpen)
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button("Discord Thread"))
+                if (ImGui.Button(Loc.Localize("Menu - Discord Thread", "Discord Thread")))
                     Plugin.DiscordSupport();
                 ImGui.PopStyleColor();
 
                 ImGui.SameLine();
 
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
-                if (ImGui.Button("Issues"))
+                if (ImGui.Button(Loc.Localize("Menu - Issues", "Issues")))
                     Plugin.IssuePage();
                 ImGui.PopStyleColor();
 
                 ImGui.SameLine();
 
                 ImGui.PushStyleColor(ImGuiCol.Button, Helper.CustomFullyDone);
-                if (ImGui.Button("Ko-Fi Tip"))
+                if (ImGui.Button(Loc.Localize("Menu - KoFi", "Ko-Fi Tip")))
                     Plugin.Kofi();
                 ImGui.PopStyleColor();
             }
 
-            Helper.MainMenuIcon(Plugin);
+            Helper.MainMenuIcon();
         }
         ImGui.EndChild();
     }

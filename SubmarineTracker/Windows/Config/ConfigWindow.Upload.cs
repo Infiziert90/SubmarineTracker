@@ -1,4 +1,6 @@
-﻿namespace SubmarineTracker.Windows.Config;
+﻿using Dalamud.Utility;
+
+namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
@@ -9,25 +11,25 @@ public partial class ConfigWindow
             var changed = false;
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Information 1", "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!"));
 
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "What data?");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - What", "What data?"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Loot received");
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Sector unlocks");
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Exploration procs");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 1", "Loot received"));
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 2", "Sector unlocks"));
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 3", "Exploration procs"));
             ImGuiHelpers.ScaledIndent(-10.0f);
 
-            Helper.WrappedText(ImGuiColors.DalamudViolet, "Has there been any uploads?");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Any Uploads", "Has there been any uploads?"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? $"Yes, {Configuration.UploadCounter} uploads" : "No")}");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? Loc.Localize("Config Tab Upload - Yes Number", "Yes, {Number} uploads").Format(Configuration.UploadCounter) : Loc.Localize("Config Tab Upload - No", "No"))}");
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            changed |= ImGui.Checkbox("Upload Permission", ref Configuration.UploadPermission);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Upload Permission", "Upload Permission"), ref Configuration.UploadPermission);
 
             if (changed)
                 Configuration.Save();

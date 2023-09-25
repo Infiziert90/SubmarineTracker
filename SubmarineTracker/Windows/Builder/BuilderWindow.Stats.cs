@@ -25,7 +25,7 @@ public partial class BuilderWindow
             var repairAfter = 0;
             if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
             {
-                totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild);
+                totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild, AvgBonus);
                 expPerMinute = totalExp / (optimizedDuration / 60.0);
                 repairAfter = CurrentBuild.CalculateUntilRepair();
             }
@@ -111,7 +111,7 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp");
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{totalExp:N0}");
+                ImGui.TextUnformatted($"{totalExp:N0}{(AvgBonus ? '*' : string.Empty)}");
 
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");

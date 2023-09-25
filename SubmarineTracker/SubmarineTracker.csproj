@@ -25,6 +25,9 @@
         <Content Include="images\icon.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="loc\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <PropertyGroup>
@@ -62,6 +65,10 @@
         </Reference>
         <Reference Include="Lumina.Excel">
             <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="CheapLoc">
+            <HintPath>$(DalamudLibPath)CheapLoc.dll</HintPath>
             <Private>false</Private>
         </Reference>
     </ItemGroup>

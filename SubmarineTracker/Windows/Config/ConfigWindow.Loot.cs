@@ -20,18 +20,18 @@ public partial class ConfigWindow
 
     private void Loot()
     {
-        if (ImGui.BeginTabItem("Loot"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Config Tab - Loot", "Loot")}##Loot"))
         {
             ImGuiHelpers.ScaledDummy(5.0f);
             var changed = false;
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
             ImGui.Indent(10.0f);
-            changed |= ImGui.Checkbox("Exclude Legacy Loot", ref Configuration.ExcludeLegacy);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Legacy", "Exclude Legacy Loot"), ref Configuration.ExcludeLegacy);
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Add Items:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Add Items", "Add Items:"));
 
             var buttonWidth = ImGui.GetContentRegionAvail().X / 2;
             ImGui.PushFont(UiBuilder.IconFont);
@@ -49,9 +49,9 @@ public partial class ConfigWindow
 
             if (ImGui.BeginTable("##DeleteLootTable", 3))
             {
-                ImGui.TableSetupColumn("Item");
-                ImGui.TableSetupColumn("Value", 0, 0.4f);
-                ImGui.TableSetupColumn("Del", 0, 0.15f);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Item", "Item"));
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Price", "Price"), 0, 0.4f);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Delete", "Del"), 0, 0.15f);
 
                 ImGui.TableHeadersRow();
 

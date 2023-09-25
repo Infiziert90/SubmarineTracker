@@ -19,18 +19,18 @@ public static class Helper
                                      PopupMenu.PopupMenuButtons.LeftRight,
                                      new List<PopupMenu.IPopupMenuItem>
                                      {
-                                         new PopupMenu.PopupMenuItemSelectable("Tracker Window", plugin.OpenTracker,"Open the tracker window."),
-                                         new PopupMenu.PopupMenuItemSelectable("Builder Window", plugin.OpenBuilder,"Open the builder window."),
-                                         new PopupMenu.PopupMenuItemSelectable("Loot Window", plugin.OpenLoot,"Open the loot window."),
-                                         new PopupMenu.PopupMenuItemSelectable("Helpy Window", plugin.OpenHelpy,"Open the helper window."),
-                                         new PopupMenu.PopupMenuItemSelectable("Return Overlay", plugin.OpenOverlay,"Open the return overlay."),
-                                         new PopupMenu.PopupMenuItemSelectable("Config Window", plugin.OpenConfig,"Open the config window."),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Tracker", "Tracker"), plugin.OpenTracker,Loc.Localize("Menu Tooltip - Tracker", "Open the tracker window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Builder", "Builder"), plugin.OpenBuilder,Loc.Localize("Menu Tooltip - Builder", "Open the builder window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Loot", "Loot"), plugin.OpenLoot,Loc.Localize("Menu Tooltip - Loot", "Open the loot window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Helpy", "Helpy"), plugin.OpenHelpy,Loc.Localize("Menu Tooltip - Helpy", "Open the helper window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Overlay", "Overlay"), plugin.OpenOverlay,Loc.Localize("Menu Tooltip - Overlay", "Open the return overlay.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Config", "Config"), plugin.OpenConfig,Loc.Localize("Menu Tooltip - Config", "Open the config window.")),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable("Discord Thread", Plugin.DiscordSupport,"Open the discord support thread."),
-                                         new PopupMenu.PopupMenuItemSelectable("Issues", Plugin.IssuePage,"Open the issue page in your browser."),
-                                         new PopupMenu.PopupMenuItemSelectable("Ko-Fi Tip", Plugin.Kofi,"Open the kofi page in your browser."),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Discord Thread", "Discord Thread"), Plugin.DiscordSupport,Loc.Localize("Menu Tooltip - Discord Thread", "Open the discord support thread.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Issues", "Issues"), Plugin.IssuePage,Loc.Localize("Menu Tooltip - Issues", "Open the issue page in your browser.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - KoFi", "Ko-Fi Tip"), Plugin.Kofi,Loc.Localize("Menu Tooltip - KoFi", "Open the kofi page in your browser.")),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable("Sync", plugin.Sync,"Syncs all data from disk and refresh cached data."),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Sync", "Sync"), plugin.Sync,Loc.Localize("Menu Tooltip - Sync", "Reload all stored data from hard drive and refresh the cache.")),
                                      });
 
         Configuration = plugin.Configuration;
@@ -39,8 +39,7 @@ public static class Helper
     public static void NoData()
     {
         ImGuiHelpers.ScaledDummy(10.0f);
-        WrappedError("No data found for this character's FC\n" +
-                     "Please visit your Company Workshop and access Submersible Management at the Voyage Control Panel.");
+        WrappedError(Loc.Localize("Error - No Data", "No data found for this character's FC\nPlease visit your Company Workshop and access Submersible Management at the Voyage Control Panel."));
     }
 
     public static string GetFCName(FcSubmarines fc)
@@ -72,10 +71,10 @@ public static class Helper
 
     public static string GenerateVoyageText(Submarine sub, bool useTime = false)
     {
-        var time = "No Voyage";
+        var time = Loc.Localize("Terms - No Voyage", "No Voyage");
         if (sub.IsOnVoyage())
         {
-            time = "Done";
+            time = Loc.Localize("Terms - Done", "Done");;
 
             var returnTime = sub.LeftoverTime();
             if (returnTime.TotalSeconds > 0)
@@ -85,7 +84,7 @@ public static class Helper
         return time;
     }
 
-    public static void MainMenuIcon(Plugin plugin)
+    public static void MainMenuIcon()
     {
         var avail = ImGui.GetContentRegionAvail().X;
 

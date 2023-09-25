@@ -71,6 +71,7 @@ namespace SubmarineTracker
         public readonly Notify Notify;
         public static HookManager HookManager = null!;
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
+        private readonly Localization Localization = new();
 
         public Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
 
@@ -121,9 +122,11 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(UnlockOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
+            Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
+            PluginInterface.LanguageChanged += Localization.SetupWithLangCode;
 
             TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
 
@@ -160,6 +163,7 @@ namespace SubmarineTracker
 
             PluginInterface.UiBuilder.Draw -= DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi -= OpenConfig;
+            PluginInterface.LanguageChanged -= Localization.SetupWithLangCode;
 
             CommandManager.Dispose();
 

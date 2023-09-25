@@ -185,14 +185,16 @@ public static class Build
 
         public void UpdateOptimized((uint Distance, SubmarineExplorationPretty[] Points) optimized)
         {
-            OptimizedDistance = optimized.Distance;
             OptimizedRoute = optimized.Points;
+            OptimizedDistance = optimized.Distance;
+            Sectors = optimized.Points.Select(s => s.RowId).ToList();
         }
 
         public void NotOptimized()
         {
-            OptimizedDistance = 0;
             OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
+            OptimizedDistance = 0;
+            Sectors = new List<uint>();
         }
 
         public int CalculateUntilRepair()

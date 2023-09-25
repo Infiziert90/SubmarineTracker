@@ -7,14 +7,14 @@ public partial class ConfigWindow
 {
     private void Order()
     {
-        if (ImGui.BeginTabItem("Order"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Config Tab - Order", "Order")}##Order"))
         {
             if (ImGui.BeginChild("FCContent", new Vector2(0, 0)))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
                 if (ImGui.BeginTable("##DeleteSavesTable", 4))
                 {
-                    ImGui.TableSetupColumn("Saved FCs");
+                    ImGui.TableSetupColumn(Loc.Localize("Terms - Saved FCs", "Saved FCs"));
                     ImGui.TableSetupColumn("##OrderUp", 0, 0.1f);
                     ImGui.TableSetupColumn("##OrderDown", 0, 0.1f);
                     ImGui.TableSetupColumn("##Del", 0, 0.1f);
@@ -48,7 +48,7 @@ public partial class ConfigWindow
                             deletion = id;
 
                         if (ImGui.IsItemHovered())
-                            ImGui.SetTooltip("Deleting an FC entry will additionally remove it's loot history.\nHold Control to delete");
+                            ImGui.SetTooltip(Loc.Localize("Config Tab Tooltip - Saved FCs Deletion", "Deleting an FC entry will additionally remove all of its loot history.\nHold Control to delete"));
 
                         ImGui.TableNextRow();
                     }
@@ -70,7 +70,6 @@ public partial class ConfigWindow
                     ImGui.EndTable();
                 }
             }
-
             ImGui.EndChild();
 
 

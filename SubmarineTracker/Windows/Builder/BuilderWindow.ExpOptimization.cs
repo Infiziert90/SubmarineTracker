@@ -93,7 +93,7 @@ public partial class BuilderWindow
 
                             var mustInclude = MustInclude.Select(s => s.RowId).ToArray();
                             var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
-                            var path = Voyage.FindBestPath(CurrentBuild, unlocked, mustInclude, ignoreUnlocks: IgnoreUnlocks);
+                            var path = Voyage.FindBestPath(CurrentBuild, unlocked, mustInclude, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
                             if (!path.Any())
                                 CurrentBuild.NotOptimized();
 
@@ -147,6 +147,9 @@ public partial class BuilderWindow
                     ImGui.Indent(10.0f);
                     OptionsChanged |= ImGui.Checkbox("Disable Automatic Calculation", ref Configuration.CalculateOnInteraction);
                     OptionsChanged |= ImGui.Checkbox("Ignore Unlocks", ref IgnoreUnlocks);
+                    OptionsChanged |= ImGui.Checkbox("Use Avg EXP Bonus", ref AvgBonus);
+                    ImGuiComponents.HelpMarker("This calculation normally takes only guaranteed retrieval bonus into account.\n" +
+                                               "With this option it will take the avg of possible bonus");
                     if (Configuration.DurationLimit != DurationLimit.None)
                     {
                         OptionsChanged |= ImGui.Checkbox("Maximize Duration  Limit", ref Configuration.MaximizeDuration);
