@@ -21,6 +21,7 @@ public partial class BuilderWindow
     private bool OptionsChanged;
 
     private bool IgnoreUnlocks;
+    private bool AvgBonus;
 
     public ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions;
 

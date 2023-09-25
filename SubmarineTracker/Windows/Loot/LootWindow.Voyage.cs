@@ -12,7 +12,7 @@ public partial class LootWindow
         if (ImGui.BeginTabItem("Voyage"))
         {
             var existingSubs = Submarines.KnownSubmarines.Values
-                                         .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
+                                         .SelectMany(fc => fc.Submarines.Select(s => $"{Helper.GetFCName(fc)} - {s.Name} ({s.Build.FullIdentifier()})"))
                                          .ToArray();
             if (!existingSubs.Any())
             {

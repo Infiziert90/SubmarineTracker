@@ -150,7 +150,7 @@ public static class Loot
             // Favor Procs
             18 => "Yes",
             19 => "CSCFIFFE",
-            20 => "No",
+            20 => "Too Low",
 
             _ => "Unknown"
         };

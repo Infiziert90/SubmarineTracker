@@ -75,7 +75,7 @@ public static class Voyage
         return (uint) allDurations.Sum() + FixedVoyageTime;
     }
 
-    public static uint[] FindBestPath(Build.RouteBuild routeBuild, uint[] unlockedSectors, uint[] mustInclude, uint[]? allowedSectors = null, bool ignoreUnlocks = false)
+    public static uint[] FindBestPath(Build.RouteBuild routeBuild, uint[] unlockedSectors, uint[] mustInclude, uint[]? allowedSectors = null, bool ignoreUnlocks = false, bool avgExpBonus = false)
     {
         SubmarineExplorationPretty[] valid;
         if (allowedSectors != null && allowedSectors.Any())
@@ -121,7 +121,7 @@ public static class Voyage
                                    return new Tuple<uint[], TimeSpan, double>(
                                        t.Item2.Select(s => s.RowId).ToArray(),
                                        TimeSpan.FromSeconds(CalculateDuration(t.Item2.Prepend(startPoint), build)),
-                                       Sectors.CalculateExpForSectors(t.Item2.ToArray(), build)
+                                       Sectors.CalculateExpForSectors(t.Item2.ToArray(), build, avgExpBonus)
                                    );
                                })
                                .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))

@@ -59,13 +59,13 @@ public partial class BuilderWindow
             var avail = ImGui.GetContentRegionAvail().X;
             var width = avail / 2;
 
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? CurrentBuild : "All")}");
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Target Rank: {TargetRank}");
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"Build: {(!IgnoreBuild ? $"{CurrentBuild} ({CurrentBuild.Rank})" : "All")}");
             ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)RankSheet.Last().RowId);
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"Swap if optimal after {SwapAfter} voyages");
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)RankSheet.Last().RowId, "Target Rank %d");
+            ImGuiComponents.HelpMarker("The rank this leveling calculation should try to reach, but can overshot");
             ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10);
+            ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10, "Swap After %d");
+            ImGuiComponents.HelpMarker("Swaps parts after X voyages if optimal");
             if (Processing)
             {
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Progress:");
@@ -114,6 +114,9 @@ public partial class BuilderWindow
             ImGuiComponents.HelpMarker("This will calculate every single possible build\n" +
                                        "Warning: This will take a long time and you'll experience game slowdown");
             ImGui.Checkbox("Ignore unlocks", ref IgnoreUnlocks);
+            ImGui.Checkbox("Use Avg EXP Bonus", ref AvgBonus);
+            ImGuiComponents.HelpMarker("This calculation normally takes only guaranteed retrieval bonus into account.\n" +
+                                       "With this option it will take the avg of possible bonus");
             if (Configuration.DurationLimit != DurationLimit.None)
             {
                 ImGui.Checkbox("Maximize duration limit", ref Configuration.MaximizeDuration);
@@ -122,8 +125,9 @@ public partial class BuilderWindow
 
             ImGui.Unindent(10.0f);
 
+            ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
-            ImGui.SameLine(length);
+            ImGui.Indent(10.0f);
             ImGui.SetNextItemWidth(width);
             if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
             {
@@ -141,17 +145,42 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
-            ImGui.Checkbox($"--Not Supported-- Ignore Shark", ref IgnoreShark);
+            if (Configuration.DurationLimit == DurationLimit.Custom)
+            {
+                ImGui.SetNextItemWidth(width / 5f);
+                if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
+                {
+                    Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
+                    Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGui.TextUnformatted(":");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(width / 5f);
+                if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
+                {
+                    Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
+                    Configuration.Save();
+                }
+                ImGui.SameLine();
+                ImGui.TextUnformatted("hours & minutes");
+            }
+            ImGui.Unindent(10.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "--Experimental--");
+            ImGui.Indent(10.0f);
+            ImGui.Checkbox($"Ignore Shark Parts", ref IgnoreShark);
             ImGuiComponents.HelpMarker("Leveling expects that a shark part exists, so it takes that as prio over worse parts" +
                                        "\nThis option disables the behaviour" +
-                                       "\nNOTE: This can lead to errors, there is no support if it happens." +
                                        "\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop." +
-                                       "\ne.g SSUW must be Rank higher or equal to 25");
-            ImGui.Checkbox($"--Not Supported-- Ignore Unmodded", ref IgnoreUnmodded);
+                                       "\ne.g SSUW must be Rank higher or equal to 25" +
+                                       "\nImportant: This can lead to errors");
+            ImGui.Checkbox($"Ignore Unmodded Parts", ref IgnoreUnmodded);
             ImGuiComponents.HelpMarker("Leveling expects that an unmodded part exists, so it takes that as prio over modded" +
                                        "\nThis option disables the behaviour" +
-                                       "\nNOTE: This can lead to errors, there is no support if it happens.");
-            ImGui.TextColored(ImGuiColors.DalamudViolet, $"--Experimental-- Allowed Sectors: {AllowedSectors.Count}");
+                                       "\nImportant: This can lead to errors");
+            ImGui.Unindent(10.0f);
+            ImGui.TextColored(ImGuiColors.DalamudViolet, $"Allowed Sectors: {AllowedSectors.Count}");
 
             if (AllowedChanged)
             {
@@ -208,6 +237,7 @@ public partial class BuilderWindow
                 ImGui.TextColored(ImGuiColors.DalamudViolet, "Last Calculation:");
                 Box.SimpleBox(modifier, () =>
                 {
+                    ImGui.TextUnformatted($"Start Rank: {CurrentBuild.Rank} ({CurrentBuild})");
                     ImGui.TextUnformatted($"Final Rank: {LastCalc[lastIdx].RankReached} ({LastCalc[lastIdx].Build})");
                     ImGui.TextUnformatted($"Voyages: {lastIdx} ({GetStringFromTimespan(GetTimesFromJourneys(LastCalc.Values))})");
                     ImGui.TextUnformatted($"EXP total: {LastCalc.Values.Sum(x => x.RouteExp):N0}");
@@ -219,6 +249,7 @@ public partial class BuilderWindow
                 Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted($"Limit: {LastOptions.Limit}");
+                    ImGui.TextUnformatted($"Avg Bonus: {AvgBonus}");
                     ImGui.TextUnformatted($"Ignore Build: {LastOptions.IgnoreBuild}");
                     ImGui.TextUnformatted($"Ignore Unlocks: {LastOptions.IgnoreUnlocks}");
                     ImGui.TextUnformatted($"Maximize Limit: {LastOptions.MaximizeDurationLimit}");
@@ -293,7 +324,7 @@ public partial class BuilderWindow
         Progress += 1;
         var outTree = BuildRoute();
 
-        if (CancelSource.IsCancellationRequested)
+        if (CancelSource.IsCancellationRequested || outTree == null)
         {
             Processing = false;
             return;
@@ -311,7 +342,7 @@ public partial class BuilderWindow
         Processing = false;
     }
 
-    private Dictionary<int, Journey> BuildRoute()
+    private Dictionary<int, Journey>? BuildRoute()
     {
         var routeBuilds = BuildParts();
 
@@ -321,17 +352,11 @@ public partial class BuilderWindow
         if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
         {
             Unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
+            var hasAllowed = AllowedSectors.Any();
             var mapBreaks = ExplorationSheet
-                            .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                            .Where(r => IgnoreUnlocks || Unlocked.Contains(r.RowId))
-                            .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
-            if (AllowedSectors.Any())
-            {
-                mapBreaks = ExplorationSheet
-                            .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                            .Where(r => AllowedSectors.Contains(r))
-                            .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
-            }
+                        .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
+                        .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || Unlocked.Contains(r.RowId))
+                        .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
 
             ProgressRank = CurrentBuild.Rank;
 
@@ -352,7 +377,7 @@ public partial class BuilderWindow
                     {
                         var build = t.GetSubmarineBuild;
                         build.UpdateRank(ProgressRank);
-                        return build.HighestRankPart() <= ProgressRank && build.Speed >= 20 && build.Range >= 20;
+                        return build.HighestRankPart() <= ProgressRank && build is { Speed: >= 20, Range: >= 20 };
                     }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
 
                     // if (builds.Contains(CurrentBuild) && !IgnoreBuild)
@@ -376,9 +401,7 @@ public partial class BuilderWindow
                         var taskJourneys = new List<Task<Journey>>();
 
                         foreach (var possibleMap in possibleMaps)
-                        {
                             taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap)));
-                        }
 
                         // ReSharper disable once CoVariantArrayConversion
                         try
@@ -398,14 +421,14 @@ public partial class BuilderWindow
                         if (!taskJourneys.Any())
                         {
                             PluginLog.Error($"No journeys returned, cancelling current build!");
-                            break;
+                            return null;
                         }
 
                         var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
                         var (_, _, _, exp, path, currentBuild) = best;
 
-                        // we can still continue if this would be false
-                        if (path.Any())
+                        // we can still continue if this would be false, we also want to check if allowed list is set
+                        if (path.Any() && !hasAllowed)
                             lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
 
                         if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
@@ -492,8 +515,8 @@ public partial class BuilderWindow
 
 
         var allowedSectors = AllowedSectors.Select(s => s.RowId).ToArray();
-        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors);
-        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild);
+        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors, AvgBonus);
+        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild, AvgBonus);
 
         Progress++;
         return new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());

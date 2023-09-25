@@ -264,30 +264,19 @@ public class MainWindow : Window, IDisposable
                         if (Configuration.ShowTimeInOverview)
                         {
                             time = " Done ";
-                            if (Configuration.ShowBothOptions)
-                            {
-                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                                if (returnTime.TotalSeconds > 0)
+
+                            var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
+                            if (returnTime.TotalSeconds > 0)
+                                if (Configuration.ShowBothOptions)
                                     time = $" {sub.ReturnTime.ToLocalTime()} ({ToTime(returnTime)}) ";
-                            }
-                            else if (!Configuration.UseDateTimeInstead)
-                            {
-                                var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
-                                if (returnTime.TotalSeconds > 0)
+                                else if (!Configuration.UseDateTimeInstead)
                                     time = $" {ToTime(returnTime)} ";
-                            }
-                            else
-                            {
-                                if (sub.ReturnTime.Second > 0)
+                                else
                                     time = $" {sub.ReturnTime.ToLocalTime()}";
-                            }
                         }
 
                         if (Configuration.ShowRouteInOverview)
-                        {
-                            var startPoint = Voyage.FindVoyageStart(sub.Points.First());
-                            time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))} ";
-                        }
+                            time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p, true)))} ";
 
                         ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
                         ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");

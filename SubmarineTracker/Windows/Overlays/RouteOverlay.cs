@@ -170,6 +170,7 @@ public class RouteOverlay : Window, IDisposable
 
             ImGui.EndCombo();
         }
+
         if (Configuration.DurationLimit != DurationLimit.None)
         {
             ImGui.SameLine(length);

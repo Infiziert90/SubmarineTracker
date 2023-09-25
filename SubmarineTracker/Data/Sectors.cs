@@ -139,19 +139,19 @@ public static class Sectors
         return new Breakpoint(t2, t3, normal, optimal, favor);
     }
 
-    public static List<(int Guaranteed, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
+    public static List<(int Guaranteed, int Average, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
     {
-        var predictedExp = new List<(int, int)>();
+        var predictedExp = new List<(int, int, int)>();
         foreach (var sector in sectors)
             predictedExp.Add(PredictBonusExp(sector, build));
 
         return predictedExp;
     }
 
-    public static (int Guaranteed, int Maximum) PredictBonusExp(uint sector, Build.SubmarineBuild build)
+    public static (int Guaranteed, int Average, int Maximum) PredictBonusExp(uint sector, Build.SubmarineBuild build)
     {
         if (!MapBreakpoints.TryGetValue(sector, out var br))
-            return (0, 0);
+            return (0, 0, 0);
 
         var guaranteed = 0;
         guaranteed += br.Optimal <= build.Retrieval ? 1 : 0;
@@ -167,10 +167,12 @@ public static class Sectors
             maximum += br.T3 <= build.Surveillance ? 1 : 0;
         }
 
-        return (guaranteed, Math.Clamp(maximum, 0, 4));
+        var max = Math.Clamp(maximum, 0, 4);
+        var avg = max == 0 ? 0 : (guaranteed + max) / 2;
+        return (guaranteed, avg, max);
     }
 
-    public static uint CalculateExpForSectors(SubmarineExplorationPretty[] sectors, Build.SubmarineBuild build)
+    public static uint CalculateExpForSectors(SubmarineExplorationPretty[] sectors, Build.SubmarineBuild build, bool avgExpBonus = false)
     {
         var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
         if (!bonusEachSector.Any())
@@ -178,7 +180,7 @@ public static class Sectors
 
         var expGain = 0u;
         foreach (var (bonus, sector) in bonusEachSector.Zip(sectors))
-            expGain += CalculateBonusExp(bonus.Guaranteed, sector.ExpReward);
+            expGain += CalculateBonusExp(!avgExpBonus ? bonus.Guaranteed : bonus.Average, sector.ExpReward);
 
         return expGain;
     }
