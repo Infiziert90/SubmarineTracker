@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
+using Dalamud.Utility;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Loot;
 
@@ -20,7 +21,7 @@ public partial class LootWindow
 
     private void ExportTab()
     {
-        if (ImGui.BeginTabItem("Export"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Export", "Export")}##Export"))
         {
             var existingSubs = Submarines.KnownSubmarines.Values
                                          .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
@@ -33,7 +34,7 @@ public partial class LootWindow
             }
 
             ImGuiHelpers.ScaledDummy(10.0f);
-            var wip = "- Work in Progress -";
+            var wip = Loc.Localize("Terms - WiP", "- Work in Progress -");
             var width = ImGui.GetWindowWidth();
             var textWidth = ImGui.CalcTextSize(wip).X;
 
@@ -44,7 +45,7 @@ public partial class LootWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             var changed = false;
-            ImGui.Checkbox("Export All FCs", ref ExportAll);
+            ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Export All", "Export All FCs"), ref ExportAll);
             if (!ExportAll)
             {
                 ImGui.Indent(10.0f);
@@ -57,12 +58,12 @@ public partial class LootWindow
                 }
                 ImGui.Unindent(10.0f);
             }
-            changed |= ImGui.Checkbox("Exclude Date", ref Configuration.ExportExcludeDate);
-            changed |= ImGui.Checkbox("Exclude Hash", ref Configuration.ExportExcludeHash);
+            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Configuration.ExportExcludeDate);
+            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Configuration.ExportExcludeHash);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "FromTo:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
             DateWidget.DatePickerWithInput("FromDate", 1, ref ExportMinString, ref ExportMinDate, Format);
             DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format, true);
             ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
@@ -74,7 +75,7 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Output Folder:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Output Folder", "Output Folder:"));
             changed |= ImGui.InputText("##OutputPathInput", ref Configuration.ExportOutputPath, 255);
             ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
@@ -82,7 +83,7 @@ public partial class LootWindow
 
             if (ImGui.BeginPopup("OutputPathDialog"))
             {
-                Plugin.FileDialogManager.OpenFolderDialog("Pick folder", (b, s) =>
+                Plugin.FileDialogManager.OpenFolderDialog(Loc.Localize("Loot Tab Title - Pick Folder", "Pick a folder"), (b, s) =>
                 {
                     if (b)
                     {
@@ -95,8 +96,8 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Export:");
-            if (ImGui.Button("File"))
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Export", "Export:"));
+            if (ImGui.Button(Loc.Localize("Loot Tab Button - File", "File")))
             {
                 var fcLootList = BuildExportList();
                 if (CheckList(ref fcLootList))
@@ -105,7 +106,7 @@ public partial class LootWindow
 
             ImGui.SameLine();
 
-            if (ImGui.Button("Clipboard"))
+            if (ImGui.Button(Loc.Localize("Loot Tab Button - Clipboard", "Clipboard")))
             {
                 var fcLootList = BuildExportList();
                 if (CheckList(ref fcLootList))
@@ -140,7 +141,7 @@ public partial class LootWindow
     {
         if (!fcLootList.Any())
         {
-            Plugin.ChatGui.Print(Utils.ErrorMessage($"Nothing to export in the selected time frame."));
+            Plugin.ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Loot Export Error - Nothing Found", "Nothing to export in the selected time frame.")));
             return false;
         }
 
@@ -153,7 +154,7 @@ public partial class LootWindow
         if (s != string.Empty)
         {
             ImGui.SetClipboardText(s);
-            Plugin.ChatGui.Print(Utils.SuccessMessage("Successfully exported to clipboard."));
+            Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - Clipboard", "Successfully exported to clipboard.")));
         }
     }
 
@@ -173,8 +174,8 @@ public partial class LootWindow
 
                     File.WriteAllText(file, s);
 
-                    Plugin.ChatGui.Print(Utils.SuccessMessage($"Export done."));
-                    Plugin.ChatGui.Print(Utils.SuccessMessage($"Output: {file}"));
+                    Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - File", "Export done.")));
+                    Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - Output Path", "Output Path: {file}").Format(file)));
                 }
             }
             catch (Exception e)
@@ -185,7 +186,7 @@ public partial class LootWindow
         }
         else
         {
-            Plugin.ChatGui.Print(Utils.ErrorMessage("Invalid Path"));
+            Plugin.ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Loot Export Error - Invalid Path", "Invalid path.")));
         }
     }
 

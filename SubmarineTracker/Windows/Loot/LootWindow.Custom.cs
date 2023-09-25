@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Components;
+using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
@@ -20,12 +21,12 @@ public partial class LootWindow
 
     private void CustomLootTab()
     {
-        if (ImGui.BeginTabItem("Custom"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Custom", "Custom")}##Custom"))
         {
             if (!Configuration.CustomLootWithValue.Any())
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "No Custom Loot");
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "You can add selected items via the loot tab under settings.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Custom - Nothing Found", "No custom loot found."));
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Custom - Tracking Tip", "You can add tracked items via the loot tab under configuration."));
 
                 ImGui.EndTabItem();
                 return;
@@ -36,7 +37,7 @@ public partial class LootWindow
             Plugin.EnsureFCOrderSafety();
             var existingFCs = Configuration.FCOrder
                                             .Select(id => $"{Helper.GetFCName(KnownSubmarines[id])}##{id}")
-                                            .Prepend("All")
+                                            .Prepend(Loc.Localize("Terms - All", "All"))
                                             .ToArray();
 
             Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs);
@@ -79,7 +80,7 @@ public partial class LootWindow
             {
                 if (!bigList.Any())
                 {
-                    Helper.WrappedError($"None of the selected items have been looted {(useLimit ? "in the time frame" : "yet")}.");
+                    Helper.WrappedError($"{Loc.Localize("Loot Tab Custom - None 1", "None of the selected items have been looted")} {(useLimit ? Loc.Localize("Loot Tab Custom - None 2 Timeframe", "in the time frame") : Loc.Localize("Loot Tab Custom - None 2 Yet", "yet"))}.");
                 }
                 else
                 {
@@ -111,16 +112,16 @@ public partial class LootWindow
             if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
             {
                 var limit = useLimit ? Configuration.DateLimit != DateLimit.None ? $"over {Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
-                ImGui.TextWrapped($"The above rewards have been obtained {limit} from a total of {numVoyages} voyages ({numSubs} submarines).");
-                ImGui.TextWrapped($"This made you a total of {moneyMade:N0} gil.");
+                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Reward Amount", "The above rewards have been obtained {limit} from a total of {numVoyages} voyages ({numSubs} submarines).").Format(limit, numVoyages, numSubs));
+                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Money Made", "This made you a total of {moneyMade:N0} gil.").Format(moneyMade));
 
                 ImGuiHelpers.ScaledDummy(3.0f);
 
-                HeaderOpen = ImGui.CollapsingHeader("Options");
+                HeaderOpen = ImGui.CollapsingHeader(Loc.Localize("Terms - Options", "Options"));
                 if (HeaderOpen)
                 {
                     ImGui.AlignTextToFramePadding();
-                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Fixed:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Fixed", "Fixed:"));
                     ImGui.SameLine();
                     if (ImGui.BeginCombo($"##lootOptionCombo", Configuration.DateLimit.GetName()))
                     {
@@ -135,12 +136,12 @@ public partial class LootWindow
 
                         ImGui.EndCombo();
                     }
-                    ImGuiComponents.HelpMarker("Selecting None will allow you to pick a specific time frame.");
+                    ImGuiComponents.HelpMarker(Loc.Localize("Loot Tab Tooltip - Fixed", "Selecting None will allow you to pick a specific time frame."));
 
                     if (Configuration.DateLimit == DateLimit.None)
                     {
                         ImGui.AlignTextToFramePadding();
-                        ImGui.TextColored(ImGuiColors.DalamudViolet, "FromTo:");
+                        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
                         ImGui.SameLine();
 
                         DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format);

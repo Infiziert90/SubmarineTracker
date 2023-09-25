@@ -12,7 +12,7 @@ public partial class LootWindow
 
     private void VoyageTab()
     {
-        if (ImGui.BeginTabItem("Voyage"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - History", "History")}##VoyageHistory"))
         {
             Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
             foreach (var (localId, knownFC) in Submarines.KnownSubmarines)
@@ -55,7 +55,7 @@ public partial class LootWindow
 
             if (!fc.SubLoot.TryGetValue(sub.Register, out var submarineLoot))
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "Something went wrong.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Wrong", "Something went wrong."));
 
                 ImGui.EndTabItem();
                 return;
@@ -65,7 +65,7 @@ public partial class LootWindow
             var submarineVoyage = lootHistory.Select(pair => $"{pair.Value.First().Date}").ToArray();
             if (!submarineVoyage.Any())
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Not Tracked", "Tracking starts when you send your subs on voyage again."));
 
                 ImGui.EndTabItem();
                 return;
@@ -79,9 +79,9 @@ public partial class LootWindow
             var loot = lootHistory[SelectedVoyage];
             var stats = loot.Value.First();
             if (stats.Valid)
-                ImGui.TextColored(ImGuiColors.TankBlue, $"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
+                ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")}: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
             else
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "-Legacy Data-");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Legacy Data", "-Legacy Data-"));
 
             ImGuiHelpers.ScaledDummy(5.0f);
 

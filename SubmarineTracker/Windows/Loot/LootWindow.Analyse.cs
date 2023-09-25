@@ -24,12 +24,12 @@ public partial class LootWindow
 
     private void AnalyseTab()
     {
-        if (!ImGui.BeginTabItem("Analyse"))
+        if (!ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Analyse", "Analyse")}##Analyse"))
             return;
 
         ImGuiHelpers.ScaledDummy(10.0f);
 
-        var wip = "- Work in Progress -";
+        var wip = Loc.Localize("Terms - WiP", "- Work in Progress -");
         var width = ImGui.GetWindowWidth();
         var textWidth = ImGui.CalcTextSize(wip).X;
 
@@ -56,7 +56,7 @@ public partial class LootWindow
 
         ImGui.SameLine();
 
-        if (Helper.DrawButtonWithTooltip(FontAwesomeIcon.ArrowCircleUp, "Rebuild cache"))
+        if (Helper.DrawButtonWithTooltip(FontAwesomeIcon.ArrowCircleUp, Loc.Localize("Loot Tab Button - Rebuild", "Rebuild Cache")))
         {
             LootCache.Clear();
 
@@ -64,10 +64,10 @@ public partial class LootWindow
             return;
         }
 
-        ImGui.TextColored(ImGuiColors.ParsedOrange, $"Searched for {MapToThreeLetter(SelectedSector.RowId, true)} - {NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
+        ImGui.TextColored(ImGuiColors.ParsedOrange, $"{Loc.Localize("Loot Tab Text - Searched", "Searched for")} {MapToThreeLetter(SelectedSector.RowId, true)} - {NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
         if (!LootCache.TryGetValue(SelectedSector.RowId, out var history))
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Nothing found for this sector ...");
+            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Warning - Nothing Found", "Nothing found for this sector."));
 
             ImGui.EndTabItem();
             return;
@@ -150,13 +150,13 @@ public partial class LootWindow
             return new SortedEntry(item.Icon, ToStr(item.Name), count, percentage);
         }).OrderByDescending(x => x.Percentage);
 
-        ImGui.TextColored(ImGuiColors.HealerGreen, $"Percentages:");
+        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Loot Tab Entry - Percentages", "Percentages:"));
 
         if (ImGui.BeginTable($"##PercentageSourceTable", 3))
         {
             ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed, IconSize.X + 10.0f);
-            ImGui.TableSetupColumn("Item##item");
-            ImGui.TableSetupColumn("Pct##percentage", 0, 0.25f);
+            ImGui.TableSetupColumn($"{Loc.Localize("Terms - Item", "Item")}##item");
+            ImGui.TableSetupColumn($"{Loc.Localize("Terms - Percentage", "Pct")}##percentage", 0, 0.25f);
 
             ImGui.Indent(10.0f);
             foreach (var sortedEntry in sortedList)
