@@ -126,6 +126,7 @@ public static class Voyage
                                })
                                .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))
                                .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
+                               .ThenByDescending(t => t.Item2.Ticks)
                                .FirstOrDefault();
 
         return bestPath?.Item1 ?? Array.Empty<uint>();
