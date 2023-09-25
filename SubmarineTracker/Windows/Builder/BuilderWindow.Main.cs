@@ -98,14 +98,17 @@ public partial class BuilderWindow : Window, IDisposable
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
                 if (ImGui.Button("Submarine Discord"))
-                    Dalamud.Utility.Util.OpenLink("https://discord.gg/GAVegXNtwK");
+                    Dalamud.Utility.Util.OpenLink("https://discord.gg/overseascasuals");
                 ImGui.PopStyleColor();
+
+                if (ImGui.IsItemHovered())
+                    ImGui.SetTooltip("Discord: Overseas Casuals\nRecommended discord for submarines\nJust select the 'Subs' channel and\njoin us in '#you-dont-pay-my-sub'");
 
                 ImGui.SameLine();
 
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedGrey);
                 if (ImGui.Button("Spreadsheet"))
-                    Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA/edit#gid=1894926908");
+                    Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1eiuGRrQTjJ5n4ogybKOBxJRT7EiJLlX93fge-Z8MmD4");
                 ImGui.PopStyleColor();
             }
 

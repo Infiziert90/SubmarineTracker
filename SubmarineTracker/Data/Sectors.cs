@@ -1,8 +1,7 @@
 namespace SubmarineTracker.Data;
 
-// All this data is taken from:
-// https://docs.google.com/spreadsheets/d/1-j0a-I7bQdjnXkplP9T4lOLPH2h3U_-gObxAiI4JtpA
-// Credits to Mystic Spirit and other contributors from the submarine discord
+// All data automatically calculated and taken from:
+// https://docs.google.com/spreadsheets/d/1eiuGRrQTjJ5n4ogybKOBxJRT7EiJLlX93fge-Z8MmD4
 public static class Sectors
 {
     public record Breakpoint(int T2, int T3, int Normal, int Optimal, int Favor)

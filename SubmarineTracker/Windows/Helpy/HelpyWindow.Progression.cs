@@ -146,6 +146,4 @@ public partial class HelpyWindow
 
         ImGui.EndTabItem();
     }
-
-    private static int CalculateNumberPerLine() => (int) (ImGui.GetWindowWidth() / (215.0f * ImGuiHelpers.GlobalScale));
 }

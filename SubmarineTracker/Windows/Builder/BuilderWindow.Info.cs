@@ -10,7 +10,7 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, "How are these breakpoints calculated?");
-            ImGui.TextWrapped("The range breakpoint is calculated using the same method as the game. However all other breakpoints are calculated off of community data gathered from the submarine discord.\nSpecial thanks to Mystic Spirit for maintaining the current sheet.");
+            ImGui.TextWrapped("Distance and duration are fixed calculated values. However all other breakpoints are calculated from community provided data.\nSpecial thanks to Mystic Spirit for all there work.");
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
