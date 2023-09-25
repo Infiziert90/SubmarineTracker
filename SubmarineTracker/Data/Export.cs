@@ -138,6 +138,9 @@ public static class Export
 
     public static string ExportToString(List<DetailedLoot> fcLootList, bool excludeDate, bool excludeHash)
     {
+        if (!fcLootList.Any())
+            return string.Empty;
+
         try
         {
             using var writer = new StringWriter();
