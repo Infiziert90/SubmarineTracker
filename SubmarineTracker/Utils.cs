@@ -206,7 +206,7 @@ public static class Utils
     }
 }
 
-public static class StringExt
+public static class Extensions
 {
     public static string? Truncate(this string? value, int maxLength, string truncationSuffix = "...")
     {
@@ -214,10 +214,7 @@ public static class StringExt
                    ? string.Concat(value.AsSpan(0, maxLength), truncationSuffix)
                    : value;
     }
-}
 
-public static class Extensions
-{
     public static void Swap<T>(this List<T> list, int i, int j)
     {
         (list[i], list[j]) = (list[j], list[i]);
@@ -227,5 +224,10 @@ public static class Extensions
     {
         return d.ToString(CultureInfo.CurrentCulture.DateTimeFormat.GetAllDateTimePatterns('D')
                                      .FirstOrDefault(a => !a.Contains("ddd") && !a.Contains("dddd")) ?? "D");
+    }
+
+    public static IEnumerable<(T Val, int Idx)> WithIndex<T>(this IEnumerable<T> list)
+    {
+        return list.Select((val, idx) => (val, idx));
     }
 }

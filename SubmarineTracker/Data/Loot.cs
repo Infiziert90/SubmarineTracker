@@ -25,43 +25,26 @@ public static class Loot
         [JsonConstructor]
         public SubmarineLoot() { }
 
-        public void Snapshot(uint returnTime, Submarines.Submarine sub)
-        {
-            if (sub.Points.Count == 0)
-                return;
-
-            if (!Loot.TryAdd(returnTime, new List<DetailedLoot>()))
-                return;
-
-            foreach (var _ in sub.Points)
-                Loot[returnTime].Add(new DetailedLoot(new Build.SubmarineBuild(sub)));
-        }
-
-        public void LootAdd(uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
+        public void AddLootEntry(uint returnTime, Build.SubmarineBuild build, Span<HousingWorkshopSubmarineGathered> data)
         {
             if (data[0].ItemIdPrimary == 0)
                 return;
 
-            if (!Loot.ContainsKey(returnTime))
-                return;
+            var list = new List<DetailedLoot>();
+            foreach (var val in data.ToArray().Where(val => val.Point > 0))
+                list.Add(new DetailedLoot(build, val));
 
-            foreach (var (val, i) in data.ToArray().Where(val => val.Point > 0).Select((val, i) => (val, i)))
-                Loot[returnTime][i].AddLoot(val);
+            Loot[returnTime] = list;
         }
 
         public IEnumerable<DetailedLoot> LootForPoint(uint point, bool excludeLegacy)
         {
-            return Loot.Values.SelectMany(val => val
-                                                 .Where(iVal => iVal.Sector == point)
-                                                 .Where(iVal => !excludeLegacy || iVal.Valid));
+            return Loot.Values.SelectMany(list => list.Where(loot => loot.Sector == point && (!excludeLegacy || loot.Valid)));
         }
 
         public IEnumerable<LootWithDate> LootForPointWithTime(uint point, bool excludeLegacy)
         {
-            return Loot.SelectMany(kv => kv.Value
-                                           .Where(iVal => iVal.Sector == point)
-                                           .Where(iVal => !excludeLegacy || iVal.Valid)
-                                           .Select(loot => new LootWithDate(loot.Date, loot)));
+            return LootForPoint(point, excludeLegacy).Select(loot => new LootWithDate(loot.Date, loot));
         }
     }
 
@@ -93,18 +76,14 @@ public static class Loot
         [JsonConstructor]
         public DetailedLoot() { }
 
-        public DetailedLoot(Build.SubmarineBuild build)
+        public DetailedLoot(Build.SubmarineBuild build, HousingWorkshopSubmarineGathered data)
         {
+            Valid = true;
+
             Rank = (int) build.Bonus.RowId;
             Surv = build.Surveillance;
             Ret = build.Retrieval;
             Fav = build.Favor;
-        }
-
-        public void AddLoot(HousingWorkshopSubmarineGathered data)
-        {
-            Valid = true;
-            Date = DateTime.Now;
 
             Sector = data.Point;
 
@@ -119,8 +98,9 @@ public static class Loot
             AdditionalHQ = data.ItemHQAdditional;
             AdditionalSurvProc = data.SurveyLineAdditional;
             AdditionalRetProc = data.YieldLineAdditional;
-
             FavProc = data.FavorLine;
+
+            Date = DateTime.Now;
 
             Plugin.EntryUpload(this);
         }

@@ -75,28 +75,10 @@ public static class Submarines
 
         public static FcSubmarines Empty => new("", "", "Unknown", new List<Submarine>(), new Dictionary<uint, Loot.SubmarineLoot>(), new List<Tuple<uint, bool, bool>>());
 
-        public void AddSubLoot(uint key, uint returnTime, Span<HousingWorkshopSubmarineGathered> data)
+        public void AddSubLoot(uint key, uint returnTime, Build.SubmarineBuild build, Span<HousingWorkshopSubmarineGathered> data)
         {
             SubLoot.TryAdd(key, new Loot.SubmarineLoot());
-
-            var subLoot = SubLoot[key];
-            var sub = Submarines.Find(s => s.Register == key)!;
-
-            // add last voyage loot and procs
-            if (subLoot.Loot.Any())
-            {
-                var lastVoyage = subLoot.Loot.Last();
-
-                // prevent the current snapshot from being overwritten
-                if (lastVoyage.Key == sub.Return)
-                    return;
-
-                if (lastVoyage.Value.First().Sector == 0)
-                    subLoot.LootAdd(lastVoyage.Key, data);
-            }
-
-            // add snapshot of current submarine stats
-            subLoot.Snapshot(returnTime, sub);
+            SubLoot[key].AddLootEntry(returnTime, build, data);
         }
 
         public void GetUnlockedAndExploredSectors()
@@ -178,6 +160,12 @@ public static class Submarines
 
         [JsonConstructor]
         public Submarine() : this("", 0, 0, 0, 0, 0, 0, 0) { }
+
+        public Submarine(HousingWorkshopSubmersibleSubData data) : this("", data.RankId, data.HullId, data.SternId, data.BowId, data.BridgeId, 0, 0)
+        {
+            Register = data.RegisterTime;
+            Return = data.ReturnTime;
+        }
 
         public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx) : this("", 0, 0, 0, 0, 0, 0, 0)
         {

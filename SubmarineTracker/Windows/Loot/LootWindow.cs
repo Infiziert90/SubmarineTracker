@@ -13,9 +13,6 @@ public partial class LootWindow : Window, IDisposable
     private static ExcelSheet<Item> ItemSheet = null!;
     private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    private int SelectedSubmarine;
-    private int SelectedVoyage;
-
     private static Vector2 IconSize = new(28, 28);
 
     private string Format = string.Empty;

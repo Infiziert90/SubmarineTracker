@@ -1,5 +1,4 @@
 using Dalamud.Interface.Components;
-
 using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows;
@@ -106,6 +105,13 @@ public static class Helper
         ImGui.Combo(label, ref selected, comboArray, comboArray.Length);
         ImGui.PopItemWidth();
         DrawArrows(ref selected, comboArray.Length, id);
+    }
+
+    public static void DrawArrowsDictionary(ref uint selected, uint[] keys, int id = 0)
+    {
+        var idx = Array.IndexOf(keys, selected);
+        DrawArrows(ref idx, keys.Length, id);
+        selected = keys[idx];
     }
 
     public static void DrawArrows(ref int selected, int length, int id = 0)

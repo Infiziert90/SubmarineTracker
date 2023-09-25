@@ -16,6 +16,7 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
+using SubmarineTracker.Manager;
 using SubmarineTracker.Windows;
 using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
@@ -35,6 +36,7 @@ namespace SubmarineTracker
         [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
         [PluginService] public static GameGui GameGui { get; private set; } = null!;
+        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
 
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
@@ -59,11 +61,14 @@ namespace SubmarineTracker
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
-        public Notify Notify;
 
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
 
+        public readonly Notify Notify;
+        public static HookManager HookManager = null!;
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
+
+        public Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
 
         public Plugin()
         {
@@ -86,6 +91,7 @@ namespace SubmarineTracker
             Webhook.Init(Configuration);
             Helper.Initialize(this);
 
+            HookManager = new HookManager(this);
             AllaganToolsConsumer = new AllaganToolsConsumer();
 
             ConfigWindow = new ConfigWindow(this);
@@ -153,6 +159,7 @@ namespace SubmarineTracker
 
             CommandManager.Dispose();
 
+            HookManager.Dispose();
             TexturesCache.Instance?.Dispose();
 
             if (full)
@@ -214,7 +221,11 @@ namespace SubmarineTracker
 
             var instance = HousingManager.Instance();
             if (instance == null || instance->WorkshopTerritory == null)
+            {
+                // Clear the cache after we left workshop
+                SubmarinePreVoyage.Clear();
                 return;
+            }
 
             var local = ClientState.LocalPlayer;
             if (local == null)
@@ -238,31 +249,30 @@ namespace SubmarineTracker
                                                    "You can opt out of any and all forms of data collection."));
             }
 
+            var workshopData = instance->WorkshopTerritory->Submersible;
+            var submarineData = workshopData.DataListSpan.ToArray();
+
+            BuilderWindow.VoyageInterfaceSelection = 0;
             if (Configuration.AutoSelectCurrent)
             {
-                var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
-
+                var current = workshopData.DataPointerListSpan[4];
                 if (current.Value != null)
                 {
                     BuilderWindow.VoyageInterfaceSelection = current.Value->RegisterTime;
                     if (BuilderWindow.CurrentBuild.Rank != current.Value->RankId)
                         BuilderWindow.CacheValid = false;
                 }
-                else
-                {
-                    BuilderWindow.VoyageInterfaceSelection = 0;
-                }
             }
-            else
-            {
-                BuilderWindow.VoyageInterfaceSelection = 0;
-            }
-
-            var workshopData = instance->WorkshopTerritory->Submersible.DataListSpan.ToArray();
 
             var possibleNewSubs = new List<Submarines.Submarine>();
-            foreach (var (sub, idx) in workshopData.Where(data => data.RankId != 0).Select((val, i) => (val, i)))
+            foreach (var (sub, idx) in submarineData.Where(data => data.RankId != 0).WithIndex())
+            {
                 possibleNewSubs.Add(new Submarines.Submarine(sub, idx));
+
+                // We prefill the current submarines once to have the original stats
+                if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
+                    SubmarinePreVoyage[sub.RegisterTime] = new Submarines.Submarine(sub);
+            }
 
             if (!possibleNewSubs.Any())
                 return;
@@ -279,14 +289,8 @@ namespace SubmarineTracker
             fc.Submarines = possibleNewSubs;
             fc.GetUnlockedAndExploredSectors();
 
-            foreach (var sub in workshopData.Where(data => data.RankId != 0))
-            {
-                if (sub.ReturnTime == 0)
-                    continue;
-
+            foreach (var sub in submarineData.Where(data => data.RankId != 0 && data.ReturnTime != 0))
                 Notify.TriggerDispatch(sub.RegisterTime, sub.ReturnTime);
-                fc.AddSubLoot(sub.RegisterTime, sub.ReturnTime, sub.GatheredDataSpan);
-            }
 
             fc.Refresh = true;
             LoadFCOrder();

@@ -7,41 +7,62 @@ public partial class LootWindow
 {
     private static readonly int MaxLength = "Craftsman's Command Mat".Length;
 
+    private uint SelectedSubmarine;
+    private int SelectedVoyage;
+
     private void VoyageTab()
     {
         if (ImGui.BeginTabItem("Voyage"))
         {
-            var existingSubs = Submarines.KnownSubmarines.Values
-                                         .SelectMany(fc => fc.Submarines.Select(s => $"{Helper.GetFCName(fc)} - {s.Name} ({s.Build.FullIdentifier()})"))
-                                         .ToArray();
+            Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
+            foreach (var (localId, knownFC) in Submarines.KnownSubmarines)
+                foreach (var s in knownFC.Submarines)
+                    existingSubs.Add(s.Register, ($"{Helper.GetFCName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", localId));
+
             if (!existingSubs.Any())
             {
                 Helper.NoData();
+
                 ImGui.EndTabItem();
                 return;
             }
 
             var selectedSubmarine = SelectedSubmarine;
-            ImGui.Combo("##existingSubs", ref selectedSubmarine, existingSubs, existingSubs.Length);
-            Helper.DrawArrows(ref selectedSubmarine, existingSubs.Length, 1);
+            if (!existingSubs.TryGetValue(SelectedSubmarine, out var preview))
+                (selectedSubmarine, preview) = existingSubs.First();
 
-            if (selectedSubmarine != SelectedSubmarine)
+
+            var selectedFC = preview.LocalId;
+            if (ImGui.BeginCombo("##existingSubs", preview.Title))
+            {
+                foreach (var (key, value) in existingSubs)
+                    if (ImGui.Selectable($"{value.Title}##{key}"))
+                        selectedSubmarine = key;
+                ImGui.EndCombo();
+            }
+            Helper.DrawArrowsDictionary(ref selectedSubmarine, existingSubs.Keys.ToArray(), 1);
+
+            if (SelectedSubmarine != selectedSubmarine)
             {
                 SelectedSubmarine = selectedSubmarine;
                 SelectedVoyage = 0;
+
+                selectedFC = existingSubs[selectedSubmarine].LocalId;
             }
 
-            var selectedSub = Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines).ToList()[SelectedSubmarine];
+            var fc = Submarines.KnownSubmarines[selectedFC];
+            var sub = fc.Submarines.First(sub => sub.Register == SelectedSubmarine);
 
-            var fc = Submarines.KnownSubmarines.Values.First(fcLoot => fcLoot.SubLoot.Values.Any(loot => loot.Loot.ContainsKey(selectedSub.Return)));
-            var submarineLoot = fc.SubLoot.Values.First(loot => loot.Loot.ContainsKey(selectedSub.Return));
+            if (!fc.SubLoot.TryGetValue(sub.Register, out var submarineLoot))
+            {
+                ImGui.TextColored(ImGuiColors.ParsedOrange, "Something went wrong.");
 
-            var submarineVoyage = submarineLoot.Loot
-                                               .SkipLast(1)
-                                               .Where(pair => !Configuration.ExcludeLegacy || pair.Value.First().Valid)
-                                               .Reverse()
-                                               .Select(pair => $"{pair.Value.First().Date}")
-                                               .ToArray();
+                ImGui.EndTabItem();
+                return;
+            }
+
+            var lootHistory = submarineLoot.Loot.Where(pair => !Configuration.ExcludeLegacy || pair.Value.First().Valid).Reverse().ToArray();
+            var submarineVoyage = lootHistory.Select(pair => $"{pair.Value.First().Date}").ToArray();
             if (!submarineVoyage.Any())
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
@@ -55,7 +76,7 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            var loot = submarineLoot.Loot.SkipLast(1).Reverse().ToArray()[SelectedVoyage];
+            var loot = lootHistory[SelectedVoyage];
             var stats = loot.Value.First();
             if (stats.Valid)
                 ImGui.TextColored(ImGuiColors.TankBlue, $"Rank: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
