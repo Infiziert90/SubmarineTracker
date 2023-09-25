@@ -98,7 +98,7 @@ public class RouteOverlay : Window, IDisposable
         if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !MustInclude.Any())
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip("Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions.");
+                ImGui.SetTooltip(Loc.Localize("Route Overlay Tooltip - High Rank", "Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions."));
 
             Calculate = false;
             return;
@@ -132,11 +132,11 @@ public class RouteOverlay : Window, IDisposable
         {
             if (ComputingPath)
             {
-                ImGui.Text($"Loading {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                ImGui.Text($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
             }
             else if (!BestPath.Any())
             {
-                ImGui.Text("No route found, check speed and range ...");
+                ImGui.Text(Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
             }
 
             if (BestPath.Any())
@@ -151,11 +151,11 @@ public class RouteOverlay : Window, IDisposable
         }
 
         var changed = false;
-        var length = ImGui.CalcTextSize($"Must Include {MustInclude.Count} / 5").X + 25.0f;
+        var length = ImGui.CalcTextSize($"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5").X + 25.0f;
         var width = ImGui.GetContentRegionAvail().X / 3;
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
         ImGui.SetNextItemWidth(width);
         if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
         {
@@ -174,13 +174,13 @@ public class RouteOverlay : Window, IDisposable
         if (Configuration.DurationLimit != DurationLimit.None)
         {
             ImGui.SameLine(length);
-            changed |= ImGui.Checkbox("Maximize Duration", ref Configuration.MaximizeDuration);
+            changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
         }
 
         if (Configuration.DurationLimit == DurationLimit.Custom)
         {
             ImGui.AlignTextToFramePadding();
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Hours & Minutes");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
             ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width / 2.5f);
             changed |= ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0);
@@ -194,10 +194,10 @@ public class RouteOverlay : Window, IDisposable
         }
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5");
         ImGui.SameLine(length);
-        changed |= ImGui.Checkbox("Auto Include", ref Configuration.MainRouteAutoInclude);
-        ImGuiComponents.HelpMarker("Auto include the next main sector, if there is one");
+        changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Auto Include", "Auto Include"), ref Configuration.MainRouteAutoInclude);
+        ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Auto Include", "Auto include the next main sector, if there is one"));
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
         if (MustInclude.Count >= 5) ImGui.BeginDisabled();
@@ -211,7 +211,7 @@ public class RouteOverlay : Window, IDisposable
             ExcelSheetSelector.FilteredSearchSheet = null!;
             Plugin.BuilderWindow.ExplorationPopupOptions = new()
             {
-                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
                 FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
             };
         }

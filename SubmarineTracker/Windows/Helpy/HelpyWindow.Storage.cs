@@ -8,12 +8,12 @@ public partial class HelpyWindow
 
     private void StorageTab()
     {
-        if (ImGui.BeginTabItem("Storage"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Storage", "Storage")}##Storage"))
         {
             ImGuiHelpers.ScaledDummy(5.0f);
             if (!Plugin.AllaganToolsConsumer.IsAvailable)
             {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, "AllaganTools not available.");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Helpy Tab Warning - AllaganTools", "AllaganTools not available."));
                 ImGui.EndTabItem();
 
                 return;

@@ -14,7 +14,7 @@ public partial class HelpyWindow
 
     private void ProgressionTab(Submarines.FcSubmarines fcSub)
     {
-        if (ImGui.BeginTabItem("Progression"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Progression", "Progression")}##Progression"))
         {
             if (ImGui.BeginTabBar("##progressionTabBar"))
             {
@@ -33,7 +33,7 @@ public partial class HelpyWindow
 
     private void AllSlotsTab(Submarines.FcSubmarines fcSub)
     {
-        if (!ImGui.BeginTabItem("4 Submarines"))
+        if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Submarine Path", "4 Submarines")}##SubmarinesPath"))
             return;
 
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
@@ -55,7 +55,7 @@ public partial class HelpyWindow
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
-            var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : $"Rank {rank}";
+            var special = unlockedFrom.Sub ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>" : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
 
             fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
             fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
@@ -76,7 +76,7 @@ public partial class HelpyWindow
 
     private void LastSectorTab(Submarines.FcSubmarines fcSub)
     {
-        if (!ImGui.BeginTabItem("Last Sector"))
+        if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Last Sector", "Last Sector")}##LastSector"))
             return;
 
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
@@ -96,7 +96,10 @@ public partial class HelpyWindow
             var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
             var dest = Utils.UpperCaseStr(explorationPoint.Destination);
             var rank = explorationPoint.RankReq;
-            var special = unlockedFrom.Sub ? $"Rank {rank} <Unlocks slot>" : unlockedFrom.Map ? $"Rank {rank} <Unlocks map>" : $"Rank {rank}";
+            var special = unlockedFrom.Sub
+                              ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>"
+                                : unlockedFrom.Map ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Map", "Unlocks map")}>"
+                                  : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
 
             fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
             fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
@@ -117,32 +120,32 @@ public partial class HelpyWindow
 
     private static void InfoTab()
     {
-        if (!ImGui.BeginTabItem("Info"))
+        if (!ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Info", "Info")}##Info"))
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "How to unlock new Sectors?");
-        ImGui.TextWrapped("Unlocking new sectors is RNG.\nBy increasing the speed and frequency of voyages, you will have more chances to discover a new sector.");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Sector Unlock", "How to unlock new Sectors?"));
+        ImGui.TextWrapped(Loc.Localize("Config Tab Info - Sector Unlock Text", "Unlocking new sectors is RNG.\nBy increasing the speed and frequency of voyages, you will have more chances to discover a new sector."));
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "How to unlock new maps / slots?");
-        ImGui.TextWrapped("You must visit the unlocked sector at least once.\nNote: You won't see more submarines until you filled the previous slot.\ne.g You won't see slot 3 if slot 2 is empty");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Map Unlock", "How to unlock new maps / slots?"));
+        ImGui.TextWrapped(Loc.Localize("Config Tab Info - Map Unlock Text", "You must visit the unlocked sector at least once.\nNote: You won't see more submarines until you filled the previous slot.\ne.g You won't see slot 3 if slot 2 is empty"));
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
         var spacing = ImGui.CalcTextSize("Violet").X + 20.0f;
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "Colors:");
-        ImGui.TextColored(ImGuiColors.HealerGreen,"Green");
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Colors", "Colors:"));
+        ImGui.TextColored(ImGuiColors.HealerGreen,Loc.Localize("Config Tab Info - Green", "Green"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted("Unlocked and visited");
-        ImGui.TextColored(ImGuiColors.DalamudViolet,"Violet");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Green Text", "Unlocked and visited"));
+        ImGui.TextColored(ImGuiColors.DalamudViolet,Loc.Localize("Config Tab Info - Violet", "Violet"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted("Unlocked but not visited");
-        ImGui.TextColored(ImGuiColors.DalamudRed,"Red");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Violet Text", "Unlocked but not visited"));
+        ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Config Tab Info - Red", "Red"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted("Not unlocked");
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Red Text", "Not unlocked"));
 
         ImGui.EndTabItem();
     }

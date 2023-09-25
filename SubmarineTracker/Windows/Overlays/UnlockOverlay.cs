@@ -112,7 +112,7 @@ public class UnlockOverlay : Window, IDisposable
             }
 
             var unlockText = $"{UpperCaseStr(unlocked.Destination)}";
-            var visitText = $"Visit: {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+            var visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
 
             var avail = ImGui.GetWindowSize().X;
             var textWidth1 = ImGui.CalcTextSize(unlockText).X;
@@ -132,11 +132,11 @@ public class UnlockOverlay : Window, IDisposable
         if (PossibleUnlocks.Count == 0)
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip("Your submarine is below the required level to visit the sector.");
+                ImGui.SetTooltip(Loc.Localize("Next Overlay Tooltip - Low Rank", "Your submarine is below the required level to visit the sector."));
             return;
         }
 
-        if (ImGui.Button("Must Include"))
+        if (ImGui.Button(Loc.Localize("Terms - Must Include", "Must Include")))
         {
             foreach (var (_, from) in PossibleUnlocks)
                 if (Plugin.RouteOverlay.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!))

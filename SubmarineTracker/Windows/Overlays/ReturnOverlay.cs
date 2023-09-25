@@ -52,7 +52,7 @@ public class ReturnOverlay : Window, IDisposable
 
             VoyageStats.Halt += 1;
         }
-        WindowName = $"Submarines: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}###submarineOverlay";
+        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}###submarineOverlay";
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
@@ -104,7 +104,7 @@ public class ReturnOverlay : Window, IDisposable
         if (!sortedFcList.Any())
         {
             ImGui.Indent(10.0f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange,"No sub has returned");
+            ImGui.TextColored(ImGuiColors.DalamudOrange,Loc.Localize("Return Overlay Info - No Return", "No sub has returned."));
             ImGui.Unindent(10.0f);
             return;
         }
@@ -132,11 +132,11 @@ public class ReturnOverlay : Window, IDisposable
             foreach (var sub in fc.Submarines)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
-                var subText = $"{(Configuration.OverlayShowRank ? $"Rank {sub.Rank}. " : "")}{sub.Name}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{sub.Name}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
                 ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
                 if (needsRepair && ImGui.IsItemHovered())
-                    ImGui.SetTooltip("This submarine needs repair on return.");
+                    ImGui.SetTooltip(Loc.Localize("Return Overlay Tooltip - Repair Needed", "This submarine needs repair on return."));
 
                 var timeText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;

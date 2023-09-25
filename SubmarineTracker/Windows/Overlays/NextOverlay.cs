@@ -100,7 +100,7 @@ public class NextOverlay : Window, IDisposable
         if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip("Your submarine is below the required level to visit the sector.");
+                ImGui.SetTooltip(Loc.Localize("Next Overlay Tooltip - Low Rank", "Your submarine is below the required level to visit the sector."));
 
             return;
         }
@@ -109,12 +109,12 @@ public class NextOverlay : Window, IDisposable
         if (Unlocks.SectorToUnlock.TryGetValue(nextSector.UnlockedFrom.Sector, out var previousSector))
             isMap |= previousSector.Map;
 
-        var unlockText = $"Next Sector: {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";
-        var visitText = $"Visit: {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+        var unlockText = $"{Loc.Localize("Next Overlay Text - Next Sector", "Next Sector:")} {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";
+        var visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
         if (isMap)
         {
-            unlockText = $"Next Map: {MapToShort(nextUnlock.RowId, true)}";
-            visitText = $"Visit: {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+            unlockText = $"{Loc.Localize("Next Overlay Text - Next Map", "Next Map:")} {MapToShort(nextUnlock.RowId, true)}";
+            visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
         }
 
         var avail = ImGui.GetWindowSize().X;
