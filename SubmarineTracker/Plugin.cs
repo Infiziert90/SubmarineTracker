@@ -251,10 +251,10 @@ namespace SubmarineTracker
                 Configuration.UploadNotificationReceived = DateTime.Now.AddHours(1);
                 Configuration.Save();
 
-                ChatGui.Print(Utils.SuccessMessage("Important"));
-                ChatGui.Print(Utils.SuccessMessage("This plugin will collect anonymized, submarine specific data. " +
-                                                   "For more information on the exact data collected please see the upload tab in the plugin configuration menu.  " +
-                                                   "You can opt out of any and all forms of data collection."));
+                ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Terms - Important","Important")));
+                ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Notifications - Upload Opt Out","This plugin will collect anonymized, submarine specific data. " +
+                                                       "For more information on the exact data collected please see the upload tab in the plugin configuration menu.  " +
+                                                       "You can opt out of any and all forms of data collection.")));
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible;

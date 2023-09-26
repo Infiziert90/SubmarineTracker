@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dalamud.Game;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Utility;
 using SubmarineTracker.Windows;
 using static SubmarineTracker.Data.Submarines;
 
@@ -97,7 +98,7 @@ public class Notify
         content.Embeds.Add(new
         {
             title = Helper.GetSubName(sub, fc),
-            description=$"Returns <t:{returnTime}:R>",
+            description=Loc.Localize("Webhook On Dispatch", "Returns <t:{returnTime}:R>").Format(returnTime),
             color=15124255
         });
 
@@ -119,7 +120,7 @@ public class Notify
         content.Embeds.Add(new
         {
             title = Helper.GetSubName(sub, fc),
-            description=$"Returned at <t:{sub.Return}:f>",
+            description=Loc.Localize("Webhook On Return", "Returned at <t:{returnedTime}:f>").Format(sub.Return),
             color=8447519
         });
 
@@ -150,7 +151,7 @@ public class Notify
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
-               .AddUiForeground($"{text} has returned.", 566)
+               .AddUiForeground(Loc.Localize("Notification Chat Repair", "{sub} has returned.").Format(text), 566)
                .BuiltString;
     }
 
@@ -158,14 +159,14 @@ public class Notify
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
-               .AddUiForeground($"{name} has returned and requires repair before being dispatched again.", 43)
+               .AddUiForeground(Loc.Localize("Notification Chat Repair", "{sub} has returned and requires repair before being dispatched again.").Format(name), 43)
                .BuiltString;
     }
 
     public static SeString ShortRepairMessage()
     {
         return new SeStringBuilder()
-               .AddUiForeground($"Requires repair before being dispatched again", 43)
+               .AddUiForeground(Loc.Localize("Notification Toast Repair", $"Requires repair before being dispatched again"), 43)
                .BuiltString;
     }
 }

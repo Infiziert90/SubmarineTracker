@@ -40,7 +40,7 @@ public static class Webhook
             }
             catch (Exception e)
             {
-                PluginLog.Error("Webhook post failed.");
+                PluginLog.Error("Webhook post failed");
                 PluginLog.Error(e.Message);
             }
         });
