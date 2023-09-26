@@ -125,27 +125,27 @@ public partial class HelpyWindow
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Sector Unlock", "How to unlock new Sectors?"));
-        ImGui.TextWrapped(Loc.Localize("Config Tab Info - Sector Unlock Text", "Unlocking new sectors is RNG.\nBy increasing the speed and frequency of voyages, you will have more chances to discover a new sector."));
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Helpy Tab Info - Sector Unlock", "How to unlock new Sectors?"));
+        ImGui.TextWrapped(Loc.Localize("Helpy Tab Info - Sector Unlock Text", "Unlocking new sectors is RNG.\nBy increasing the speed and frequency of voyages, you will have more chances to discover a new sector."));
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Map Unlock", "How to unlock new maps / slots?"));
-        ImGui.TextWrapped(Loc.Localize("Config Tab Info - Map Unlock Text", "You must visit the unlocked sector at least once.\nNote: You won't see more submarines until you filled the previous slot.\ne.g You won't see slot 3 if slot 2 is empty"));
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Helpy Tab Info - Map Unlock", "How to unlock new maps / slots?"));
+        ImGui.TextWrapped(Loc.Localize("Helpy Tab Info - Map Unlock Text", "You must visit the unlocked sector at least once.\nNote: You won't see more submarines until you filled the previous slot.\ne.g You won't see slot 3 if slot 2 is empty"));
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
         var spacing = ImGui.CalcTextSize("Violet").X + 20.0f;
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Info - Colors", "Colors:"));
-        ImGui.TextColored(ImGuiColors.HealerGreen,Loc.Localize("Config Tab Info - Green", "Green"));
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Helpy Tab Info - Colors", "Colors:"));
+        ImGui.TextColored(ImGuiColors.HealerGreen,Loc.Localize("Colors - Green", "Green"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Green Text", "Unlocked and visited"));
-        ImGui.TextColored(ImGuiColors.DalamudViolet,Loc.Localize("Config Tab Info - Violet", "Violet"));
+        ImGui.TextUnformatted(Loc.Localize("Helpy Tab Info - Green Text", "Unlocked and visited"));
+        ImGui.TextColored(ImGuiColors.DalamudViolet,Loc.Localize("Colors - Violet", "Violet"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Violet Text", "Unlocked but not visited"));
-        ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Config Tab Info - Red", "Red"));
+        ImGui.TextUnformatted(Loc.Localize("Helpy Tab Info - Violet Text", "Unlocked but not visited"));
+        ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Colors - Red", "Red"));
         ImGui.SameLine(spacing);
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Info - Red Text", "Not unlocked"));
+        ImGui.TextUnformatted(Loc.Localize("Helpy Tab Info - Red Text", "Not unlocked"));
 
         ImGui.EndTabItem();
     }

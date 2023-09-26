@@ -1,3 +1,4 @@
+using Dalamud.Utility;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
 
@@ -14,7 +15,7 @@ public partial class BuilderWindow
         // Always refresh submarine if we have interface selection
         RefreshCache();
 
-        if (ImGui.BeginTabItem("Build"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Build", "Build")}##Build"))
         {
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
@@ -26,7 +27,7 @@ public partial class BuilderWindow
                                                     .ToArray();
                     if (Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                         existingSubs = fcSub.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
-                    existingSubs = existingSubs.Prepend("Custom").ToArray();
+                    existingSubs = existingSubs.Prepend(Loc.Localize("Terms - Custom", "Custom")).ToArray();
 
                     if (existingSubs.Length < CurrentBuild.OriginalSub)
                         CurrentBuild.OriginalSub = 0;
@@ -37,7 +38,7 @@ public partial class BuilderWindow
                     ImGui.PopItemWidth();
 
                     // Calculate first so rank can be changed afterwards
-                    if (existingSubs[CurrentBuild.OriginalSub] != "Custom")
+                    if (existingSubs[CurrentBuild.OriginalSub] != Loc.Localize("Terms - Custom", "Custom"))
                     {
                         sub = KnownSubmarines.Values.SelectMany(fc => fc.Submarines).First(sub => $"{sub.Name} ({sub.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
                         CurrentBuild.UpdateBuild(sub);
@@ -45,15 +46,15 @@ public partial class BuilderWindow
 
                     ImGui.SameLine();
                     ImGui.PushItemWidth(windowWidth - (3.0f * ImGuiHelpers.GlobalScale));
-                    ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) RankSheet.Last().RowId, "Rank %d");
+                    ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
                     ImGui.PopItemWidth();
                 }
                 else
                 {
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"Automatic: {SelectedSub.Name} - Rank {SelectedSub.Rank}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Builder Build Tab - Automatic Selection", "Automatic Selection: {Name} - Rank {Rank}").Format(SelectedSub.Name, SelectedSub.Rank));
 
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("You can disable this behaviour, Config -> Builder -> Auto Select");
+                        ImGui.SetTooltip(Loc.Localize("Builder Build Tooltip - Automatic Selection", "To disable this behaviour head into the configuration, builder tab and uncheck 'Auto Select'"));
                 }
 
                 ImGuiHelpers.ScaledDummy(5);

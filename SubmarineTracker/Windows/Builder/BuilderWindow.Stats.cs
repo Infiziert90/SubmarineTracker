@@ -1,3 +1,4 @@
+using Dalamud.Utility;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -46,12 +47,12 @@ public partial class BuilderWindow
                 ImGui.TableSetupColumn("##content");
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Selected Build:");
+                ImGui.TextUnformatted(Loc.Localize("Builder Stats Category - Build", "Selected Build:"));
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild} (Rank {CurrentBuild.Rank})");
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Optimized Route:");
+                ImGui.TextUnformatted(Loc.Localize("Builder Stats Category - Route", "Optimized Route:"));
                 ImGui.TableNextColumn();
                 SelectedRoute();
 
@@ -70,60 +71,60 @@ public partial class BuilderWindow
                 ImGui.TableSetupColumn("##count3", 0, 0.5f);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Surveillance", "Surveillance"));
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.T2, build.Surveillance, breakpoints.T3);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Retrieval");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Retrieval", "Retrieval"));
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.Normal, build.Retrieval, breakpoints.Optimal);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Favor", "Favor"));
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.Favor, build.Favor);
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Speed");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Speed", "Speed"));
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"{build.Speed}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Range");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Range", "Range"));
                 ImGui.TableNextColumn();
                 SelectRequiredColor((int) CurrentBuild.OptimizedDistance, build.Range);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Fuel");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Fuel", "Fuel"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Duration");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Duration", "Duration"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Exp", "Exp"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{totalExp:N0}{(AvgBonus ? '*' : string.Empty)}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Exp/Min");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - ExpEachMin", "Exp/Min"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Repair");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Repair", "Repair"));
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"{build.RepairCosts} after {repairAfter} voyages");
+                ImGui.TextUnformatted(Loc.Localize("Builder Stats Text - RepairAfter", "{Cost} after {Number} voyages").Format(build.RepairCosts, repairAfter));
 
                 ImGui.EndTable();
             }
@@ -168,7 +169,7 @@ public partial class BuilderWindow
         }
         else
         {
-            ImGui.TextColored(ImGuiColors.DalamudOrange, "No Selection");
+            ImGui.TextColored(ImGuiColors.DalamudOrange, Loc.Localize("Builder Stats Route - No Selection", "No Selection"));
         }
     }
 }

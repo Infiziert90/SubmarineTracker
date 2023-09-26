@@ -6,7 +6,7 @@ public partial class ConfigWindow
 {
     private void Builder()
     {
-        if (ImGui.BeginTabItem($"{Loc.Localize("Config Tab - Builder", "Builder")}##Builder"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Builder", "Builder")}##Builder"))
         {
             ImGuiHelpers.ScaledDummy(5.0f);
             var changed = false;

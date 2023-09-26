@@ -114,19 +114,19 @@ public partial class BuilderWindow
 
     public bool ShipTab()
     {
-        var open = ImGui.BeginTabItem("Ship");
+        var open = ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Ship", "Ship")}##Ship");
         if (open)
         {
-            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, "Rank %d"))
+            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
             {
                 Rank = RankSheet.ElementAt(SelectedRank - 1);
                 RefreshList();
             }
 
             ImGui.SameLine();
-            ImGui.Checkbox("Ignore Breakpoints", ref IgnoreBreakpoints);
+            ImGui.Checkbox(Loc.Localize("Builder Ship Checkbox - Ignore Breakpoints", "Ignore Breakpoints"), ref IgnoreBreakpoints);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Selected Route:");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Builder Ship Header - Route", "Selected Route:"));
             SelectedRoute();
 
             ImGuiHelpers.ScaledDummy(5.0f);
@@ -134,12 +134,12 @@ public partial class BuilderWindow
             var hasRoute = CurrentBuild.Sectors.Count > 0;
             if (!hasRoute || IgnoreBreakpoints)
             {
-                if (ImGui.CollapsingHeader("Stats"))
+                if (ImGui.CollapsingHeader(Loc.Localize("Terms - Stats","Stats")))
                 {
                     var textWidth = ImGui.CalcTextSize("Surveillance:").X + (15.0f * ImGuiHelpers.GlobalScale);
                     var sliderWidth = ImGui.GetWindowWidth() / 3;
 
-                    ImGui.Text("Surveillance:");
+                    ImGui.Text($"{Loc.Localize("Terms - Surveillance", "Surveillance")}:");
                     ImGui.SameLine(textWidth);
                     ImGui.PushItemWidth(sliderWidth);
                     if (ImGui.SliderInt("##shipSliderMinSurveillance", ref Target.MinSurveillance, LockedTarget.MinSurveillance, LockedTarget.MaxSurveillance, "Min %d"))
@@ -154,7 +154,7 @@ public partial class BuilderWindow
                     }
                     ImGui.PopItemWidth();
 
-                    ImGui.Text("Retrieval:");
+                    ImGui.Text($"{Loc.Localize("Terms - Retrieval", "Retrieval")}:");
                     ImGui.SameLine(textWidth);
                     ImGui.PushItemWidth(sliderWidth);
                     if (ImGui.SliderInt("##shipSliderMinRetrieval", ref Target.MinRetrieval, LockedTarget.MinRetrieval, LockedTarget.MaxRetrieval, "Min %d"))
@@ -169,7 +169,7 @@ public partial class BuilderWindow
                     }
                     ImGui.PopItemWidth();
 
-                    ImGui.Text("Favor:");
+                    ImGui.Text($"{Loc.Localize("Terms - Favor", "Favor")}:");
                     ImGui.SameLine(textWidth);
                     ImGui.PushItemWidth(sliderWidth);
                     if (ImGui.SliderInt("##shipSliderMinFavor", ref Target.MinFavor, LockedTarget.MinFavor, LockedTarget.MaxFavor, "Min %d"))
@@ -184,7 +184,7 @@ public partial class BuilderWindow
                     }
                     ImGui.PopItemWidth();
 
-                    ImGui.Text("Speed:");
+                    ImGui.Text($"{Loc.Localize("Terms - Speed", "Speed")}:");
                     ImGui.SameLine(textWidth);
                     ImGui.PushItemWidth(sliderWidth);
                     if (ImGui.SliderInt("##shipSliderMinSpeed", ref Target.MinSpeed, LockedTarget.MinSpeed, LockedTarget.MaxSpeed, "Min %d"))
@@ -208,28 +208,28 @@ public partial class BuilderWindow
 
                 var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
 
-                ImGui.TextColored(ImGuiColors.DalamudViolet, "Breakpoints:");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Surveillance");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Breakpoints", "Breakpoints")}:");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Surveillance", "Surveillance"));
                 ImGui.SameLine(secondRow);
                 ImGui.TextUnformatted($"T2: {breakpoints.T2} | T3: {breakpoints.T3}");
 
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Retrieval");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Retrieval", "Retrieval"));
                 ImGui.SameLine(secondRow);
-                ImGui.TextUnformatted($"Normal: {breakpoints.Normal} | Opti: {breakpoints.Optimal}");
+                ImGui.TextUnformatted($"{Loc.Localize("Terms - Normal", "Normal")}: {breakpoints.Normal} | {Loc.Localize("Terms - Optimal", "Optimal")}: {breakpoints.Optimal}");
 
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Favor");
+                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Favor", "Favor"));
                 ImGui.SameLine(secondRow);
-                ImGui.TextUnformatted($"Favor: {breakpoints.Favor}");
+                ImGui.TextUnformatted($"{Loc.Localize("Terms - Favor", "Favor")}: {breakpoints.Favor}");
 
-                ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Options", "Options")}:");
 
-                ImGui.Checkbox("Use T2", ref Target.UseT2);
+                ImGui.Checkbox(Loc.Localize("Builder Ship Checkbox - T2", "Use T2"), ref Target.UseT2);
                 ImGui.SameLine();
-                ImGui.Checkbox("Use Normal", ref Target.UseNormal);
+                ImGui.Checkbox(Loc.Localize("Builder Ship Checkbox - Normal", "Use Normal"), ref Target.UseNormal);
                 ImGui.SameLine();
-                ImGui.Checkbox("Ignore Favor", ref Target.IgnoreFavor);
+                ImGui.Checkbox(Loc.Localize("Builder Ship Checkbox - Favor", "Ignore Favor"), ref Target.IgnoreFavor);
                 ImGui.SameLine();
-                ImGui.Checkbox("No Modded Parts", ref Target.NoModded);
+                ImGui.Checkbox(Loc.Localize("Builder Ship Checkbox - Modded", "No Modified Parts"), ref Target.NoModded);
 
                 ImGuiHelpers.ScaledDummy(10.0f);
             }
@@ -238,30 +238,31 @@ public partial class BuilderWindow
             {
                 ImGuiHelpers.ScaledDummy(20.0f);
 
+                var text = Loc.Localize("Builder Ship Calculation - Nothing Found", "No build found.");
                 var width = ImGui.GetWindowSize().X;
-                var textWidth   = ImGui.CalcTextSize("No build found.").X;
+                var textWidth   = ImGui.CalcTextSize(text).X;
 
                 ImGui.SetCursorPosX((width - textWidth) * 0.5f);
-                ImGui.TextColored(ImGuiColors.DalamudOrange, "No build found.");
+                ImGui.TextColored(ImGuiColors.DalamudOrange, text);
                 ImGui.EndTabItem();
                 return true;
             }
 
             if (ImGui.BeginTable("##shipTable", hasRoute ? 13 : 12, ImGuiTableFlags.Borders | ImGuiTableFlags.Resizable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Sortable))
             {
-                ImGui.TableSetupColumn("Cost");
-                ImGui.TableSetupColumn("Repair");
-                ImGui.TableSetupColumn("Hull", ImGuiTableColumnFlags.NoSort);
-                ImGui.TableSetupColumn("Stern", ImGuiTableColumnFlags.NoSort);
-                ImGui.TableSetupColumn("Bow", ImGuiTableColumnFlags.NoSort);
-                ImGui.TableSetupColumn("Bridge", ImGuiTableColumnFlags.NoSort);
-                ImGui.TableSetupColumn("Surveillance", ImGuiTableColumnFlags.PreferSortDescending);
-                ImGui.TableSetupColumn("Retrieval", ImGuiTableColumnFlags.PreferSortDescending);
-                ImGui.TableSetupColumn("Favor", ImGuiTableColumnFlags.PreferSortDescending);
-                ImGui.TableSetupColumn("Speed", ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending);
-                ImGui.TableSetupColumn("Range", ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Cost", "Cost"));
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Repair", "Repair"));
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Hull", "Hull"), ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Stern", "Stern"), ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Bow", "Bow"), ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Bridge", "Bridge"), ImGuiTableColumnFlags.NoSort);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Surveillance", "Surveillance"), ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Retrieval", "Retrieval"), ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Favor", "Favor"), ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Speed", "Speed"), ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending);
+                ImGui.TableSetupColumn(Loc.Localize("Terms - Range", "Range"), ImGuiTableColumnFlags.PreferSortDescending);
                 if (hasRoute)
-                    ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.NoSort);
+                    ImGui.TableSetupColumn(Loc.Localize("Terms - Duration", "Duration"), ImGuiTableColumnFlags.NoSort);
                 ImGui.TableSetupColumn("##Import", ImGuiTableColumnFlags.NoSort);
                 ImGui.TableHeadersRow();
 
@@ -307,7 +308,7 @@ public partial class BuilderWindow
                         }
 
                         if (ImGui.IsItemHovered())
-                            ImGui.SetTooltip("Import this build");
+                            ImGui.SetTooltip(Loc.Localize("Builder Ship Table - Select", "Select this build"));
 
                         ImGui.TableNextRow();
                     }

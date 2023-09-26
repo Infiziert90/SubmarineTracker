@@ -27,7 +27,7 @@ public partial class BuilderWindow
 
     private void ExpTab()
     {
-        if (ImGui.BeginTabItem("Best Exp"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Best Exp", "Best Exp")}##BestExp"))
         {
             if (ImGui.BeginChild("ExpSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
@@ -108,7 +108,7 @@ public partial class BuilderWindow
                     {
                         if (ComputingPath)
                         {
-                            ImGui.Text($"Loading {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                            ImGui.Text($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                         }
 
                         if (BestPath.Any())
@@ -121,7 +121,7 @@ public partial class BuilderWindow
                         }
                         else
                         {
-                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? "Not calculated ..." : "No route found, check speed and range ...");
+                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? Loc.Localize("Best EXP Calculation - Manual Calculation", "Not calculated ...") : Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
                         }
 
                         ImGui.EndListBox();
@@ -129,7 +129,7 @@ public partial class BuilderWindow
 
                     if (Configuration.CalculateOnInteraction)
                     {
-                        if (ImGui.Button("Calculate"))
+                        if (ImGui.Button(Loc.Localize("Best EXP Calculation - Calculate", "Calculate")))
                         {
                             BestPath = Array.Empty<uint>();
                             Calculate = true;
@@ -141,24 +141,20 @@ public partial class BuilderWindow
                 if (ImGui.BeginChild("ExpOptions", new Vector2(0, 0)))
                 {
                     var width = ImGui.GetContentRegionAvail().X / 3;
-                    var length = ImGui.CalcTextSize("Must Include 5 / 5").X + 25.0f;
+                    var length = ImGui.CalcTextSize($"{Loc.Localize("Terms - Must Include", "Must Include")} 5 / 5").X + 25.0f;
 
-                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Options:");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
                     ImGui.Indent(10.0f);
-                    OptionsChanged |= ImGui.Checkbox("Disable Automatic Calculation", ref Configuration.CalculateOnInteraction);
-                    OptionsChanged |= ImGui.Checkbox("Ignore Unlocks", ref IgnoreUnlocks);
-                    OptionsChanged |= ImGui.Checkbox("Use Avg EXP Bonus", ref AvgBonus);
-                    ImGuiComponents.HelpMarker("This calculation normally takes only guaranteed retrieval bonus into account.\n" +
-                                               "With this option it will take the avg of possible bonus");
+                    OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - No Automatic", "Disable Automatic Calculation"), ref Configuration.CalculateOnInteraction);
+                    OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Ignore Unlocks", "Ignore Unlocks"), ref IgnoreUnlocks);
+                    OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Avg Bonus", "Use Avg Exp Bonus"), ref AvgBonus);
+                    ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Avg Bonus", "This calculation takes only guaranteed bonus exp into account.\nWith this option it will instead take the avg of possible exp bonus."));
                     if (Configuration.DurationLimit != DurationLimit.None)
-                    {
-                        OptionsChanged |= ImGui.Checkbox("Maximize Duration  Limit", ref Configuration.MaximizeDuration);
-                        ImGuiComponents.HelpMarker(MaximizeHelp);
-                    }
+                        OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
                     ImGui.Unindent(10.0f);
 
                     ImGui.AlignTextToFramePadding();
-                    ImGui.TextColored(ImGuiColors.DalamudViolet, "Duration Limit");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
                     if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
@@ -180,7 +176,7 @@ public partial class BuilderWindow
                     if (Configuration.DurationLimit == DurationLimit.Custom)
                     {
                         ImGui.AlignTextToFramePadding();
-                        ImGui.TextColored(ImGuiColors.DalamudViolet, "Custom");
+                        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Custom", "Custom"));
                         ImGui.SameLine(length);
 
                         ImGui.SetNextItemWidth(width / 5f);
@@ -199,11 +195,11 @@ public partial class BuilderWindow
                             Configuration.Save();
                         }
                         ImGui.SameLine();
-                        ImGui.TextUnformatted("hours & minutes");
+                        ImGui.TextUnformatted(Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
                     }
 
 
-                    ImGui.TextColored(ImGuiColors.DalamudViolet, $"Must Include {MustInclude.Count} / 5");
+                    ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5");
 
                     var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                     if (MustInclude.Count >= 5) ImGui.BeginDisabled();
@@ -229,7 +225,7 @@ public partial class BuilderWindow
                         ExcelSheetSelector.FilteredSearchSheet = null!;
                         ExplorationPopupOptions = new()
                         {
-                            FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+                            FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
                             FilteredSheet = ExplorationSheet.Where(r => !error && r.Map.Row == CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
                         };
                     }

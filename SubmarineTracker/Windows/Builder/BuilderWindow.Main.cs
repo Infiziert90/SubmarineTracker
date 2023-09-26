@@ -81,24 +81,24 @@ public partial class BuilderWindow : Window, IDisposable
             if (!infoTabOpen)
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button("Reset"))
+                if (ImGui.Button(Loc.Localize("Builder Window Button - Reset","Reset")))
                     Reset();
                 ImGui.PopStyleColor();
 
                 ImGui.SameLine();
 
-                ImGui.Button("Save");
+                ImGui.Button(Loc.Localize("Builder Window Button - Save","Save"));
                 SaveBuild();
 
                 ImGui.SameLine();
 
-                ImGui.Button("Load");
+                ImGui.Button(Loc.Localize("Builder Window Button - Load","Load"));
                 LoadBuild();
             }
             else
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button("Submarine Discord"))
+                if (ImGui.Button("Join Discord"))
                     Dalamud.Utility.Util.OpenLink("https://discord.gg/overseascasuals");
                 ImGui.PopStyleColor();
 
@@ -113,7 +113,7 @@ public partial class BuilderWindow : Window, IDisposable
                 ImGui.PopStyleColor();
             }
 
-            Helper.MainMenuIcon(Plugin);
+            Helper.MainMenuIcon();
         }
         ImGui.EndChild();
     }
@@ -130,10 +130,10 @@ public partial class BuilderWindow : Window, IDisposable
 
         ImGuiHelpers.ScaledDummy(3.0f);
         ImGui.SetNextItemWidth(180 * ImGuiHelpers.GlobalScale);
-        ImGui.InputTextWithHint("##SavePopupName", "Name", ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
+        ImGui.InputTextWithHint("##SavePopupName", Loc.Localize("Terms - Name", "Name"), ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
         ImGuiHelpers.ScaledDummy(3.0f);
 
-        if (ImGui.Button("Save Build"))
+        if (ImGui.Button(Loc.Localize("Builder Window Button - Save Build", "Save Build")))
         {
             // make sure that original sub hasn't changed in the future
             CurrentBuild.OriginalSub = 0;
@@ -153,11 +153,11 @@ public partial class BuilderWindow : Window, IDisposable
             }
 
             if (!ret)
-                Plugin.ChatGui.PrintError(Utils.ErrorMessage("Build with same name exists already."));
+                Plugin.ChatGui.PrintError(Utils.ErrorMessage(Loc.Localize("Builder Window Error - Same Name", "Build with same name exists already.")));
         }
 
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Hold Control to overwrite");
+            ImGui.SetTooltip(Loc.Localize("Builder Window Tooltip - Overwrite", "Hold Control to overwrite"));
 
 
         // ImGui issue #273849, children keep popups from closing automatically
@@ -188,7 +188,7 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.Dummy(new Vector2(longest + (30.0f * ImGuiHelpers.GlobalScale), 0));
 
         ImGuiHelpers.ScaledDummy(3.0f);
-        ImGui.TextColored(ImGuiColors.ParsedOrange, "Load by clicking");
+        ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Window Tip - Loading", "Load by clicking"));
         ImGui.Indent(5.0f);
         ImGui.BeginChild("LoadPopupChild", Vector2.Zero, false);
 

@@ -7,7 +7,7 @@ public partial class BuilderWindow
 {
     private void RouteTab()
     {
-        if (ImGui.BeginTabItem("Route"))
+        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Route", "Route")}##Route"))
         {
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
@@ -34,7 +34,7 @@ public partial class BuilderWindow
                                    .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
                                    .ToList();
 
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"Sectors {CurrentBuild.Sectors.Count} / 5");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Sectors", "Sectors")} {CurrentBuild.Sectors.Count} / 5");
                 var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
 
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
@@ -50,7 +50,7 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                ImGui.TextColored(ImGuiColors.ParsedOrange, $"Select sector by clicking");
+                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Tab Route - Selection", "Select sector by clicking"));
                 if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 1.95f)))
                 {
                     foreach (var location in explorations)
@@ -118,13 +118,13 @@ public partial class BuilderWindow
 
         ImGui.BeginTooltip();
         ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
-        ImGui.TextColored(ImGuiColors.HealerGreen, "Rank: ");
+        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Rank", "Rank")}: ");
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.HealerGreen, $"{location.RankReq}");
 
         if (unlockTooltip)
         {
-            ImGui.TextColored(ImGuiColors.DalamudViolet, "Unlocked by: ");
+            ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Unlocked By", "Unlocked By")}: ");
             ImGui.SameLine();
             if (unlockedFrom.Sector != 9876)
             {
@@ -138,13 +138,13 @@ public partial class BuilderWindow
                                       $"{NumToLetter(unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
 
                     if (unlockedFrom.Sub)
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"#Extra Sub Slot");
+                        ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Builder Window Tooltip - Unlocks Slot", "#Extra Sub Slot")}");
                 }
                 else
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"Always unlocked");
+                    ImGui.TextColored(ImGuiColors.TankBlue, Loc.Localize("Builder Window Tooltip - Always Unlocked", "Always Unlocked"));
             }
             else
-                ImGui.TextColored(ImGuiColors.DalamudRed, "Unknown");
+                ImGui.TextColored(ImGuiColors.DalamudRed, Loc.Localize("Terms - Unknown", "Unknown"));
         }
 
         ImGui.PopTextWrapPos();

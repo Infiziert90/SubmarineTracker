@@ -74,7 +74,7 @@ public static class Helper
         var time = Loc.Localize("Terms - No Voyage", "No Voyage");
         if (sub.IsOnVoyage())
         {
-            time = Loc.Localize("Terms - Done", "Done");;
+            time = Loc.Localize("Terms - Done", "Done");
 
             var returnTime = sub.LeftoverTime();
             if (returnTime.TotalSeconds > 0)

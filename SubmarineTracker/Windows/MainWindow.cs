@@ -1,4 +1,5 @@
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
@@ -74,12 +75,12 @@ public class MainWindow : Window, IDisposable
                     if (current == 1)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);
-                        if (ImGui.Button("All", new Vector2(buttonWidth, 0)))
+                        if (ImGui.Button(Loc.Localize("Terms - All", "All"), new Vector2(buttonWidth, 0)))
                             CurrentSelection = 1;
                         ImGui.PopStyleColor();
                     }
                     else
-                    if (ImGui.Button("All", new Vector2(buttonWidth, 0)))
+                    if (ImGui.Button(Loc.Localize("Terms - All", "All"), new Vector2(buttonWidth, 0)))
                         CurrentSelection = 1;
                 }
 
@@ -121,7 +122,7 @@ public class MainWindow : Window, IDisposable
         ImGuiHelpers.ScaledDummy(1.0f);
 
         if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-            Helper.MainMenuIcon(Plugin);
+            Helper.MainMenuIcon();
         ImGui.EndChild();
     }
 
@@ -149,27 +150,23 @@ public class MainWindow : Window, IDisposable
 
                     var condition = sub.PredictDurability() > 0;
                     var color = condition ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow;
-                    ImGui.TextColored(color, $"Rank {sub.Rank}");
+                    ImGui.TextColored(color, $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}");
                     ImGui.SameLine(secondRow);
                     ImGui.TextColored(color, $"({sub.Build.FullIdentifier()})");
 
                     ImGui.SameLine(thirdRow);
 
                     var route = "";
-                    var time = " No Voyage ";
+                    var time = $" {Loc.Localize("Terms - No Voyage", "No Voyage")} ";
                     if (sub.IsOnVoyage())
                     {
                         var startPoint = Voyage.FindVoyageStart(sub.Points.First());
                         route = $"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}";
 
-                        time = " Done ";
+                        time = $" {Loc.Localize("Terms - Done", "Done")} ";
                         var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                         if (returnTime.TotalSeconds > 0)
-                        {
-                            time = !Configuration.ShowDateInAll
-                                       ? $" {ToTime(returnTime)} "
-                                       : $" {sub.ReturnTime.ToLocalTime()}";
-                        }
+                            time = !Configuration.ShowDateInAll ? $" {ToTime(returnTime)} " : $" {sub.ReturnTime.ToLocalTime()}";
                     }
 
                     var fullText = $"[ {time}{(Configuration.ShowRouteInAll ? $"   {route}" : "")} ]";
@@ -179,15 +176,15 @@ public class MainWindow : Window, IDisposable
                     var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + 4.0f);
                     if (ImGui.IsMouseHoveringRect(begin, end))
                     {
-                        var tooltip = condition ?  "" : "This submarine will need repairs\n";
-                        tooltip += $"Rank {sub.Rank}    ({sub.Build.FullIdentifier()})\n";
+                        var tooltip = condition ?  "" : $"{Loc.Localize("Return Overlay Tooltip - Repair Needed", "This submarine needs repair on return.")}\n";
+                        tooltip += $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}    ({sub.Build.FullIdentifier()})\n";
 
-                        tooltip += $"Route: {route}\n";
+                        tooltip += $"{Loc.Localize("Terms - Route", "Route")}: {route}\n";
 
                         var predictedExp = sub.PredictExpGrowth();
-                        tooltip += $"After: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
+                        tooltip += $"{Loc.Localize("Terms - EXP After", "After")}: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
 
-                        tooltip += $"Repair: {sub.Build.RepairCosts} kits after {sub.CalculateUntilRepair()} voyages";
+                        tooltip += $"{Loc.Localize("Terms - Repair", "Repair")}: {Loc.Localize("Main Window Tooltip - Repair", "{costs} kits after {totalNumber} voyages").Format(sub.Build.RepairCosts, sub.CalculateUntilRepair())}";
 
                         ImGui.SetTooltip(tooltip);
                     }
@@ -209,7 +206,7 @@ public class MainWindow : Window, IDisposable
         var selectedFc = Submarines.KnownSubmarines[CurrentSelection];
         if (ImGui.BeginTabBar("##fcSubmarineDetail"))
         {
-            if (ImGui.BeginTabItem("Overview"))
+            if (ImGui.BeginTabItem($"{Loc.Localize("Main Window Tab - Overview", "Overview")}##Overview"))
             {
                 var secondRow = ImGui.GetContentRegionMax().X / 8;
                 var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
@@ -230,9 +227,9 @@ public class MainWindow : Window, IDisposable
                         if (cachedItems.TryGetValue((uint) Items.Kits, out temp))
                             kits = temp.Count;
 
-                        ImGui.TextColored(ImGuiColors.HealerGreen, "Resources:");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Main Window Entry - Resources", "Resources:"));
                         ImGui.SameLine();
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"Tanks x{tanks} & Kits x{kits}");
+                        ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Tanks", "Tanks")} x{tanks} & {Loc.Localize("Terms - Kits", "Kits")} x{kits}");
                     }
                 }
 
@@ -243,7 +240,7 @@ public class MainWindow : Window, IDisposable
 
                     ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
 
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"Rank {sub.Rank}");
+                    ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}");
                     ImGui.SameLine(secondRow);
                     ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
 
@@ -285,7 +282,7 @@ public class MainWindow : Window, IDisposable
                         if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
                         {
                             ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
-                            ImGui.TextColored(ImGuiColors.ParsedOrange,"[No Voyage Data]");
+                            ImGui.TextColored(ImGuiColors.ParsedOrange,$"[{Loc.Localize("Terms - No Voyage Data", "No Voyage Data")}]");
                         }
                     }
 
@@ -304,7 +301,7 @@ public class MainWindow : Window, IDisposable
                 }
             }
 
-            if (ImGui.BeginTabItem("Loot"))
+            if (ImGui.BeginTabItem($"{Loc.Localize("Main Window Tab - Loot", "Loot")}##Loot"))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -314,8 +311,7 @@ public class MainWindow : Window, IDisposable
                 {
                     if (!selectedFc.AllLoot.Any())
                     {
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, "No Data");
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, "Tracking starts when you send your subs on voyage again.");
+                        Helper.WrappedError(Loc.Localize("Error - No Data", "No data found for this character's FC\nPlease visit your Company Workshop and access Submersible Management at the Voyage Control Panel."));
                     }
                     else
                     {
@@ -410,21 +406,21 @@ public class MainWindow : Window, IDisposable
             ImGui.TableSetupColumn("##value");
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted("Rank");
+            ImGui.TextUnformatted(Loc.Localize("Terms - Rank", "Rank"));
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Rank}");
 
             ImGui.TableNextRow();
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted("Build");
+            ImGui.TextUnformatted(Loc.Localize("Terms - Build", "Build"));
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Build.FullIdentifier()}");
 
             ImGui.TableNextRow();
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted("Repair");
+            ImGui.TextUnformatted(Loc.Localize("Terms - Repair", "Repair"));
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.Build.RepairCosts}");
             ImGui.TableNextColumn();
@@ -432,7 +428,7 @@ public class MainWindow : Window, IDisposable
             ImGui.TextUnformatted($"{sub.HullCondition:F}% | {sub.SternCondition:F}% | {sub.BowCondition:F}% | {sub.BridgeCondition:F}%");
             ImGui.TableNextColumn();
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"Breaks after {sub.CalculateUntilRepair()} voyages");
+            ImGui.TextUnformatted(Loc.Localize("Main Window Overview - Breaks After", "Breaks after {numUntilRepair} voyages").Format(sub.CalculateUntilRepair()));
             ImGui.TextUnformatted($"");
 
             ImGui.TableNextRow();
@@ -440,7 +436,7 @@ public class MainWindow : Window, IDisposable
             if (sub.ValidExpRange())
             {
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("EXP");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Exp", "Exp"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{sub.CExp} / {sub.NExp}");
                 ImGui.SameLine();
@@ -448,38 +444,38 @@ public class MainWindow : Window, IDisposable
 
                 var predictedExp = sub.PredictExpGrowth();
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Predicted");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Predicted", "Predicted"));
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted($"Rank {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)");
+                ImGui.TextUnformatted($"{Loc.Localize("Terms - Rank", "Rank")} {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)");
             }
 
             if (sub.IsOnVoyage())
             {
                 AddTableSpacing();
 
-                var time = "Done";
+                var time = Loc.Localize("Terms - Done", "Done");
                 var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                 if (returnTime.TotalSeconds > 0)
-                    time = $"{(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} h";
+                    time = $"{(int) returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} {Loc.Localize("Terms - hours", "hours")}";
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Time");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Time", "Time"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted(time);
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Date");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Date", "Date"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
                 var startPoint = Voyage.FindVoyageStart(sub.Points.First());
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Map");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Map", "Map"));
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{GetMapName(startPoint)}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted("Route");
+                ImGui.TextUnformatted(Loc.Localize("Terms - Route", "Route"));
                 ImGui.TableNextColumn();
                 ImGui.TextWrapped($"{string.Join(" -> ", sub.Points.Select(p => NumToLetter(p - startPoint)))}");
             }
