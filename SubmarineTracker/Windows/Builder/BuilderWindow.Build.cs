@@ -51,7 +51,7 @@ public partial class BuilderWindow
                 }
                 else
                 {
-                    ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Builder Build Tab - Automatic Selection", "Automatic Selection: {Name} - Rank {Rank}").Format(SelectedSub.Name, SelectedSub.Rank));
+                    ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Builder Build Tab - Automatic Selection", "Automatic Selection: {0} - Rank {1}").Format(SelectedSub.Name, SelectedSub.Rank));
 
                     if (ImGui.IsItemHovered())
                         ImGui.SetTooltip(Loc.Localize("Builder Build Tooltip - Automatic Selection", "To disable this behaviour head into the configuration, builder tab and uncheck 'Auto Select'"));

@@ -22,7 +22,7 @@ public partial class ConfigWindow
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Any Uploads", "Has there been any uploads?"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? Loc.Localize("Config Tab Upload - Yes Number", "Yes, {Number} uploads").Format(Configuration.UploadCounter) : Loc.Localize("Config Tab Upload - No", "No"))}");
+            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? Loc.Localize("Config Tab Upload - Yes Number", "Yes, {0} uploads").Format(Configuration.UploadCounter) : Loc.Localize("Config Tab Upload - No", "No"))}");
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);

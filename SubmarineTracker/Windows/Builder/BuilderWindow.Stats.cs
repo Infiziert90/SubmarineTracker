@@ -124,7 +124,7 @@ public partial class BuilderWindow
                 ImGui.TableNextColumn();
                 ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Repair", "Repair"));
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted(Loc.Localize("Builder Stats Text - RepairAfter", "{Cost} after {Number} voyages").Format(build.RepairCosts, repairAfter));
+                ImGui.TextUnformatted(Loc.Localize("Builder Stats Text - RepairAfter", "{0} after {1} voyages").Format(build.RepairCosts, repairAfter));
 
                 ImGui.EndTable();
             }

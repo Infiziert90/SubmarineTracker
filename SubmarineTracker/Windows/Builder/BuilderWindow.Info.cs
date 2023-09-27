@@ -24,7 +24,7 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Builder Tab Info - Breakpoints", "Breakpoints:"));
             ImGui.TextUnformatted("T2");
             ImGui.SameLine(spacing);
-            ImGui.TextUnformatted(Loc.Localize("Builder Tab Text - T3", "Surveillance required for a chance to get loot from Tier 2"));
+            ImGui.TextUnformatted(Loc.Localize("Builder Tab Text - T2", "Surveillance required for a chance to get loot from Tier 2"));
             ImGui.TextUnformatted("T3");
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Text - T3", "Surveillance required for a chance to get loot from Tier 3"));
@@ -44,22 +44,22 @@ public partial class BuilderWindow
             ImGui.TextUnformatted(Loc.Localize("Colors - White", "White"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Info - White Text", "Nothing selected or no data available"));
-            ImGui.TextColored(ImGuiColors.ParsedGold,Loc.Localize("Colors - White", "Gold"));
+            ImGui.TextColored(ImGuiColors.ParsedGold,Loc.Localize("Colors - Gold", "Gold"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Info - Gold Text", "Requirement exceeded"));
-            ImGui.TextColored(ImGuiColors.HealerGreen,Loc.Localize("Colors - White", "Green"));
+            ImGui.TextColored(ImGuiColors.HealerGreen,Loc.Localize("Colors - Green", "Green"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Info - Green Text", "T3/Optimal/Favor reached"));
-            ImGui.TextColored(ImGuiColors.ParsedPink,Loc.Localize("Colors - White", "Pink"));
+            ImGui.TextColored(ImGuiColors.ParsedPink,Loc.Localize("Colors - Pink", "Pink"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Info - Pink Text", "T2/Normal reached, followed by T3/Optimal"));
-            ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Colors - White", "Red"));
+            ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Colors - Red", "Red"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Builder Tab Info - Red Text", "Requirement not fulfilled, followed by requirement"));
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Route", "Route:"));
+            ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Route", "Route")}:");
             ImGui.TextColored(ImGuiColors.DalamudViolet,Loc.Localize("Colors - Violet", "Violet"));
             ImGui.SameLine(spacing);
             ImGui.TextUnformatted(Loc.Localize("Helpy Tab Info - Violet Text", "Unlocked but not visited"));

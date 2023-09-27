@@ -106,8 +106,8 @@ public partial class BuilderWindow
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Build","Ignore Build"), ref IgnoreBuild);
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Build","This will calculate every single possible build\nWarning: This will take a long time and you'll experience game slowdown"));
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Unlocks","Ignore Unlocks"), ref IgnoreUnlocks);
-            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Avg Exp","Use Avg EXP Bonus"), ref AvgBonus);
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Checkbox - Avg Exp","This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus"));
+            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Avg Exp","Use Avg Exp Bonus"), ref AvgBonus);
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Avg Exp","This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus"));
             if (Configuration.DurationLimit != DurationLimit.None)
                 ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
             ImGui.Unindent(10.0f);
@@ -244,7 +244,7 @@ public partial class BuilderWindow
                     var (i, (_, rankReached, leftover, routeExp, points, build)) = pair;
                     var startPoint = Voyage.FindVoyageStart(points[0]);
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Build","Build:")} {build}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Voyage","Voyage {number}:").Format(i)} {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Voyage","Voyage {0}:").Format(i)} {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Gained","Exp Gained:")} {routeExp:N0}");
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Reached","Rank Reached:")} {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
                 });

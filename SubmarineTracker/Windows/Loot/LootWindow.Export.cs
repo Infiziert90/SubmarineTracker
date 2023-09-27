@@ -175,7 +175,7 @@ public partial class LootWindow
                     File.WriteAllText(file, s);
 
                     Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - File", "Export done.")));
-                    Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - Output Path", "Output Path: {file}").Format(file)));
+                    Plugin.ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Loot Export Success - Output Path", "Output Path: {0}").Format(file)));
                 }
             }
             catch (Exception e)

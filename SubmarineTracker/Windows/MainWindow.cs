@@ -3,6 +3,7 @@ using Dalamud.Utility;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
+
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows;
@@ -184,7 +185,7 @@ public class MainWindow : Window, IDisposable
                         var predictedExp = sub.PredictExpGrowth();
                         tooltip += $"{Loc.Localize("Terms - EXP After", "After")}: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
 
-                        tooltip += $"{Loc.Localize("Terms - Repair", "Repair")}: {Loc.Localize("Main Window Tooltip - Repair", "{costs} kits after {totalNumber} voyages").Format(sub.Build.RepairCosts, sub.CalculateUntilRepair())}";
+                        tooltip += $"{Loc.Localize("Terms - Repair", "Repair")}: {Loc.Localize("Main Window Tooltip - Repair", "{0} kits after {1} voyages").Format(sub.Build.RepairCosts, sub.CalculateUntilRepair())}";
 
                         ImGui.SetTooltip(tooltip);
                     }
@@ -428,7 +429,7 @@ public class MainWindow : Window, IDisposable
             ImGui.TextUnformatted($"{sub.HullCondition:F}% | {sub.SternCondition:F}% | {sub.BowCondition:F}% | {sub.BridgeCondition:F}%");
             ImGui.TableNextColumn();
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Main Window Overview - Breaks After", "Breaks after {numUntilRepair} voyages").Format(sub.CalculateUntilRepair()));
+            ImGui.TextUnformatted(Loc.Localize("Main Window Overview - Breaks After", "Breaks after {0} voyages").Format(sub.CalculateUntilRepair()));
             ImGui.TextUnformatted($"");
 
             ImGui.TableNextRow();

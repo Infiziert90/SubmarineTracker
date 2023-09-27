@@ -112,8 +112,8 @@ public partial class LootWindow
             if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
             {
                 var limit = useLimit ? Configuration.DateLimit != DateLimit.None ? $"over {Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
-                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Reward Amount", "The above rewards have been obtained {limit} from a total of {numVoyages} voyages ({numSubs} submarines).").Format(limit, numVoyages, numSubs));
-                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Money Made", "This made you a total of {moneyMade:N0} gil.").Format(moneyMade));
+                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Reward Amount", "The above rewards have been obtained {0} from a total of {1} voyages ({2} submarines).").Format(limit, numVoyages, numSubs));
+                ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Money Made", "This made you a total of {0:N0} gil.").Format(moneyMade));
 
                 ImGuiHelpers.ScaledDummy(3.0f);
 

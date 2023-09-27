@@ -16,7 +16,7 @@ public partial class ConfigWindow
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show All", "Show 'All' Button"), ref Configuration.ShowAll);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Show All", "Adds an 'All' button for easy overview of all FCs.\nNote: Messy with too many FCs."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Use Character Name", "Use Character Name"), ref Configuration.UseCharacterName);
-            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Use Character Name", "Use character name instead of FC tag in the overview.\nBe aware this option can lead to cut-off button text."));
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Use Character Name", "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Let Me Resize", "Let Me Resize"), ref Configuration.UserResize);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Let Me Resize", "This allows you to resize the FC buttons,\nbut stops them from automatically adjusting size."));
             ImGui.Unindent(10.0f);
