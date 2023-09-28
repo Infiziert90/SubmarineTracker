@@ -157,13 +157,13 @@ public partial class BuilderWindow
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Experimental", "- Experimental -"));
             ImGui.Indent(10.0f);
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Shark","Ignore Shark Parts"), ref IgnoreShark);
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Shark","Leveling expects that a shark part exists, so it takes that as prior over worse parts" +
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Shark","Leveling expects that a shark part exists, so it takes that as priority over worse parts" +
                                                         "\nThis option disables the behaviour" +
                                                         "\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop." +
                                                         "\ne.g SSUW must be Rank higher or equal to 25" +
                                                         "\nImportant: This can lead to errors"));
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Unmodified","Ignore Unmodified Parts"), ref IgnoreUnmodded);
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Unmodified","Leveling expects that an unmodified part exists, so it takes that as prior over modded" +
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Unmodified","Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better" +
                                                         "\nThis option disables the behaviour" +
                                                         "\nImportant: This can lead to errors"));
             ImGui.Unindent(10.0f);

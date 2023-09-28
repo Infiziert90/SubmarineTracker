@@ -27,6 +27,7 @@ public static class Helper
                                          new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Config", "Config"), plugin.OpenConfig,Loc.Localize("Menu Tooltip - Config", "Open the config window.")),
                                          new PopupMenu.PopupMenuItemSeparator(),
                                          new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Discord Thread", "Discord Thread"), Plugin.DiscordSupport,Loc.Localize("Menu Tooltip - Discord Thread", "Open the discord support thread.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Localization", "Localization"), Plugin.DiscordSupport,Loc.Localize("Menu Tooltip - Localization", "Open the crowdin page in your browser")),
                                          new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Issues", "Issues"), Plugin.IssuePage,Loc.Localize("Menu Tooltip - Issues", "Open the issue page in your browser.")),
                                          new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - KoFi", "Ko-Fi Tip"), Plugin.Kofi,Loc.Localize("Menu Tooltip - KoFi", "Open the kofi page in your browser.")),
                                          new PopupMenu.PopupMenuItemSeparator(),

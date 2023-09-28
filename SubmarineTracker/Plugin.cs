@@ -62,6 +62,7 @@ namespace SubmarineTracker
 
         private const string GithubIssue = "https://github.com/Infiziert90/SubmarineTracker/issues";
         private const string DiscordThread = "https://canary.discord.com/channels/581875019861328007/1094255662860599428";
+        private const string Crowdin = "https://crowdin.com/project/submarine-tracker";
         private const string KoFiLink = "https://ko-fi.com/infiii";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
@@ -138,15 +139,7 @@ namespace SubmarineTracker
 
             var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
-            {
                 ReturnOverlay.IsOpen = true;
-                // TODO Check for a valid way to uncollapse something once
-                // if (Configuration is { OverlayStartUp: true, OverlayUnminimized: true } && subDone)
-                // {
-                //     OverlayWindow.CollapsedCondition = ImGuiCond.Appearing;
-                //     OverlayWindow.Collapsed = false;
-                // }
-            }
         }
 
         public void Dispose() => Dispose(true);
@@ -318,6 +311,7 @@ namespace SubmarineTracker
         public static void IssuePage() => Dalamud.Utility.Util.OpenLink(GithubIssue);
         public static void DiscordSupport() => Dalamud.Utility.Util.OpenLink(DiscordThread);
         public static void Kofi() => Dalamud.Utility.Util.OpenLink(KoFiLink);
+        public static void LocHelp() => Dalamud.Utility.Util.OpenLink(Crowdin);
 
         #region Draws
         private void DrawUI() => WindowSystem.Draw();

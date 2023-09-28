@@ -83,6 +83,14 @@
     "message": "Open the discord support thread.",
     "description": "Helper.Initialize"
   },
+  "Menu Entry - Localization": {
+    "message": "Localization",
+    "description": "Helper.Initialize"
+  },
+  "Menu Tooltip - Localization": {
+    "message": "Open the crowdin page in your browser",
+    "description": "Helper.Initialize"
+  },
   "Menu Entry - Issues": {
     "message": "Issues",
     "description": "Helper.Initialize"
@@ -507,6 +515,18 @@
     "message": "Version:",
     "description": "ConfigWindow.About"
   },
+  "Config Tab Entry - Localization": {
+    "message": "Localization:",
+    "description": "ConfigWindow.About"
+  },
+  "Config About Translation - Community": {
+    "message": "Community",
+    "description": "ConfigWindow.About"
+  },
+  "Config About Translation - Tooltip": {
+    "message": "All localizations are done by the community.\nIf you want to help improve them, please visit Crowdin",
+    "description": "ConfigWindow.About"
+  },
   "Builder Tab - Builder": {
     "message": "Builder",
     "description": "ConfigWindow.Builder"
@@ -573,6 +593,10 @@
   },
   "Menu - Discord Thread": {
     "message": "Discord Thread",
+    "description": "ConfigWindow.Draw"
+  },
+  "Menu - Localization": {
+    "message": "Localization",
     "description": "ConfigWindow.Draw"
   },
   "Menu - Issues": {
@@ -1068,7 +1092,7 @@
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Ignore Shark": {
-    "message": "Leveling expects that a shark part exists, so it takes that as prior over worse parts\nThis option disables the behaviour\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop.\ne.g SSUW must be Rank higher or equal to 25\nImportant: This can lead to errors",
+    "message": "Leveling expects that a shark part exists, so it takes that as priority over worse parts\nThis option disables the behaviour\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop.\ne.g SSUW must be Rank higher or equal to 25\nImportant: This can lead to errors",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Unmodified": {
@@ -1076,7 +1100,7 @@
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Ignore Unmodified": {
-    "message": "Leveling expects that an unmodified part exists, so it takes that as prior over modded\nThis option disables the behaviour\nImportant: This can lead to errors",
+    "message": "Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better\nThis option disables the behaviour\nImportant: This can lead to errors",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Allowed Sectors": {

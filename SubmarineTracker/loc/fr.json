@@ -1,22 +1,22 @@
 {
   "Webhook On Dispatch": {
-    "message": "Returns <t:{0}:R>",
+    "message": "Revient <t:{0}:R>",
     "description": "Notify.SendDispatchWebhook"
   },
   "Webhook On Return": {
-    "message": "Returned at <t:{0}:f>",
+    "message": "Revenu le <t:{0}:f>",
     "description": "Notify.SendReturnWebhook"
   },
   "Notification Chat Return": {
-    "message": "{0} has returned.",
+    "message": "{0} est revenu.",
     "description": "Notify.GenerateMessage"
   },
   "Notification Chat Repair": {
-    "message": "{0} has returned and requires repair before being dispatched again.",
+    "message": "{0} est revenu et a besoin d'une réparation avant d'être expédié à nouveau.",
     "description": "Notify.RepairMessage"
   },
   "Notification Toast Repair": {
-    "message": "Requires repair before being dispatched again",
+    "message": "Nécessite une réparation avant d'être expédié à nouveau",
     "description": "Notify.ShortRepairMessage"
   },
   "Terms - Important": {
@@ -24,7 +24,7 @@
     "description": "Plugin.FrameworkUpdate"
   },
   "Notifications - Upload Opt Out": {
-    "message": "This plugin will collect anonymized, submarine specific data. For more information on the exact data collected please see the upload tab in the plugin configuration menu.  You can opt out of any and all forms of data collection.",
+    "message": "Ce plugin collectera des données anonymes spécifiques aux sous-marins. Pour plus d'informations sur les données exactes collectées, veuillez consulter l'onglet téléchargement dans le menu de configuration du plugin.  Vous pouvez refuser toute forme de collecte de données.",
     "description": "Plugin.FrameworkUpdate"
   },
   "Window Name - Tracker": {
@@ -32,31 +32,31 @@
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Tracker": {
-    "message": "Open the tracker window.",
+    "message": "Ouvrir la fenêtre du tracker.",
     "description": "Helper.Initialize"
   },
   "Window Name - Builder": {
-    "message": "Builder",
+    "message": "Construction",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Builder": {
-    "message": "Open the builder window.",
+    "message": "Ouvrir la fenêtre de construction.",
     "description": "Helper.Initialize"
   },
   "Window Name - Loot": {
-    "message": "Loot",
+    "message": "Objets trouvés",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Loot": {
-    "message": "Open the loot window.",
+    "message": "Ouvrir la fenêtre des objets trouvés.",
     "description": "Helper.Initialize"
   },
   "Window Name - Helpy": {
-    "message": "Helpy",
+    "message": "Assistant",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Helpy": {
-    "message": "Open the helper window.",
+    "message": "Ouvre la fenêtre de l'assistant.",
     "description": "Helper.Initialize"
   },
   "Window Name - Overlay": {
@@ -64,99 +64,107 @@
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Overlay": {
-    "message": "Open the return overlay.",
+    "message": "Ouvrir l'overlay de retour.",
     "description": "Helper.Initialize"
   },
   "Window Name - Config": {
-    "message": "Config",
+    "message": "Configuration",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Config": {
-    "message": "Open the config window.",
+    "message": "Ouvrir la fenêtre de configuration.",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Discord Thread": {
-    "message": "Discord Thread",
+    "message": "Fil de discussion Discord",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Discord Thread": {
-    "message": "Open the discord support thread.",
+    "message": "Ouvrir le fil de support Discord.",
+    "description": "Helper.Initialize"
+  },
+  "Menu Entry - Localization": {
+    "message": "Localization",
+    "description": "Helper.Initialize"
+  },
+  "Menu Tooltip - Localization": {
+    "message": "Open the crowdin page in your browser",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Issues": {
-    "message": "Issues",
+    "message": "Problèmes",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Issues": {
-    "message": "Open the issue page in your browser.",
+    "message": "Ouvrir la page des problèmes connus dans votre navigateur.",
     "description": "Helper.Initialize"
   },
   "Menu Entry - KoFi": {
-    "message": "Ko-Fi Tip",
+    "message": "Don Ko-Fi",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - KoFi": {
-    "message": "Open the kofi page in your browser.",
+    "message": "Ouvrir la page Ko-Fi dans votre navigateur.",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Sync": {
-    "message": "Sync",
+    "message": "Synchroniser",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Sync": {
-    "message": "Reload all stored data from hard drive and refresh the cache.",
+    "message": "Recharge toutes les données stockées sur le disque dur et actualise le cache.",
     "description": "Helper.Initialize"
   },
   "Error - No Data": {
-    "message": "No data found for this character's FC\nPlease visit your Company Workshop and access Submersible Management at the Voyage Control Panel.",
+    "message": "Aucune donnée trouvée pour la CL de ce personnage\nVeuillez visiter l'atelier de votre compagnie libre et interagissez avec le panneau de contrôle d'appareils.",
     "description": "Helper.NoData"
   },
   "Terms - No Voyage": {
-    "message": "No Voyage",
+    "message": "Pas en expédition",
     "description": "Helper.GenerateVoyageText"
   },
   "Terms - Done": {
-    "message": "Done",
+    "message": "Terminé",
     "description": "Helper.GenerateVoyageText"
   },
   "Terms - All": {
-    "message": "All",
+    "message": "Tous",
     "description": "MainWindow.Draw"
   },
   "Terms - Rank": {
-    "message": "Rank",
+    "message": "Rang",
     "description": "MainWindow.All"
   },
   "Return Overlay Tooltip - Repair Needed": {
-    "message": "This submarine needs repair on return.",
+    "message": "Ce sous-marin aura besoin d'être réparé à son retour.",
     "description": "MainWindow.All"
   },
   "Terms - Route": {
-    "message": "Route",
+    "message": "Itinéraire",
     "description": "MainWindow.All"
   },
   "Terms - EXP After": {
-    "message": "After",
+    "message": "Après",
     "description": "MainWindow.All"
   },
   "Terms - Repair": {
-    "message": "Repair",
+    "message": "Réparation",
     "description": "MainWindow.All"
   },
   "Main Window Tooltip - Repair": {
-    "message": "{0} kits after {1} voyages",
+    "message": "{0} kits après {1} voyages",
     "description": "MainWindow.All"
   },
   "Main Window Tab - Overview": {
-    "message": "Overview",
+    "message": "Résumé",
     "description": "MainWindow.OverviewTab"
   },
   "Main Window Entry - Resources": {
-    "message": "Resources:",
+    "message": "Ressources :",
     "description": "MainWindow.OverviewTab"
   },
   "Terms - Tanks": {
-    "message": "Tanks",
+    "message": "Barils",
     "description": "MainWindow.OverviewTab"
   },
   "Terms - Kits": {
@@ -164,11 +172,11 @@
     "description": "MainWindow.OverviewTab"
   },
   "Terms - No Voyage Data": {
-    "message": "No Voyage Data",
+    "message": "Aucune donnée de voyage",
     "description": "MainWindow.OverviewTab"
   },
   "Main Window Tab - Loot": {
-    "message": "Loot",
+    "message": "Objets trouvés",
     "description": "MainWindow.OverviewTab"
   },
   "Terms - Build": {
@@ -176,7 +184,7 @@
     "description": "MainWindow.DetailedSub"
   },
   "Main Window Overview - Breaks After": {
-    "message": "Breaks after {0} voyages",
+    "message": "Se casse après {0} voyages",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Exp": {
@@ -184,15 +192,15 @@
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Predicted": {
-    "message": "Predicted",
+    "message": "Prévu",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - hours": {
-    "message": "hours",
+    "message": "heures",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Time": {
-    "message": "Time",
+    "message": "Temps",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Date": {
@@ -200,67 +208,67 @@
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Map": {
-    "message": "Map",
+    "message": "Carte",
     "description": "MainWindow.DetailedSub"
   },
   "Next Overlay Tooltip - Low Rank": {
-    "message": "Your submarine is below the required level to visit the sector.",
+    "message": "Votre sous-marin est en dessous du rang requis pour visiter le secteur.",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Next Sector": {
-    "message": "Next Sector:",
+    "message": "Secteur suivant :",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Visit": {
-    "message": "Visit:",
+    "message": "Visiter :",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Next Map": {
-    "message": "Next Map:",
+    "message": "Carte suivante :",
     "description": "NextOverlay.Draw"
   },
   "Terms - Submarines": {
-    "message": "Submarines",
+    "message": "Sous-marins",
     "description": "ReturnOverlay.PreDraw"
   },
   "Return Overlay Info - No Return": {
-    "message": "No sub has returned.",
+    "message": "Aucun sous-marin n'est revenu.",
     "description": "ReturnOverlay.Draw"
   },
   "Route Overlay Tooltip - High Rank": {
-    "message": "Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions.",
+    "message": "Sous-marin au-dessus du seuil et Doit inclure est vide\nVérifiez votre configuration pour des suggestions de niveau supérieur.",
     "description": "RouteOverlay.Draw"
   },
   "Terms - Loading": {
-    "message": "Loading",
+    "message": "Chargement",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Calculation - Nothing Found": {
-    "message": "No route found, check speed and range ...",
+    "message": "Aucun itinéraire trouvé, vérifiez la vitesse et la distance...",
     "description": "RouteOverlay.Draw"
   },
   "Terms - Must Include": {
-    "message": "Must Include",
+    "message": "Doit inclure",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Entry - Duration Limit": {
-    "message": "Duration Limit",
+    "message": "Durée limite",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Checkbox - Maximize Duration": {
-    "message": "Maximize Duration",
+    "message": "Maximiser la durée",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Entry - Hours and Minutes": {
-    "message": "Hours & Minutes",
+    "message": "Heures & Minutes",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Checkbox - Auto Include": {
-    "message": "Auto Include",
+    "message": "Inclus. Auto",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Tooltip - Auto Include": {
-    "message": "Auto include the next main sector, if there is one",
+    "message": "Inclut automatiquement le secteur principal suivant, s'il y en a un",
     "description": "RouteOverlay.Draw"
   },
   "Loot Tab - Analyse": {
@@ -268,63 +276,63 @@
     "description": "LootWindow.AnalyseTab"
   },
   "Terms - WiP": {
-    "message": "- Work in Progress -",
+    "message": "- En cours de développement ! -",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Button - Rebuild": {
-    "message": "Rebuild Cache",
+    "message": "Reconstuire le cache",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Text - Searched": {
-    "message": "Searched for",
+    "message": "Recherche de",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Warning - Nothing Found": {
-    "message": "Nothing found for this sector.",
+    "message": "Aucun résulat pour cette destination.",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Entry - Percentages": {
-    "message": "Percentages:",
+    "message": "Pourcentages :",
     "description": "LootWindow.AnalyseTab"
   },
   "Terms - Item": {
-    "message": "Item",
+    "message": "Objet",
     "description": "LootWindow.AnalyseTab"
   },
   "Terms - Percentage": {
-    "message": "Pct",
+    "message": "Pctge",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab - Custom": {
-    "message": "Custom",
+    "message": "Personnalisé",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Nothing Found": {
-    "message": "No custom loot found.",
+    "message": "Aucun butin personnalisé trouvé.",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Tracking Tip": {
-    "message": "You can add tracked items via the loot tab under configuration.",
+    "message": "Vous pouvez ajouter des objets à suivre via l'onglet des objets trouvés dans la configuration du plugin.",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 1": {
-    "message": "None of the selected items have been looted",
+    "message": "Aucun des objets sélectionnés n'a été trouvé",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 2 Yet": {
-    "message": "yet",
+    "message": "à ce jour",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 2 Timeframe": {
-    "message": "in the time frame",
+    "message": "pendant la période",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Reward Amount": {
-    "message": "The above rewards have been obtained {0} from a total of {1} voyages ({2} submarines).",
+    "message": "Les objets ci-dessus ont été obtenus {0} sur un total de {1} voyages ({2} sous-marins).",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Money Made": {
-    "message": "This made you a total of {0:N0} gil.",
+    "message": "Ce qui vous a rapporté un total de {0:N0} gils.",
     "description": "LootWindow.CustomLootTab"
   },
   "Terms - Options": {
@@ -332,15 +340,15 @@
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Entry - Fixed": {
-    "message": "Fixed:",
+    "message": "Fixer à :",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Tooltip - Fixed": {
-    "message": "Selecting None will allow you to pick a specific time frame.",
+    "message": "En sélectionnant Aucune, vous pourrez choisir un intervalle de temps spécifique.",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Entry - FromTo Date Selection": {
-    "message": "FromTo:",
+    "message": "Du-au :",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab - Export": {
@@ -348,71 +356,71 @@
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Checkbox - Export All": {
-    "message": "Export All FCs",
+    "message": "Exporter toutes les CLs",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Checkbox - Exclude Date": {
-    "message": "Exclude Date",
+    "message": "Exclure la date",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Checkbox - Exclude Hash": {
-    "message": "Exclude Hash",
+    "message": "Exclure le hash",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Entry - Output Folder": {
-    "message": "Output Folder:",
+    "message": "Dossier cible :",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Title - Pick Folder": {
-    "message": "Pick a folder",
+    "message": "Choisissez un dossier",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Entry - Export": {
-    "message": "Export:",
+    "message": "Export :",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Button - File": {
-    "message": "File",
+    "message": "Fichier",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Button - Clipboard": {
-    "message": "Clipboard",
+    "message": "Presse-papier",
     "description": "LootWindow.ExportTab"
   },
   "Loot Export Error - Nothing Found": {
-    "message": "Nothing to export in the selected time frame.",
+    "message": "Rien à exporter dans la période sélectionnée.",
     "description": "LootWindow.CheckList"
   },
   "Loot Export Success - Clipboard": {
-    "message": "Successfully exported to clipboard.",
+    "message": "Copie réussie dans le presse-papiers.",
     "description": "LootWindow.ExportToClipboard"
   },
   "Loot Export Success - File": {
-    "message": "Export done.",
+    "message": "Export réussi.",
     "description": "LootWindow.ExportToFile"
   },
   "Loot Export Success - Output Path": {
-    "message": "Output Path: {0}",
+    "message": "Chemin du dossier cible : {0}",
     "description": "LootWindow.ExportToFile"
   },
   "Loot Export Error - Invalid Path": {
-    "message": "Invalid path.",
+    "message": "Chemin invalide.",
     "description": "LootWindow.ExportToFile"
   },
   "Loot Tab - History": {
-    "message": "History",
+    "message": "Historique",
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Wrong": {
-    "message": "Something went wrong.",
+    "message": "Un problème est survenu.",
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Not Tracked": {
-    "message": "Tracking starts when you send your subs on voyage again.",
+    "message": "Le suivi commence lorsque vous envoyez vos sous-marins en expédition.",
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Legacy Data": {
-    "message": "-Legacy Data-",
+    "message": "-Anciennes données-",
     "description": "LootWindow.VoyageTab"
   },
   "Helpy Tab - Progression": {
@@ -420,11 +428,11 @@
     "description": "HelpyWindow.ProgressionTab"
   },
   "Progression Tab - Submarine Path": {
-    "message": "4 Submarines",
+    "message": "4 sous-marins",
     "description": "HelpyWindow.AllSlotsTab"
   },
   "Progression Tab - Last Sector": {
-    "message": "Last Sector",
+    "message": "Dernier secteur",
     "description": "HelpyWindow.LastSectorTab"
   },
   "Helpy Tab - Info": {
@@ -432,31 +440,31 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Sector Unlock": {
-    "message": "How to unlock new Sectors?",
+    "message": "Comment débloquer de nouveaux secteurs ?",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Sector Unlock Text": {
-    "message": "Unlocking new sectors is RNG.\nBy increasing the speed and frequency of voyages, you will have more chances to discover a new sector.",
+    "message": "Les nouveaux secteurs sont débloqués aléatoirement.\nEn augmentant la vitesse et la fréquence des voyages, vous aurez plus de chances d'en découvrir un nouveau.",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Map Unlock": {
-    "message": "How to unlock new maps / slots?",
+    "message": "Comment débloquer de nouvelles cartes/emplacements ?",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Map Unlock Text": {
-    "message": "You must visit the unlocked sector at least once.\nNote: You won't see more submarines until you filled the previous slot.\ne.g You won't see slot 3 if slot 2 is empty",
+    "message": "Vous devez visiter le secteur déverrouillé au moins une fois.\nNote : Vous ne verrez plus de sous-marins tant que vous n'avez pas rempli l'emplacement précédent.\nPar exemple, vous ne verrez pas l'emplacement 3 si l'emplacement 2 est vide",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Colors": {
-    "message": "Colors:",
+    "message": "Couleurs :",
     "description": "HelpyWindow.InfoTab"
   },
   "Colors - Green": {
-    "message": "Green",
+    "message": "Vert",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Green Text": {
-    "message": "Unlocked and visited",
+    "message": "Débloqué et visité",
     "description": "HelpyWindow.InfoTab"
   },
   "Colors - Violet": {
@@ -464,183 +472,199 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Violet Text": {
-    "message": "Unlocked but not visited",
+    "message": "Débloqué mais non visité",
     "description": "HelpyWindow.InfoTab"
   },
   "Colors - Red": {
-    "message": "Red",
+    "message": "Rouge",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Red Text": {
-    "message": "Not unlocked",
+    "message": "Non débloqué",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab - Storage": {
-    "message": "Storage",
+    "message": "Stockage",
     "description": "HelpyWindow.StorageTab"
   },
   "Helpy Tab Warning - AllaganTools": {
-    "message": "AllaganTools not available.",
+    "message": "AllaganTools n'est pas disponible.",
     "description": "HelpyWindow.StorageTab"
   },
   "Progression Tab Tooltip - Unlocks Map": {
-    "message": "Unlocks map",
+    "message": "Débloque la carte",
     "description": "<>c__DisplayClass10_0.<LastSectorTab>b__0"
   },
   "Progression Tab Tooltip - Unlocks Slot": {
-    "message": "Unlocks slot",
+    "message": "Débloque l'emplacement",
     "description": "<>c__DisplayClass10_0.<LastSectorTab>b__0"
   },
   "Config Tab - About": {
-    "message": "About",
+    "message": "A propos",
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Author": {
-    "message": "Author:",
+    "message": "Auteur :",
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Discord": {
-    "message": "Discord:",
+    "message": "Discord :",
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Version": {
-    "message": "Version:",
+    "message": "Version :",
+    "description": "ConfigWindow.About"
+  },
+  "Config Tab Entry - Localization": {
+    "message": "Localization:",
+    "description": "ConfigWindow.About"
+  },
+  "Config About Translation - Community": {
+    "message": "Community",
+    "description": "ConfigWindow.About"
+  },
+  "Config About Translation - Tooltip": {
+    "message": "All localizations are done by the community.\nIf you want to help improve them, please visit Crowdin",
     "description": "ConfigWindow.About"
   },
   "Builder Tab - Builder": {
-    "message": "Builder",
+    "message": "Construction",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Entry - Options": {
-    "message": "Options:",
+    "message": "Options :",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Current FC": {
-    "message": "Show Only Current FC",
+    "message": "Afficher uniquement la CL actuelle",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Auto Selection": {
-    "message": "Auto Select Current Submarine",
+    "message": "Sélectionner automatiquement le sous-marin actuel",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Auto Selection": {
-    "message": "Automatically selects the current selected submarine in the games voyage interface.",
+    "message": "Sélectionne automatiquement le sous-marin sélectionné dans l'interface d'expédition du jeu.",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Next Overlay": {
-    "message": "Show Next Overlay",
+    "message": "Afficher l'overlay suivant",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Next Overlay": {
-    "message": "Overlay attached to the voyage selection interface\n\nSuggest the next sector to unlock or explore\nVisible if:\n  a) The map has unlocks left, or\n  b) A sector must be explored to unlock the next map",
+    "message": "Overlay attaché à l'interface de sélection d'expédition\n\nPropose le prochain secteur à débloquer ou explorer\nVisible si :\n  a) La carte a encore des secteurs à débloquer, ou\n  b) Un secteur doit être exploré pour déverrouiller la prochaine carte",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Unlock Overlay": {
-    "message": "Show Unlock Overlay",
+    "message": "Afficher l'overlay de déblocage",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Unlock Overlay": {
-    "message": "Overlay attached to the voyage selection interface\n\nShows all unlocks that are still open\nVisible if:\n  a) The map has unlocks left",
+    "message": "Overlay attaché à l'interface de sélection d'expédition\n\nMontre tous les secteurs à visiter\nVisible si :\n  a) La carte a encore des secteurs à débloquer",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Route Overlay": {
-    "message": "Show Route Overlay",
+    "message": "Afficher l'overlay d'itinéraire",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Route Overlay": {
-    "message": "Overlay attached to the voyage selection interface.\n\nSuggest the best route to take\nEmpty if:\n  a) Highest Rank threshold has been passed\n  b) MustInclude is empty",
+    "message": "Overlay attaché à l'interface de sélection d'expédition\n\nSuggère la meilleure route à prendre\nVide si :\n  a) La carte a encore des secteurs à débloquer\n  b) Doit Inclure est vide",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Slider - Rank": {
-    "message": "Highest Rank",
+    "message": "Plus haut rang",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Rank": {
-    "message": "No route suggestions above this rank.",
+    "message": "Aucune suggestion d'itinéraire au-dessus de ce rang.",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Include Main": {
-    "message": "Auto Include Main Sector",
+    "message": "Inclure automatiquement le secteur principal",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Include Main": {
-    "message": "Auto includes the next main route sector, if there is one.",
+    "message": "Inclut automatiquement le secteur principal suivant, s'il y en a un.",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Entry - Saved Builds": {
-    "message": "Saved Builds:",
+    "message": "Builds sauvegardées :",
     "description": "ConfigWindow.Builder"
   },
   "Menu - Discord Thread": {
-    "message": "Discord Thread",
+    "message": "Fil de discussion Discord",
+    "description": "ConfigWindow.Draw"
+  },
+  "Menu - Localization": {
+    "message": "Localization",
     "description": "ConfigWindow.Draw"
   },
   "Menu - Issues": {
-    "message": "Issues",
+    "message": "Problèmes",
     "description": "ConfigWindow.Draw"
   },
   "Menu - KoFi": {
-    "message": "Ko-Fi Tip",
+    "message": "Don Ko-Fi",
     "description": "ConfigWindow.Draw"
   },
   "Config Tab - Loot": {
-    "message": "Loot",
+    "message": "Objets trouvés",
     "description": "ConfigWindow.Loot"
   },
   "Config Tab Checkbox - Legacy": {
-    "message": "Exclude Legacy Loot",
+    "message": "Exclure les anciens objets trouvés",
     "description": "ConfigWindow.Loot"
   },
   "Config Tab Entry - Add Items": {
-    "message": "Add Items:",
+    "message": "Ajouter des objets :",
     "description": "ConfigWindow.Loot"
   },
   "Terms - Price": {
-    "message": "Price",
+    "message": "Prix",
     "description": "ConfigWindow.Loot"
   },
   "Terms - Delete": {
-    "message": "Del",
+    "message": "Suppr.",
     "description": "ConfigWindow.Loot"
   },
   "Config Tab - Notify": {
-    "message": "Notify",
+    "message": "Notifs",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Entry - Notifications": {
-    "message": "Notifications:",
+    "message": "Notifications :",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - Returning Sub": {
-    "message": "Returning Sub",
+    "message": "Sous-marin de retour",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - Needed Repair": {
-    "message": "Needed Repair",
+    "message": "Réparation nécessaire",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - Repair Toast": {
-    "message": "Show Repair Toast",
+    "message": "Afficher le toast de réparation",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Entry - Webhook": {
-    "message": "Webhook:",
+    "message": "Webhook :",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - Send Dispatch": {
-    "message": "Send Dispatch",
+    "message": "Envoyer au départ",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Tooltip - Send Dispatch": {
-    "message": "Sends a webhook message on dispatch, containing a timestamp when this submarine will return.",
+    "message": "Envoie un message via webhook lors du départ, contenant un horodatage lorsque ce sous-marin retourne.",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - Send Return": {
-    "message": "Send Return",
+    "message": "Envoyer au retour",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Tooltip - Send Return": {
-    "message": "Sends a webhook message on return.",
+    "message": "Envoie un message via webhook lors du retour.",
     "description": "ConfigWindow.Notify"
   },
   "Terms - URL": {
@@ -648,31 +672,31 @@
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Tooltip - Webhook": {
-    "message": "Click to open discord webhook guide in your browser.",
+    "message": "Cliquez pour ouvrir le guide du webhook discord dans votre navigateur.",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Entry - Submarines": {
-    "message": "Submarines:",
+    "message": "Sous-marins :",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Checkbox - All Returning": {
-    "message": "All Returning Subs",
+    "message": "Tous les sous-marins qui reviennent",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab Entry - Specific Submarines": {
-    "message": "Specific Submarines:",
+    "message": "Sous-marins spécifiques :",
     "description": "ConfigWindow.Notify"
   },
   "Config Tab - Order": {
-    "message": "Order",
+    "message": "Ordre",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
-    "message": "Saved FCs",
+    "message": "CLs sauvegardées",
     "description": "ConfigWindow.Order"
   },
   "Config Tab Tooltip - Saved FCs Deletion": {
-    "message": "Deleting an FC entry will additionally remove all of its loot history.\nHold Control to delete",
+    "message": "Supprimer une entrée de CL supprimera également tout l'historique des objets trouvés.\nMaintenez CTRL pour supprimer",
     "description": "ConfigWindow.Order"
   },
   "Config Tab - Overlay": {
@@ -680,179 +704,179 @@
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Open": {
-    "message": "Open:",
+    "message": "Ouvrir :",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - On Startup": {
-    "message": "On Startup",
+    "message": "Au démarrage",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Tooltip - On Startup": {
-    "message": "Opens the overlay on startup, if at least one sub is done",
+    "message": "Ouvre l'overlay au démarrage, si au moins un sous-marin est de retour",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - On Return": {
-    "message": "On Return",
+    "message": "Au retour",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Tooltip - On Return": {
-    "message": "Always opens the overlay if one submarine returns",
+    "message": "Toujours ouvrir l'overlay si un sous-marin est de retour",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - General": {
-    "message": "General:",
+    "message": "Général :",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Use Character Name": {
-    "message": "Use Character Name",
+    "message": "Utiliser le nom du personnage",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Tooltip - Use Character Name": {
-    "message": "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text.",
+    "message": "Utilisez le nom du personnage au lieu du sigle de CL.\nSachez que cette option peut avoir du texte coupé.",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Show Rank": {
-    "message": "Show Rank",
+    "message": "Afficher le rang",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Show Build": {
-    "message": "Show Build",
+    "message": "Afficher les builds",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - As Date": {
-    "message": "Show As Date",
+    "message": "Afficher en tant que date",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - First Return Time": {
-    "message": "Show First Return Time",
+    "message": "Afficher l'heure de retour la plus proche",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Sort Time Lowest": {
-    "message": "Sort By Lowest Time",
+    "message": "Trier par temps le plus court",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
-    "message": "Reverse Sort",
+    "message": "Tri inversé",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Only Returned": {
-    "message": "Only Show Returned",
+    "message": "Montrer seulement les sous-maris de revenus",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
-    "message": "Window:",
+    "message": "Fenêtre :",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Lock Size": {
-    "message": "Lock Size",
+    "message": "Verrouiller les dimensions",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Lock Position": {
-    "message": "Lock Position",
+    "message": "Verrouiller la position",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - FC Buttons": {
-    "message": "FC Buttons:",
+    "message": "Boutons de CL :",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show All": {
-    "message": "Show 'All' Button",
+    "message": "Afficher le bouton 'Tout'",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Tooltip - Show All": {
-    "message": "Adds an 'All' button for easy overview of all FCs.\nNote: Messy with too many FCs.",
+    "message": "Ajoute un bouton « Tout » pour une vue d'ensemble facile de tous les FC.\nRemarque : peu clair si vous avez trop de CLs.",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Let Me Resize": {
-    "message": "Let Me Resize",
+    "message": "Laissez-moi redimensionner",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Tooltip - Let Me Resize": {
-    "message": "This allows you to resize the FC buttons,\nbut stops them from automatically adjusting size.",
+    "message": "Cela vous permet de redimensionner les boutons de CL,\nmais les empêche de se redimensionner automatiquement.",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Entry - All Button": {
-    "message": "All Button:",
+    "message": "Bouton Tout :",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show Route": {
-    "message": "Show Route",
+    "message": "Afficher la route",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Tooltip - Show Route": {
-    "message": "This option will also revert back to 1 FC in each column, if the window is too small.",
+    "message": "Cette option retournera également à 1 CL dans chaque colonne, si la fenêtre est trop petite.",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show Date": {
-    "message": "Show Date",
+    "message": "Afficher la date",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Entry - Overview": {
-    "message": "Overview:",
+    "message": "Résumé :",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Repair Status": {
-    "message": "Show Repair Status",
+    "message": "Afficher l'état de réparation",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Repair After Voyage": {
-    "message": "Show Repair Status After Voyage Return",
+    "message": "Afficher l'état de réparation après le retour d'expédition",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Return Time": {
-    "message": "Show Return Time",
+    "message": "Afficher l'heure de retour",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Return Date": {
-    "message": "Show Return Date",
+    "message": "Afficher la date de retour",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Time&Date Show Both": {
-    "message": "Show Both Options",
+    "message": "Afficher les deux",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Entry - Detailed View": {
-    "message": "Detailed View:",
+    "message": "Vue détaillée :",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Extended Parts": {
-    "message": "Show Extended Parts List",
+    "message": "Afficher la liste des pièces étendues",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Upload - Information 1": {
-    "message": "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!",
+    "message": "Fournir anonymement des données sur les sous-marins. Ces données ne peuvent être liées à vous d'aucune manière et tout le monde en bénéficiera !",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - What": {
-    "message": "What data?",
+    "message": "Quelles données ?",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - Point 1": {
-    "message": "Loot received",
+    "message": "Objets trouvés reçus",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - Point 2": {
-    "message": "Sector unlocks",
+    "message": "Secteurs débloqués",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - Point 3": {
-    "message": "Exploration procs",
+    "message": "Données de déverouillage",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - Any Uploads": {
-    "message": "Has there been any uploads?",
+    "message": "Y a-t-il eu des téléchargements ?",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - No": {
-    "message": "No",
+    "message": "Non",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - Yes Number": {
-    "message": "Yes, {0} uploads",
+    "message": "Oui, {0} téléchargements",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {
-    "message": "Upload Permission",
+    "message": "Permission de télécharger",
     "description": "ConfigWindow.Upload"
   },
   "Builder Tab - Build": {
@@ -860,43 +884,43 @@
     "description": "BuilderWindow.BuildTab"
   },
   "Terms - Custom": {
-    "message": "Custom",
+    "message": "Personnalisé",
     "description": "BuilderWindow.BuildTab"
   },
   "Builder Build Tab - Automatic Selection": {
-    "message": "Automatic Selection: {0} - Rank {1}",
+    "message": "Sélection automatique : {0} - Rang {1}",
     "description": "BuilderWindow.BuildTab"
   },
   "Builder Build Tooltip - Automatic Selection": {
-    "message": "To disable this behaviour head into the configuration, builder tab and uncheck 'Auto Select'",
+    "message": "Pour désactiver ce comportement, allez dans la configuration, dans l'onglet Build et décochez 'Sélectionner automatiquement...'",
     "description": "BuilderWindow.BuildTab"
   },
   "Builder Tab - Best Exp": {
-    "message": "Best Exp",
+    "message": "Meilleure Exp",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Calculation - Manual Calculation": {
-    "message": "Not calculated ...",
+    "message": "Non calculé...",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Calculation - Calculate": {
-    "message": "Calculate",
+    "message": "Calculer",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Checkbox - No Automatic": {
-    "message": "Disable Automatic Calculation",
+    "message": "Désactiver le calcul automatique",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Checkbox - Ignore Unlocks": {
-    "message": "Ignore Unlocks",
+    "message": "Ignorer les déverrouillages",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Checkbox - Avg Bonus": {
-    "message": "Use Avg Exp Bonus",
+    "message": "Utiliser le bonus d'Exp moyen",
     "description": "BuilderWindow.ExpTab"
   },
   "Best EXP Tooltip - Avg Bonus": {
-    "message": "This calculation takes only guaranteed bonus exp into account.\nWith this option it will instead take the avg of possible exp bonus.",
+    "message": "Ce calcul ne prend en compte que l'Exp bonus garantie.\nAvec cette option, il prendra à la place la moyenne du bonus d'Exp possible.",
     "description": "BuilderWindow.ExpTab"
   },
   "Builder Tab - Info": {
@@ -904,31 +928,31 @@
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - How Calculated": {
-    "message": "How are these breakpoints calculated?",
+    "message": "Comment les breakpoints sont-ils calculés ?",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - How Calculated": {
-    "message": "Distance and duration are fixed calculated values. However all other breakpoints are calculated from community provided data.\nSpecial thanks to Mystic Spirit for all there work.",
+    "message": "La distance et la durée sont des valeurs calculées fixes. Cependant, tous les autres breakpoints sont calculés à partir des données fournies par la communauté.\nUn grand merci à Mystic Spirit pour son travail.",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Best Exp": {
-    "message": "Best Exp?",
+    "message": "Meilleure Exp ?",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - Best Exp": {
-    "message": "This tool will assist you in calculating the optimal route that can be taken to level the current build. These calculations are based on experience gained per minute and the unlocked sectors.",
+    "message": "Cet outil vous aidera à calculer l'itinéraire optimal à suivre pour atteindre le prochain niveau de la build actuelle. Ces calculs sont basés sur l'expérience gagnée par minute et les secteurs débloqués.",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Breakpoints": {
-    "message": "Breakpoints:",
+    "message": "Breakpoints :",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - T2": {
-    "message": "Surveillance required for a chance to get loot from Tier 2",
+    "message": "Exploration nécessaire pour avoir une chance d'obtenir un butin du Tier 2",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - T3": {
-    "message": "Surveillance required for a chance to get loot from Tier 3",
+    "message": "Exploration nécessaire pour avoir une chance d'obtenir un butin du Tier 3",
     "description": "BuilderWindow.InfoTab"
   },
   "Terms - Normal": {
@@ -936,7 +960,7 @@
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - Normal": {
-    "message": "Retrieval required for normal retrieval level",
+    "message": "Prélèvement requis pour le niveau de récupération normal",
     "description": "BuilderWindow.InfoTab"
   },
   "Terms - Optimal": {
@@ -944,223 +968,223 @@
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - Optimal": {
-    "message": "Retrieval required for optimal retrieval level",
+    "message": "Prélèvement requis pour le niveau de récupération optimal",
     "description": "BuilderWindow.InfoTab"
   },
   "Terms - Favor": {
-    "message": "Favor",
+    "message": "Faveur",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Text - Favor": {
-    "message": "Favor required for chance to get two items from a sector",
+    "message": "Faveur requise pour avoir une chance d'obtenir deux articles d'un secteur",
     "description": "BuilderWindow.InfoTab"
   },
   "Colors - White": {
-    "message": "White",
+    "message": "Blanc",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - White Text": {
-    "message": "Nothing selected or no data available",
+    "message": "Aucune sélection ou aucune donnée disponible",
     "description": "BuilderWindow.InfoTab"
   },
   "Colors - Gold": {
-    "message": "Gold",
+    "message": "Or",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Gold Text": {
-    "message": "Requirement exceeded",
+    "message": "Exigences dépassées",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Green Text": {
-    "message": "T3/Optimal/Favor reached",
+    "message": "T3/Optimal/Faveur atteinte",
     "description": "BuilderWindow.InfoTab"
   },
   "Colors - Pink": {
-    "message": "Pink",
+    "message": "Rose",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Pink Text": {
-    "message": "T2/Normal reached, followed by T3/Optimal",
+    "message": "T2/Normal atteint, suivi par T3/Optimal",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab Info - Red Text": {
-    "message": "Requirement not fulfilled, followed by requirement",
+    "message": "Exigence non remplies, suivies de l'exigence",
     "description": "BuilderWindow.InfoTab"
   },
   "Builder Tab - Leveling": {
-    "message": "Leveling",
+    "message": "Gain de niveau",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Target Rank": {
-    "message": "Target Rank",
+    "message": "Rang visé",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Target": {
-    "message": "The rank this calculation must reach, but can overshot.",
+    "message": "Le rang que ce calcul doit atteindre, mais peut dépasser.",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Swap After": {
-    "message": "Swap After",
+    "message": "Changer après",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Swap": {
-    "message": "Swaps parts after X voyages if optimal.",
+    "message": "Change les pièces après X voyages si optimal.",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Progress": {
-    "message": "Progress",
+    "message": "Progrès",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Warning - Slow": {
-    "message": "Warning: This will take a long time and you'll experience game slowdown",
+    "message": "Attention : cela prendra beaucoup de temps et le jeu sera ralenti",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Info - At Rank": {
-    "message": "At Rank",
+    "message": "Au rang",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Info - Progress For": {
-    "message": "Progress for current",
+    "message": "Progrès pour actuel",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Info - Elapsed Total": {
-    "message": "Time elapsed",
+    "message": "Temps écoulé",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Info - Elapsed Current": {
-    "message": "Time elapsed current calculation",
+    "message": "Temps écoulé du calcul actuel",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Button - Calculate": {
-    "message": "Calculate",
+    "message": "Calculer",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Button - Stop Calculate": {
-    "message": "Stop Calculation",
+    "message": "Arrêter le calcul",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Build": {
-    "message": "Ignore Build",
+    "message": "Ignorer la build",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Ignore Build": {
-    "message": "This will calculate every single possible build\nWarning: This will take a long time and you'll experience game slowdown",
+    "message": "Ceci calculera chaque build possible\nAttention : cela prendra beaucoup de temps et le jeu sera ralenti",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Unlocks": {
-    "message": "Ignore Unlocks",
+    "message": "Ignorer les déverrouillages",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Avg Exp": {
-    "message": "Use Avg Exp Bonus",
+    "message": "Utiliser le bonus d'Exp moyen",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Avg Exp": {
-    "message": "This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus",
+    "message": "Ce calcul ne prend normalement en compte que le bonus de prélèvement garanti.\nAvec cette option, il prendra la moyenne du bonus possible",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Experimental": {
-    "message": "- Experimental -",
+    "message": "- Expérimental -",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Shark": {
-    "message": "Ignore Shark Parts",
+    "message": "Ignorer les pièces Requin",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Ignore Shark": {
-    "message": "Leveling expects that a shark part exists, so it takes that as prior over worse parts\nThis option disables the behaviour\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop.\ne.g SSUW must be Rank higher or equal to 25\nImportant: This can lead to errors",
+    "message": "Le gain de niveau s'attend à ce qu'une partie Requin existe, il la prend donc en priorité par rapport aux parties plus mauvaises.\nCette option désactive ce comportement\nNOTE : Votre sous-marin doit avoir le rang de la pièce au rang le plus élevé, ou bien cela tournera à l'infini.\nPar exemple, SSUW doit avoir un rang supérieur ou égal à 25.\nImportant : cela peut entraîner des erreurs",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Unmodified": {
-    "message": "Ignore Unmodified Parts",
+    "message": "Ignorer les pièces non modifiées",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Ignore Unmodified": {
-    "message": "Leveling expects that an unmodified part exists, so it takes that as prior over modded\nThis option disables the behaviour\nImportant: This can lead to errors",
+    "message": "Le gain de niveau s'attend à ce qu'une pièce non modifiée existe, il la considère donc comme prioritaire par rapport à une pièce modifié.\nCette option désactive ce comportement\nImportant : cela peut entraîner des erreurs",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Allowed Sectors": {
-    "message": "Allowed Sectors",
+    "message": "Secteurs autorisés",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Result - Last": {
-    "message": "Last Calculation:",
+    "message": "Dernier calcul :",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Result - List": {
-    "message": "List:",
+    "message": "Liste :",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Window Button - Reset": {
-    "message": "Reset",
+    "message": "Réinitialiser",
     "description": "BuilderWindow.Draw"
   },
   "Builder Window Button - Save": {
-    "message": "Save",
+    "message": "Sauvegarder",
     "description": "BuilderWindow.Draw"
   },
   "Builder Window Button - Load": {
-    "message": "Load",
+    "message": "Charger",
     "description": "BuilderWindow.Draw"
   },
   "Terms - Name": {
-    "message": "Name",
+    "message": "Nom",
     "description": "BuilderWindow.SaveBuild"
   },
   "Builder Window Button - Save Build": {
-    "message": "Save Build",
+    "message": "Enregistrer la build",
     "description": "BuilderWindow.SaveBuild"
   },
   "Builder Window Error - Same Name": {
-    "message": "Build with same name exists already.",
+    "message": "Une build avec le même nom existe déjà.",
     "description": "BuilderWindow.SaveBuild"
   },
   "Builder Window Tooltip - Overwrite": {
-    "message": "Hold Control to overwrite",
+    "message": "Maintenir Ctrl pour écraser",
     "description": "BuilderWindow.SaveBuild"
   },
   "Builder Window Tip - Loading": {
-    "message": "Load by clicking",
+    "message": "Charger en cliquant",
     "description": "BuilderWindow.LoadBuild"
   },
   "Builder Tab - Route": {
-    "message": "Route",
+    "message": "Itinéraire",
     "description": "BuilderWindow.RouteTab"
   },
   "Terms - Sectors": {
-    "message": "Sectors",
+    "message": "Secteurs",
     "description": "BuilderWindow.RouteTab"
   },
   "Builder Tab Route - Selection": {
-    "message": "Select sector by clicking",
+    "message": "Sélectionner le secteur en cliquant",
     "description": "BuilderWindow.RouteTab"
   },
   "Terms - Unlocked By": {
-    "message": "Unlocked By",
+    "message": "Déverrouillé par",
     "description": "BuilderWindow.UnlockedTooltip"
   },
   "Builder Window Tooltip - Unlocks Slot": {
-    "message": "#Extra Sub Slot",
+    "message": "#Nouvel emplacement de sous-marin",
     "description": "BuilderWindow.UnlockedTooltip"
   },
   "Builder Window Tooltip - Always Unlocked": {
-    "message": "Always Unlocked",
+    "message": "Toujours déverrouillé",
     "description": "BuilderWindow.UnlockedTooltip"
   },
   "Terms - Unknown": {
-    "message": "Unknown",
+    "message": "Inconnu",
     "description": "BuilderWindow.UnlockedTooltip"
   },
   "Builder Tab - Ship": {
-    "message": "Ship",
+    "message": "Bâteau",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Checkbox - Ignore Breakpoints": {
-    "message": "Ignore Breakpoints",
+    "message": "Ignorer les breakpoints",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Header - Route": {
-    "message": "Selected Route:",
+    "message": "Itinéraire sélectionné :",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Stats": {
@@ -1168,15 +1192,15 @@
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Surveillance": {
-    "message": "Surveillance",
+    "message": "Exploration",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Retrieval": {
-    "message": "Retrieval",
+    "message": "Prélèvement",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Speed": {
-    "message": "Speed",
+    "message": "Vitesse",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Breakpoints": {
@@ -1184,67 +1208,67 @@
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Checkbox - T2": {
-    "message": "Use T2",
+    "message": "Utiliser T2",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Checkbox - Normal": {
-    "message": "Use Normal",
+    "message": "Utiliser Normal",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Checkbox - Favor": {
-    "message": "Ignore Favor",
+    "message": "Ignorer la Faveur",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Checkbox - Modded": {
-    "message": "No Modified Parts",
+    "message": "Aucune pièce modifiée",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Calculation - Nothing Found": {
-    "message": "No build found.",
+    "message": "Aucune build trouvée.",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Cost": {
-    "message": "Cost",
+    "message": "Coût",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Hull": {
-    "message": "Hull",
+    "message": "Coque",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Stern": {
-    "message": "Stern",
+    "message": "Poupe",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Bow": {
-    "message": "Bow",
+    "message": "Proue",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Bridge": {
-    "message": "Bridge",
+    "message": "Pont",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Range": {
-    "message": "Range",
+    "message": "Distance",
     "description": "BuilderWindow.ShipTab"
   },
   "Terms - Duration": {
-    "message": "Duration",
+    "message": "Durée",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Ship Table - Select": {
-    "message": "Select this build",
+    "message": "Sélectionner cette build",
     "description": "BuilderWindow.ShipTab"
   },
   "Builder Stats Category - Build": {
-    "message": "Selected Build:",
+    "message": "Build sélectionnée :",
     "description": "BuilderWindow.BuildStats"
   },
   "Builder Stats Category - Route": {
-    "message": "Optimized Route:",
+    "message": "Route optimisée :",
     "description": "BuilderWindow.BuildStats"
   },
   "Terms - Fuel": {
-    "message": "Fuel",
+    "message": "Carburant",
     "description": "BuilderWindow.BuildStats"
   },
   "Terms - ExpEachMin": {
@@ -1252,67 +1276,67 @@
     "description": "BuilderWindow.BuildStats"
   },
   "Builder Stats Text - RepairAfter": {
-    "message": "{0} after {1} voyages",
+    "message": "{0} après {1} voyages",
     "description": "BuilderWindow.BuildStats"
   },
   "Builder Stats Route - No Selection": {
-    "message": "No Selection",
+    "message": "Aucune sélection",
     "description": "BuilderWindow.SelectedRoute"
   },
   "Builder Leveling Result - Limit": {
-    "message": "Limit:",
+    "message": "Limite :",
     "description": "BuilderWindow.<LevelingTab>b__43_6"
   },
   "Builder Leveling Result - Avg": {
-    "message": "Avg Bonus:",
+    "message": "Bonus moyen :",
     "description": "BuilderWindow.<LevelingTab>b__43_6"
   },
   "Builder Leveling Result - Build": {
-    "message": "Ignore Build:",
+    "message": "Ignorer la build :",
     "description": "BuilderWindow.<LevelingTab>b__43_6"
   },
   "Builder Leveling Result - Unlocks": {
-    "message": "Ignore Unlocks:",
+    "message": "Ignorer les déverrouillages :",
     "description": "BuilderWindow.<LevelingTab>b__43_6"
   },
   "Builder Leveling Result - Maximize": {
-    "message": "Maximize Limit:",
+    "message": "Maximiser la limite :",
     "description": "BuilderWindow.<LevelingTab>b__43_6"
   },
   "Builder Leveling Step - Build": {
-    "message": "Build:",
+    "message": "Build :",
     "description": "BuilderWindow.<LevelingTab>b__43_7"
   },
   "Builder Leveling Step - Voyage": {
-    "message": "Voyage {0}:",
+    "message": "Voyage {0} :",
     "description": "BuilderWindow.<LevelingTab>b__43_7"
   },
   "Builder Leveling Step - Gained": {
-    "message": "Exp Gained:",
+    "message": "Exp gagnée :",
     "description": "BuilderWindow.<LevelingTab>b__43_7"
   },
   "Builder Leveling Step - Reached": {
-    "message": "Rank Reached:",
+    "message": "Rang atteint :",
     "description": "BuilderWindow.<LevelingTab>b__43_7"
   },
   "Builder Leveling Result - Start": {
-    "message": "Start Rank:",
+    "message": "Rang de départ :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
   },
   "Builder Leveling Result - Final": {
-    "message": "Final Rank:",
+    "message": "Rang final :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
   },
   "Builder Leveling Result - Voyages": {
-    "message": "Voyages:",
+    "message": "Expéditions :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
   },
   "Builder Leveling Result - Total": {
-    "message": "Exp Total:",
+    "message": "Total d'Exp :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
   },
   "Builder Leveling Result - Leftover": {
-    "message": "Leftover Exp:",
+    "message": "Exp restante :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
   }
 }

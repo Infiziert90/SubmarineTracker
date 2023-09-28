@@ -70,6 +70,13 @@ public partial class ConfigWindow : Window, IDisposable
 
                 ImGui.SameLine();
 
+                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
+                if (ImGui.Button(Loc.Localize("Menu - Localization", "Localization")))
+                    Plugin.LocHelp();
+                ImGui.PopStyleColor();
+
+                ImGui.SameLine();
+
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
                 if (ImGui.Button(Loc.Localize("Menu - Issues", "Issues")))
                     Plugin.IssuePage();

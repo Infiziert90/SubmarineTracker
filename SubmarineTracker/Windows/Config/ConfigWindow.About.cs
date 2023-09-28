@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
 
 using static SubmarineTracker.Data.Submarines;
@@ -28,6 +29,12 @@ public partial class ConfigWindow
         ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Version", "Version:"));
         ImGui.SameLine();
         ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.Version);
+
+        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Localization", "Localization:"));
+        ImGui.SameLine();
+        ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Config About Translation - Community", "Community"));
+        ImGui.SameLine();
+        ImGuiComponents.HelpMarker(Loc.Localize("Config About Translation - Tooltip", "All localizations are done by the community.\nIf you want to help improve them, please visit Crowdin"));
 
         #if DEBUG
         ImGuiHelpers.ScaledDummy(10.0f);
