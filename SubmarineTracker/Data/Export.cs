@@ -224,9 +224,7 @@ public static class Export
         try
         {
             await Client.InitializeAsync();
-            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions {
-                Returning = QueryOptions.ReturnType.Minimal
-            });
+            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
 
             PluginLog.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
             PluginLog.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");

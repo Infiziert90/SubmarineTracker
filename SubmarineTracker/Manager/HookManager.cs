@@ -35,22 +35,30 @@ public class HookManager
         if (param1 != 721343)
             return;
 
-        var instance = HousingManager.Instance();
-        if (instance == null || instance->WorkshopTerritory == null)
-            return;
-
-        var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
-        if (current.Value == null)
-            return;
-
-        var sub = current.Value;
-        var fc = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
-        if (!Plugin.SubmarinePreVoyage.TryGetValue(sub->RegisterTime, out var cachedStats))
+        try
         {
-            PluginLog.Warning("No cached submarine found");
-            return;
-        }
+            var instance = HousingManager.Instance();
+            if (instance == null || instance->WorkshopTerritory == null)
+                return;
 
-        fc.AddSubLoot(sub->RegisterTime, cachedStats.Return, cachedStats.Build, sub->GatheredDataSpan);
+            var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
+            if (current.Value == null)
+                return;
+
+            var sub = current.Value;
+            var fc = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+            if (!Plugin.SubmarinePreVoyage.TryGetValue(sub->RegisterTime, out var cachedStats))
+            {
+                PluginLog.Warning("No cached submarine found");
+                return;
+            }
+
+            fc.AddSubLoot(sub->RegisterTime, cachedStats.Return, cachedStats.Build, sub->GatheredDataSpan);
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error(e.Message);
+            PluginLog.Error(e.StackTrace ?? "Unknown");
+        }
     }
 }
