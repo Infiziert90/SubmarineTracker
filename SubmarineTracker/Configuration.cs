@@ -1,5 +1,6 @@
 using System.IO;
 using Dalamud.Configuration;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -99,11 +100,19 @@ namespace SubmarineTracker
 
         internal static void WriteAllTextSafe(string path, string text)
         {
-            var str = path + ".tmp";
-            if (File.Exists(str))
-                File.Delete(str);
-            File.WriteAllText(str, text);
-            File.Move(str, path, true);
+            try
+            {
+                var str = path + ".tmp";
+                if (File.Exists(str))
+                    File.Delete(str);
+                File.WriteAllText(str, text);
+                File.Move(str, path, true);
+            }
+            catch (Exception e)
+            {
+                PluginLog.Error(e.Message);
+                PluginLog.Error(e.StackTrace ?? "Unknown");
+            }
         }
     }
 }

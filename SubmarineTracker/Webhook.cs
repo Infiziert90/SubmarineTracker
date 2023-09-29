@@ -34,14 +34,14 @@ public static class Webhook
                 var response = await Client.PostAsync(Configuration.WebhookUrl,new StringContent(JsonConvert.SerializeObject(webhookContent), Encoding.UTF8, "application/json"));
                 if (!response.IsSuccessStatusCode)
                 {
-                    PluginLog.Error(response.StatusCode.ToString());
-                    PluginLog.Error(response.Content.ReadAsStringAsync().Result);
+                    PluginLog.Warning(response.StatusCode.ToString());
+                    PluginLog.Warning(response.Content.ReadAsStringAsync().Result);
                 }
             }
             catch (Exception e)
             {
-                PluginLog.Error("Webhook post failed");
-                PluginLog.Error(e.Message);
+                PluginLog.Warning("Webhook post failed");
+                PluginLog.Warning(e.Message);
             }
         });
     }
