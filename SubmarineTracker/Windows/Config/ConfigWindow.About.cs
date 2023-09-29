@@ -11,6 +11,11 @@ public partial class ConfigWindow
     private static readonly Submarine TestSub = new() { Name = "Apollo 11", ReturnTime = new DateTime(1969, 7, 21, 3, 15, 16) };
     private static readonly FcSubmarines TestFC = new() { CharacterName = "Buzz Aldrin", World = "Moon" };
 
+    private string InputPath = string.Empty;
+    private Dictionary<string, Export.Loot> LootDict = new();
+    private ulong Worth = 0;
+
+
     private bool About()
     {
         if (!ImGui.BeginTabItem($"{Loc.Localize("Config Tab - About", "About")}##About"))
@@ -65,6 +70,50 @@ public partial class ConfigWindow
             Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
             Loc.ExportLocalizable();
             Directory.SetCurrentDirectory(pwd);
+        }
+
+        ImGui.TextColored(ImGuiColors.DalamudViolet, "Input Folder:");
+        ImGui.InputText("##InputPath", ref InputPath, 255);
+        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
+            ImGui.OpenPopup("InputPathDialog");
+
+        if (ImGui.BeginPopup("InputPathDialog"))
+        {
+            Plugin.FileDialogManager.OpenFolderDialog(
+                "Pick a folder",
+                (b, s) => { if (b) InputPath = s; },
+                null,
+                true);
+
+            ImGui.EndPopup();
+        }
+
+        if (ImGui.Button("Import Data"))
+        {
+            Task.Run(() =>
+            {
+                LootDict = Export.Import(InputPath);
+
+                foreach (var loot in LootDict.Values)
+                {
+                    var price = ItemSheet.GetRow(loot.Primary)!.PriceLow;
+                    Worth += price * loot.PrimaryCount;
+
+                    if (loot.Additional > 0)
+                    {
+                        price = ItemSheet.GetRow(loot.Additional)!.PriceLow;
+                        Worth += price * loot.AdditionalCount;
+                    }
+                }
+            });
+
+        }
+
+        if (LootDict.Any())
+        {
+            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Voyages Total: {LootDict.Count:N0}");
+            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Worth: {Worth:N0} Gil");
         }
         ImGui.Unindent(10.0f);
         #endif

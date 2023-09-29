@@ -84,11 +84,11 @@
     "description": "Helper.Initialize"
   },
   "Menu Entry - Localization": {
-    "message": "Localization",
+    "message": "Traduction",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Localization": {
-    "message": "Open the crowdin page in your browser",
+    "message": "Ouvrir la page Crowdin dans votre navigateur",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Issues": {
@@ -516,15 +516,15 @@
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Localization": {
-    "message": "Localization:",
+    "message": "Traduction :",
     "description": "ConfigWindow.About"
   },
   "Config About Translation - Community": {
-    "message": "Community",
+    "message": "Communauté",
     "description": "ConfigWindow.About"
   },
   "Config About Translation - Tooltip": {
-    "message": "All localizations are done by the community.\nIf you want to help improve them, please visit Crowdin",
+    "message": "Toutes les traductions sont faites par la communauté.\nSi vous voulez aider à les améliorer, veuillez visiter Crowdin",
     "description": "ConfigWindow.About"
   },
   "Builder Tab - Builder": {
@@ -596,7 +596,7 @@
     "description": "ConfigWindow.Draw"
   },
   "Menu - Localization": {
-    "message": "Localization",
+    "message": "Traduction",
     "description": "ConfigWindow.Draw"
   },
   "Menu - Issues": {

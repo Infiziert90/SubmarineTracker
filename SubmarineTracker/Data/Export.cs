@@ -22,6 +22,7 @@ public static class Export
 
     private static readonly Supabase.Client Client;
     private static readonly CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+    private static readonly CsvConfiguration CsvReadConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = true };
 
     static Export()
     {
@@ -108,7 +109,7 @@ public static class Export
 
     public sealed class ExportLootMap : ClassMap<Loot>
     {
-        public ExportLootMap(bool ignoreDate, bool ignoreHash)
+        public ExportLootMap(bool ignoreDate = false, bool ignoreHash = false)
         {
             Map(m => m.Sector).Index(0).Name("Sector");
             Map(m => m.Primary).Index(1).Name("Primary");
@@ -161,10 +162,38 @@ public static class Export
         }
         catch (Exception e)
         {
+            PluginLog.Error(e.Message);
             PluginLog.Error(e.StackTrace ?? "No Stacktrace");
-            Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
 
             return string.Empty;
+        }
+    }
+
+    // For internal debug only
+    public static Dictionary<string, Loot> Import(string inputPath)
+    {
+        try
+        {
+            var dict = new Dictionary<string, Loot>();
+            foreach (var file in new FileInfo(inputPath).Directory!.EnumerateFiles())
+            {
+                PluginLog.Information(file.Name);
+                using var reader = file.OpenText();
+                using var csv = new CsvReader(reader, CsvReadConfig);
+
+                csv.Context.RegisterClassMap(new ExportLootMap(true));
+                foreach (var loot in csv.GetRecords<Loot>())
+                    dict.TryAdd(loot.Hash, loot);
+            }
+
+            return dict;
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error(e.Message);
+            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+
+            return new Dictionary<string, Loot>();
         }
     }
 
