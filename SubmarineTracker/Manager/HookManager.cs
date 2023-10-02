@@ -1,5 +1,4 @@
 ﻿using Dalamud.Hooking;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 
@@ -7,18 +6,18 @@ namespace SubmarineTracker.Manager;
 
 public class HookManager
 {
-    private Plugin Plugin;
+    private readonly Plugin Plugin;
 
     private const string PacketReceiverSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 43 ?? 4C 8D 4B 17";
     private delegate void PacketDelegate(uint param1, ushort param2, sbyte param3, Int64 param4, char param5);
-    private Hook<PacketDelegate> PacketHandlerHook;
+    private readonly Hook<PacketDelegate> PacketHandlerHook;
 
     public HookManager(Plugin plugin)
     {
         Plugin = plugin;
 
         var packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
-        PacketHandlerHook = Hook<PacketDelegate>.FromAddress(packetReceiverPtr, PacketReceiver);
+        PacketHandlerHook = Plugin.Hook.HookFromAddress<PacketDelegate>(packetReceiverPtr, PacketReceiver);
         PacketHandlerHook.Enable();
     }
 
@@ -49,7 +48,7 @@ public class HookManager
             var fc = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
             if (!Plugin.SubmarinePreVoyage.TryGetValue(sub->RegisterTime, out var cachedStats))
             {
-                PluginLog.Warning("No cached submarine found");
+                Plugin.Log.Warning("No cached submarine found");
                 return;
             }
 
@@ -57,8 +56,8 @@ public class HookManager
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace ?? "Unknown");
+            Plugin.Log.Error(e.Message);
+            Plugin.Log.Error(e.StackTrace ?? "Unknown");
         }
     }
 }

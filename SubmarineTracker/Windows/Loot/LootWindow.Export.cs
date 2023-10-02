@@ -1,6 +1,6 @@
 ﻿using System.IO;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
 using Dalamud.Utility;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Loot;
@@ -180,7 +180,7 @@ public partial class LootWindow
             }
             catch (Exception e)
             {
-                PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+                Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
                 Plugin.ChatGui.Print(Utils.ErrorMessage($"{e.Message}. For further information /xllog."));
             }
         }

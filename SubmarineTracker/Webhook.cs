@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Dalamud.Logging;
 using Newtonsoft.Json;
 
 namespace SubmarineTracker;
@@ -34,14 +33,14 @@ public static class Webhook
                 var response = await Client.PostAsync(Configuration.WebhookUrl,new StringContent(JsonConvert.SerializeObject(webhookContent), Encoding.UTF8, "application/json"));
                 if (!response.IsSuccessStatusCode)
                 {
-                    PluginLog.Warning(response.StatusCode.ToString());
-                    PluginLog.Warning(response.Content.ReadAsStringAsync().Result);
+                    Plugin.Log.Warning(response.StatusCode.ToString());
+                    Plugin.Log.Warning(response.Content.ReadAsStringAsync().Result);
                 }
             }
             catch (Exception e)
             {
-                PluginLog.Warning("Webhook post failed");
-                PluginLog.Warning(e.Message);
+                Plugin.Log.Warning("Webhook post failed");
+                Plugin.Log.Warning(e.Message);
             }
         });
     }

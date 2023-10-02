@@ -1,8 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface.Internal.Notifications;
-using Dalamud.Logging;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
 
@@ -11,18 +12,24 @@ namespace SubmarineTracker;
 // Based on: https://github.com/Penumbra-Sync/client/blob/main/MareSynchronos/MareConfiguration/ConfigurationServiceBase.cs
 public class ConfigurationBase : IDisposable
 {
-    private readonly Plugin Plugin;
+    private record SaveObject(ulong ContentId, string FilePath, CharacterConfiguration Character);
+
     private readonly CancellationTokenSource CancellationToken = new();
-    private readonly Dictionary<ulong, DateTime> LastWriteTimes = new();
+    private readonly ConcurrentDictionary<ulong, DateTime> LastWriteTimes = new();
+    private readonly ConcurrentQueue<SaveObject> SaveQueue = new();
+
 
     public string ConfigurationDirectory { get; init; }
+    private string MiscFolder { get; init; }
 
-    public ConfigurationBase(Plugin plugin)
+    public ConfigurationBase()
     {
-        Plugin = plugin;
         ConfigurationDirectory = Plugin.PluginInterface.ConfigDirectory.FullName;
+        MiscFolder = Path.Combine(ConfigurationDirectory, "Misc");
+        Directory.CreateDirectory(MiscFolder);
 
         Task.Run(CheckForConfigChanges, CancellationToken.Token);
+        Task.Run(SaveAndTryMoveConfig, CancellationToken.Token);
     }
 
     public void Dispose()
@@ -32,22 +39,7 @@ public class ConfigurationBase : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void Load()
-    {
-        foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
-        {
-            if (ulong.TryParse(Path.GetFileNameWithoutExtension(file.Name), out var id))
-            {
-                var fc = new Submarines.FcSubmarines(LoadConfig(id));
-
-                fc.Refresh = true;
-                Submarines.KnownSubmarines[id] = fc;
-            }
-
-        }
-    }
-
-    private static string LoadFile(FileSystemInfo fileInfo)
+    private string LoadFile(FileSystemInfo fileInfo)
     {
         for (var i = 0; i < 5; i++)
         {
@@ -58,14 +50,21 @@ public class ConfigurationBase : IDisposable
             }
             catch
             {
-                // Try to read until counter runs out
-                var content = $"Config file read failed {i + 1}/5";
-                Plugin.PluginInterface.UiBuilder.AddNotification(content, "Failed Read", NotificationType.Warning);
-                PluginLog.Warning(content);
+                if (i == 4)
+                    Plugin.PluginInterface.UiBuilder.AddNotification("Failed to read config", "[Submarine Tracker]", NotificationType.Warning);
+
+                Plugin.Log.Warning($"Config file read failed {i + 1}/5");
             }
         }
 
         return string.Empty;
+    }
+
+    public void Load()
+    {
+        foreach (var file in Plugin.PluginInterface.ConfigDirectory.EnumerateFiles())
+            if (ulong.TryParse(Path.GetFileNameWithoutExtension(file.Name), out var id))
+                Submarines.KnownSubmarines[id] = new Submarines.FcSubmarines(LoadConfig(id)) { Refresh = true };
     }
 
     public CharacterConfiguration LoadConfig(ulong contentId)
@@ -78,7 +77,7 @@ public class ConfigurationBase : IDisposable
         }
         catch (Exception e)
         {
-            PluginLog.Warning(e, $"Exception Occured during loading Character {contentId}. Loading new default config instead.");
+            Plugin.Log.Warning(e, $"Exception Occured during loading Character {contentId}. Loading new default config instead.");
             config = CharacterConfiguration.CreateNew();
         }
 
@@ -95,64 +94,40 @@ public class ConfigurationBase : IDisposable
         if (contentId == 0)
             return;
 
-        if (!Submarines.KnownSubmarines.TryGetValue(contentId, out var savedConfig))
+        if (!Submarines.KnownSubmarines.TryGetValue(contentId, out var fc))
             return;
 
-        var miscFolder = Path.Combine(ConfigurationDirectory, "Misc");
-        Directory.CreateDirectory(miscFolder);
+        Save(contentId, new CharacterConfiguration(contentId, fc));
+    }
 
+    public void SaveAll()
+    {
+        // This saves all characters, only allow calls if only 1 process is running
+        if (Process.GetProcessesByName("ffxiv_dx11").Length > 1)
+            return;
+
+        foreach (var (contentId, fc) in Submarines.KnownSubmarines)
+            Save(contentId, new CharacterConfiguration(contentId, fc));
+    }
+
+    private void Save(ulong contentId, CharacterConfiguration savedConfig)
+    {
         var filePath = Path.Combine(ConfigurationDirectory, $"{contentId}.json");
-        var existingConfigs = Directory.EnumerateFiles(miscFolder, $"{contentId}.json.bak.*")
-                                       .Select(c => new FileInfo(c)).OrderByDescending(c => c.LastWriteTime).ToList();
-        if (existingConfigs.Skip(5).Any())
-            foreach (var file in existingConfigs.Skip(5).ToList())
-                file.Delete();
-
         try
         {
-            File.Copy(filePath, $"{Path.Combine(miscFolder, $"{contentId}.json")}.bak.{DateTime.Now:yyyyMMddHH}", overwrite: true);
+            var existingConfigs = Directory.EnumerateFiles(MiscFolder, $"{contentId}.json.bak.*")
+                                           .Select(c => new FileInfo(c)).OrderByDescending(c => c.LastWriteTime);
+            foreach (var file in existingConfigs.Skip(5))
+                file.Delete();
+
+            File.Copy(filePath, $"{Path.Combine(MiscFolder, $"{contentId}.json")}.bak.{DateTime.Now:yyyyMMddHH}", overwrite: true);
         }
         catch
         {
             // ignore if file backup couldn't be created once
         }
 
-        Task.Run(() => SaveAndTryMoveConfig(contentId, miscFolder, filePath, new CharacterConfiguration(contentId, savedConfig)));
-    }
-
-    public async Task SaveAndTryMoveConfig(ulong contentId, string miscFolder, string filePath, CharacterConfiguration savedConfig)
-    {
-        try
-        {
-            var tmpPath = $"{Path.Combine(miscFolder, $"{contentId}.json.tmp")}";
-            if (File.Exists(tmpPath))
-                File.Delete(tmpPath);
-
-            File.WriteAllText(tmpPath, JsonConvert.SerializeObject(savedConfig, Formatting.Indented));
-
-            for (var i = 0; i < 5; i++)
-            {
-                try
-                {
-                    File.Move(tmpPath, filePath, true);
-                    LastWriteTimes[contentId] = new FileInfo(filePath).LastWriteTimeUtc;
-                    return;
-                }
-                catch
-                {
-                    // Just try again until counter runs out
-                    var content = $"Config file couldn't be moved {i + 1}/5";
-                    Plugin.PluginInterface.UiBuilder.AddNotification(content, "Failed Move", NotificationType.Warning);
-                    PluginLog.Warning(content);
-                    await Task.Delay(50, CancellationToken.Token);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace!);
-        }
+        SaveQueue.Enqueue(new SaveObject(contentId, filePath, savedConfig));
     }
 
     public void DeleteCharacter(ulong id)
@@ -162,16 +137,59 @@ public class ConfigurationBase : IDisposable
 
         try
         {
-            LastWriteTimes.Remove(id);
-            Submarines.KnownSubmarines.Remove(id);
+            LastWriteTimes.TryRemove(id, out _);
+            Submarines.KnownSubmarines.Remove(id, out _);
             var file = new FileInfo(Path.Combine(ConfigurationDirectory, $"{id}.json"));
             if (file.Exists)
                 file.Delete();
         }
         catch (Exception e)
         {
-            PluginLog.Error("Error while deleting character save file.");
-            PluginLog.Error(e.Message);
+            Plugin.Log.Error("Error while deleting character save file.");
+            Plugin.Log.Error(e.Message);
+        }
+    }
+
+    private async Task SaveAndTryMoveConfig()
+    {
+        while (!CancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(100), CancellationToken.Token);
+
+            if (!SaveQueue.TryDequeue(out var queueObject))
+                continue;
+
+            try
+            {
+                var tmpPath = $"{Path.Combine(MiscFolder, $"{queueObject.ContentId}.json.tmp")}";
+                if (File.Exists(tmpPath))
+                    File.Delete(tmpPath);
+
+                File.WriteAllText(tmpPath, JsonConvert.SerializeObject(queueObject.Character, Formatting.Indented));
+                for (var i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        File.Move(tmpPath, queueObject.FilePath, true);
+                        LastWriteTimes[queueObject.ContentId] = new FileInfo(queueObject.FilePath).LastWriteTimeUtc;
+                        break;
+                    }
+                    catch
+                    {
+                        // Just try again until counter runs out
+                        if (i == 4)
+                            Plugin.PluginInterface.UiBuilder.AddNotification("Failed to move config", "[Submarine Tracker]", NotificationType.Warning);
+
+                        Plugin.Log.Warning($"Config file couldn't be moved {i + 1}/5");
+                        await Task.Delay(30, CancellationToken.Token);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Error(e.Message);
+                Plugin.Log.Error(e.StackTrace ?? "Null Stacktrace");
+            }
         }
     }
 

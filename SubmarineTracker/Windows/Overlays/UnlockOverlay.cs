@@ -1,5 +1,4 @@
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel;
 using SubmarineTracker.Data;
@@ -17,7 +16,7 @@ public class UnlockOverlay : Window, IDisposable
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = new();
 
-    public UnlockOverlay(Plugin plugin, Configuration configuration) : base("Unlock Overlay")
+    public UnlockOverlay(Plugin plugin, Configuration configuration) : base("Unlock Overlay###SubmarineTracker")
     {
         Size = OriginalSize;
 

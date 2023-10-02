@@ -1,15 +1,11 @@
 using System.Reflection;
 using System.Threading.Tasks;
-using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Gui.Toast;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
@@ -28,19 +24,20 @@ namespace SubmarineTracker
 {
     public class Plugin : IDalamudPlugin
     {
-        [PluginService] public static DataManager Data { get; private set; } = null!;
-        [PluginService] public static Framework Framework { get; private set; } = null!;
-        [PluginService] public static CommandManager Commands { get; private set; } = null!;
+        [PluginService] public static IDataManager Data { get; private set; } = null!;
+        [PluginService] public static IFramework Framework { get; private set; } = null!;
+        [PluginService] public static ICommandManager Commands { get; private set; } = null!;
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-        [PluginService] public static ClientState ClientState { get; private set; } = null!;
-        [PluginService] public static ChatGui ChatGui { get; private set; } = null!;
-        [PluginService] public static ToastGui ToastGui { get; private set; } = null!;
-        [PluginService] public static GameGui GameGui { get; private set; } = null!;
-        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static IClientState ClientState { get; private set; } = null!;
+        [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
+        [PluginService] public static IToastGui ToastGui { get; private set; } = null!;
+        [PluginService] public static IGameGui GameGui { get; private set; } = null!;
+        [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
+        [PluginService] public static ITextureProvider Texture { get; private set; } = null!;
+        [PluginService] public static IPluginLog Log { get; private set; } = null!;
 
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
-
-        public string Name => "Submarine Tracker";
 
         public Configuration Configuration { get; init; }
         public WindowSystem WindowSystem = new("Submarine Tracker");
@@ -78,10 +75,8 @@ namespace SubmarineTracker
 
         public Plugin()
         {
-            ConfigurationBase = new ConfigurationBase(this);
-
+            ConfigurationBase = new ConfigurationBase();
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Initialize(PluginInterface);
 
             FileDialogManager = new FileDialogManager();
 
@@ -91,7 +86,6 @@ namespace SubmarineTracker
             Build.Initialize();
             Voyage.Initialize(this);
             Submarines.Initialize();
-            TexturesCache.Initialize();
             ImportantItemsMethods.Initialize();
 
             Webhook.Init(Configuration);
@@ -159,9 +153,7 @@ namespace SubmarineTracker
             PluginInterface.LanguageChanged -= Localization.SetupWithLangCode;
 
             CommandManager.Dispose();
-
             HookManager.Dispose();
-            TexturesCache.Instance?.Dispose();
 
             if (full)
             {
@@ -215,11 +207,8 @@ namespace SubmarineTracker
             Configuration.Save();
         }
 
-        public unsafe void FrameworkUpdate(Framework _)
+        public unsafe void FrameworkUpdate(IFramework _)
         {
-            // Check if we have an upload trigger
-            Upload();
-
             var instance = HousingManager.Instance();
             if (instance == null || instance->WorkshopTerritory == null)
             {
@@ -354,34 +343,6 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public void Upload()
-        {
-            // Check that we have permissions and a upload trigger is set
-            if (Configuration is { UploadPermission: true, TriggerUpload: true })
-            {
-                // Check that the user had enough time to opt out after notification
-                if (Configuration.UploadNotificationReceived > DateTime.Now)
-                    return;
-
-                Configuration.TriggerUpload = false;
-                Configuration.UploadCounter += 1;
-                Configuration.Save();
-
-                Task.Run(() =>
-                {
-                    var fcLootList = Submarines.KnownSubmarines
-                                               .Select(kv => kv.Value.SubLoot)
-                                               .SelectMany(kv => kv.Values)
-                                               .SelectMany(subLoot => subLoot.Loot)
-                                               .SelectMany(innerLoot => innerLoot.Value)
-                                               .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
-                                               .ToList();
-
-                    Export.UploadFullExport(fcLootList);
-                });
-            }
-        }
-
         public void EntryUpload(Loot.DetailedLoot loot)
         {
             if (Configuration.UploadPermission)
@@ -389,9 +350,6 @@ namespace SubmarineTracker
                 // Check that the user had enough time to opt out after notification
                 if (Configuration.UploadNotificationReceived > DateTime.Now)
                     return;
-
-                Configuration.UploadCounter += 1;
-                Configuration.Save();
 
                 Task.Run(() => Export.UploadEntry(loot));
             }

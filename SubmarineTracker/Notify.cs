@@ -1,10 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using SubmarineTracker.Windows;
+
 using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker;
@@ -31,7 +32,7 @@ public class Notify
             FinishedNotifications.Add($"Dispatch{sub.Register}{sub.Return}");
     }
 
-    public void NotifyLoop(Framework _)
+    public void NotifyLoop(IFramework _)
     {
         if (!KnownSubmarines.Any())
             return;

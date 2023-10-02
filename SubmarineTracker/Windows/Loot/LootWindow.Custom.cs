@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Components;
+﻿using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;

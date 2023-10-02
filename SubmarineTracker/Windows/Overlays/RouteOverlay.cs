@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -24,7 +25,7 @@ public class RouteOverlay : Window, IDisposable
 
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay")
+    public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay###SubmarineTracker")
     {
         Size = new Vector2(300, 330);
 

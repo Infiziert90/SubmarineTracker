@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Components;
+﻿using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Loot;
 using static SubmarineTracker.Utils;

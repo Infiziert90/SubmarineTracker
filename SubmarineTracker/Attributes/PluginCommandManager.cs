@@ -1,21 +1,22 @@
 using Dalamud.Game.Command;
 using System.Reflection;
+using Dalamud.Plugin.Services;
 using static Dalamud.Game.Command.CommandInfo;
 
 namespace SubmarineTracker.Attributes
 {
     public class PluginCommandManager<THost> : IDisposable
     {
-        private readonly CommandManager commandManager;
-        private readonly (string, CommandInfo)[] pluginCommands;
-        private readonly THost host;
+        private readonly ICommandManager CommandManager;
+        private readonly (string, CommandInfo)[] PluginCommands;
+        private readonly THost Host;
 
-        public PluginCommandManager(THost host, CommandManager commandManager)
+        public PluginCommandManager(THost host, ICommandManager commandManager)
         {
-            this.commandManager = commandManager;
-            this.host = host;
+            this.CommandManager = commandManager;
+            this.Host = host;
 
-            this.pluginCommands = host!.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+            this.PluginCommands = host!.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
                 .Where(method => method.GetCustomAttribute<CommandAttribute>() != null)
                 .SelectMany(GetCommandInfoTuple)
                 .ToArray();
@@ -25,23 +26,23 @@ namespace SubmarineTracker.Attributes
 
         private void AddCommandHandlers()
         {
-            foreach (var (command, commandInfo) in this.pluginCommands)
+            foreach (var (command, commandInfo) in this.PluginCommands)
             {
-                this.commandManager.AddHandler(command, commandInfo);
+                this.CommandManager.AddHandler(command, commandInfo);
             }
         }
 
         private void RemoveCommandHandlers()
         {
-            foreach (var (command, _) in this.pluginCommands)
+            foreach (var (command, _) in this.PluginCommands)
             {
-                this.commandManager.RemoveHandler(command);
+                this.CommandManager.RemoveHandler(command);
             }
         }
 
         private IEnumerable<(string, CommandInfo)> GetCommandInfoTuple(MethodInfo method)
         {
-            var handlerDelegate = (HandlerDelegate)Delegate.CreateDelegate(typeof(HandlerDelegate), this.host, method);
+            var handlerDelegate = (HandlerDelegate)Delegate.CreateDelegate(typeof(HandlerDelegate), this.Host, method);
 
             var command = handlerDelegate.Method.GetCustomAttribute<CommandAttribute>();
             var aliases = handlerDelegate.Method.GetCustomAttribute<AliasesAttribute>();

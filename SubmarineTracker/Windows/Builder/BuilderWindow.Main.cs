@@ -18,7 +18,7 @@ public partial class BuilderWindow : Window, IDisposable
 
     private string CurrentInput = "";
 
-    public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder")
+    public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder###SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {

@@ -7,7 +7,6 @@ using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-using Dalamud.Logging;
 using Postgrest;
 using Postgrest.Attributes;
 using Postgrest.Models;
@@ -162,8 +161,8 @@ public static class Export
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+            Plugin.Log.Error(e.Message);
+            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
 
             return string.Empty;
         }
@@ -177,7 +176,7 @@ public static class Export
             var dict = new Dictionary<string, Loot>();
             foreach (var file in new FileInfo(inputPath).Directory!.EnumerateFiles())
             {
-                PluginLog.Information(file.Name);
+                Plugin.Log.Information(file.Name);
                 using var reader = file.OpenText();
                 using var csv = new CsvReader(reader, CsvReadConfig);
 
@@ -190,31 +189,10 @@ public static class Export
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+            Plugin.Log.Error(e.Message);
+            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
 
             return new Dictionary<string, Loot>();
-        }
-    }
-
-    public static async void UploadFullExport(List<DetailedLoot> fcLootList)
-    {
-        var s = ExportToString(fcLootList, true, false);
-        if (s != string.Empty)
-        {
-            try
-            {
-                await Client.InitializeAsync();
-                var bucket = Client.Storage.From("Loot Data");
-                var result = await bucket.Upload(Encoding.UTF8.GetBytes(s), $"{DateTime.Now.Ticks}_dump.csv");
-
-                PluginLog.Debug(result);
-            }
-            catch (Exception e)
-            {
-                PluginLog.Error(e.Message);
-                PluginLog.Error(e.StackTrace ?? "No Stacktrace");
-            }
         }
     }
 
@@ -226,13 +204,13 @@ public static class Export
             await Client.InitializeAsync();
             var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
 
-            PluginLog.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
-            PluginLog.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace ?? "No Stacktrace");
+            Plugin.Log.Error(e.Message);
+            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
         }
     }
 }

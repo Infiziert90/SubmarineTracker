@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
 
@@ -57,9 +58,6 @@ public partial class ConfigWindow
 
         if (ImGui.Button("Return Webhook"))
             Task.Run(() => Plugin.Notify.SendReturnWebhook(TestSub, TestFC));
-
-        if (ImGui.Button("Test Full Upload"))
-            Task.Run(() => Export.UploadFullExport(GenerateLootList()));
 
         if (ImGui.Button("Test Entry Upload"))
             Task.Run(() => Export.UploadEntry(GenerateLootList().Last()));

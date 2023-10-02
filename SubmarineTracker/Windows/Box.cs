@@ -57,7 +57,7 @@ public static class Box
         var hasBackground = !ColorIsTransparent(iModifier.FBackgroundColor);
         var hasBorder = !ColorIsTransparent(iModifier.FBorderColor);
 
-        ImDrawListPtr drawList;
+        ImDrawListPtr drawList = null!;
         if(hasBackground || hasBorder)
         {
             drawList = ImGui.GetWindowDrawList();

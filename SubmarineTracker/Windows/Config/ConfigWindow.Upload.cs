@@ -1,4 +1,5 @@
-﻿using Dalamud.Utility;
+﻿using Dalamud.Interface;
+using Dalamud.Utility;
 
 namespace SubmarineTracker.Windows.Config;
 
@@ -22,7 +23,9 @@ public partial class ConfigWindow
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Any Uploads", "Has there been any uploads?"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadCounter > 0 ? Loc.Localize("Config Tab Upload - Yes Number", "Yes, {0} uploads").Format(Configuration.UploadCounter) : Loc.Localize("Config Tab Upload - No", "No"))}");
+            ImGui.PushFont(UiBuilder.IconFont);
+            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadNotificationReceived < DateTime.Now ? FontAwesomeIcon.Check.ToIconString() : FontAwesomeIcon.Times.ToIconString())}");
+            ImGui.PopFont();
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);

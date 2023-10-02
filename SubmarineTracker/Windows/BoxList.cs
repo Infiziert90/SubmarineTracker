@@ -7,11 +7,8 @@ public static class BoxList
     public static void RenderList<T>(IEnumerable<T> list, Box.Modifier modifier, float arrowScale, Action<T> boxRenderContent) where T : notnull
     {
         var items = list.ToArray();
-
         var hash = items.GetSequenceHashCode();
-
         var boxSizes = FBoxSizes.TryGetValue(hash, out var sizes) ? sizes : new List<Vector2>();
-
         var wSize = ImGui.GetWindowSize();
 
         // Don't show the first pass due to sizing gathering
@@ -27,9 +24,6 @@ public static class BoxList
             {
                 boxRenderContent(items[i1]);
             });
-
-            var p = ImGui.GetCursorScreenPos();
-
 
             var height = (int)(size.Y / (3 / arrowScale));
             var offset = (int)(height / 2f);
@@ -47,7 +41,7 @@ public static class BoxList
             if (!isLast)
             {
                 ImGui.SameLine();
-                p = ImGui.GetCursorScreenPos();
+                var p = ImGui.GetCursorScreenPos();
                 var drawList = ImGui.GetWindowDrawList();
                 p = p with { Y = p.Y + heightOffset };
                 ImGui.Dummy(new Vector2(offset, 0));

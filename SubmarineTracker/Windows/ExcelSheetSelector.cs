@@ -6,7 +6,7 @@ namespace SubmarineTracker.Windows
 {
     public static class ExcelSheetSelector
     {
-        public static ExcelRow[] FilteredSearchSheet = null!;
+        public static ExcelRow[]? FilteredSearchSheet;
 
         private static string SheetSearchText = null!;
         private static string PrevSearchId = null!;
@@ -16,9 +16,9 @@ namespace SubmarineTracker.Windows
         public record ExcelSheetOptions<T> where T : ExcelRow
         {
             public Func<T, string> FormatRow { get; init; } = row => row.ToString();
-            public Func<T, string, bool> SearchPredicate { get; init; } = null;
-            public Func<T, bool, bool> DrawSelectable { get; init; } = null;
-            public IEnumerable<T> FilteredSheet { get; init; } = null;
+            public Func<T, string, bool>? SearchPredicate { get; init; } = null;
+            public Func<T, bool, bool>? DrawSelectable { get; init; } = null;
+            public IEnumerable<T>? FilteredSheet { get; init; }
             public Vector2? Size { get; init; } = null;
         }
 
@@ -54,7 +54,7 @@ namespace SubmarineTracker.Windows
             FilteredSearchSheet ??= filteredSheet.Where(s => searchPredicate(s, SheetSearchText)).Cast<ExcelRow>().ToArray();
         }
 
-        public static bool ExcelSheetPopup<T>(string id, out uint selectedRow, ExcelSheetPopupOptions<T> options = null, bool close = false) where T : ExcelRow
+        public static bool ExcelSheetPopup<T>(string id, out uint selectedRow, ExcelSheetPopupOptions<T>? options = null, bool close = false) where T : ExcelRow
         {
 
             options ??= new ExcelSheetPopupOptions<T>();
@@ -76,7 +76,7 @@ namespace SubmarineTracker.Windows
 
             var ret = false;
             var drawSelectable = options.DrawSelectable ?? ((row, selected) => ImGui.Selectable(options.FormatRow(row), selected));
-            using (var clipper = new ListClipper(FilteredSearchSheet.Length))
+            using (var clipper = new ListClipper(FilteredSearchSheet!.Length))
             {
                 foreach (var i in clipper.Rows)
                 {
@@ -102,8 +102,8 @@ namespace SubmarineTracker.Windows
     public unsafe class ListClipper : IEnumerable<(int, int)>, IDisposable
     {
         private ImGuiListClipperPtr Clipper;
-        private readonly int rows;
-        private readonly int columns;
+        private readonly int CurrentRows;
+        private readonly int CurrentColumns;
         private readonly bool TwoDimensional;
         private readonly int ItemRemainder;
 
@@ -122,7 +122,7 @@ namespace SubmarineTracker.Windows
                     for (int i = Clipper.DisplayStart; i < Clipper.DisplayEnd; i++)
                     {
                         CurrentRow = i;
-                        yield return TwoDimensional ? i : i * columns;
+                        yield return TwoDimensional ? i : i * CurrentColumns;
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace SubmarineTracker.Windows
         {
             get
             {
-                var cols = (ItemRemainder == 0 || rows != DisplayEnd || CurrentRow != DisplayEnd - 1) ? columns : ItemRemainder;
+                var cols = (ItemRemainder == 0 || CurrentRows != DisplayEnd || CurrentRow != DisplayEnd - 1) ? CurrentColumns : ItemRemainder;
                 for (int j = 0; j < cols; j++)
                     yield return j;
             }
@@ -141,11 +141,11 @@ namespace SubmarineTracker.Windows
         public ListClipper(int items, int cols = 1, bool twoD = false, float itemHeight = 0)
         {
             TwoDimensional = twoD;
-            columns = cols;
-            rows = TwoDimensional ? items : (int)MathF.Ceiling((float)items / columns);
-            ItemRemainder = !TwoDimensional ? items % columns : 0;
+            CurrentColumns = cols;
+            CurrentRows = TwoDimensional ? items : (int)MathF.Ceiling((float)items / CurrentColumns);
+            ItemRemainder = !TwoDimensional ? items % CurrentColumns : 0;
             Clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
-            Clipper.Begin(rows, itemHeight);
+            Clipper.Begin(CurrentRows, itemHeight);
         }
 
         public IEnumerator<(int, int)> GetEnumerator() => (from i in Rows from j in Columns select (i, j)).GetEnumerator();

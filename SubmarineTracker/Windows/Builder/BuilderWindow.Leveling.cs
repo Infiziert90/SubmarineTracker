@@ -1,8 +1,8 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
 using Dalamud.Utility;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -283,17 +283,17 @@ public partial class BuilderWindow
         var filePath = Path.Combine(MiscFolder, "routeList.json");
         try
         {
-            PluginLog.Debug("Loading cached leveling data.");
+            Plugin.Log.Debug("Loading cached leveling data.");
             CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(File.ReadAllText(filePath)) ?? new DurationCache();
         }
         catch (FileNotFoundException)
         {
-            PluginLog.Warning("Cache file not found.");
+            Plugin.Log.Warning("Cache file not found.");
         }
         catch (Exception e)
         {
-            PluginLog.Error("Loading cached leveling data failed.");
-            PluginLog.Error(e.Message);
+            Plugin.Log.Error("Loading cached leveling data failed.");
+            Plugin.Log.Error(e.Message);
         }
 
         // Add durations limit if they not exist
@@ -316,8 +316,8 @@ public partial class BuilderWindow
         LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, Configuration.MaximizeDuration);
         var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
 
-        PluginLog.Debug($"Writing routeList json");
-        PluginLog.Debug(filePath);
+        Plugin.Log.Debug($"Writing routeList json");
+        Plugin.Log.Debug(filePath);
         File.WriteAllText(filePath, l);
 
         Processing = false;
@@ -392,7 +392,7 @@ public partial class BuilderWindow
                         catch
                         {
                             CancelSource.Cancel();
-                            PluginLog.Error("Failed operation when waiting for tasks");
+                            Plugin.Log.Error("Failed operation when waiting for tasks");
                             break;
                         }
 
@@ -401,7 +401,7 @@ public partial class BuilderWindow
 
                         if (!taskJourneys.Any())
                         {
-                            PluginLog.Error($"No journeys returned, cancelling current build!");
+                            Plugin.Log.Error($"No journeys returned, cancelling current build!");
                             return null;
                         }
 

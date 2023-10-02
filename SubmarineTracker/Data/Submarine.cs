@@ -1,5 +1,5 @@
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using Dalamud.Logging;
 using Dalamud.Memory;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
@@ -206,7 +206,7 @@ public static class Submarines
             }
             catch
             {
-                PluginLog.Warning("Unable to read HousingInteriorPlacedItems2");
+                Plugin.Log.Warning("Unable to read HousingInteriorPlacedItems2");
             }
         }
 
@@ -385,7 +385,7 @@ public static class Submarines
         return true;
     }
 
-    public static readonly Dictionary<ulong, FcSubmarines> KnownSubmarines = new();
+    public static readonly ConcurrentDictionary<ulong, FcSubmarines> KnownSubmarines = new();
 
     public static readonly Dictionary<ushort, uint> PartIdToItemId = new()
     {

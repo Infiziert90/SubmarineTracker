@@ -1,6 +1,5 @@
 using System.IO;
 using Dalamud.Configuration;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -74,24 +73,14 @@ namespace SubmarineTracker
         public bool UploadNotification = true;
         public DateTime UploadNotificationReceived = DateTime.MaxValue;
         public bool UploadPermission = true;
-        public uint UploadCounter = 0;
-        public bool TriggerUpload = true;
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
         public List<ulong> FCOrder = new();
 
-        [NonSerialized]
-        private DalamudPluginInterface? PluginInterface;
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.PluginInterface = pluginInterface;
-        }
-
         public void Save()
         {
-            WriteAllTextSafe(PluginInterface!.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
+            WriteAllTextSafe(Plugin.PluginInterface.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
                 TypeNameHandling = TypeNameHandling.Objects
@@ -110,8 +99,8 @@ namespace SubmarineTracker
             }
             catch (Exception e)
             {
-                PluginLog.Error(e.Message);
-                PluginLog.Error(e.StackTrace ?? "Unknown");
+                Plugin.Log.Error(e.Message);
+                Plugin.Log.Error(e.StackTrace ?? "Unknown");
             }
         }
     }

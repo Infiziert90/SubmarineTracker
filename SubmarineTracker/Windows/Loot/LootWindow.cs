@@ -17,7 +17,7 @@ public partial class LootWindow : Window, IDisposable
 
     private string Format = string.Empty;
 
-    public LootWindow(Plugin plugin, Configuration configuration) : base("Custom Loot Overview")
+    public LootWindow(Plugin plugin, Configuration configuration) : base("Custom Loot Overview###SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
