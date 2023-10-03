@@ -112,6 +112,14 @@ public static class Sectors
         { 099, new Breakpoint(225, 237, 280, 325, 227) },
         { 100, new Breakpoint(225, 238, 280, 325, 230) },
         { 101, new Breakpoint(225, 240, 280, 325, 230) },
+
+        // prediction
+        { 102, new Breakpoint(226,141,181,326,231) },
+        { 103, new Breakpoint(227,142,182,327,232) },
+        { 104, new Breakpoint(228,143,183,328,233) },
+        { 105, new Breakpoint(229,144,184,329,234) },
+        { 106, new Breakpoint(230,145,285,330,235) },
+        { 107, new Breakpoint(230,145,285,330,235) },
     };
 
     public static Breakpoint CalculateBreakpoint(List<uint> points)
