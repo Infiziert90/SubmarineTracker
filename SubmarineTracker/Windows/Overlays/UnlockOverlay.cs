@@ -16,7 +16,7 @@ public class UnlockOverlay : Window, IDisposable
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = new();
 
-    public UnlockOverlay(Plugin plugin, Configuration configuration) : base("Unlock Overlay###SubmarineTracker")
+    public UnlockOverlay(Plugin plugin, Configuration configuration) : base("Unlock Overlay##SubmarineTracker")
     {
         Size = OriginalSize;
 

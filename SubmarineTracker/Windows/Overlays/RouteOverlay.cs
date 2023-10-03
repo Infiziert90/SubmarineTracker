@@ -25,7 +25,7 @@ public class RouteOverlay : Window, IDisposable
 
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay###SubmarineTracker")
+    public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay##SubmarineTracker")
     {
         Size = new Vector2(300, 330);
 

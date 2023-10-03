@@ -10,7 +10,7 @@ public partial class ConfigWindow : Window, IDisposable
     private Configuration Configuration;
     private static ExcelSheet<Item> ItemSheet = null!;
 
-    public ConfigWindow(Plugin plugin) : base("Configuration###SubmarineTracker")
+    public ConfigWindow(Plugin plugin) : base("Configuration##SubmarineTracker")
     {
         SizeConstraints = new WindowSizeConstraints
         {

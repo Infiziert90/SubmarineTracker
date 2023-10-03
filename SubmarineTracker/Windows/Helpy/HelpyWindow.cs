@@ -11,7 +11,7 @@ public partial class HelpyWindow : Window, IDisposable
 
     public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
 
-    public HelpyWindow(Plugin plugin, Configuration configuration) : base("Helpy###SubmarineTracker")
+    public HelpyWindow(Plugin plugin, Configuration configuration) : base("Helpy##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {

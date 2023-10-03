@@ -16,7 +16,7 @@ public class NextOverlay : Window, IDisposable
     private readonly List<(uint, Unlocks.UnlockedFrom)> UnlockPath;
     private (uint Sector, Unlocks.UnlockedFrom UnlockedFrom)? NextSector;
 
-    public NextOverlay(Plugin plugin, Configuration configuration) : base("Next Overlay###SubmarineTracker")
+    public NextOverlay(Plugin plugin, Configuration configuration) : base("Next Overlay##SubmarineTracker")
     {
         Size = new Vector2(300, 60);
 

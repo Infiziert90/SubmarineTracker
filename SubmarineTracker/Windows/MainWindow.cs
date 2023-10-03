@@ -22,7 +22,7 @@ public class MainWindow : Window, IDisposable
 
     private static readonly Vector2 WindowMinimumSize = new(800, 550);
 
-    public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker###SubmarineTracker")
+    public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
