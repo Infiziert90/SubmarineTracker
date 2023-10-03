@@ -112,7 +112,7 @@ public partial class BuilderWindow
     private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
     {
         if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
-            unlockedFrom = new Unlocks.UnlockedFrom(0);
+            unlockedFrom = new Unlocks.UnlockedFrom(9876);
 
         fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out var otherUnlocked);
 
@@ -141,10 +141,14 @@ public partial class BuilderWindow
                         ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Builder Window Tooltip - Unlocks Slot", "#Extra Sub Slot")}");
                 }
                 else
+                {
                     ImGui.TextColored(ImGuiColors.TankBlue, Loc.Localize("Builder Window Tooltip - Always Unlocked", "Always Unlocked"));
+                }
             }
             else
+            {
                 ImGui.TextColored(ImGuiColors.DalamudRed, Loc.Localize("Terms - Unknown", "Unknown"));
+            }
         }
 
         ImGui.PopTextWrapPos();
