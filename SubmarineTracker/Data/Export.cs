@@ -34,6 +34,9 @@ public static class Export
         [Column("sector")]
         public uint Sector { get; set; }
 
+        [Column("unlocked")]
+        public uint Unlocked { get; set; }
+
         [Column("primary")]
         public uint Primary { get; set; }
         [Column("primary_count")]
@@ -73,6 +76,7 @@ public static class Export
         public Loot(DetailedLoot loot)
         {
             Sector = loot.Sector;
+            Sector = loot.Unlocked;
 
             Primary = loot.Primary;
             PrimaryCount = loot.PrimaryCount;
@@ -133,6 +137,8 @@ public static class Export
                 Map(m => m.Hash).Ignore();
             else
                 Map(m => m.Hash).Index(99).Name("Hash");
+
+            Map(m => m.Unlocked).Ignore();
         }
     }
 

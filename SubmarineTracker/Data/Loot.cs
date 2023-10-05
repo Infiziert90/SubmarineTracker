@@ -63,6 +63,7 @@ public static class Loot
         public uint FavProc;
 
         public uint Sector;
+        public uint Unlocked = 0;
 
         public uint Primary;
         public ushort PrimaryCount;
@@ -86,6 +87,7 @@ public static class Loot
             Fav = build.Favor;
 
             Sector = data.Point;
+            Unlocked = data.UnlockedPoint;
 
             Primary = data.ItemIdPrimary;
             PrimaryCount = data.ItemCountPrimary;
