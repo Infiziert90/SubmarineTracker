@@ -687,8 +687,8 @@
     "message": "Specific Submarines:",
     "description": "ConfigWindow.Notify"
   },
-  "Config Tab - Order": {
-    "message": "Order",
+  "Config Tab - Manage": {
+    "message": "Manage",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
@@ -751,8 +751,16 @@
     "message": "Show First Return Time",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Tooltip - First Return Time": {
+    "message": "Shows the first returning sub in the overlay headers for each FC.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Sort Time Lowest": {
     "message": "Sort By Lowest Time",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Sort Time Lowest": {
+    "message": "Sorts the overlay headers by return time, this overwrites FC order.",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
@@ -861,18 +869,6 @@
   },
   "Config Tab Upload - Point 3": {
     "message": "Exploration procs",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Any Uploads": {
-    "message": "Has there been any uploads?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - No": {
-    "message": "No",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Yes Number": {
-    "message": "Yes, {0} uploads",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {

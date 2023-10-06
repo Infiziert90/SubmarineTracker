@@ -687,8 +687,8 @@
     "message": "指定潜艇: ",
     "description": "ConfigWindow.Notify"
   },
-  "Config Tab - Order": {
-    "message": "列表",
+  "Config Tab - Manage": {
+    "message": "管理",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
@@ -751,8 +751,16 @@
     "message": "显示首次返回时间",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Tooltip - First Return Time": {
+    "message": "在悬浮窗内每个部队的标题中显示第一个返回的潜水艇。",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Sort Time Lowest": {
     "message": "按最短时间排序",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Sort Time Lowest": {
+    "message": "按返回时间对悬浮窗标题排序，将覆盖部队顺序。",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
@@ -861,18 +869,6 @@
   },
   "Config Tab Upload - Point 3": {
     "message": "探索过程",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Any Uploads": {
-    "message": "有上传吗？",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - No": {
-    "message": "没有",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Yes Number": {
-    "message": "有, {0} 上传",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {

@@ -687,8 +687,8 @@
     "message": "Nur bestimmte Tauchboote:",
     "description": "ConfigWindow.Notify"
   },
-  "Config Tab - Order": {
-    "message": "Sortierung",
+  "Config Tab - Manage": {
+    "message": "Verwalten",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
@@ -751,8 +751,16 @@
     "message": "Zeige früheste Rückkehrzeit",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Tooltip - First Return Time": {
+    "message": "Zeigt frühste Zeit im Overlay Kopf an, wann ein Tauchboot zurückkehrt.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Sort Time Lowest": {
     "message": "Sortiere nach niedrigster Zeit",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Sort Time Lowest": {
+    "message": "Sortiert alle Overlay Köpfe nach der Rückkehrzeit, dies überschreibt die festgelegte FG Sortierung.",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
@@ -861,18 +869,6 @@
   },
   "Config Tab Upload - Point 3": {
     "message": "Erkundungs procs",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Any Uploads": {
-    "message": "Wurde ein Upload vorgenommen?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - No": {
-    "message": "Nein",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Yes Number": {
-    "message": "Ja, es gab {0} Uploads",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {

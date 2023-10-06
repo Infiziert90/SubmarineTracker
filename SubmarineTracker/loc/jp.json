@@ -687,8 +687,8 @@
     "message": "特定のサブマリー:",
     "description": "ConfigWindow.Notify"
   },
-  "Config Tab - Order": {
-    "message": "ご注文",
+  "Config Tab - Manage": {
+    "message": "管理",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
@@ -751,8 +751,16 @@
     "message": "最初の返品時刻を表示",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Tooltip - First Return Time": {
+    "message": "各FCのオーバーレイヘッダーに最初の戻り値のサブを表示します。",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Sort Time Lowest": {
     "message": "最低時間でソート",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Sort Time Lowest": {
+    "message": "返却時間でオーバーレイヘッダーを並べ替えます。FCオーダーは上書きされます。",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
@@ -861,18 +869,6 @@
   },
   "Config Tab Upload - Point 3": {
     "message": "Exploration procs",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Any Uploads": {
-    "message": "アップロードはありますか?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - No": {
-    "message": "いいえ",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Yes Number": {
-    "message": "はい、 {0} のアップロード",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {

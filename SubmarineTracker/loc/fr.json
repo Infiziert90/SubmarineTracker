@@ -687,8 +687,8 @@
     "message": "Sous-marins spécifiques :",
     "description": "ConfigWindow.Notify"
   },
-  "Config Tab - Order": {
-    "message": "Ordre",
+  "Config Tab - Manage": {
+    "message": "Gestion",
     "description": "ConfigWindow.Order"
   },
   "Terms - Saved FCs": {
@@ -751,8 +751,16 @@
     "message": "Afficher l'heure de retour la plus proche",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Tooltip - First Return Time": {
+    "message": "Affiche le premier sous-marin de retour dans les en-têtes de l'overlay pour chaque CL.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Sort Time Lowest": {
     "message": "Trier par temps le plus court",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Sort Time Lowest": {
+    "message": "Trie les en-têtes de l'overlay par temps de retour, ce qui remplace l'ordre des CL.",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Reverse Sort": {
@@ -861,18 +869,6 @@
   },
   "Config Tab Upload - Point 3": {
     "message": "Données de déverouillage",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Any Uploads": {
-    "message": "Y a-t-il eu des téléchargements ?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - No": {
-    "message": "Non",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Yes Number": {
-    "message": "Oui, {0} téléchargements",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Checkbox - Upload Permission": {

@@ -148,4 +148,22 @@ public static class Helper
 
         ImGui.Image(texture.ImGuiHandle, iconSize);
     }
+
+    public static bool Button(string id, FontAwesomeIcon icon, bool disabled)
+    {
+        var clicked = false;
+        if (disabled)
+        {
+            ImGui.BeginDisabled();
+            ImGuiComponents.IconButton(id, icon);
+            ImGui.EndDisabled();
+        }
+        else
+        {
+            if (ImGuiComponents.IconButton(id, icon))
+                clicked = true;
+        }
+
+        return clicked;
+    }
 }

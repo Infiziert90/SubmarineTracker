@@ -17,15 +17,6 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - On Startup", "Opens the overlay on startup, if at least one sub is done"));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - On Return", "On Return"), ref Configuration.OverlayAlwaysOpen);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - On Return", "Always opens the overlay if one submarine returns"));
-            // if (Configuration.OverlayStartUp || Configuration.OverlayAlwaysOpen)
-            // {
-            //     ImGui.Indent(10.0f);
-            //     ImGui.BeginDisabled();
-            //     changed |= ImGui.Checkbox("Open unminimized", ref Configuration.OverlayUnminimized);
-            //     ImGui.EndDisabled();
-            //     ImGuiComponents.HelpMarker("Disabled for now");
-            //     ImGui.Unindent(10.0f);
-            // }
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
@@ -38,11 +29,13 @@ public partial class ConfigWindow
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Build", "Show Build"), ref Configuration.OverlayShowBuild);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - As Date", "Show As Date"), ref Configuration.OverlayShowDate);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - First Return Time", "Show First Return Time"), ref Configuration.OverlayFirstReturn);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - First Return Time", "Shows the first returning sub in the overlay headers for each FC."));
             if (ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Sort Time Lowest", "Sort By Lowest Time"), ref Configuration.OverlaySort))
             {
                 changed = true;
                 Configuration.OverlaySortReverse = false;
             }
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Sort Time Lowest", "Sorts the overlay headers by return time, this overwrites FC order."));
 
             if (Configuration.OverlaySort)
             {

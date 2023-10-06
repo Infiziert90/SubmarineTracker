@@ -1,7 +1,4 @@
-﻿using Dalamud.Interface;
-using Dalamud.Utility;
-
-namespace SubmarineTracker.Windows.Config;
+﻿namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
@@ -12,20 +9,13 @@ public partial class ConfigWindow
             var changed = false;
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Information 1", "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!"));
+            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Information 1", "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!"));
 
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - What", "What data?"));
             ImGuiHelpers.ScaledIndent(10.0f);
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 1", "Loot received"));
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 2", "Sector unlocks"));
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 3", "Exploration procs"));
-            ImGuiHelpers.ScaledIndent(-10.0f);
-
-            Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Any Uploads", "Has there been any uploads?"));
-            ImGuiHelpers.ScaledIndent(10.0f);
-            ImGui.PushFont(UiBuilder.IconFont);
-            Helper.WrappedText(ImGuiColors.DalamudViolet, $"{(Configuration.UploadNotificationReceived < DateTime.Now ? FontAwesomeIcon.Check.ToIconString() : FontAwesomeIcon.Times.ToIconString())}");
-            ImGui.PopFont();
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);

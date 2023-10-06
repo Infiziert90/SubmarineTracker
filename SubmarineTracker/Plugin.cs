@@ -77,6 +77,7 @@ namespace SubmarineTracker
         {
             ConfigurationBase = new ConfigurationBase();
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             FileDialogManager = new FileDialogManager();
 
@@ -89,7 +90,6 @@ namespace SubmarineTracker
             ImportantItemsMethods.Initialize();
 
             Webhook.Init(Configuration);
-            Helper.Initialize(this);
 
             HookManager = new HookManager(this);
             AllaganToolsConsumer = new AllaganToolsConsumer();
@@ -117,7 +117,6 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(UnlockOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
-            Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
@@ -130,6 +129,9 @@ namespace SubmarineTracker
 
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
+
+            // Try to init it last, just to make sure that loc actually loaded fine
+            Helper.Initialize(this);
 
             var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
