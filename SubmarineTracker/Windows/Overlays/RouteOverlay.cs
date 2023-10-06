@@ -32,6 +32,7 @@ public class RouteOverlay : Window, IDisposable
         Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         RespectCloseHotkey = false;
         DisableWindowSounds = true;
+        ForceMainWindow = true;
 
         Plugin = plugin;
         Configuration = configuration;
