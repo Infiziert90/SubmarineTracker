@@ -71,12 +71,15 @@ public static class Export
         [Column("hash")]
         public string Hash { get; set; } = "";
 
+        [Column("version")]
+        public string Version { get; set; } = Plugin.Version;
+
         public Loot() {}
 
         public Loot(DetailedLoot loot)
         {
             Sector = loot.Sector;
-            Sector = loot.Unlocked;
+            Unlocked = loot.Unlocked;
 
             Primary = loot.Primary;
             PrimaryCount = loot.PrimaryCount;
