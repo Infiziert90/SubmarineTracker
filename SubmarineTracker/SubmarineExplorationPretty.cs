@@ -33,7 +33,7 @@ public class SubmarineExplorationPretty : SubmarineExploration
 
     public uint GetDistance(SubmarineExplorationPretty other)
     {
-        return (uint) Math.Floor( Vector3.Distance( Position, other.Position ) * 0.035 );
+        return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 0.035);
     }
 
     public string ConvertDestination() => Utils.UpperCaseStr(Destination);

@@ -21,7 +21,7 @@ public partial class LootWindow : Window, IDisposable
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(370, 570),
+            MinimumSize = new Vector2(370, 600),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 

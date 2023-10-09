@@ -116,8 +116,8 @@ public static class Unlocks
         { 103, new UnlockedFrom(98) },                          // Northwest Bellflower                <-       Lilac Sea 1
         { 104, new UnlockedFrom(100) },                         // Corolla Isle                        <-       Bellflower Flood
         { 105, new UnlockedFrom(101) },                         // Southeast Bellflower                <-       Lilac Sea 2
-        { 106, new UnlockedFrom(9876) },                        // The Floral Reef
-        { 107, new UnlockedFrom(9876) },                        // Wingsreach
+        { 106, new UnlockedFrom(104) },                         // The Floral Reef                     <-       Corolla Isle
+        { 107, new UnlockedFrom(105) },                         // Wingsreach                          <-       Southeast Bellflower
     };
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)

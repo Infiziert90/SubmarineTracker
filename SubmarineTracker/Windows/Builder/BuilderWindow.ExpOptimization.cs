@@ -226,8 +226,8 @@ public partial class BuilderWindow
                         ExcelSheetSelector.FilteredSearchSheet = null!;
                         ExplorationPopupOptions = new()
                         {
-                            FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
-                            FilteredSheet = ExplorationSheet.Where(r => !error && r.Map.Row == CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= CurrentBuild.Rank)
+                            FormatRow = e => $"{NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
+                            FilteredSheet = ExplorationSheet.Where(r => !error && !r.StartingPoint && r.Map.Row == CurrentBuild.Map + 1 && (IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId]) && r.RankReq <= CurrentBuild.Rank)
                         };
                     }
 

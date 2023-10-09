@@ -9,6 +9,7 @@ namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
+    private int CurrentProfileId;
     private int FcSelection;
 
     private static readonly DateTime CustomMinimalDate = new(2023, 4, 1);
@@ -24,16 +25,9 @@ public partial class LootWindow
     {
         if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Custom", "Custom")}##Custom"))
         {
-            if (!Configuration.CustomLootWithValue.Any())
-            {
-                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Custom - Nothing Found", "No custom loot found."));
-                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Custom - Tracking Tip", "You can add tracked items via the loot tab under configuration."));
-
-                ImGui.EndTabItem();
-                return;
-            }
-
             ImGuiHelpers.ScaledDummy(5.0f);
+            var longText = "Profile:";
+            var length = ImGui.CalcTextSize(longText).X + (10.0f * ImGuiHelpers.GlobalScale);
 
             Plugin.EnsureFCOrderSafety();
             var existingFCs = Configuration.FCOrder
@@ -41,7 +35,18 @@ public partial class LootWindow
                                             .Prepend(Loc.Localize("Terms - All", "All"))
                                             .ToArray();
 
-            Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs);
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextColored(ImGuiColors.ParsedOrange, "FC:");
+            ImGui.SameLine(length);
+            Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs, 3);
+
+            var combo = Configuration.CustomLootProfiles.Keys.ToArray();
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextColored(ImGuiColors.ParsedOrange, longText);
+            ImGui.SameLine(length);
+            Helper.DrawComboWithArrows("##ProfileSelector", ref CurrentProfileId, ref combo, 1);
+            var selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
+
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();
             ImGuiHelpers.ScaledDummy(5.0f);
@@ -65,7 +70,7 @@ public partial class LootWindow
 
                 foreach (var (item, count) in fc.TimeLoot.Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
                 {
-                    if (!Configuration.CustomLootWithValue.ContainsKey(item.RowId))
+                    if (!selected.ContainsKey(item.RowId))
                         continue;
 
                     if (!bigList.TryAdd(item, count))
@@ -79,7 +84,12 @@ public partial class LootWindow
             var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
             if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight + optionHeight)))
             {
-                if (!bigList.Any())
+                if (!selected.Any())
+                {
+                    Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Empty", "This profile has no tracked items."));
+                    Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Tip", "You can add items via the loot tab under configuration."));
+                }
+                else if (!bigList.Any())
                 {
                     Helper.WrappedError($"{Loc.Localize("Loot Tab Custom - None 1", "None of the selected items have been looted")} {(useLimit ? Loc.Localize("Loot Tab Custom - None 2 Timeframe", "in the time frame") : Loc.Localize("Loot Tab Custom - None 2 Yet", "yet"))}.");
                 }
@@ -101,7 +111,7 @@ public partial class LootWindow
                             ImGui.TextUnformatted($"{count:N0}");
                             ImGui.TableNextRow();
 
-                            moneyMade += count * Configuration.CustomLootWithValue[item.RowId];
+                            moneyMade += count * selected[item.RowId];
                         }
 
                         ImGui.EndTable();

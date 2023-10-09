@@ -1,6 +1,5 @@
 using System.IO;
 using Dalamud.Configuration;
-using Dalamud.Plugin;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
 
@@ -50,7 +49,6 @@ namespace SubmarineTracker
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;
         public bool OverlayAlwaysOpen = false;
-        public bool OverlayUnminimized = false;
         public bool OverlayCharacterName = false;
         public bool OverlayFirstReturn = false;
         public bool OverlayShowDate = false;
@@ -63,7 +61,8 @@ namespace SubmarineTracker
         public bool OverlayShowBuild = false;
 
         public bool ExcludeLegacy = false;
-        public Dictionary<uint, int> CustomLootWithValue = new();
+        [Obsolete("Unused", false)] public Dictionary<uint, int> CustomLootWithValue = new(); // TODO 07.11 delete it
+        public Dictionary<string, Dictionary<uint, int>> CustomLootProfiles = new() {{"Default", new Dictionary<uint, int>()}};
         public DateLimit DateLimit = DateLimit.None;
 
         public bool ExportExcludeDate = true;
@@ -80,6 +79,12 @@ namespace SubmarineTracker
 
         public void Save()
         {
+            if (CustomLootWithValue.Any())
+            {
+                CustomLootProfiles["Default"] = new Dictionary<uint, int>(CustomLootWithValue);
+                CustomLootWithValue.Clear();
+            }
+
             WriteAllTextSafe(Plugin.PluginInterface.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,

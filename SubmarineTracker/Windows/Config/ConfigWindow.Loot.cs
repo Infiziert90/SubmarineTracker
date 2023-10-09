@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Internal.Notifications;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
@@ -9,6 +10,9 @@ namespace SubmarineTracker.Windows.Config;
 public partial class ConfigWindow
 {
     private static ExcelSheetSelector.ExcelSheetPopupOptions<Item> ItemPopupOptions = null!;
+
+    private int CurrentProfileId;
+    private string NewProfileName = string.Empty;
 
     private void InitializeLoot()
     {
@@ -32,6 +36,30 @@ public partial class ConfigWindow
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
+            ImGui.TextColored(ImGuiColors.ParsedOrange, "Select a profile:");
+            var combo = Configuration.CustomLootProfiles.Keys.ToArray();
+            Helper.DrawComboWithArrows("##ProfileSelector", ref CurrentProfileId, ref combo, 0);
+            var selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
+            ImGui.InputTextWithHint("##ProfileNameInput", "Profile Name", ref NewProfileName, 32);
+            ImGui.SameLine();
+            var notValid = NewProfileName.Length <= 3;
+            if (notValid) ImGui.BeginDisabled();
+            if (ImGuiComponents.IconButton(2, FontAwesomeIcon.Plus))
+            {
+                if (!Configuration.CustomLootProfiles.TryAdd(NewProfileName, new Dictionary<uint, int>()))
+                    Plugin.PluginInterface.UiBuilder.AddNotification("Profile name already exists ...", "[Submarine Tracker]", NotificationType.Error);
+
+                combo = Configuration.CustomLootProfiles.Keys.ToArray();
+                CurrentProfileId = Array.FindIndex(combo, s => s == NewProfileName);
+                if (CurrentProfileId == -1)
+                    CurrentProfileId = 0;
+
+                NewProfileName = string.Empty;
+                selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
+                Configuration.Save();
+            }
+            if (notValid) ImGui.EndDisabled();
+
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Add Items", "Add Items:"));
 
             var buttonWidth = ImGui.GetContentRegionAvail().X / 2;
@@ -44,7 +72,7 @@ public partial class ConfigWindow
                 var item = ItemSheet.GetRow(row)!;
                 var value = (int)(item.PriceLow > 1000 ? item.PriceLow : 0);
 
-                if (Configuration.CustomLootWithValue.TryAdd(row, value))
+                if (selected.TryAdd(row, value))
                     Configuration.Save();
             }
 
@@ -57,7 +85,7 @@ public partial class ConfigWindow
                 ImGui.TableHeadersRow();
 
                 uint deletionKey = 0;
-                foreach (var ((item, value), idx) in Configuration.CustomLootWithValue.Select((val, i) => (val, i)))
+                foreach (var ((item, value), idx) in selected.Select((val, i) => (val, i)))
                 {
                     var resolvedItem = ItemSheet.GetRow(item)!;
                     ImGui.TableNextColumn();
@@ -69,7 +97,7 @@ public partial class ConfigWindow
                     if (ImGui.InputInt($"##inputValue{item}", ref val, 0))
                     {
                         val = Math.Clamp(val, 0, int.MaxValue);
-                        Configuration.CustomLootWithValue[item] = val;
+                        selected[item] = val;
                         Configuration.Save();
                     }
 
@@ -82,7 +110,7 @@ public partial class ConfigWindow
 
                 if (deletionKey != 0)
                 {
-                    Configuration.CustomLootWithValue.Remove(deletionKey);
+                    selected.Remove(deletionKey);
                     Configuration.Save();
                 }
 
