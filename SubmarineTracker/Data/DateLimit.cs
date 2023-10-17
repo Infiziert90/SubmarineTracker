@@ -12,15 +12,18 @@ public enum DurationLimit
 public enum DateLimit
 {
     None = 0,
-    W1 = 1,
-    W2 = 2,
-    W3 = 3,
-    W4 = 4,
-    M1 = 5,
-    M3 = 6,
-    M6 = 7,
-    M9 = 8,
-    Year = 9,
+    D1 = 1,
+    D3 = 2,
+    D5 = 3,
+    W1 = 4,
+    W2 = 5,
+    W3 = 6,
+    W4 = 7,
+    M1 = 8,
+    M3 = 9,
+    M6 = 10,
+    M9 = 11,
+    Year = 12,
 }
 
 public static class DateUtil
@@ -29,11 +32,11 @@ public static class DateUtil
     {
         return n switch
         {
-            DurationLimit.None => "No Limit",
-            DurationLimit.H24 => "24 Hours",
-            DurationLimit.H36 => "36 Hours",
-            DurationLimit.H48 => "48 Hours",
-            DurationLimit.Custom => "Custom",
+            DurationLimit.None => Loc.Localize("Duration Limit - No Limit", "No Limit"),
+            DurationLimit.H24 => Loc.Localize("Duration Limit - 24 Hours", "24 Hours"),
+            DurationLimit.H36 => Loc.Localize("Duration Limit - 36 Hours", "36 Hours"),
+            DurationLimit.H48 => Loc.Localize("Duration Limit - 48 Hours", "48 Hours"),
+            DurationLimit.Custom => Loc.Localize("Duration Limit - Custom", "Custom"),
             _ => "Unknown"
         };
     }
@@ -54,16 +57,19 @@ public static class DateUtil
     {
         return n switch
         {
-            DateLimit.None => "No Limit",
-            DateLimit.W1 => "1 Week",
-            DateLimit.W2 => "2 Weeks",
-            DateLimit.W3 => "3 Weeks",
-            DateLimit.W4 => "4 Weeks",
-            DateLimit.M1 => "1 Month",
-            DateLimit.M3 => "3 Months",
-            DateLimit.M6 => "6 Months",
-            DateLimit.M9 => "9 Months",
-            DateLimit.Year => "1 Year",
+            DateLimit.None => Loc.Localize("Duration Limit - No Limit", "No Limit"),
+            DateLimit.D1 => Loc.Localize("Date Limit - 1 Day", "1 Day"),
+            DateLimit.D3 => Loc.Localize("Date Limit - 3 Days", "3 Days"),
+            DateLimit.D5 => Loc.Localize("Date Limit - 5 Days", "5 Days"),
+            DateLimit.W1 => Loc.Localize("Date Limit - 1 Week", "1 Week"),
+            DateLimit.W2 => Loc.Localize("Date Limit - 2 Weeks", "2 Weeks"),
+            DateLimit.W3 => Loc.Localize("Date Limit - 3 Weeks", "3 Weeks"),
+            DateLimit.W4 => Loc.Localize("Date Limit - 4 Weeks", "4 Weeks"),
+            DateLimit.M1 => Loc.Localize("Date Limit - 1 Month", "1 Month"),
+            DateLimit.M3 => Loc.Localize("Date Limit - 3 Months", "3 Months"),
+            DateLimit.M6 => Loc.Localize("Date Limit - 6 Months", "6 Months"),
+            DateLimit.M9 => Loc.Localize("Date Limit - 9 Months", "9 Months"),
+            DateLimit.Year => Loc.Localize("Date Limit - 1 Year", "1 Year"),
             _ => "Unknown"
         };
     }
@@ -73,6 +79,9 @@ public static class DateUtil
         return n switch
         {
             DateLimit.None => DateTime.UnixEpoch,
+            DateLimit.D1 => GetPreviousDay(1),
+            DateLimit.D3 => GetPreviousDay(3),
+            DateLimit.D5 => GetPreviousDay(5),
             DateLimit.W1 => GetPreviousWeek(1),
             DateLimit.W2 => GetPreviousWeek(2),
             DateLimit.W3 => GetPreviousWeek(3),
@@ -86,6 +95,7 @@ public static class DateUtil
         };
     }
 
+    private static DateTime GetPreviousDay(int days) => DateTime.UtcNow.AddDays(-(1 * days));
     private static DateTime GetPreviousWeek(int weeks) => DateTime.UtcNow.AddDays(-(7 * weeks));
     private static DateTime GetPreviousMonth(int months) => DateTime.UtcNow.AddMonths(-(1 * months));
     private static DateTime GetPreviousYear(int years) => DateTime.UtcNow.AddYears(-(1 * years));

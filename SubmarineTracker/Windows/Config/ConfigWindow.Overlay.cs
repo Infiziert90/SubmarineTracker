@@ -17,6 +17,8 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - On Startup", "Opens the overlay on startup, if at least one sub is done"));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - On Return", "On Return"), ref Configuration.OverlayAlwaysOpen);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - On Return", "Always opens the overlay if one submarine returns"));
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Automatically Close", "Automatically Close"), ref Configuration.OverlayHoldClosed);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Automatically Close", "Automatically closes the overlay if all submarines are on voyage, and holds it closed"));
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);

@@ -31,8 +31,15 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void Update()
     {
-        Flags = (Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0)
-                | (Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
+        Flags = (Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0) | (Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
+
+
+    }
+
+    public override void PreOpenCheck()
+    {
+        if (Configuration.OverlayHoldClosed && !Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone()))
+            IsOpen = false;
     }
 
     public override void PreDraw()

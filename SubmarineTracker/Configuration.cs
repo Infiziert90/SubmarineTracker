@@ -59,6 +59,7 @@ namespace SubmarineTracker
         public bool OverlayLockLocation = false;
         public bool OverlayShowRank = false;
         public bool OverlayShowBuild = false;
+        public bool OverlayHoldClosed = false;
 
         public bool ExcludeLegacy = false;
         [Obsolete("Unused", false)] public Dictionary<uint, int> CustomLootWithValue = new(); // TODO 07.11 delete it
