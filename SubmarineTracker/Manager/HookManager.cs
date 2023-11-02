@@ -1,4 +1,5 @@
-﻿using Dalamud.Hooking;
+﻿using System.Reflection;
+using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 
@@ -20,9 +21,15 @@ public class HookManager
         // Try to resolve the CN sig if normal one fails ...
         // Doing this because CN people use an outdated version that still uploads data
         // so trying to get them at least somewhat up to date
-        var packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
-        if (packetReceiverPtr == nint.Zero)
+        nint packetReceiverPtr;
+        try
+        {
+            packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
+        }
+        catch (TargetInvocationException)
+        {
             packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSigCN);
+        }
 
         PacketHandlerHook = Plugin.Hook.HookFromAddress<PacketDelegate>(packetReceiverPtr, PacketReceiver);
         PacketHandlerHook.Enable();

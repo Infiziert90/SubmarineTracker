@@ -735,6 +735,14 @@
     "message": "General:",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Only FC Tag": {
+    "message": "Only FC Tag",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Only FC Tag": {
+    "message": "Shows only the FC tag without @World.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Use Character Name": {
     "message": "Use Character Name",
     "description": "ConfigWindow.Overlay"
@@ -777,6 +785,22 @@
   },
   "Config Tab Checkbox - Only Returned": {
     "message": "Only Show Returned",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Entry - Colors": {
+    "message": "Colors:",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - All Done": {
+    "message": "All Done",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - Partly Done": {
+    "message": "Partly Done",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - None Done": {
+    "message": "None Done",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
@@ -1363,6 +1387,18 @@
     "message": "Custom",
     "description": "DateUtil.GetName"
   },
+  "Date Limit - 1 Day": {
+    "message": "1 Day",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 Days",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 Days",
+    "description": "DateUtil.GetName"
+  },
   "Date Limit - 1 Week": {
     "message": "1 Week",
     "description": "DateUtil.GetName"
@@ -1397,18 +1433,6 @@
   },
   "Date Limit - 1 Year": {
     "message": "1 Year",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 1 Day": {
-    "message": "1 Day",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 3 Days": {
-    "message": "3 Days",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 5 Days": {
-    "message": "5 Days",
     "description": "DateUtil.GetName"
   }
 }
