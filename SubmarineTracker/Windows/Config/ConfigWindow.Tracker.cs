@@ -15,6 +15,8 @@ public partial class ConfigWindow
             ImGui.Indent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show All", "Show 'All' Button"), ref Configuration.ShowAll);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Show All", "Adds an 'All' button for easy overview of all FCs.\nNote: Messy with too many FCs."));
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Only FC Tag", "Only FC Tag"), ref Configuration.OnlyFCTag);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Only FC Tag", "Shows only the FC tag without @World."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Use Character Name", "Use Character Name"), ref Configuration.UseCharacterName);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Use Character Name", "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Let Me Resize", "Let Me Resize"), ref Configuration.UserResize);

@@ -1,22 +1,22 @@
 {
   "Webhook On Dispatch": {
-    "message": "戻り値は <t:{0}:R>",
+    "message": "<t:{0}:R> に帰還します。",
     "description": "Notify.SendDispatchWebhook"
   },
   "Webhook On Return": {
-    "message": "<t:{0}:f> に戻りました",
+    "message": "<t:{0}:f> に帰還しました。",
     "description": "Notify.SendReturnWebhook"
   },
   "Notification Chat Return": {
-    "message": "{0} が戻りました。",
+    "message": "{0} が帰還しました。",
     "description": "Notify.GenerateMessage"
   },
   "Notification Chat Repair": {
-    "message": "{0} は再び派遣される前に修理が必要です。",
+    "message": "{0} が帰還しました。修理が必要です。",
     "description": "Notify.RepairMessage"
   },
   "Notification Toast Repair": {
-    "message": "再度派遣する前に修理が必要です",
+    "message": "再出港には修理が必要です。",
     "description": "Notify.ShortRepairMessage"
   },
   "Terms - Important": {
@@ -24,7 +24,7 @@
     "description": "Plugin.FrameworkUpdate"
   },
   "Notifications - Upload Opt Out": {
-    "message": "このプラグインは匿名化された潜水艦固有のデータを収集します。 収集された正確なデータの詳細については、プラグインの設定メニューのアップロードタブを参照してください。 あらゆる形式のデータ収集をオプトアウトすることができます。",
+    "message": "このプラグインは匿名化された潜水艦固有のデータを収集します。 収集されるデータの詳細については、プラグイン設定メニューのアップロードタブを参照してください。 データ収集はすべてオプトアウトすることができます。",
     "description": "Plugin.FrameworkUpdate"
   },
   "Window Name - Tracker": {
@@ -80,23 +80,23 @@
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Discord Thread": {
-    "message": "discordサポートスレッドを開きます。",
+    "message": "Discord サポートスレッドを開く",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Localization": {
-    "message": "現地化",
+    "message": "翻訳",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Localization": {
-    "message": "ブラウザでクラウドインページを開く",
+    "message": "ブラウザで Crowdin を開く",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Issues": {
-    "message": "課題",
+    "message": "Issues",
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - Issues": {
-    "message": "ブラウザで問題ページを開きます。",
+    "message": "ブラウザで Issues ページを開く",
     "description": "Helper.Initialize"
   },
   "Menu Entry - KoFi": {
@@ -104,7 +104,7 @@
     "description": "Helper.Initialize"
   },
   "Menu Tooltip - KoFi": {
-    "message": "ブラウザで kofi ページを開きます。",
+    "message": "ブラウザで Ko-Fi ページを開く",
     "description": "Helper.Initialize"
   },
   "Menu Entry - Sync": {
@@ -200,11 +200,11 @@
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Time": {
-    "message": "時刻",
+    "message": "帰還まで",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Date": {
-    "message": "日付",
+    "message": "帰還予定日時",
     "description": "MainWindow.DetailedSub"
   },
   "Terms - Map": {
@@ -212,15 +212,15 @@
     "description": "MainWindow.DetailedSub"
   },
   "Next Overlay Tooltip - Low Rank": {
-    "message": "あなたの潜水艦はセクターを訪問するために必要なレベルを下回っています。",
+    "message": "この潜水艦は該当区域を探索するために必要なレベルに達していません。",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Next Sector": {
-    "message": "次のセクター:",
+    "message": "次の区域:",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Visit": {
-    "message": "訪問:",
+    "message": "探索先:",
     "description": "NextOverlay.Draw"
   },
   "Next Overlay Text - Next Map": {
@@ -228,15 +228,15 @@
     "description": "NextOverlay.Draw"
   },
   "Terms - Submarines": {
-    "message": "潜水艦format@@0",
+    "message": "潜水艦",
     "description": "ReturnOverlay.PreDraw"
   },
   "Return Overlay Info - No Return": {
-    "message": "サブが返されていません。",
+    "message": "潜水艦が帰還していません。",
     "description": "ReturnOverlay.Draw"
   },
   "Route Overlay Tooltip - High Rank": {
-    "message": "サブマリンが閾値を超え、必須項目が空である。\nより高いレベルの提案については、コンフィグをチェックしてください。",
+    "message": "潜水艦のレベルが閾値を超えている、または必須項目が空です。\nより高レベルでサジェストを表示するには、設定を確認してください。",
     "description": "RouteOverlay.Draw"
   },
   "Terms - Loading": {
@@ -252,7 +252,7 @@
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Entry - Duration Limit": {
-    "message": "間制限",
+    "message": "時間制限",
     "description": "RouteOverlay.Draw"
   },
   "Best EXP Checkbox - Maximize Duration": {
@@ -280,7 +280,7 @@
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Button - Rebuild": {
-    "message": "Rebuild Cache",
+    "message": "キャッシュの再構築",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab Text - Searched": {
@@ -300,19 +300,19 @@
     "description": "LootWindow.AnalyseTab"
   },
   "Terms - Percentage": {
-    "message": "Pct",
+    "message": "パーセント",
     "description": "LootWindow.AnalyseTab"
   },
   "Loot Tab - Custom": {
     "message": "カスタム",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Nothing Found": {
-    "message": "カスタム戦利品が見つかりません。",
+  "Loot Tab Custom - Profile Empty": {
+    "message": "このプロファイルには追跡されたアイテムがありません。",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Tracking Tip": {
-    "message": "トラッキングアイテムは、設定の下の戦利品タブから追加できます。",
+  "Loot Tab Custom - Profile Tip": {
+    "message": "下にある設定の戦利品タブからアイテムを追加することができます。",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 1": {
@@ -320,7 +320,7 @@
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 2 Yet": {
-    "message": "♪yet",
+    "message": "まだ",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 2 Timeframe": {
@@ -328,7 +328,7 @@
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Reward Amount": {
-    "message": "合計 {0} 航海で上記の報酬が {1} を獲得しました (潜水艦{2})。",
+    "message": "合計 {1} 航海で上記の報酬 {0} を獲得しました (潜水艦{2})。",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - Money Made": {
@@ -336,7 +336,7 @@
     "description": "LootWindow.CustomLootTab"
   },
   "Terms - Options": {
-    "message": "オプション",
+    "message": "設定",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Entry - Fixed": {
@@ -344,7 +344,7 @@
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Tooltip - Fixed": {
-    "message": "format@@0を選択すると、特定の時間枠を選択できます。",
+    "message": "未選択の場合、特定の期間で絞り込むことが可能です。",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Entry - FromTo Date Selection": {
@@ -360,7 +360,7 @@
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Checkbox - Exclude Date": {
-    "message": "除外日",
+    "message": "除外する日付",
     "description": "LootWindow.ExportTab"
   },
   "Loot Tab Checkbox - Exclude Hash": {
@@ -408,7 +408,7 @@
     "description": "LootWindow.ExportToFile"
   },
   "Loot Tab - History": {
-    "message": "沿革",
+    "message": "履歴",
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Wrong": {
@@ -416,7 +416,7 @@
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Not Tracked": {
-    "message": "追跡は、再び航海に潜水艦を送信するときに開始されます。",
+    "message": "潜水艦を再出港させると追跡が始まります。",
     "description": "LootWindow.VoyageTab"
   },
   "Loot Tab History - Legacy Data": {
@@ -432,7 +432,7 @@
     "description": "HelpyWindow.AllSlotsTab"
   },
   "Progression Tab - Last Sector": {
-    "message": "最後のセクター",
+    "message": "最終区域",
     "description": "HelpyWindow.LastSectorTab"
   },
   "Helpy Tab - Info": {
@@ -440,11 +440,11 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Sector Unlock": {
-    "message": "新しいセクターのロックを解除するには？",
+    "message": "新しい区域のロックを解除するには？",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Sector Unlock Text": {
-    "message": "新しいセクタの解放はRNGです。\n航海の速度と頻度を上げることで、新しいセクタを発見する機会が増えます。",
+    "message": "新しい区域が解放されるかどうかはランダムに決まっています。\n航海の速度と頻度を上げることで、新しい区域を発見する機会が増えます。",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Map Unlock": {
@@ -452,7 +452,7 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Map Unlock Text": {
-    "message": "少なくとも一度はアンロックされたセクターを訪れなければならない\n注：前のスロットが埋まるまで、潜水艦を見ることはできない\n例：スロット2が空の場合、スロット3は表示されません",
+    "message": "少なくとも一度はアンロックされた区域を探索しなければなりません。\n注：前のスロットが埋まっていない場合には次のスロットは表示されません。\n例：スロット2が空の場合、スロット3は表示されません",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Colors": {
@@ -464,7 +464,7 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Green Text": {
-    "message": "ロック解除と訪問",
+    "message": "開放されていて探索済み",
     "description": "HelpyWindow.InfoTab"
   },
   "Colors - Violet": {
@@ -472,7 +472,7 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Violet Text": {
-    "message": "ロック解除されましたが訪問されていません",
+    "message": "開放されているが未探索",
     "description": "HelpyWindow.InfoTab"
   },
   "Colors - Red": {
@@ -480,7 +480,7 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab Info - Red Text": {
-    "message": "ロックされていません",
+    "message": "未開放",
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab - Storage": {
@@ -508,7 +508,7 @@
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Discord": {
-    "message": "不一致:",
+    "message": "Discord:",
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Version": {
@@ -516,7 +516,7 @@
     "description": "ConfigWindow.About"
   },
   "Config Tab Entry - Localization": {
-    "message": "現地化:",
+    "message": "翻訳者:",
     "description": "ConfigWindow.About"
   },
   "Config About Translation - Community": {
@@ -524,7 +524,7 @@
     "description": "ConfigWindow.About"
   },
   "Config About Translation - Tooltip": {
-    "message": "すべてのローカライゼーションはコミュニティによって行われます。\nそれらの改善を支援したい場合は、Crowdin をご覧ください。",
+    "message": "すべての翻訳はコミュニティによって行われています。\n改善・支援したい場合は、Crowdin をご覧ください。",
     "description": "ConfigWindow.About"
   },
   "Builder Tab - Builder": {
@@ -552,7 +552,7 @@
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Next Overlay": {
-    "message": "航海選択インターフェースに付属するオーバーレイ\n\n次にアンロックまたは探索すべきセクターを提案する\n目に見える：\n  a) マップにアンロックが残っている\n  b) 次のマップのロックを解除するには、そのセクターを探索しなければならない。",
+    "message": "航海選択インターフェースに付属するオーバーレイ\n\n次に開放・探索すべき区域を提案します\n次のどちらかの条件を満たした際に表示されます：\n  a) マップに未開放の区域が存在する\n  b) 次のマップのロックを解除する為に、その区域を探索しなければならない",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Unlock Overlay": {
@@ -560,7 +560,7 @@
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Unlock Overlay": {
-    "message": "航海選択インターフェースに付属するオーバーレイ\n\nまだ開いているアンロックをすべて表示\n目に見える：\n  a) マップにアンロックが残っている",
+    "message": "航海選択インターフェースに付属するオーバーレイ\n\n未開放の区域をすべて表示します\n次の条件を満たした際に表示されます：\n  a) マップに未開放の区域が存在する",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Route Overlay": {
@@ -568,7 +568,7 @@
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Route Overlay": {
-    "message": "航海選択インターフェースに付属するオーバーレイ\n\n最善のルートを提案する\n空の場合：\n  a) 最高ランクのしきい値を超えた\n  b) 必須項目が空",
+    "message": "航海選択インターフェースに付属するオーバーレイ\n\n最善のルートを提案します\n何も表示されていない場合は次の条件を確認してください：\n  a) 最高ランクのしきい値を超えた\n  b) 必須項目が空",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Slider - Rank": {
@@ -576,15 +576,15 @@
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Rank": {
-    "message": "このランクの上にルート提案はありません。",
+    "message": "このランクを超えるとルート提案はされません。",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Checkbox - Include Main": {
-    "message": "メインセクターを自動含める",
+    "message": "メインセクターを自動的に含める",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Tooltip - Include Main": {
-    "message": "自動車には、次のメインルートセクターが含まれます。",
+    "message": "オートインクルードには、次のメインルートセクターが含まれます。",
     "description": "ConfigWindow.Builder"
   },
   "Config Tab Entry - Saved Builds": {
@@ -596,7 +596,7 @@
     "description": "ConfigWindow.Draw"
   },
   "Menu - Localization": {
-    "message": "現地化",
+    "message": "翻訳",
     "description": "ConfigWindow.Draw"
   },
   "Menu - Issues": {
@@ -721,6 +721,14 @@
   },
   "Config Tab Tooltip - On Return": {
     "message": "1つの潜水艦が戻った場合は常にオーバーレイを開く",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Checkbox - Automatically Close": {
+    "message": "自動で閉じる",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Automatically Close": {
+    "message": "すべての潜水艦が航海中の場合に自動でオーバーレイを閉じます。",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - General": {
@@ -852,7 +860,7 @@
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Upload - Information 1": {
-    "message": "匿名で潜水艦に関するデータを提供します。このデータはいかなる方法でも、誰もが恩恵を受けることはできません！",
+    "message": "匿名で潜水艦に関するデータを提供します。\nこのデータはいかなる方法でもあなたと結び付くことはありません。また、誰もが恩恵を受けることができます！",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - What": {
@@ -1334,5 +1342,73 @@
   "Builder Leveling Result - Leftover": {
     "message": "残り時間:",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+  },
+  "Duration Limit - No Limit": {
+    "message": "無制限",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 24 Hours": {
+    "message": "24時間",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 36 Hours": {
+    "message": "36時間",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 48 Hours": {
+    "message": "48時間",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - Custom": {
+    "message": "カスタム",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Week": {
+    "message": "1週間",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 2 Weeks": {
+    "message": "2週間",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Weeks": {
+    "message": "3週間",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 4 Weeks": {
+    "message": "4週間",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Month": {
+    "message": "1ヶ月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Months": {
+    "message": "3ヶ月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 6 Months": {
+    "message": "6ヶ月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 9 Months": {
+    "message": "9ヶ月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Year": {
+    "message": "1年",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Day": {
+    "message": "1日",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3日",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5日",
+    "description": "DateUtil.GetName"
   }
 }

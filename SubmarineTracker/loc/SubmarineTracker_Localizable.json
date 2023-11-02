@@ -307,12 +307,12 @@
     "message": "Custom",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Nothing Found": {
-    "message": "No custom loot found.",
+  "Loot Tab Custom - Profile Empty": {
+    "message": "This profile has no tracked items.",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Tracking Tip": {
-    "message": "You can add tracked items via the loot tab under configuration.",
+  "Loot Tab Custom - Profile Tip": {
+    "message": "You can add items via the loot tab under configuration.",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 1": {
@@ -723,6 +723,14 @@
     "message": "Always opens the overlay if one submarine returns",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Automatically Close": {
+    "message": "Automatically Close",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Automatically Close": {
+    "message": "Automatically closes the overlay if all submarines are on voyage, and holds it closed",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Entry - General": {
     "message": "General:",
     "description": "ConfigWindow.Overlay"
@@ -852,7 +860,7 @@
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Upload - Information 1": {
-    "message": "Anonymously provide data about submarines. This data can't be tied to you in any way and everyone benefits!",
+    "message": "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - What": {
@@ -1334,5 +1342,73 @@
   "Builder Leveling Result - Leftover": {
     "message": "Leftover Exp:",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+  },
+  "Duration Limit - No Limit": {
+    "message": "No Limit",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 24 Hours": {
+    "message": "24 Hours",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 36 Hours": {
+    "message": "36 Hours",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 48 Hours": {
+    "message": "48 Hours",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - Custom": {
+    "message": "Custom",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Week": {
+    "message": "1 Week",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 2 Weeks": {
+    "message": "2 Weeks",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Weeks": {
+    "message": "3 Weeks",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 4 Weeks": {
+    "message": "4 Weeks",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Month": {
+    "message": "1 Month",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Months": {
+    "message": "3 Months",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 6 Months": {
+    "message": "6 Months",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 9 Months": {
+    "message": "9 Months",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Year": {
+    "message": "1 Year",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Day": {
+    "message": "1 Day",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 Days",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 Days",
+    "description": "DateUtil.GetName"
   }
 }

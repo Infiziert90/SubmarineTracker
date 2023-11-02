@@ -85,8 +85,8 @@ public class ReturnOverlay : Window, IDisposable
         var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
         ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
-                                                  ? Helper.CustomPartlyDone : VoyageStats.OnRoute == 0
-                                                      ? Helper.CustomFullyDone : Helper.CustomOnRoute);
+                                                  ? Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
+                                                      ? Configuration.OverlayAllDone : Configuration.OverlayNoneDone);
         var mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
         ImGui.PopStyleColor();
 
@@ -126,7 +126,7 @@ public class ReturnOverlay : Window, IDisposable
             if (longestSub == null)
                 continue;
 
-            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Helper.CustomFullyDone : anySubDone ? Helper.CustomPartlyDone : Helper.CustomOnRoute);
+            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Configuration.OverlayAllDone : anySubDone ? Configuration.OverlayPartlyDone : Configuration.OverlayNoneDone);
             var header = ImGui.CollapsingHeader($"{Helper.GetOverlayName(fc)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 

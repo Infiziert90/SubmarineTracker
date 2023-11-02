@@ -46,17 +46,26 @@ public static class Helper
 
     public static string GetFCName(FcSubmarines fc)
     {
-        return $"{(!Configuration.UseCharacterName ? fc.Tag : fc.CharacterName)}@{fc.World}";
+        return GenerateName(fc, !Configuration.UseCharacterName, !Configuration.OnlyFCTag);
     }
 
     public static string GetOverlayName(FcSubmarines fc)
     {
-        return $"{(!Configuration.OverlayCharacterName ? fc.Tag : fc.CharacterName)}@{fc.World}";
+        return GenerateName(fc, !Configuration.OverlayCharacterName, !Configuration.OverlayOnlyFCTag);
+    }
+
+    public static string GenerateName(FcSubmarines fc, bool tag, bool world)
+    {
+        return $"{(tag ? fc.Tag : fc.CharacterName)}{(world ? $"@{fc.World}" : string.Empty)}";
     }
 
     public static string GetSubName(Submarine sub, FcSubmarines fc)
     {
-        return $"{sub.Name}@{(!Configuration.UseCharacterName ? fc.World : fc.CharacterName)}";
+        var name = sub.Name;
+        if (!Configuration.OnlyFCTag)
+            name += $"@{(!Configuration.UseCharacterName ? fc.World : fc.CharacterName)}";
+
+        return name;
     }
 
     public static void WrappedError(string text)
@@ -165,5 +174,21 @@ public static class Helper
         }
 
         return clicked;
+    }
+
+    public static bool ColorPickerWithReset(string name, ref Vector4 current, Vector4 reset, float spacing)
+    {
+        var changed = ImGui.ColorEdit4($"##{name}ColorPicker", ref current, ImGuiColorEditFlags.NoInputs);
+        ImGui.SameLine();
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextUnformatted(name);
+        ImGui.SameLine(spacing);
+        if (ImGui.Button($"Reset##{name}Reset"))
+        {
+            current = reset;
+            changed = true;
+        }
+
+        return changed;
     }
 }

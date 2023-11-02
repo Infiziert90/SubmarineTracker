@@ -307,12 +307,12 @@
     "message": "Personnalisé",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Nothing Found": {
-    "message": "Aucun butin personnalisé trouvé.",
+  "Loot Tab Custom - Profile Empty": {
+    "message": "Ce profil n'a aucun objet suivi.",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Tracking Tip": {
-    "message": "Vous pouvez ajouter des objets à suivre via l'onglet des objets trouvés dans la configuration du plugin.",
+  "Loot Tab Custom - Profile Tip": {
+    "message": "Vous pouvez ajouter des objets via l'onglet des objets trouvés dans la configuration du plugin.",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 1": {
@@ -723,6 +723,14 @@
     "message": "Toujours ouvrir l'overlay si un sous-marin est de retour",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Automatically Close": {
+    "message": "Fermer automatiquement",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Automatically Close": {
+    "message": "Ferme automatiquement l'overlay si tous les sous-marins sont en expédition, et le maintient fermé",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Entry - General": {
     "message": "Général :",
     "description": "ConfigWindow.Overlay"
@@ -852,7 +860,7 @@
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Upload - Information 1": {
-    "message": "Fournir anonymement des données sur les sous-marins. Ces données ne peuvent être liées à vous d'aucune manière et tout le monde en bénéficiera !",
+    "message": "Fournissez anonymement des données sur les sous-marins.\nCes données ne peuvent être liées à vous d'aucune manière et tout le monde en bénéficiera !",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - What": {
@@ -1334,5 +1342,73 @@
   "Builder Leveling Result - Leftover": {
     "message": "Exp restante :",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+  },
+  "Duration Limit - No Limit": {
+    "message": "Illimitée",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 24 Hours": {
+    "message": "24 heures",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 36 Hours": {
+    "message": "36 heures",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 48 Hours": {
+    "message": "48 heures",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - Custom": {
+    "message": "Personnalisée",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Week": {
+    "message": "1 semaine",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 2 Weeks": {
+    "message": "2 semaines",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Weeks": {
+    "message": "3 semaines",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 4 Weeks": {
+    "message": "4 semaines",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Month": {
+    "message": "1 mois",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Months": {
+    "message": "3 mois",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 6 Months": {
+    "message": "6 mois",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 9 Months": {
+    "message": "9 mois",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Year": {
+    "message": "1 an",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Day": {
+    "message": "1 jour",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 jours",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 jours",
+    "description": "DateUtil.GetName"
   }
 }

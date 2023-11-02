@@ -9,6 +9,7 @@ public class HookManager
     private readonly Plugin Plugin;
 
     private const string PacketReceiverSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 43 ?? 4C 8D 4B 17";
+    private const string PacketReceiverSigCN = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ??";
     private delegate void PacketDelegate(uint param1, ushort param2, sbyte param3, Int64 param4, char param5);
     private readonly Hook<PacketDelegate> PacketHandlerHook;
 
@@ -16,7 +17,13 @@ public class HookManager
     {
         Plugin = plugin;
 
+        // Try to resolve the CN sig if normal one fails ...
+        // Doing this because CN people use an outdated version that still uploads data
+        // so trying to get them at least somewhat up to date
         var packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
+        if (packetReceiverPtr == nint.Zero)
+            packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSigCN);
+
         PacketHandlerHook = Plugin.Hook.HookFromAddress<PacketDelegate>(packetReceiverPtr, PacketReceiver);
         PacketHandlerHook.Enable();
     }

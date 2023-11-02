@@ -25,6 +25,8 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - General", "General:"));
             ImGui.Indent(10.0f);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Only FC Tag", "Only FC Tag"), ref Configuration.OverlayOnlyFCTag);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Only FC Tag", "Shows only the FC tag without @World."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Use Character Name", "Use Character Name"), ref Configuration.OverlayCharacterName);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Use Character Name", "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Rank", "Show Rank"), ref Configuration.OverlayShowRank);
@@ -46,6 +48,14 @@ public partial class ConfigWindow
                 ImGui.Unindent(10.0f);
             }
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Only Returned", "Only Show Returned"), ref Configuration.OverlayOnlyReturned);
+            ImGui.Unindent(10.0f);
+
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Colors", "Colors:"));
+            ImGui.Indent(10.0f);
+            var spacing = 150 * ImGuiHelpers.GlobalScale;
+            changed |= Helper.ColorPickerWithReset(Loc.Localize("Config Tab Colors - All Done", "All Done"), ref Configuration.OverlayAllDone, Helper.CustomFullyDone, spacing);
+            changed |= Helper.ColorPickerWithReset(Loc.Localize("Config Tab Colors - Partly Done", "Partly Done"), ref Configuration.OverlayPartlyDone, Helper.CustomPartlyDone,spacing);
+            changed |= Helper.ColorPickerWithReset(Loc.Localize("Config Tab Colors - None Done", "None Done"), ref Configuration.OverlayNoneDone, Helper.CustomOnRoute, spacing);
             ImGui.Unindent(10.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Window", "Window:"));

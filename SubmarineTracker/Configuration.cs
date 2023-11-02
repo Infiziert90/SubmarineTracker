@@ -2,6 +2,7 @@ using System.IO;
 using Dalamud.Configuration;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
+using SubmarineTracker.Windows;
 
 namespace SubmarineTracker
 {
@@ -18,6 +19,7 @@ namespace SubmarineTracker
         public bool ShowOnlyLowest = true;
         public bool ShowPrediction = true;
         public bool UseCharacterName = false;
+        public bool OnlyFCTag = false;
         public bool UserResize = false;
         public bool ShowAll = true;
         public bool ShowRouteInAll = false;
@@ -50,6 +52,7 @@ namespace SubmarineTracker
         public bool OverlayStartUp = false;
         public bool OverlayAlwaysOpen = false;
         public bool OverlayCharacterName = false;
+        public bool OverlayOnlyFCTag = false;
         public bool OverlayFirstReturn = false;
         public bool OverlayShowDate = false;
         public bool OverlayOnlyReturned = false;
@@ -60,10 +63,12 @@ namespace SubmarineTracker
         public bool OverlayShowRank = false;
         public bool OverlayShowBuild = false;
         public bool OverlayHoldClosed = false;
+        public Vector4 OverlayAllDone = Helper.CustomFullyDone;
+        public Vector4 OverlayPartlyDone = Helper.CustomPartlyDone;
+        public Vector4 OverlayNoneDone = Helper.CustomOnRoute;
 
         public bool ExcludeLegacy = false;
-        [Obsolete("Unused", false)] public Dictionary<uint, int> CustomLootWithValue = new(); // TODO 07.11 delete it
-        public Dictionary<string, Dictionary<uint, int>> CustomLootProfiles = new() {{"Default", new Dictionary<uint, int>()}};
+        public Dictionary<string, Dictionary<uint, int>> CustomLootProfiles = new() {{ "Default", new Dictionary<uint, int>() }};
         public DateLimit DateLimit = DateLimit.None;
 
         public bool ExportExcludeDate = true;
@@ -80,12 +85,6 @@ namespace SubmarineTracker
 
         public void Save()
         {
-            if (CustomLootWithValue.Any())
-            {
-                CustomLootProfiles["Default"] = new Dictionary<uint, int>(CustomLootWithValue);
-                CustomLootWithValue.Clear();
-            }
-
             WriteAllTextSafe(Plugin.PluginInterface.ConfigFile.FullName, JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
             {
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,

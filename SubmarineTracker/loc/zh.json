@@ -307,12 +307,12 @@
     "message": "自定义",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Nothing Found": {
-    "message": "未找到自定义战利品。",
+  "Loot Tab Custom - Profile Empty": {
+    "message": "此配置文件没有任何跟踪项目",
     "description": "LootWindow.CustomLootTab"
   },
-  "Loot Tab Custom - Tracking Tip": {
-    "message": "你可以通过设置中的战利品选项卡添加追踪道具。",
+  "Loot Tab Custom - Profile Tip": {
+    "message": "你可以在设置中的战利品选项卡下添加物品",
     "description": "LootWindow.CustomLootTab"
   },
   "Loot Tab Custom - None 1": {
@@ -484,7 +484,7 @@
     "description": "HelpyWindow.InfoTab"
   },
   "Helpy Tab - Storage": {
-    "message": "存储",
+    "message": "仓库",
     "description": "HelpyWindow.StorageTab"
   },
   "Helpy Tab Warning - AllaganTools": {
@@ -723,6 +723,14 @@
     "message": "当某一艘潜水艇返回时总是打开叠加层",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Automatically Close": {
+    "message": "自动关闭",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Automatically Close": {
+    "message": "假如所有潜水艇都已出航，则自动设置并保持悬浮窗关闭状态",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Entry - General": {
     "message": "通用: ",
     "description": "ConfigWindow.Overlay"
@@ -852,7 +860,7 @@
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Upload - Information 1": {
-    "message": "匿名提供潜水艇相关数据。这些数据不会以任何方式与你联系在一起，每个人都能从中受益！",
+    "message": "匿名上传潜水艇相关数据。\n这些数据不会包含你的任何个人信息，但每个人都能从中受益！",
     "description": "ConfigWindow.Upload"
   },
   "Config Tab Upload - What": {
@@ -1334,5 +1342,73 @@
   "Builder Leveling Result - Leftover": {
     "message": "剩余经验: ",
     "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+  },
+  "Duration Limit - No Limit": {
+    "message": "无限制",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 24 Hours": {
+    "message": "24 小时",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 36 Hours": {
+    "message": "36 小时",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - 48 Hours": {
+    "message": "48 小时",
+    "description": "DateUtil.GetName"
+  },
+  "Duration Limit - Custom": {
+    "message": "自定义",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Week": {
+    "message": "1 周",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 2 Weeks": {
+    "message": "2 周",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Weeks": {
+    "message": "3 周",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 4 Weeks": {
+    "message": "4 周",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Month": {
+    "message": "1 月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Months": {
+    "message": "3 月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 6 Months": {
+    "message": "6 月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 9 Months": {
+    "message": "9 月",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Year": {
+    "message": "1 年",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 1 Day": {
+    "message": "1 天",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 天",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 天",
+    "description": "DateUtil.GetName"
   }
 }
