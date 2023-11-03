@@ -26,8 +26,9 @@ public class HookManager
         {
             packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
         }
-        catch (TargetInvocationException)
+        catch (Exception e)
         {
+            Plugin.Log.Error("Exception in sig scan, maybe CN client?");
             packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSigCN);
         }
 
