@@ -735,6 +735,14 @@
     "message": "Allgemein:",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Only FC Tag": {
+    "message": "Nur GC Tag",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Only FC Tag": {
+    "message": "Zeigt nur den GC Tag ohne @World.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Use Character Name": {
     "message": "Charaktername verwenden",
     "description": "ConfigWindow.Overlay"
@@ -777,6 +785,22 @@
   },
   "Config Tab Checkbox - Only Returned": {
     "message": "Zeige, nur zurückkehrte Tauchboote",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Entry - Colors": {
+    "message": "Farben:",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - All Done": {
+    "message": "Alle fertig",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - Partly Done": {
+    "message": "Teilweise fertig",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - None Done": {
+    "message": "Keiner fertig",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
@@ -1363,6 +1387,18 @@
     "message": "Benutzerdefiniert",
     "description": "DateUtil.GetName"
   },
+  "Date Limit - 1 Day": {
+    "message": "1 Tag",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 Tage",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 Tage",
+    "description": "DateUtil.GetName"
+  },
   "Date Limit - 1 Week": {
     "message": "1 Woche",
     "description": "DateUtil.GetName"
@@ -1397,18 +1433,6 @@
   },
   "Date Limit - 1 Year": {
     "message": "1 Jahr",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 1 Day": {
-    "message": "1 Tag",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 3 Days": {
-    "message": "3 Tage",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 5 Days": {
-    "message": "5 Tage",
     "description": "DateUtil.GetName"
   }
 }

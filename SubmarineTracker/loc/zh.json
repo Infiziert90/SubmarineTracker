@@ -735,6 +735,14 @@
     "message": "通用: ",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Only FC Tag": {
+    "message": "仅显示部队简称",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Only FC Tag": {
+    "message": "仅显示不含 @服务器名 的部队简称。",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Use Character Name": {
     "message": "使用角色名",
     "description": "ConfigWindow.Overlay"
@@ -777,6 +785,22 @@
   },
   "Config Tab Checkbox - Only Returned": {
     "message": "仅显示已返回",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Entry - Colors": {
+    "message": "颜色: ",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - All Done": {
+    "message": "全部完成",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - Partly Done": {
+    "message": "部分完成",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - None Done": {
+    "message": "尚未完成",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
@@ -1363,6 +1387,18 @@
     "message": "自定义",
     "description": "DateUtil.GetName"
   },
+  "Date Limit - 1 Day": {
+    "message": "1 天",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 天",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 天",
+    "description": "DateUtil.GetName"
+  },
   "Date Limit - 1 Week": {
     "message": "1 周",
     "description": "DateUtil.GetName"
@@ -1397,18 +1433,6 @@
   },
   "Date Limit - 1 Year": {
     "message": "1 年",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 1 Day": {
-    "message": "1 天",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 3 Days": {
-    "message": "3 天",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 5 Days": {
-    "message": "5 天",
     "description": "DateUtil.GetName"
   }
 }

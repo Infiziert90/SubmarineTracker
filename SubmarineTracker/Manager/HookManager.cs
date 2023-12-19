@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Dalamud.Hooking;
+﻿using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using SubmarineTracker.Data;
 
@@ -26,7 +25,7 @@ public class HookManager
         {
             packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSig);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Plugin.Log.Error("Exception in sig scan, maybe CN client?");
             packetReceiverPtr = Plugin.SigScanner.ScanText(PacketReceiverSigCN);

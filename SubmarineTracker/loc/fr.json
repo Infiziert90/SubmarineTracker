@@ -735,6 +735,14 @@
     "message": "Général :",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Only FC Tag": {
+    "message": "Seulement le tag de CL",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Only FC Tag": {
+    "message": "Montre seulement le sigle de CL sans @Monde.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Use Character Name": {
     "message": "Utiliser le nom du personnage",
     "description": "ConfigWindow.Overlay"
@@ -777,6 +785,22 @@
   },
   "Config Tab Checkbox - Only Returned": {
     "message": "Montrer seulement les sous-maris de revenus",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Entry - Colors": {
+    "message": "Couleurs :",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - All Done": {
+    "message": "Tout Fait",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - Partly Done": {
+    "message": "Partiellement Fait",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - None Done": {
+    "message": "Aucun Fait",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
@@ -1363,6 +1387,18 @@
     "message": "Personnalisée",
     "description": "DateUtil.GetName"
   },
+  "Date Limit - 1 Day": {
+    "message": "1 jour",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3 jours",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5 jours",
+    "description": "DateUtil.GetName"
+  },
   "Date Limit - 1 Week": {
     "message": "1 semaine",
     "description": "DateUtil.GetName"
@@ -1397,18 +1433,6 @@
   },
   "Date Limit - 1 Year": {
     "message": "1 an",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 1 Day": {
-    "message": "1 jour",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 3 Days": {
-    "message": "3 jours",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 5 Days": {
-    "message": "5 jours",
     "description": "DateUtil.GetName"
   }
 }

@@ -90,6 +90,10 @@ public class Notify
         var fc = KnownSubmarines[Plugin.ClientState.LocalContentId];
         var sub = fc.Submarines.Find(s => s.Register == key)!;
 
+        var found = Configuration.NotifySpecific.TryGetValue($"{sub.Name}{Plugin.ClientState.LocalContentId}", out var ok);
+        if (!Configuration.NotifyForAll && !(found && ok))
+            return;
+
         SendDispatchWebhook(sub, fc, returnTime);
     }
 

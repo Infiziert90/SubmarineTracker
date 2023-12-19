@@ -735,6 +735,14 @@
     "message": "全般:",
     "description": "ConfigWindow.Overlay"
   },
+  "Config Tab Checkbox - Only FC Tag": {
+    "message": "Only FC Tag",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Tooltip - Only FC Tag": {
+    "message": "Shows only the FC tag without @World.",
+    "description": "ConfigWindow.Overlay"
+  },
   "Config Tab Checkbox - Use Character Name": {
     "message": "キャラクター名を使用",
     "description": "ConfigWindow.Overlay"
@@ -777,6 +785,22 @@
   },
   "Config Tab Checkbox - Only Returned": {
     "message": "返されたもののみ表示",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Entry - Colors": {
+    "message": "Colors:",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - All Done": {
+    "message": "All Done",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - Partly Done": {
+    "message": "Partly Done",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Colors - None Done": {
+    "message": "None Done",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Entry - Window": {
@@ -1363,6 +1387,18 @@
     "message": "カスタム",
     "description": "DateUtil.GetName"
   },
+  "Date Limit - 1 Day": {
+    "message": "1日",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 3 Days": {
+    "message": "3日",
+    "description": "DateUtil.GetName"
+  },
+  "Date Limit - 5 Days": {
+    "message": "5日",
+    "description": "DateUtil.GetName"
+  },
   "Date Limit - 1 Week": {
     "message": "1週間",
     "description": "DateUtil.GetName"
@@ -1397,18 +1433,6 @@
   },
   "Date Limit - 1 Year": {
     "message": "1年",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 1 Day": {
-    "message": "1日",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 3 Days": {
-    "message": "3日",
-    "description": "DateUtil.GetName"
-  },
-  "Date Limit - 5 Days": {
-    "message": "5日",
     "description": "DateUtil.GetName"
   }
 }
