@@ -56,7 +56,25 @@ public static class Helper
 
     public static string GenerateName(FcSubmarines fc, bool tag, bool world)
     {
-        return $"{(tag ? fc.Tag : fc.CharacterName)}{(world ? $"@{fc.World}" : string.Empty)}";
+        var name = $"{(tag ? fc.Tag : fc.CharacterName)}{(world ? $"@{fc.World}" : string.Empty)}";
+        if (!Configuration.AnonNames)
+            return name;
+        return $"{Utils.GenerateHashedName($"{name}")}{(world ? $"@{fc.World}" : string.Empty)}";
+    }
+
+    public static string GetCombinedName(FcSubmarines fc)
+    {
+        var name = $"({fc.Tag}) {fc.CharacterName}@{fc.World}";
+        if (!Configuration.AnonNames)
+            return name;
+        return $"{Utils.GenerateHashedName(name)}{(!Configuration.OnlyFCTag ? $"@{fc.World}" : string.Empty)}";
+    }
+
+    public static string SubNameSimple(Submarine sub)
+    {
+        if (!Configuration.AnonNames)
+            return sub.Name;
+        return Utils.GenerateHashedName(sub.Name);
     }
 
     public static string GetSubName(Submarine sub, FcSubmarines fc)
@@ -65,7 +83,9 @@ public static class Helper
         if (!Configuration.OnlyFCTag)
             name += $"@{(!Configuration.UseCharacterName ? fc.World : fc.CharacterName)}";
 
-        return name;
+        if (!Configuration.AnonNames)
+            return name;
+        return Utils.GenerateHashedName(name);
     }
 
     public static void WrappedError(string text)

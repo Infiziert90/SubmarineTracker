@@ -19,6 +19,8 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Only FC Tag", "Shows only the FC tag without @World."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Use Character Name", "Use Character Name"), ref Configuration.UseCharacterName);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Use Character Name", "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text."));
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Anonymize Names", "Anonymize Name & Tag"), ref Configuration.AnonNames);
+            ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Anonymize Names", "Anonymize all names and tags for taking screenshots.\nBe aware this option can lead to cut-off text."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Let Me Resize", "Let Me Resize"), ref Configuration.UserResize);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Let Me Resize", "This allows you to resize the FC buttons,\nbut stops them from automatically adjusting size."));
             ImGui.Unindent(10.0f);
@@ -26,7 +28,7 @@ public partial class ConfigWindow
             if (Configuration.ShowAll)
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
-                ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - All Button", "All Button:"));
+                ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - All Section", "All Section:"));
                 ImGui.Indent(10.0f);
                 changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Route", "Show Route"), ref Configuration.ShowRouteInAll);
                 ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Show Route", "This option will also revert back to 1 FC in each column, if the window is too small."));

@@ -139,7 +139,7 @@ public class ReturnOverlay : Window, IDisposable
             foreach (var sub in fc.Submarines)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
-                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{sub.Name}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Helper.SubNameSimple(sub)}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
                 ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
                 if (needsRepair && ImGui.IsItemHovered())

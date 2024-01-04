@@ -5,7 +5,7 @@ namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
-    private void Order()
+    private void Manage()
     {
         if (ImGui.BeginTabItem($"{Loc.Localize("Config Tab - Manage", "Manage")}##Manage"))
         {
@@ -28,7 +28,7 @@ public partial class ConfigWindow
                     {
                         var fc = Submarines.KnownSubmarines[id];
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Helper.GetFCName(fc));
+                        ImGui.TextUnformatted(Helper.GetCombinedName(fc));
 
                         var first = Configuration.FCOrder.First() == id;
                         var last = Configuration.FCOrder.Last() == id;
@@ -68,9 +68,47 @@ public partial class ConfigWindow
 
                     ImGui.EndTable();
                 }
+
+                ImGuiHelpers.ScaledDummy(5.0f);
+                if (ImGui.BeginTable("##IgnoredCharacters", 2, ImGuiTableFlags.BordersH))
+                {
+                    ImGui.TableSetupColumn(Loc.Localize("Terms - Ignored Characters", "Ignored Characters"));
+                    ImGui.TableSetupColumn("##CharacterDel", 0, 0.07f);
+
+                    ImGui.TableHeadersRow();
+
+                    var ignoredCharacters = Configuration.IgnoredCharacters.ToArray();
+                    foreach (var (id, name) in ignoredCharacters)
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(Configuration.AnonNames ? Utils.GenerateHashedName(name) : name);
+
+                        ImGui.TableNextColumn();
+                        if (Helper.Button($"##{id}CharacterDel", FontAwesomeIcon.Trash, !ImGui.GetIO().KeyCtrl))
+                            Configuration.IgnoredCharacters.Remove(id);
+
+                        ImGui.TableNextRow();
+                    }
+
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button(Loc.Localize("Terms - Add Current Character", "Add Current Character")))
+                    {
+                        var local = Plugin.ClientState.LocalPlayer;
+                        if (local != null)
+                        {
+                            var name = Utils.ToStr(local.Name);
+                            var tag = Utils.ToStr(local.CompanyTag);
+                            var world = Utils.ToStr(local.HomeWorld.GameData!.Name);
+
+                            Configuration.IgnoredCharacters.Add(Plugin.ClientState.LocalContentId, $"({tag}) {name}@{world}");
+                            Configuration.Save();
+                        }
+                    }
+
+                    ImGui.EndTable();
+                }
             }
             ImGui.EndChild();
-
 
             ImGui.EndTabItem();
         }

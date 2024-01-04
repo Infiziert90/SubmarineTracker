@@ -45,7 +45,7 @@ public partial class ConfigWindow : Window, IDisposable
 
                 Notify();
 
-                Order();
+                Manage();
 
                 Upload();
 

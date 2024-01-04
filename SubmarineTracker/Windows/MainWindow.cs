@@ -239,7 +239,7 @@ public class MainWindow : Window, IDisposable
                     ImGuiHelpers.ScaledDummy(10.0f);
                     ImGui.Indent(10.0f);
 
-                    ImGui.TextColored(ImGuiColors.HealerGreen, sub.Name);
+                    ImGui.TextColored(ImGuiColors.HealerGreen, Helper.SubNameSimple(sub));
 
                     ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}");
                     ImGui.SameLine(secondRow);
@@ -295,7 +295,7 @@ public class MainWindow : Window, IDisposable
 
             foreach (var (sub, idx) in selectedFc.Submarines.Select((val, i) => (val, i)))
             {
-                if (ImGui.BeginTabItem($"{sub.Name}##{idx}"))
+                if (ImGui.BeginTabItem($"{Helper.SubNameSimple(sub)}##{idx}"))
                 {
                     DetailedSub(sub);
                     ImGui.EndTabItem();

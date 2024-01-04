@@ -11,7 +11,7 @@ public partial class ConfigWindow
 {
     private static ExcelSheetSelector.ExcelSheetPopupOptions<Item> ItemPopupOptions = null!;
 
-    private int CurrentProfileId;
+    private int CurrentCollectionId;
     private string NewProfileName = string.Empty;
 
     private void InitializeLoot()
@@ -36,30 +36,46 @@ public partial class ConfigWindow
             ImGui.Unindent(10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.ParsedOrange, "Select a profile:");
+            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Config Tab Header - Select Collection", "Select Collection:"));
             var combo = Configuration.CustomLootProfiles.Keys.ToArray();
-            Helper.DrawComboWithArrows("##ProfileSelector", ref CurrentProfileId, ref combo, 0);
-            var selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
-            ImGui.InputTextWithHint("##ProfileNameInput", "Profile Name", ref NewProfileName, 32);
+            Helper.DrawComboWithArrows("##CollectionSelector", ref CurrentCollectionId, ref combo, 0);
+            ImGui.SameLine();
+            var forbidden = CurrentCollectionId == 0;
+            if (forbidden) ImGui.BeginDisabled();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash))
+            {
+                Configuration.CustomLootProfiles.Remove(combo[CurrentCollectionId]);
+
+                // Reset to the default collection
+                CurrentCollectionId = 0;
+            }
+            if (forbidden) ImGui.EndDisabled();
+            if (forbidden && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+                ImGui.SetTooltip(Loc.Localize("Config Tooltip - Default Collection", "Default collection can't be deleted"));
+
+            var selected = Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
+
+            ImGui.InputTextWithHint("##CollectionNameInput", Loc.Localize("Config Text Input - Collection Name", "New Collection Name"), ref NewProfileName, 32);
             ImGui.SameLine();
             var notValid = NewProfileName.Length <= 3;
             if (notValid) ImGui.BeginDisabled();
             if (ImGuiComponents.IconButton(2, FontAwesomeIcon.Plus))
             {
                 if (!Configuration.CustomLootProfiles.TryAdd(NewProfileName, new Dictionary<uint, int>()))
-                    Plugin.PluginInterface.UiBuilder.AddNotification("Profile name already exists ...", "[Submarine Tracker]", NotificationType.Error);
+                    Plugin.PluginInterface.UiBuilder.AddNotification(Loc.Localize("Error - Collection Exists", "Collection with this name already exists"), "[Submarine Tracker]", NotificationType.Error);
 
                 combo = Configuration.CustomLootProfiles.Keys.ToArray();
-                CurrentProfileId = Array.FindIndex(combo, s => s == NewProfileName);
-                if (CurrentProfileId == -1)
-                    CurrentProfileId = 0;
+                CurrentCollectionId = Array.FindIndex(combo, s => s == NewProfileName);
+                if (CurrentCollectionId == -1)
+                    CurrentCollectionId = 0;
 
                 NewProfileName = string.Empty;
-                selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
+                selected = Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
                 Configuration.Save();
             }
             if (notValid) ImGui.EndDisabled();
 
+            ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Add Items", "Add Items:"));
 
             var buttonWidth = ImGui.GetContentRegionAvail().X / 2;

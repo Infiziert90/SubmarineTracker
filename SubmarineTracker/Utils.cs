@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
@@ -161,6 +162,17 @@ public static class Utils
     public static uint GetUniqueId(uint x, uint y)
     {
         return x > y ? y | (x << 8) : x | (y << 8);
+    }
+
+    public static string GenerateHashedName(string name)
+    {
+        var hash = SHA1.HashData(Encoding.UTF8.GetBytes(name));
+        var sb = new StringBuilder(hash.Length * 2);
+
+        foreach (var b in hash)
+            sb.Append(b.ToString("X2"));
+
+        return $"{sb.ToString()[..10]}";
     }
 
     // From: https: //stackoverflow.com/a/36634935

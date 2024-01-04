@@ -4,6 +4,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game;
 using Dalamud.Interface.ImGuiFileDialog;
+using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using SubmarineTracker.Attributes;
@@ -40,7 +41,7 @@ namespace SubmarineTracker
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
         public Configuration Configuration { get; init; }
-        public WindowSystem WindowSystem = new("Submarine Tracker");
+        public readonly WindowSystem WindowSystem = new("Submarine Tracker");
 
         public ConfigWindow ConfigWindow { get; init; }
         public MainWindow MainWindow { get; init; }
@@ -71,7 +72,8 @@ namespace SubmarineTracker
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
         private readonly Localization Localization = new();
 
-        public Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
+        public readonly Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
+        private bool ShowIgnoredWarning = true;
 
         public Plugin()
         {
@@ -216,6 +218,7 @@ namespace SubmarineTracker
             {
                 // Clear the cache after we left workshop
                 SubmarinePreVoyage.Clear();
+                ShowIgnoredWarning = true;
                 return;
             }
 
@@ -239,6 +242,13 @@ namespace SubmarineTracker
                 ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Notifications - Upload Opt Out","This plugin will collect anonymized, submarine specific data. " +
                                                        "For more information on the exact data collected please see the upload tab in the plugin configuration menu.  " +
                                                        "You can opt out of any and all forms of data collection.")));
+            }
+
+            if (Configuration.IgnoredCharacters.ContainsKey(ClientState.LocalContentId) && ShowIgnoredWarning)
+            {
+                PluginInterface.UiBuilder.AddNotification(Loc.Localize("Warnings - Ignored Character", "Ignored Character"), "[Submarine Tracker]", NotificationType.Warning);
+                ShowIgnoredWarning = false;
+                return;
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible;

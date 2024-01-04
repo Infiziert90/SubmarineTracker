@@ -3,8 +3,8 @@ using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker;
 
-[Serializable]
 //From: https://github.com/MidoriKami/DailyDuty/
+[Serializable]
 public class CharacterConfiguration
 {
     // Increase with version bump

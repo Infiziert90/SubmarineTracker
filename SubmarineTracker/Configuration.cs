@@ -11,6 +11,8 @@ namespace SubmarineTracker
     {
         public int Version { get; set; } = 1;
 
+        public bool AnonNames = false;
+
         public bool ShowExtendedPartsList = false;
         public bool ShowTimeInOverview = true;
         public bool UseDateTimeInstead = false;
@@ -78,6 +80,8 @@ namespace SubmarineTracker
         public bool UploadNotification = true;
         public DateTime UploadNotificationReceived = DateTime.MaxValue;
         public bool UploadPermission = true;
+
+        public Dictionary<ulong, string> IgnoredCharacters = new();
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 

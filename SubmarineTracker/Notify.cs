@@ -99,7 +99,7 @@ public class Notify
 
     public void SendDispatchWebhook(Submarine sub, FcSubmarines fc, uint returnTime)
     {
-        if (string.IsNullOrEmpty(Configuration.WebhookUrl))
+        if (!Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         var content = new Webhook.WebhookContent();
@@ -119,7 +119,7 @@ public class Notify
         if (!Plugin.ClientState.IsLoggedIn)
             return;
 
-        if (string.IsNullOrEmpty(Configuration.WebhookUrl))
+        if (!Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         // Prevent that multibox user send multiple webhook triggers
