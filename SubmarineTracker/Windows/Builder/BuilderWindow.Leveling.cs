@@ -272,7 +272,7 @@ public partial class BuilderWindow
             var build = (Build.RouteBuild) t.Build;
             build.Rank = t.OldRank;
 
-            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Append(startPoint).Select(f => ExplorationSheet.GetRow(f)!), build));
+            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Prepend(startPoint).Select(f => ExplorationSheet.GetRow(f)!), build));
         }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
 
     public void DoThingsOffThread()

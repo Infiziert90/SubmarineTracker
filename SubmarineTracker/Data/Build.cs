@@ -258,14 +258,18 @@ public static class Build
                 return new RouteBuild();
 
             var allMod = s.EndsWith("++");
-            var parts = s.Replace("+", "").ToCharArray().Select(t => t.ToString()).ToList();
 
-            for (var i = 0; i < parts.Count; i++)
+            var parts = new List<string>();
+            for (var i = 0; i < s.Length; i++)
             {
-                var t = parts[i];
-                var k = string.Join("", parts.Take(i + 1)).Length;
-                if ((k >= k + 1 && s[k + 1] == '+') || allMod)
-                    parts[i] = t + "+";
+                var part = s[i].ToString();
+                if (part == "+")
+                    continue;
+
+                if ((i + 1 < s.Length && s[i + 1] == '+') || allMod)
+                    part += "+";
+
+                parts.Add(part);
             }
 
             return new RouteBuild
