@@ -111,7 +111,7 @@ public class UnlockOverlay : Window, IDisposable
                 continue;
             }
 
-            var unlockText = $"{UpperCaseStr(unlocked.Destination)}";
+            var unlockText = $"{NumToLetter(unlocked.RowId, true)}. {UpperCaseStr(unlocked.Destination)}";
             var visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
 
             var avail = ImGui.GetWindowSize().X;

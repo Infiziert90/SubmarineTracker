@@ -257,8 +257,6 @@ public partial class BuilderWindow
         return false;
     }
 
-    public string GetStringFromTimespan(TimeSpan span) => $"{span.Days}d {span.Hours}h {span.Minutes}m {span.Seconds}s";
-
     public float GetRemaindExp(int rank, uint exp)
     {
         var expToNext = RankSheet[rank - 1].ExpToNext;
@@ -300,9 +298,7 @@ public partial class BuilderWindow
         DurationName = Configuration.DurationLimit.GetName() + (IgnoreBuild ? "" : " - " + CurrentBuild);
 
         PossibleBuilds = 0;
-        Progress = 0;
-
-        Progress += 1;
+        Progress = 1;
         var outTree = BuildRoute();
 
         if (CancelSource.IsCancellationRequested || outTree == null)
@@ -327,165 +323,156 @@ public partial class BuilderWindow
     {
         var routeBuilds = BuildParts();
 
-        var outTree = new Dictionary<int, Journey>();
         var count = 1;
+        var outTree = new Dictionary<int, Journey>();
         var lastBuild = (new Build.RouteBuild(), 0);
-        if (Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+        if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+            return null;
+
+        Unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
+        var hasAllowed = AllowedSectors.Any();
+        var mapBreaks = ExplorationSheet
+                    .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
+                    .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || Unlocked.Contains(r.RowId))
+                    .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
+
+        ProgressRank = CurrentBuild.Rank;
+
+        var lastMap = 0;
+        var lastBuildRouteRank = 0;
+        while (ProgressRank < TargetRank)
         {
-            Unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
-            var hasAllowed = AllowedSectors.Any();
-            var mapBreaks = ExplorationSheet
-                        .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                        .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || Unlocked.Contains(r.RowId))
-                        .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
+            var (_, bestJourney) = outTree.LastOrDefault();
+            var leftover = bestJourney?.Leftover ?? 0;
+            var curBuild = lastBuild.Item1;
 
-            ProgressRank = CurrentBuild.Rank;
 
-            var lastBuildRouteRank = 0;
-            var lastMap = 0;
-
-            while (ProgressRank < TargetRank)
+            if (lastBuildRouteRank != ProgressRank)
             {
-                var (_, bestJourney) = outTree.LastOrDefault();
-                var leftover = bestJourney?.Leftover ?? 0;
-                var curBuild = lastBuild.Item1;
-
-
-                if (lastBuildRouteRank != ProgressRank)
+                lastBuildRouteRank = ProgressRank;
+                var builds = routeBuilds.Where(t =>
                 {
-                    lastBuildRouteRank = ProgressRank;
-                    var builds = routeBuilds.Where(t =>
+                    var build = t.GetSubmarineBuild;
+                    build.UpdateRank(ProgressRank);
+
+                    return build.HighestRankPart() <= ProgressRank && build is { Speed: >= 20, Range: >= 20 };
+                }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
+
+                var possibleMaps = mapBreaks.Where(t => t.Key <= ProgressRank).Select(t => t.Value - 1).Where(t => t >= lastMap).ToArray();
+
+                PossibleBuilds = builds.Length * possibleMaps.Length;
+                Progress = 0;
+
+                bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
+
+                foreach (var build in builds)
+                {
+                    if (CancelSource.IsCancellationRequested)
+                        break;
+
+                    var routeBuild = build;
+                    var taskJourneys = new List<Task<Journey>>();
+
+                    foreach (var possibleMap in possibleMaps)
+                        taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap)));
+
+                    // ReSharper disable once CoVariantArrayConversion
+                    try
                     {
-                        var build = t.GetSubmarineBuild;
-                        build.UpdateRank(ProgressRank);
-                        return build.HighestRankPart() <= ProgressRank && build is { Speed: >= 20, Range: >= 20 };
-                    }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
-
-                    // if (builds.Contains(CurrentBuild) && !IgnoreBuild)
-                    // {
-                    //     builds = builds.Where(t => t == CurrentBuild).ToArray();
-                    // }
-
-                    var possibleMaps = mapBreaks.Where(t => t.Key <= ProgressRank).Select(t => t.Value - 1).Where(t => t >= lastMap).ToArray();
-
-                    PossibleBuilds = builds.Length * possibleMaps.Length;
-                    Progress = 0;
-
-                    bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
-
-                    foreach (var build in builds)
+                        Task.WaitAll(taskJourneys.ToArray(), CancelSource.Token);
+                    }
+                    catch
                     {
-                        if (CancelSource.IsCancellationRequested)
-                            break;
+                        CancelSource.Cancel();
+                        Plugin.Log.Error("Failed operation when waiting for tasks");
+                        break;
+                    }
 
-                        var routeBuild = build;
-                        var taskJourneys = new List<Task<Journey>>();
+                    if (CancelSource.IsCancellationRequested)
+                        break;
 
-                        foreach (var possibleMap in possibleMaps)
-                            taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap)));
+                    if (!taskJourneys.Any())
+                    {
+                        Plugin.Log.Error($"No journeys returned, cancelling current build!");
+                        return null;
+                    }
 
-                        // ReSharper disable once CoVariantArrayConversion
-                        try
+                    var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
+                    var (_, _, _, exp, path, currentBuild) = best;
+
+                    // we can still continue if this would be false, we also want to check if allowed list is set
+                    if (path.Any() && !hasAllowed)
+                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
+
+                    if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
+                    {
+                        if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                         {
-                            Task.WaitAll(taskJourneys.ToArray(), CancelSource.Token);
+                            curBuild = routeBuild;
+                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
                         }
-                        catch
+                        else if (curBuild.SameBuildWithoutRank(routeBuild))
                         {
-                            CancelSource.Cancel();
-                            Plugin.Log.Error("Failed operation when waiting for tasks");
-                            break;
-                        }
-
-                        if (CancelSource.IsCancellationRequested)
-                            break;
-
-                        if (!taskJourneys.Any())
-                        {
-                            Plugin.Log.Error($"No journeys returned, cancelling current build!");
-                            return null;
-                        }
-
-                        var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
-                        var (_, _, _, exp, path, currentBuild) = best;
-
-                        // we can still continue if this would be false, we also want to check if allowed list is set
-                        if (path.Any() && !hasAllowed)
-                            lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
-
-                        if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
-                        {
-                            if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
-                            {
-                                curBuild = routeBuild;
-                                bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
-                            }
-                            else if (curBuild.SameBuildWithoutRank(routeBuild))
-                            {
-                                bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
-                            }
+                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
                         }
                     }
                 }
+            }
 
-                if (!lastBuild.Item1.SameBuildWithoutRank(curBuild))
-                    lastBuild.Item2 = 0;
-                lastBuild.Item1 = curBuild;
-                lastBuild.Item2++;
+            if (!lastBuild.Item1.SameBuildWithoutRank(curBuild))
+                lastBuild.Item2 = 0;
+            lastBuild.Item1 = curBuild;
+            lastBuild.Item2++;
 
-                if (CancelSource.IsCancellationRequested)
-                    break;
+            if (CancelSource.IsCancellationRequested)
+                break;
 
-                var newLeftover = leftover + bestJourney!.RouteExp;
+            var newLeftover = leftover + bestJourney!.RouteExp;
 
-                if (RankSheet[ProgressRank - 1].ExpToNext <= newLeftover)
+            if (RankSheet[ProgressRank - 1].ExpToNext <= newLeftover)
+            {
+                leftover = newLeftover - RankSheet[ProgressRank - 1].ExpToNext;
+                ProgressRank++;
+                if (ProgressRank > RankSheet.Count)
                 {
-                    leftover = newLeftover - RankSheet[ProgressRank - 1].ExpToNext;
+                    ProgressRank--;
+                    leftover = 0;
+                }
+
+                while (RankSheet[ProgressRank - 1].ExpToNext <= leftover)
+                {
+                    leftover -= RankSheet[ProgressRank - 1].ExpToNext;
                     ProgressRank++;
                     if (ProgressRank > RankSheet.Count)
                     {
                         ProgressRank--;
                         leftover = 0;
+                        break;
                     }
-
-                    while (RankSheet[ProgressRank - 1].ExpToNext <= leftover)
-                    {
-                        leftover -= RankSheet[ProgressRank - 1].ExpToNext;
-                        ProgressRank++;
-                        if (ProgressRank > RankSheet.Count)
-                        {
-                            ProgressRank--;
-                            leftover = 0;
-                            break;
-                        }
-                    }
-
-                    ProgressStartTime = DateTime.Now;
-                }
-                else
-                {
-                    leftover += bestJourney.RouteExp;
                 }
 
-                bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
-
-                outTree.Add(count++, bestJourney);
-
-                if (ProgressRank == 0 || CancelSource.IsCancellationRequested)
-                    break;
+                ProgressStartTime = DateTime.Now;
             }
+            else
+            {
+                leftover += bestJourney.RouteExp;
+            }
+
+            bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
+
+            outTree.Add(count++, bestJourney);
+
+            if (ProgressRank == 0 || CancelSource.IsCancellationRequested)
+                break;
         }
 
         if (CancelSource.IsCancellationRequested)
-            return null!;
+            return null;
 
         if (CachedRouteList.Caches.ContainsKey(DurationName))
-        {
             CachedRouteList.Caches[DurationName] = new RouteCache(outTree);
-        }
         else
-        {
             CachedRouteList.Caches.Add(DurationName, new RouteCache(outTree));
-        }
 
         return outTree;
     }
@@ -496,7 +483,7 @@ public partial class BuilderWindow
 
 
         var allowedSectors = AllowedSectors.Select(s => s.RowId).ToArray();
-        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors, AvgBonus);
+        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors: allowedSectors, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
         var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild, AvgBonus);
 
         Progress++;
