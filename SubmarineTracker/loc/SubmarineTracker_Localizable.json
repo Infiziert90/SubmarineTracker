@@ -959,6 +959,38 @@
     "message": "To disable this behaviour head into the configuration, builder tab and uncheck 'Auto Select'",
     "description": "BuilderWindow.BuildTab"
   },
+  "Builder Window Button - Reset": {
+    "message": "Reset",
+    "description": "BuilderWindow.Draw"
+  },
+  "Builder Window Button - Save": {
+    "message": "Save",
+    "description": "BuilderWindow.Draw"
+  },
+  "Builder Window Button - Load": {
+    "message": "Load",
+    "description": "BuilderWindow.Draw"
+  },
+  "Terms - Name": {
+    "message": "Name",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Button - Save Build": {
+    "message": "Save Build",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Error - Same Name": {
+    "message": "Build with same name exists already.",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Tooltip - Overwrite": {
+    "message": "Hold Control to overwrite",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Tip - Loading": {
+    "message": "Load by clicking",
+    "description": "BuilderWindow.LoadBuild"
+  },
   "Builder Tab - Best Exp": {
     "message": "Best Exp",
     "description": "BuilderWindow.ExpTab"
@@ -1079,12 +1111,20 @@
     "message": "Leveling",
     "description": "BuilderWindow.LevelingTab"
   },
+  "Builder Leveling Button - Stop Calculate": {
+    "message": "Stop Calculation",
+    "description": "BuilderWindow.LevelingTab"
+  },
   "Terms - Target Rank": {
     "message": "Target Rank",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Target": {
     "message": "The rank this calculation must reach, but can overshot.",
+    "description": "BuilderWindow.LevelingTab"
+  },
+  "Builder Leveling Button - Calculate": {
+    "message": "Calculate",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Swap After": {
@@ -1119,14 +1159,6 @@
     "message": "Time elapsed current calculation",
     "description": "BuilderWindow.LevelingTab"
   },
-  "Builder Leveling Button - Calculate": {
-    "message": "Calculate",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Button - Stop Calculate": {
-    "message": "Stop Calculation",
-    "description": "BuilderWindow.LevelingTab"
-  },
   "Builder Leveling Checkbox - Ignore Build": {
     "message": "Ignore Build",
     "description": "BuilderWindow.LevelingTab"
@@ -1137,18 +1169,6 @@
   },
   "Builder Leveling Checkbox - Ignore Unlocks": {
     "message": "Ignore Unlocks",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Checkbox - Avg Exp": {
-    "message": "Use Avg Exp Bonus",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Tooltip - Avg Exp": {
-    "message": "This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Terms - Experimental": {
-    "message": "- Experimental -",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Shark": {
@@ -1167,6 +1187,14 @@
     "message": "Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better\nThis option disables the behaviour\nImportant: This can lead to errors",
     "description": "BuilderWindow.LevelingTab"
   },
+  "Builder Leveling Checkbox - Avg Exp": {
+    "message": "Use Avg Exp Bonus",
+    "description": "BuilderWindow.LevelingTab"
+  },
+  "Builder Leveling Tooltip - Avg Exp": {
+    "message": "This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus",
+    "description": "BuilderWindow.LevelingTab"
+  },
   "Terms - Allowed Sectors": {
     "message": "Allowed Sectors",
     "description": "BuilderWindow.LevelingTab"
@@ -1175,41 +1203,9 @@
     "message": "Last Calculation:",
     "description": "BuilderWindow.LevelingTab"
   },
-  "Builder Leveling Result - List": {
-    "message": "List:",
+  "Builder Leveling Result - Voyage List": {
+    "message": "Voyage List:",
     "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Window Button - Reset": {
-    "message": "Reset",
-    "description": "BuilderWindow.Draw"
-  },
-  "Builder Window Button - Save": {
-    "message": "Save",
-    "description": "BuilderWindow.Draw"
-  },
-  "Builder Window Button - Load": {
-    "message": "Load",
-    "description": "BuilderWindow.Draw"
-  },
-  "Terms - Name": {
-    "message": "Name",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Button - Save Build": {
-    "message": "Save Build",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Error - Same Name": {
-    "message": "Build with same name exists already.",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Tooltip - Overwrite": {
-    "message": "Hold Control to overwrite",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Tip - Loading": {
-    "message": "Load by clicking",
-    "description": "BuilderWindow.LoadBuild"
   },
   "Builder Tab - Route": {
     "message": "Route",
@@ -1349,59 +1345,55 @@
   },
   "Builder Leveling Result - Limit": {
     "message": "Limit:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Avg": {
-    "message": "Avg Bonus:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Build": {
-    "message": "Ignore Build:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Unlocks": {
-    "message": "Ignore Unlocks:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
   },
   "Builder Leveling Result - Maximize": {
     "message": "Maximize Limit:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
+  },
+  "Builder Leveling Result - Avg": {
+    "message": "Avg Bonus:",
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
+  },
+  "Builder Leveling Result - Unlocks": {
+    "message": "Ignore Unlocks:",
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
   },
   "Builder Leveling Step - Build": {
     "message": "Build:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Voyage": {
     "message": "Voyage {0}:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Gained": {
     "message": "Exp Gained:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Reached": {
     "message": "Rank Reached:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Result - Start": {
     "message": "Start Rank:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Final": {
     "message": "Final Rank:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Voyages": {
     "message": "Voyages:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Total": {
     "message": "Exp Total:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Leftover": {
-    "message": "Leftover Exp:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "message": "Leftover:",
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Duration Limit - No Limit": {
     "message": "No Limit",

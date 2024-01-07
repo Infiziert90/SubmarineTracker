@@ -41,7 +41,7 @@ public partial class BuilderWindow
     {
         LevelingAllowedPopupOptions = new()
         {
-            FormatRow = e => $"{NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+            FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
             FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
         };
     }
@@ -52,29 +52,14 @@ public partial class BuilderWindow
         {
             var avail = ImGui.GetContentRegionAvail().X;
             var width = avail / 2;
+            var longText = ImGui.CalcTextSize(Loc.Localize("Builder Leveling Button - Stop Calculate", "Stop Calculation")).X + (20.0f * ImGuiHelpers.GlobalScale);
 
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Build", "Build")}: {(!IgnoreBuild ? $"{CurrentBuild} ({CurrentBuild.Rank})" : $"{Loc.Localize("Terms - All", "All")}")}");
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Build", "Build")}: {(!IgnoreBuild ? $"{CurrentBuild} ({Loc.Localize("Terms - Rank", "Rank")} {CurrentBuild.Rank})" : $"{Loc.Localize("Terms - All", "All")}")}");
             ImGui.SetNextItemWidth(width);
             ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)RankSheet.Last().RowId, $"{Loc.Localize("Terms - Target Rank", "Target Rank")} %d");
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Target", "The rank this calculation must reach, but can overshot."));
-            ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10, $"{Loc.Localize("Terms - Swap After", "Swap After")} %d");
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Swap", "Swaps parts after X voyages if optimal."));
-            if (Processing)
-            {
-                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Progress", "Progress")}:");
-                ImGui.Indent(10.0f);
-                if (IgnoreBuild)
-                    Helper.WrappedError(Loc.Localize("Builder Leveling Warning - Slow", "Warning: This will take a long time and you'll experience game slowdown"));
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - At Rank", "At Rank")}: {ProgressRank}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Progress For", "Progress for current")}: {Progress} / {PossibleBuilds}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Elapsed Total", "Time elapsed")}: {DateTime.Now - StartTime}");
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Elapsed Current", "Time elapsed current calculation")}: {DateTime.Now - ProgressStartTime}");
-                ImGui.Unindent(10.0f);
-            }
-
-            ImGuiHelpers.ScaledDummy(10.0f);
-            if (ImGui.Button(Loc.Localize("Builder Leveling Button - Calculate","Calculate")))
+            ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
+            if (ImGui.Button(Loc.Localize("Builder Leveling Button - Calculate","Calculate"), new Vector2(longText, 0)))
             {
                 CancelSource.Cancel();
                 Thread?.Join();
@@ -86,32 +71,57 @@ public partial class BuilderWindow
                 Thread.Start();
             }
 
-            ImGui.SameLine();
-
-            if (ImGui.Button(Loc.Localize("Builder Leveling Button - Stop Calculate","Stop Calculation")))
+            ImGui.SetNextItemWidth(width);
+            ImGui.SliderInt("##swapAfter", ref SwapAfter, 1, 10, $"{Loc.Localize("Terms - Swap After", "Swap After")} %d");
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Swap", "Swaps parts after X voyages if optimal."));
+            ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
+            if (ImGui.Button(Loc.Localize("Builder Leveling Button - Stop Calculate","Stop Calculation"), new Vector2(longText, 0)))
             {
                 CancelSource.Cancel();
                 Thread?.Join();
             }
 
-            ImGuiHelpers.ScaledDummy(10.0f);
+
+            if (Processing)
+            {
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Progress", "Progress")}:");
+                ImGuiHelpers.ScaledIndent(10.0f);
+                if (IgnoreBuild)
+                    Helper.WrappedError(Loc.Localize("Builder Leveling Warning - Slow", "Warning: This will take a long time and you'll experience game slowdown"));
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - At Rank", "At Rank")}: {ProgressRank}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Progress For", "Progress for current")}: {Progress} / {PossibleBuilds}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Elapsed Total", "Time elapsed")}: {DateTime.Now - StartTime}");
+                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Info - Elapsed Current", "Time elapsed current calculation")}: {DateTime.Now - ProgressStartTime}");
+                ImGuiHelpers.ScaledIndent(-10.0f);
+            }
+
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             width = avail / 3;
-
             ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Options", "Options")}:");
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Build","Ignore Build"), ref IgnoreBuild);
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Build","This will calculate every single possible build\nWarning: This will take a long time and you'll experience game slowdown"));
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Unlocks","Ignore Unlocks"), ref IgnoreUnlocks);
+            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Shark","Ignore Shark Parts"), ref IgnoreShark);
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Shark","Leveling expects that a shark part exists, so it takes that as priority over worse parts" +
+                                                        "\nThis option disables the behaviour" +
+                                                        "\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop." +
+                                                        "\ne.g SSUW must be Rank higher or equal to 25" +
+                                                        "\nImportant: This can lead to errors"));
+            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Unmodified","Ignore Unmodified Parts"), ref IgnoreUnmodded);
+            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Unmodified","Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better" +
+                                                        "\nThis option disables the behaviour" +
+                                                        "\nImportant: This can lead to errors"));
             ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Avg Exp","Use Avg Exp Bonus"), ref AvgBonus);
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Avg Exp","This calculation normally takes only guaranteed retrieval bonus into account.\nWith this option it will take the avg of possible bonus"));
-            if (Configuration.DurationLimit != DurationLimit.None)
-                ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
+            if (Configuration.DurationLimit != DurationLimit.None)
+                ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
             ImGui.SetNextItemWidth(width);
             if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
             {
@@ -149,23 +159,10 @@ public partial class BuilderWindow
                 ImGui.SameLine();
                 ImGui.TextUnformatted(Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
             }
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Experimental", "- Experimental -"));
-            ImGui.Indent(10.0f);
-            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Shark","Ignore Shark Parts"), ref IgnoreShark);
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Shark","Leveling expects that a shark part exists, so it takes that as priority over worse parts" +
-                                                        "\nThis option disables the behaviour" +
-                                                        "\nNOTE: Your Submarine must be Rank of the highest Rank Part, or this will endlessly loop." +
-                                                        "\ne.g SSUW must be Rank higher or equal to 25" +
-                                                        "\nImportant: This can lead to errors"));
-            ImGui.Checkbox(Loc.Localize("Builder Leveling Checkbox - Ignore Unmodified","Ignore Unmodified Parts"), ref IgnoreUnmodded);
-            ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Ignore Unmodified","Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better" +
-                                                        "\nThis option disables the behaviour" +
-                                                        "\nImportant: This can lead to errors"));
-            ImGui.Unindent(10.0f);
             ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Allowed Sectors", "Allowed Sectors")}: {AllowedSectors.Count}");
-
+            ImGuiHelpers.ScaledIndent(10.0f);
             if (AllowedChanged)
             {
                 AllowedChanged = false;
@@ -202,6 +199,7 @@ public partial class BuilderWindow
 
                 ImGui.EndListBox();
             }
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -211,32 +209,31 @@ public partial class BuilderWindow
                 var modifier = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Builder Leveling Result - Last","Last Calculation:"));
+                ImGuiHelpers.ScaledIndent(10.0f);
                 Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Start","Start Rank:")} {CurrentBuild.Rank} ({CurrentBuild})");
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Final","Final Rank:")} {LastCalc[lastIdx].RankReached} ({LastCalc[lastIdx].Build})");
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Voyages","Voyages:")} {lastIdx} ({GetStringFromTimespan(GetTimesFromJourneys(LastCalc.Values))})");
-                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Total","Exp Total:")} {LastCalc.Values.Sum(x => x.RouteExp):N0}");
-                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Leftover","Leftover Exp:")} {LastCalc[lastIdx].Leftover:N0}");
+                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Total","Exp Total:")} {LastCalc.Values.Sum(x => x.RouteExp):N0} ({Loc.Localize("Builder Leveling Result - Leftover","Leftover:")} {LastCalc[lastIdx].Leftover:N0})");
                 });
 
-                ImGui.SameLine();
-                ImGuiHelpers.ScaledDummy(20.0f, 0.0f);
-                ImGui.SameLine();
+                ImGui.SameLine(0, 30.0f * ImGuiHelpers.GlobalScale);
 
                 Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Limit","Limit:")} {LastOptions.Limit}");
-                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Avg","Avg Bonus:")} {AvgBonus}");
-                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Build","Ignore Build:")} {LastOptions.IgnoreBuild}");
-                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Unlocks","Ignore Unlocks:")} {LastOptions.IgnoreUnlocks}");
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Maximize","Maximize Limit:")} {LastOptions.MaximizeDurationLimit}");
+                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Avg","Avg Bonus:")} {AvgBonus}");
+                    ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Unlocks","Ignore Unlocks:")} {LastOptions.IgnoreUnlocks}");
                 });
+                ImGuiHelpers.ScaledIndent(-10.0f);
 
-                ImGuiHelpers.ScaledDummy(20.0f);
+                ImGuiHelpers.ScaledDummy(5.0f);
 
-                if (ImGui.CollapsingHeader(Loc.Localize("Builder Leveling Result - List","List:"), ImGuiTreeNodeFlags.Framed))
+                if (ImGui.CollapsingHeader(Loc.Localize("Builder Leveling Result - Voyage List","Voyage List:"), ImGuiTreeNodeFlags.Framed))
                 {
+                    ImGuiHelpers.ScaledIndent(10.0f);
                     BoxList.RenderList(LastCalc, modifier, 1.0f, pair =>
                     {
                         var (i, (_, rankReached, leftover, routeExp, points, build)) = pair;
@@ -245,6 +242,7 @@ public partial class BuilderWindow
                         ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Gained","Exp Gained:")} {routeExp:N0}");
                         ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Reached","Rank Reached:")} {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
                     });
+                    ImGuiHelpers.ScaledIndent(-10.0f);
                 }
             }
 
