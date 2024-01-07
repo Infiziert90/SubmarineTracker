@@ -27,6 +27,10 @@
     "message": "このプラグインは匿名化された潜水艦固有のデータを収集します。 収集されるデータの詳細については、プラグイン設定メニューのアップロードタブを参照してください。 データ収集はすべてオプトアウトすることができます。",
     "description": "Plugin.FrameworkUpdate"
   },
+  "Warnings - Ignored Character": {
+    "message": "Ignored Character",
+    "description": "Plugin.FrameworkUpdate"
+  },
   "Window Name - Tracker": {
     "message": "トラッカー",
     "description": "Helper.Initialize"
@@ -615,6 +619,22 @@
     "message": "レガシー戦利品を除外",
     "description": "ConfigWindow.Loot"
   },
+  "Config Tab Header - Select Collection": {
+    "message": "Select Collection:",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Tooltip - Default Collection": {
+    "message": "Default collection can't be deleted",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Text Input - Collection Name": {
+    "message": "New Collection Name",
+    "description": "ConfigWindow.Loot"
+  },
+  "Error - Collection Exists": {
+    "message": "Collection with this name already exists",
+    "description": "ConfigWindow.Loot"
+  },
   "Config Tab Entry - Add Items": {
     "message": "アイテムを追加:",
     "description": "ConfigWindow.Loot"
@@ -626,6 +646,26 @@
   "Terms - Delete": {
     "message": "Del",
     "description": "ConfigWindow.Loot"
+  },
+  "Config Tab - Manage": {
+    "message": "管理",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Saved FCs": {
+    "message": "保存された FC",
+    "description": "ConfigWindow.Manage"
+  },
+  "Config Tab Tooltip - Saved FCs Deletion": {
+    "message": "FCエントリーを削除すると、戦利品の履歴がすべて削除されます。\nホールドコントロールで削除します",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Ignored Characters": {
+    "message": "Ignored Characters",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Add Current Character": {
+    "message": "Add Current Character",
+    "description": "ConfigWindow.Manage"
   },
   "Config Tab - Notify": {
     "message": "通知する",
@@ -686,18 +726,6 @@
   "Config Tab Entry - Specific Submarines": {
     "message": "特定のサブマリー:",
     "description": "ConfigWindow.Notify"
-  },
-  "Config Tab - Manage": {
-    "message": "管理",
-    "description": "ConfigWindow.Order"
-  },
-  "Terms - Saved FCs": {
-    "message": "保存された FC",
-    "description": "ConfigWindow.Order"
-  },
-  "Config Tab Tooltip - Saved FCs Deletion": {
-    "message": "FCエントリーを削除すると、戦利品の履歴がすべて削除されます。\nホールドコントロールで削除します",
-    "description": "ConfigWindow.Order"
   },
   "Config Tab - Overlay": {
     "message": "Overlay",
@@ -827,6 +855,14 @@
     "message": "すべてのFCを簡単に見るための「すべて」ボタンを追加します。\n注意: FCが多すぎるとメッシー。",
     "description": "ConfigWindow.Tracker"
   },
+  "Config Tab Checkbox - Anonymize Names": {
+    "message": "Anonymize Name & Tag",
+    "description": "ConfigWindow.Tracker"
+  },
+  "Config Tab Tooltip - Anonymize Names": {
+    "message": "Anonymize all names and tags for taking screenshots.\nBe aware this option can lead to cut-off text.",
+    "description": "ConfigWindow.Tracker"
+  },
   "Config Tab Checkbox - Let Me Resize": {
     "message": "サイズを変更する",
     "description": "ConfigWindow.Tracker"
@@ -835,8 +871,8 @@
     "message": "FCボタン\nのサイズを変更することができますが、サイズを自動的に調整することはできません。",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Entry - All Button": {
-    "message": "すべてのボタン:",
+  "Config Tab Entry - All Section": {
+    "message": "All Section:",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show Route": {

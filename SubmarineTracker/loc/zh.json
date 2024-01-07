@@ -27,6 +27,10 @@
     "message": "此插件将收集匿名的潜水艇特定数据。 有关收集的确切数据的更多信息，请参阅插件设置菜单中的上传选项卡。 你可以选择不接受任意或所有形式的数据收集。",
     "description": "Plugin.FrameworkUpdate"
   },
+  "Warnings - Ignored Character": {
+    "message": "已忽略角色",
+    "description": "Plugin.FrameworkUpdate"
+  },
   "Window Name - Tracker": {
     "message": "追踪器",
     "description": "Helper.Initialize"
@@ -615,6 +619,22 @@
     "message": "排除旧版战利品",
     "description": "ConfigWindow.Loot"
   },
+  "Config Tab Header - Select Collection": {
+    "message": "选择集合:",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Tooltip - Default Collection": {
+    "message": "无法删除默认集合",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Text Input - Collection Name": {
+    "message": "新集合名称",
+    "description": "ConfigWindow.Loot"
+  },
+  "Error - Collection Exists": {
+    "message": "已经存在同名集合",
+    "description": "ConfigWindow.Loot"
+  },
   "Config Tab Entry - Add Items": {
     "message": "添加道具: ",
     "description": "ConfigWindow.Loot"
@@ -626,6 +646,26 @@
   "Terms - Delete": {
     "message": "删除",
     "description": "ConfigWindow.Loot"
+  },
+  "Config Tab - Manage": {
+    "message": "管理",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Saved FCs": {
+    "message": "保存的部队",
+    "description": "ConfigWindow.Manage"
+  },
+  "Config Tab Tooltip - Saved FCs Deletion": {
+    "message": "删除部队条目还将删除其所有战利品历史记录。\n按住 Ctrl 键删除",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Ignored Characters": {
+    "message": "已忽略角色",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Add Current Character": {
+    "message": "添加当前角色",
+    "description": "ConfigWindow.Manage"
   },
   "Config Tab - Notify": {
     "message": "通知",
@@ -686,18 +726,6 @@
   "Config Tab Entry - Specific Submarines": {
     "message": "指定潜艇: ",
     "description": "ConfigWindow.Notify"
-  },
-  "Config Tab - Manage": {
-    "message": "管理",
-    "description": "ConfigWindow.Order"
-  },
-  "Terms - Saved FCs": {
-    "message": "保存的部队",
-    "description": "ConfigWindow.Order"
-  },
-  "Config Tab Tooltip - Saved FCs Deletion": {
-    "message": "删除部队条目还将删除其所有战利品历史记录。\n按住 Ctrl 键删除",
-    "description": "ConfigWindow.Order"
   },
   "Config Tab - Overlay": {
     "message": "悬浮窗",
@@ -827,6 +855,14 @@
     "message": "添加一个\"全部\"按钮以方便地查看所有部队。\n注意: 太多部队时会十分混乱。",
     "description": "ConfigWindow.Tracker"
   },
+  "Config Tab Checkbox - Anonymize Names": {
+    "message": "隐藏名称与标签",
+    "description": "ConfigWindow.Tracker"
+  },
+  "Config Tab Tooltip - Anonymize Names": {
+    "message": "截图时自动隐藏所有名称和标签\n注意: 可能会意外截断部分文本",
+    "description": "ConfigWindow.Tracker"
+  },
   "Config Tab Checkbox - Let Me Resize": {
     "message": "调整大小",
     "description": "ConfigWindow.Tracker"
@@ -835,8 +871,8 @@
     "message": "调整部队按钮的大小, \n但将无法自动调整大小。",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Entry - All Button": {
-    "message": "全部按钮: ",
+  "Config Tab Entry - All Section": {
+    "message": "所有部分:",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show Route": {

@@ -43,7 +43,12 @@ public static class Build
             Bridge = GetPart(build.Bridge);
         }
 
-        public void UpdateRank(int rank) => Bonus = GetRank(rank);
+        public SubmarineBuild UpdateRank(int rank)
+        {
+            Bonus = GetRank(rank);
+
+            return this;
+        }
 
         public int Surveillance => Bonus.SurveillanceBonus + Hull.Surveillance + Stern.Surveillance + Bow.Surveillance + Bridge.Surveillance;
         public int Retrieval => Bonus.RetrievalBonus + Hull.Retrieval + Stern.Retrieval + Bow.Retrieval + Bridge.Retrieval;

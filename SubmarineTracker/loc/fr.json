@@ -27,6 +27,10 @@
     "message": "Ce plugin collectera des données anonymes spécifiques aux sous-marins. Pour plus d'informations sur les données exactes collectées, veuillez consulter l'onglet téléchargement dans le menu de configuration du plugin.  Vous pouvez refuser toute forme de collecte de données.",
     "description": "Plugin.FrameworkUpdate"
   },
+  "Warnings - Ignored Character": {
+    "message": "Personnage ignoré",
+    "description": "Plugin.FrameworkUpdate"
+  },
   "Window Name - Tracker": {
     "message": "Tracker",
     "description": "Helper.Initialize"
@@ -615,6 +619,22 @@
     "message": "Exclure les anciens objets trouvés",
     "description": "ConfigWindow.Loot"
   },
+  "Config Tab Header - Select Collection": {
+    "message": "Sélectionner une collection:",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Tooltip - Default Collection": {
+    "message": "La collection par défaut ne peut pas être supprimée",
+    "description": "ConfigWindow.Loot"
+  },
+  "Config Text Input - Collection Name": {
+    "message": "Nom de la nouvelle collection",
+    "description": "ConfigWindow.Loot"
+  },
+  "Error - Collection Exists": {
+    "message": "Une collection portant le même nom existe déjà",
+    "description": "ConfigWindow.Loot"
+  },
   "Config Tab Entry - Add Items": {
     "message": "Ajouter des objets :",
     "description": "ConfigWindow.Loot"
@@ -626,6 +646,26 @@
   "Terms - Delete": {
     "message": "Suppr.",
     "description": "ConfigWindow.Loot"
+  },
+  "Config Tab - Manage": {
+    "message": "Gestion",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Saved FCs": {
+    "message": "CLs sauvegardées",
+    "description": "ConfigWindow.Manage"
+  },
+  "Config Tab Tooltip - Saved FCs Deletion": {
+    "message": "Supprimer une entrée de CL supprimera également tout l'historique des objets trouvés.\nMaintenez CTRL pour supprimer",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Ignored Characters": {
+    "message": "Personnages ignorés",
+    "description": "ConfigWindow.Manage"
+  },
+  "Terms - Add Current Character": {
+    "message": "Ajouter le personnage actuel",
+    "description": "ConfigWindow.Manage"
   },
   "Config Tab - Notify": {
     "message": "Notifs",
@@ -686,18 +726,6 @@
   "Config Tab Entry - Specific Submarines": {
     "message": "Sous-marins spécifiques :",
     "description": "ConfigWindow.Notify"
-  },
-  "Config Tab - Manage": {
-    "message": "Gestion",
-    "description": "ConfigWindow.Order"
-  },
-  "Terms - Saved FCs": {
-    "message": "CLs sauvegardées",
-    "description": "ConfigWindow.Order"
-  },
-  "Config Tab Tooltip - Saved FCs Deletion": {
-    "message": "Supprimer une entrée de CL supprimera également tout l'historique des objets trouvés.\nMaintenez CTRL pour supprimer",
-    "description": "ConfigWindow.Order"
   },
   "Config Tab - Overlay": {
     "message": "Overlay",
@@ -827,6 +855,14 @@
     "message": "Ajoute un bouton « Tout » pour une vue d'ensemble facile de tous les FC.\nRemarque : peu clair si vous avez trop de CLs.",
     "description": "ConfigWindow.Tracker"
   },
+  "Config Tab Checkbox - Anonymize Names": {
+    "message": "Anonymiser Nom et Étiquette de CL",
+    "description": "ConfigWindow.Tracker"
+  },
+  "Config Tab Tooltip - Anonymize Names": {
+    "message": "Anonymisez tous les noms et étiquette de CL pour la prise de captures d'écran.\nSoyez conscient que cette option peut conduire à un texte tronqué.",
+    "description": "ConfigWindow.Tracker"
+  },
   "Config Tab Checkbox - Let Me Resize": {
     "message": "Laissez-moi redimensionner",
     "description": "ConfigWindow.Tracker"
@@ -835,8 +871,8 @@
     "message": "Cela vous permet de redimensionner les boutons de CL,\nmais les empêche de se redimensionner automatiquement.",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Entry - All Button": {
-    "message": "Bouton Tout :",
+  "Config Tab Entry - All Section": {
+    "message": "Toutes les sections:",
     "description": "ConfigWindow.Tracker"
   },
   "Config Tab Checkbox - Show Route": {

@@ -91,6 +91,15 @@ public static class Utils
         return value;
     }
 
+    public static string PointsToVoyage(string separator, uint[] points)
+    {
+        if (!points.Any())
+            return "No Voyage";
+
+        var start = Voyage.FindVoyageStart(points[0]);
+        return string.Join(separator, points.Select(p => NumToLetter(p - start)));
+    }
+
     public static string FormattedRouteBuild(string name, Build.RouteBuild build)
     {
         var route = "No Route";

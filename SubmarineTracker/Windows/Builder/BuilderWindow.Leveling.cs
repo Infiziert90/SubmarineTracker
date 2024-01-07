@@ -1,49 +1,50 @@
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Utility;
-using Newtonsoft.Json;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Sectors;
+
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
+    private ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> LevelingAllowedPopupOptions = null!;
+    private CancellationTokenSource CancelSource = new();
+    private Thread Thread = null!;
+
     private int TargetRank = 85;
 
     private int SwapAfter = 1;
-    private bool IgnoreBuild;
 
     private int PossibleBuilds;
-    private bool Processing;
     private int Progress;
     private int ProgressRank;
-    private DurationCache CachedRouteList = new();
 
-    private CancellationTokenSource CancelSource = new();
-
-    private string DurationName = string.Empty;
+    private bool IgnoreBuild;
     private bool IgnoreShark;
     private bool IgnoreUnmodded;
 
+    private bool Processing;
     private DateTime StartTime;
     private DateTime ProgressStartTime;
-
-    private Thread Thread = null!;
 
     private Dictionary<int, Journey> LastCalc = new();
     private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
 
     private bool AllowedChanged;
-    private List<SubmarineExplorationPretty> AllowedSectors = new();
-    private uint[] Unlocked = Array.Empty<uint>();
+    private readonly List<SubmarineExplorationPretty> AllowedSectors = new();
 
-    private static string MiscFolder = null!;
-    private static void InitializeLeveling() => MiscFolder = Path.Combine(Plugin.PluginInterface.ConfigDirectory.FullName, "Misc");
+    private void InitializeLeveling()
+    {
+        LevelingAllowedPopupOptions = new()
+        {
+            FormatRow = e => $"{NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
+            FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
+        };
+    }
 
     private bool LevelingTab()
     {
@@ -75,9 +76,6 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(10.0f);
             if (ImGui.Button(Loc.Localize("Builder Leveling Button - Calculate","Calculate")))
             {
-                // Reset here to prevent an empty calculation from happening
-                MustInclude.Clear();
-
                 CancelSource.Cancel();
                 Thread?.Join();
                 CancelSource = new CancellationTokenSource();
@@ -99,7 +97,6 @@ public partial class BuilderWindow
             ImGuiHelpers.ScaledDummy(10.0f);
 
             width = avail / 3;
-            var length = ImGui.CalcTextSize("Duration Limit").X + 25.0f;
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Options", "Options")}:");
             ImGui.Indent(10.0f);
@@ -179,13 +176,8 @@ public partial class BuilderWindow
             ImGui.PushFont(UiBuilder.IconFont);
             ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
             ImGui.PopFont();
-            ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> explorationPopupOptions = new()
-            {
-                FormatRow = e => $"{NumToLetter(e.RowId - Voyage.FindVoyageStart(e.RowId))}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
-                FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
-            };
 
-            if (ExcelSheetSelector.ExcelSheetPopup("LevelingMustIncludeAddPopup", out var row, explorationPopupOptions))
+            if (ExcelSheetSelector.ExcelSheetPopup("LevelingAllowedSectorsAddPopup", out var row, LevelingAllowedPopupOptions))
             {
                 var point = ExplorationSheet.GetRow(row)!;
                 if (!AllowedSectors.Contains(point))
@@ -196,6 +188,7 @@ public partial class BuilderWindow
             }
 
             ImGui.SameLine();
+
             if (ImGui.BeginListBox("##AllowedSectors", new Vector2(-1, listHeight)))
             {
                 foreach (var p in AllowedSectors.ToArray().OrderBy(p => p.RowId))
@@ -206,6 +199,7 @@ public partial class BuilderWindow
                         AllowedSectors.Remove(p);
                     }
                 }
+
                 ImGui.EndListBox();
             }
 
@@ -215,6 +209,7 @@ public partial class BuilderWindow
             {
                 var lastIdx = LastCalc.Last().Key;
                 var modifier = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };
+
                 ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Builder Leveling Result - Last","Last Calculation:"));
                 Box.SimpleBox(modifier, () =>
                 {
@@ -224,9 +219,11 @@ public partial class BuilderWindow
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Total","Exp Total:")} {LastCalc.Values.Sum(x => x.RouteExp):N0}");
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Leftover","Leftover Exp:")} {LastCalc[lastIdx].Leftover:N0}");
                 });
+
                 ImGui.SameLine();
-                ImGuiHelpers.ScaledDummy(20, 0);
+                ImGuiHelpers.ScaledDummy(20.0f, 0.0f);
                 ImGui.SameLine();
+
                 Box.SimpleBox(modifier, () =>
                 {
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Limit","Limit:")} {LastOptions.Limit}");
@@ -235,19 +232,20 @@ public partial class BuilderWindow
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Unlocks","Ignore Unlocks:")} {LastOptions.IgnoreUnlocks}");
                     ImGui.TextUnformatted($"{Loc.Localize("Builder Leveling Result - Maximize","Maximize Limit:")} {LastOptions.MaximizeDurationLimit}");
                 });
-                ImGuiHelpers.ScaledDummy(0, 20);
-                ImGui.Indent(10);
-                ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Builder Leveling Result - List","List:"));
-                ImGui.Unindent(10);
-                BoxList.RenderList(LastCalc, modifier, 1f, pair =>
+
+                ImGuiHelpers.ScaledDummy(20.0f);
+
+                if (ImGui.CollapsingHeader(Loc.Localize("Builder Leveling Result - List","List:"), ImGuiTreeNodeFlags.Framed))
                 {
-                    var (i, (_, rankReached, leftover, routeExp, points, build)) = pair;
-                    var startPoint = Voyage.FindVoyageStart(points[0]);
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Build","Build:")} {build}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Voyage","Voyage {0}:").Format(i)} {MapToThreeLetter(ExplorationSheet.GetRow(startPoint)!.Map.Row)} {string.Join(" -> ", points.Select(p => NumToLetter(p - startPoint)))}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Gained","Exp Gained:")} {routeExp:N0}");
-                    ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Reached","Rank Reached:")} {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
-                });
+                    BoxList.RenderList(LastCalc, modifier, 1.0f, pair =>
+                    {
+                        var (i, (_, rankReached, leftover, routeExp, points, build)) = pair;
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Build","Build:")} {build}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Voyage","Voyage {0}:").Format(i)} {MapToThreeLetter(points[0], true)} {PointsToVoyage(" -> ", points)}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Gained","Exp Gained:")} {routeExp:N0}");
+                        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Builder Leveling Step - Reached","Rank Reached:")} {rankReached} - {GetRemaindExp(rankReached, leftover):P}%");
+                    });
+                }
             }
 
             ImGui.EndTabItem();
@@ -276,29 +274,9 @@ public partial class BuilderWindow
     public void DoThingsOffThread()
     {
         Processing = true;
-
-        Directory.CreateDirectory(MiscFolder);
-        var filePath = Path.Combine(MiscFolder, "routeList.json");
-        try
-        {
-            Plugin.Log.Debug("Loading cached leveling data.");
-            CachedRouteList = JsonConvert.DeserializeObject<DurationCache>(File.ReadAllText(filePath)) ?? new DurationCache();
-        }
-        catch (FileNotFoundException)
-        {
-            Plugin.Log.Warning("Cache file not found.");
-        }
-        catch (Exception e)
-        {
-            Plugin.Log.Error("Loading cached leveling data failed.");
-            Plugin.Log.Error(e.Message);
-        }
-
-        // Add durations limit if they not exist
-        DurationName = Configuration.DurationLimit.GetName() + (IgnoreBuild ? "" : " - " + CurrentBuild);
-
         PossibleBuilds = 0;
         Progress = 1;
+
         var outTree = BuildRoute();
 
         if (CancelSource.IsCancellationRequested || outTree == null)
@@ -310,12 +288,6 @@ public partial class BuilderWindow
         LastCalc = outTree;
 
         LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, Configuration.MaximizeDuration);
-        var l = JsonConvert.SerializeObject(CachedRouteList, new JsonSerializerSettings { Formatting = Formatting.Indented, });
-
-        Plugin.Log.Debug($"Writing routeList json");
-        Plugin.Log.Debug(filePath);
-        File.WriteAllText(filePath, l);
-
         Processing = false;
     }
 
@@ -325,15 +297,15 @@ public partial class BuilderWindow
 
         var count = 1;
         var outTree = new Dictionary<int, Journey>();
-        var lastBuild = (new Build.RouteBuild(), 0);
+        var lastBuild = (Build: new Build.RouteBuild(), Voyages: 0);
         if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
             return null;
 
-        Unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
+        var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
         var hasAllowed = AllowedSectors.Any();
         var mapBreaks = ExplorationSheet
                     .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                    .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || Unlocked.Contains(r.RowId))
+                    .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || unlocked.Contains(r.RowId))
                     .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
 
         ProgressRank = CurrentBuild.Rank;
@@ -344,7 +316,7 @@ public partial class BuilderWindow
         {
             var (_, bestJourney) = outTree.LastOrDefault();
             var leftover = bestJourney?.Leftover ?? 0;
-            var curBuild = lastBuild.Item1;
+            var curBuild = lastBuild.Build;
 
 
             if (lastBuildRouteRank != ProgressRank)
@@ -352,29 +324,26 @@ public partial class BuilderWindow
                 lastBuildRouteRank = ProgressRank;
                 var builds = routeBuilds.Where(t =>
                 {
-                    var build = t.GetSubmarineBuild;
-                    build.UpdateRank(ProgressRank);
-
+                    var build = t.GetSubmarineBuild.UpdateRank(ProgressRank);
                     return build.HighestRankPart() <= ProgressRank && build is { Speed: >= 20, Range: >= 20 };
                 }).Select(t => new Build.RouteBuild(ProgressRank, t)).ToArray();
 
                 var possibleMaps = mapBreaks.Where(t => t.Key <= ProgressRank).Select(t => t.Value - 1).Where(t => t >= lastMap).ToArray();
 
-                PossibleBuilds = builds.Length * possibleMaps.Length;
                 Progress = 0;
+                PossibleBuilds = builds.Length * possibleMaps.Length;
 
                 bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
-
                 foreach (var build in builds)
                 {
                     if (CancelSource.IsCancellationRequested)
-                        break;
+                        return null;
 
                     var routeBuild = build;
                     var taskJourneys = new List<Task<Journey>>();
 
                     foreach (var possibleMap in possibleMaps)
-                        taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap)));
+                        taskJourneys.Add(Task.Run(() => GetJourney(routeBuild, possibleMap, unlocked)));
 
                     // ReSharper disable once CoVariantArrayConversion
                     try
@@ -384,51 +353,49 @@ public partial class BuilderWindow
                     catch
                     {
                         CancelSource.Cancel();
-                        Plugin.Log.Error("Failed operation when waiting for tasks");
+                        Plugin.Log.Error("Failed operation when waiting for tasks!");
                         break;
                     }
 
                     if (CancelSource.IsCancellationRequested)
-                        break;
+                        return null;
 
                     if (!taskJourneys.Any())
                     {
-                        Plugin.Log.Error($"No journeys returned, cancelling current build!");
+                        Plugin.Log.Error("No journeys returned, cancelling current build!");
                         return null;
                     }
 
-                    var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
-                    var (_, _, _, exp, path, currentBuild) = best;
-
                     // we can still continue if this would be false, we also want to check if allowed list is set
-                    if (path.Any() && !hasAllowed)
-                        lastMap = (int)ExplorationSheet.GetRow(path.First())!.Map.Row - 2;
+                    var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
+                    if (best.Route.Any() && !hasAllowed)
+                        lastMap = (int) ExplorationSheet.GetRow(best.Route.First())!.Map.Row - 2;
 
-                    if (bestJourney.RouteExp < exp || (bestJourney.RouteExp == exp && currentBuild == lastBuild.Item1.ToString()))
+                    if (bestJourney.RouteExp < best.RouteExp || (bestJourney.RouteExp == best.RouteExp && best.Build == lastBuild.Build.ToString()))
                     {
-                        if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Item2 >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
+                        if ((!curBuild.SameBuildWithoutRank(routeBuild) && lastBuild.Voyages >= SwapAfter) || (routeBuild.SameBuildWithoutRank(CurrentBuild) && !IgnoreBuild) || outTree.Count == 0)
                         {
                             curBuild = routeBuild;
-                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
+                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, best.RouteExp, best.RouteExp, best.Route, routeBuild.ToString());
                         }
                         else if (curBuild.SameBuildWithoutRank(routeBuild))
                         {
-                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
+                            bestJourney = new Journey(routeBuild.Rank, ProgressRank, best.RouteExp, best.RouteExp, best.Route, routeBuild.ToString());
                         }
                     }
                 }
             }
 
-            if (!lastBuild.Item1.SameBuildWithoutRank(curBuild))
-                lastBuild.Item2 = 0;
-            lastBuild.Item1 = curBuild;
-            lastBuild.Item2++;
+            if (!lastBuild.Build.SameBuildWithoutRank(curBuild))
+                lastBuild.Voyages = 0;
+
+            lastBuild.Build = curBuild;
+            lastBuild.Voyages++;
 
             if (CancelSource.IsCancellationRequested)
-                break;
+                return null;
 
             var newLeftover = leftover + bestJourney!.RouteExp;
-
             if (RankSheet[ProgressRank - 1].ExpToNext <= newLeftover)
             {
                 leftover = newLeftover - RankSheet[ProgressRank - 1].ExpToNext;
@@ -459,7 +426,6 @@ public partial class BuilderWindow
             }
 
             bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
-
             outTree.Add(count++, bestJourney);
 
             if (ProgressRank == 0 || CancelSource.IsCancellationRequested)
@@ -469,22 +435,16 @@ public partial class BuilderWindow
         if (CancelSource.IsCancellationRequested)
             return null;
 
-        if (CachedRouteList.Caches.ContainsKey(DurationName))
-            CachedRouteList.Caches[DurationName] = new RouteCache(outTree);
-        else
-            CachedRouteList.Caches.Add(DurationName, new RouteCache(outTree));
-
         return outTree;
     }
 
-    private Journey GetJourney(Build.RouteBuild routeBuild, int possibleMap)
+    private Journey GetJourney(Build.RouteBuild routeBuild, int possibleMap, uint[] unlocked)
     {
         routeBuild.Map = possibleMap;
 
-
         var allowedSectors = AllowedSectors.Select(s => s.RowId).ToArray();
-        var path = Voyage.FindBestPath(routeBuild, Unlocked, Array.Empty<uint>(), allowedSectors: allowedSectors, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
-        var exp = CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild, AvgBonus);
+        var path = Voyage.FindBestPath(routeBuild, unlocked, Array.Empty<uint>(), allowedSectors: allowedSectors, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
+        var exp = Sectors.CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild, AvgBonus);
 
         Progress++;
         return new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
@@ -513,9 +473,4 @@ public partial class BuilderWindow
     }
 
     public record Journey(int OldRank, int RankReached, uint Leftover, uint RouteExp, uint[] Route, string Build);
-    public record RouteCache(Dictionary<int, Journey> Voyages);
-    public class DurationCache
-    {
-        public Dictionary<string, RouteCache> Caches = new();
-    }
 }
