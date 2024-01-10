@@ -39,6 +39,11 @@ public static class Voyage
         return 0;
     }
 
+    public static SubmarineExplorationPretty FindVoyageStartPretty(uint sector)
+    {
+        return ExplorationSheet.GetRow(FindVoyageStart(sector))!;
+    }
+
     #region Optimizer
     public static uint CalculateDuration(IEnumerable<SubmarineExplorationPretty> walkingPoints, Build.SubmarineBuild build)
     {
@@ -133,6 +138,16 @@ public static class Voyage
     }
 
     private static readonly ConcurrentDictionary<uint, uint> Distances = new();
+
+    public static (uint Distance, SubmarineExplorationPretty[]) CalculateDistance(uint[] walkingPoints, bool findStart)
+    {
+        var route = walkingPoints.Select(ExplorationSheet.GetRow);
+        if (findStart)
+            route = route.Prepend(FindVoyageStartPretty(walkingPoints.First()));
+
+        return CalculateDistance(route!);
+    }
+
     public static (uint Distance, SubmarineExplorationPretty[]) CalculateDistance(IEnumerable<SubmarineExplorationPretty> walkingPoints)
     {
         var walkWay = walkingPoints.ToArray();
@@ -196,5 +211,25 @@ public static class Voyage
     {
         return point.GetSurveyTime(speed);
     }
+    #endregion
+
+    #region CommonRoutes
+
+    public record CommonRoute(int Map, params uint[] Route);
+    public static Dictionary<string, CommonRoute> Common = new()
+    {
+        { "Fight Club - OJ", new CommonRoute(0, 15, 10) },
+        { "Fight Club - JORZ", new CommonRoute(0, 10, 15, 18, 26) },
+        { "Fight Club - MROJZ", new CommonRoute(0, 13, 18, 15, 10, 26) },
+        { "Fight Club - JOZ", new CommonRoute(0, 10, 15, 26) },
+        { "Fight Club - MROJ", new CommonRoute(0, 13, 18, 15, 10) },
+        { "Fight Club - MOJZ", new CommonRoute(0, 13, 15, 10, 26) },
+
+        { "CryPTO - AB", new CommonRoute(1, 32, 33) },
+        { "CryPTO - BACD", new CommonRoute(1, 33, 32, 34, 35) },
+        { "CryPTO - BACMN", new CommonRoute(1, 33, 32, 34, 44, 45) },
+        { "Infi - BACMQ", new CommonRoute(1, 33, 32, 34, 44, 48) },
+    };
+
     #endregion
 }

@@ -83,6 +83,8 @@ public partial class BuilderWindow
 
                     ImGui.EndTable();
                 }
+
+                CommonRoutes();
             }
             ImGui.EndChild();
 

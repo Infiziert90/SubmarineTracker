@@ -5,6 +5,8 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
+    private int CommonSelection;
+
     private void RouteTab()
     {
         if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Route", "Route")}##Route"))
@@ -51,7 +53,7 @@ public partial class BuilderWindow
                 }
 
                 ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Tab Route - Selection", "Select sector by clicking"));
-                if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 1.95f)))
+                if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 2.30f)))
                 {
                     foreach (var location in explorations)
                     {
@@ -102,6 +104,8 @@ public partial class BuilderWindow
                     var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow);
                     CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
                 }
+
+                CommonRoutes();
             }
             ImGui.EndChild();
 
@@ -153,5 +157,36 @@ public partial class BuilderWindow
 
         ImGui.PopTextWrapPos();
         ImGui.EndTooltip();
+    }
+
+    private void CommonRoutes()
+    {
+        var names = Voyage.Common.Keys.Prepend("None").ToArray();
+
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Builder Tab Route - Common", "Common Routes"));
+        ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
+        ImGui.SetNextItemWidth(200.0f * ImGuiHelpers.GlobalScale);
+        if (ImGui.BeginCombo($"##CommonRouteSelection", names[CommonSelection]))
+        {
+            if (ImGui.Selectable("None"))
+            {
+                CommonSelection = 0;
+                CurrentBuild.NotOptimized();
+            }
+
+            foreach (var ((name, route), idx) in Voyage.Common.Select((val, i) => (val, i)))
+            {
+                if (ImGui.Selectable(name))
+                {
+                    CurrentBuild.ChangeMap(route.Map);
+                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(route.Route, true));
+
+                    CommonSelection = idx + 1; // + 1 as we manually add None
+                }
+            }
+
+            ImGui.EndCombo();
+        }
     }
 }
