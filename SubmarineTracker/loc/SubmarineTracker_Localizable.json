@@ -611,6 +611,50 @@
     "message": "Ko-Fi Tip",
     "description": "ConfigWindow.Draw"
   },
+  "Config Tab - General": {
+    "message": "General",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Entry - Naming": {
+    "message": "Naming Convention:",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Naming - Example": {
+    "message": "Example: ",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Entry - Uploads": {
+    "message": "Uploads:",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Checkbox - Upload Permission": {
+    "message": "Upload Permission",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Information 1": {
+    "message": "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - What": {
+    "message": "What data?",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 1": {
+    "message": "Loot received",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 2": {
+    "message": "Sector unlocks",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 3": {
+    "message": "Exploration procs",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 4": {
+    "message": "Submarine stats",
+    "description": "ConfigWindow.General"
+  },
   "Config Tab - Loot": {
     "message": "Loot",
     "description": "ConfigWindow.Loot"
@@ -619,8 +663,8 @@
     "message": "Exclude Legacy Loot",
     "description": "ConfigWindow.Loot"
   },
-  "Config Tab Header - Select Collection": {
-    "message": "Select Collection:",
+  "Config Tab Entry - Collections": {
+    "message": "Collections:",
     "description": "ConfigWindow.Loot"
   },
   "Config Tooltip - Default Collection": {
@@ -635,8 +679,8 @@
     "message": "Collection with this name already exists",
     "description": "ConfigWindow.Loot"
   },
-  "Config Tab Entry - Add Items": {
-    "message": "Add Items:",
+  "Config Tab Entry - Collection Items": {
+    "message": "Collection Items:",
     "description": "ConfigWindow.Loot"
   },
   "Terms - Price": {
@@ -731,24 +775,24 @@
     "message": "Overlay",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Entry - Open": {
-    "message": "Open:",
+  "Config Tab Entry - Behavior": {
+    "message": "Behavior:",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Checkbox - On Startup": {
-    "message": "On Startup",
+  "Config Tab Checkbox - Open On Startup": {
+    "message": "Open On Startup",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Tooltip - On Startup": {
-    "message": "Opens the overlay on startup, if at least one sub is done",
+  "Config Tab Tooltip - Open On Startup": {
+    "message": "Opens the overlay, if it was closed before shutting down the game, on the next startup",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - On Return": {
-    "message": "On Return",
+    "message": "Open On Return",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Tooltip - On Return": {
-    "message": "Always opens the overlay if one submarine returns",
+    "message": "Automatically opens the overlay if a submarine has returned",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Automatically Close": {
@@ -763,22 +807,6 @@
     "message": "General:",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Checkbox - Only FC Tag": {
-    "message": "Only FC Tag",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Tooltip - Only FC Tag": {
-    "message": "Shows only the FC tag without @World.",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Checkbox - Use Character Name": {
-    "message": "Use Character Name",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Tooltip - Use Character Name": {
-    "message": "Use character name instead of FC tag.\nBe aware this option can lead to cut-off text.",
-    "description": "ConfigWindow.Overlay"
-  },
   "Config Tab Checkbox - Show Rank": {
     "message": "Show Rank",
     "description": "ConfigWindow.Overlay"
@@ -789,6 +817,10 @@
   },
   "Config Tab Checkbox - As Date": {
     "message": "Show As Date",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Checkbox - Title Time": {
+    "message": "Show Time In Title",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - First Return Time": {
@@ -855,14 +887,6 @@
     "message": "Adds an 'All' button for easy overview of all FCs.\nNote: Messy with too many FCs.",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Checkbox - Anonymize Names": {
-    "message": "Anonymize Name & Tag",
-    "description": "ConfigWindow.Tracker"
-  },
-  "Config Tab Tooltip - Anonymize Names": {
-    "message": "Anonymize all names and tags for taking screenshots.\nBe aware this option can lead to cut-off text.",
-    "description": "ConfigWindow.Tracker"
-  },
   "Config Tab Checkbox - Let Me Resize": {
     "message": "Let Me Resize",
     "description": "ConfigWindow.Tracker"
@@ -918,30 +942,6 @@
   "Config Tab Checkbox - Extended Parts": {
     "message": "Show Extended Parts List",
     "description": "ConfigWindow.Tracker"
-  },
-  "Config Tab Upload - Information 1": {
-    "message": "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - What": {
-    "message": "What data?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 1": {
-    "message": "Loot received",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 2": {
-    "message": "Sector unlocks",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 3": {
-    "message": "Exploration procs",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Checkbox - Upload Permission": {
-    "message": "Upload Permission",
-    "description": "ConfigWindow.Upload"
   },
   "Builder Tab - Build": {
     "message": "Build",
@@ -1235,6 +1235,10 @@
     "message": "Unknown",
     "description": "BuilderWindow.UnlockedTooltip"
   },
+  "Builder Tab Route - Common": {
+    "message": "Common Routes",
+    "description": "BuilderWindow.CommonRoutes"
+  },
   "Builder Tab - Ship": {
     "message": "Ship",
     "description": "BuilderWindow.ShipTab"
@@ -1462,5 +1466,33 @@
   "Date Limit - 1 Year": {
     "message": "1 Year",
     "description": "DateUtil.GetName"
+  },
+  "Name Option - Default": {
+    "message": "Default",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Full Name": {
+    "message": "Full Name",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Tag": {
+    "message": "Only Tag",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Name": {
+    "message": "Only Name",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Initials": {
+    "message": "Initials",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Only Initials": {
+    "message": "Only Initials",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Anon": {
+    "message": "Anonymized",
+    "description": "NameUtil.GetName"
   }
 }

@@ -68,6 +68,7 @@ namespace SubmarineTracker
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
 
         public readonly Notify Notify;
+        public readonly NameConverter NameConverter;
         public static HookManager HookManager = null!;
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
         private readonly Localization Localization = new();
@@ -83,6 +84,7 @@ namespace SubmarineTracker
 
             FileDialogManager = new FileDialogManager();
 
+            NameConverter = new NameConverter(this);
             Notify = new Notify(this);
 
             Loot.Initialize(this);

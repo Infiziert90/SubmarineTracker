@@ -24,9 +24,9 @@ public partial class HelpyWindow
 
             foreach (var (key, fc) in Submarines.KnownSubmarines)
             {
-                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.GetFCName(fc)}:");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
 
-                ImGui.Indent(10.0f);
+                ImGuiHelpers.ScaledIndent(10.0f);
                 if (ImGui.BeginTable($"##submarineOverview##{key}", 3))
                 {
                     ImGui.TableSetupColumn("##icon", 0, 0.1f);
@@ -50,7 +50,7 @@ public partial class HelpyWindow
 
                     ImGui.EndTable();
                 }
-                ImGui.Unindent(10.0f);
+                ImGuiHelpers.ScaledIndent(-10.0f);
 
                 ImGuiHelpers.ScaledDummy(10.0f);
             }

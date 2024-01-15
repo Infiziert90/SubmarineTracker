@@ -31,12 +31,12 @@ public partial class ConfigWindow
             var changed = false;
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Legacy", "Exclude Legacy Loot"), ref Configuration.ExcludeLegacy);
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Config Tab Header - Select Collection", "Select Collection:"));
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Collections", "Collections:"));
             var combo = Configuration.CustomLootProfiles.Keys.ToArray();
             Helper.DrawComboWithArrows("##CollectionSelector", ref CurrentCollectionId, ref combo, 0);
             ImGui.SameLine();
@@ -76,9 +76,10 @@ public partial class ConfigWindow
             if (notValid) ImGui.EndDisabled();
 
             ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Add Items", "Add Items:"));
 
-            var buttonWidth = ImGui.GetContentRegionAvail().X / 2;
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Collection Items", "Collection Items:"));
+
+            var buttonWidth = ImGui.GetContentRegionAvail().X / 3;
             ImGui.PushFont(UiBuilder.IconFont);
             ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(buttonWidth, 0));
             ImGui.PopFont();

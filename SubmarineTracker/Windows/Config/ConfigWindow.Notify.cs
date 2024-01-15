@@ -14,19 +14,21 @@ public partial class ConfigWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Notifications", "Notifications:"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Returning Sub", "Returning Sub"), ref Configuration.NotifyForReturns);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Needed Repair", "Needed Repair"), ref Configuration.NotifyForRepairs);
             if (Configuration.NotifyForRepairs)
             {
-                ImGui.Indent(10.0f);
+                ImGuiHelpers.ScaledIndent(10.0f);
                 changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Repair Toast", "Show Repair Toast"), ref Configuration.ShowRepairToast);
-                ImGui.Unindent(10.0f);
+                ImGuiHelpers.ScaledIndent(-10.0f);
             }
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
+
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Webhook", "Webhook:"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Dispatch", "Send Dispatch"), ref Configuration.WebhookDispatch);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Send Dispatch", "Sends a webhook message on dispatch, containing a timestamp when this submarine will return."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Return", "Send Return"), ref Configuration.WebhookReturn);
@@ -47,12 +49,14 @@ public partial class ConfigWindow
 
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip(Loc.Localize("Config Tab Tooltip - Webhook", "Click to open discord webhook guide in your browser."));
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
+
+            ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Submarines", "Submarines:"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - All Returning", "All Returning Subs"), ref Configuration.NotifyForAll);
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             if (!Configuration.NotifyForAll)
             {
@@ -61,7 +65,7 @@ public partial class ConfigWindow
 
                 if (ImGui.BeginChild("NotifyTable"))
                 {
-                    ImGui.Indent(10.0f);
+                    ImGuiHelpers.ScaledIndent(10.0f);
                     foreach (var (id, fc) in Submarines.KnownSubmarines)
                     {
                         foreach (var sub in fc.Submarines)
@@ -70,7 +74,7 @@ public partial class ConfigWindow
                             Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
                             var notify = Configuration.NotifySpecific[key];
 
-                            if (ImGui.Checkbox($"{Helper.GetSubName(sub, fc)}##{id}{sub.Register}", ref notify))
+                            if (ImGui.Checkbox($"{Plugin.NameConverter.GetSub(sub, fc)}##{id}{sub.Register}", ref notify))
                             {
                                 Configuration.NotifySpecific[key] = notify;
                                 Configuration.Save();
@@ -80,7 +84,7 @@ public partial class ConfigWindow
                         ImGuiHelpers.ScaledDummy(5.0f);
                     }
 
-                    ImGui.Unindent(10.0f);
+                    ImGuiHelpers.ScaledIndent(-10.0f);
                 }
 
                 ImGui.EndChild();

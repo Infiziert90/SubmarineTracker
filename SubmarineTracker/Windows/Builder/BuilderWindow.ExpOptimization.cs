@@ -145,14 +145,14 @@ public partial class BuilderWindow
                     var length = ImGui.CalcTextSize($"{Loc.Localize("Terms - Must Include", "Must Include")} 5 / 5").X + 25.0f;
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
-                    ImGui.Indent(10.0f);
+                    ImGuiHelpers.ScaledIndent(10.0f);
                     OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - No Automatic", "Disable Automatic Calculation"), ref Configuration.CalculateOnInteraction);
                     OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Ignore Unlocks", "Ignore Unlocks"), ref IgnoreUnlocks);
                     OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Avg Bonus", "Use Avg Exp Bonus"), ref AvgBonus);
                     ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Avg Bonus", "This calculation takes only guaranteed bonus exp into account.\nWith this option it will instead take the avg of possible exp bonus."));
                     if (Configuration.DurationLimit != DurationLimit.None)
                         OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
-                    ImGui.Unindent(10.0f);
+                    ImGuiHelpers.ScaledIndent(-10.0f);
 
                     ImGui.AlignTextToFramePadding();
                     ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
@@ -180,7 +180,7 @@ public partial class BuilderWindow
                         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Custom", "Custom"));
                         ImGui.SameLine(length);
 
-                        ImGui.SetNextItemWidth(width / 5f);
+                        ImGui.SetNextItemWidth(width / 5.0f);
                         if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
                         {
                             Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
@@ -189,7 +189,7 @@ public partial class BuilderWindow
                         ImGui.SameLine();
                         ImGui.TextUnformatted(":");
                         ImGui.SameLine();
-                        ImGui.SetNextItemWidth(width / 5f);
+                        ImGui.SetNextItemWidth(width / 5.0f);
                         if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
                         {
                             Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);

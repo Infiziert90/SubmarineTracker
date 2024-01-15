@@ -611,6 +611,50 @@
     "message": "Ko-Fi Spenden",
     "description": "ConfigWindow.Draw"
   },
+  "Config Tab - General": {
+    "message": "Allgemein",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Entry - Naming": {
+    "message": "Namenskonvention:",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Naming - Example": {
+    "message": "Beispiel:",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Entry - Uploads": {
+    "message": "Hochladen:",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Checkbox - Upload Permission": {
+    "message": "Upload-Berechtigung",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Information 1": {
+    "message": "Teilt anonymisierte Daten über Tauchboote.\nMit diesen Daten kann nichts zurückverfolgt werden und jeder profitiert von ihnen!",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - What": {
+    "message": "Welche Daten?",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 1": {
+    "message": "Erhaltene Beute",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 2": {
+    "message": "Entdeckung neuer Sektoren",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 3": {
+    "message": "Erkundungs procs",
+    "description": "ConfigWindow.General"
+  },
+  "Config Tab Upload - Point 4": {
+    "message": "Tauchboot-Stats",
+    "description": "ConfigWindow.General"
+  },
   "Config Tab - Loot": {
     "message": "Beute",
     "description": "ConfigWindow.Loot"
@@ -619,8 +663,8 @@
     "message": "Veraltete Beute ausschließen",
     "description": "ConfigWindow.Loot"
   },
-  "Config Tab Header - Select Collection": {
-    "message": "Sammlung Auswählen:",
+  "Config Tab Entry - Collections": {
+    "message": "Sammlungen:",
     "description": "ConfigWindow.Loot"
   },
   "Config Tooltip - Default Collection": {
@@ -635,8 +679,8 @@
     "message": "Sammlung mit diesem Namen existiert bereits",
     "description": "ConfigWindow.Loot"
   },
-  "Config Tab Entry - Add Items": {
-    "message": "Gegenstand hinzufügen:",
+  "Config Tab Entry - Collection Items": {
+    "message": "Sammlungsgegenstände:",
     "description": "ConfigWindow.Loot"
   },
   "Terms - Price": {
@@ -731,24 +775,24 @@
     "message": "Overlay",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Entry - Open": {
-    "message": "Öffnen:",
+  "Config Tab Entry - Behavior": {
+    "message": "Verhalten:",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Checkbox - On Startup": {
-    "message": "Nach dem Start",
+  "Config Tab Checkbox - Open On Startup": {
+    "message": "Beim Start öffnen",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Tooltip - On Startup": {
-    "message": "Öffnet das Overlay beim Start, wenn mindestens ein Tauchboot zurückgekehrt ist",
+  "Config Tab Tooltip - Open On Startup": {
+    "message": "Öffnet das Overlay automatisch beim nächsten Start, wenn es beim Spiel beenden geschlossen war",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - On Return": {
-    "message": "Bei Rückkehr",
+    "message": "Bei Rückkehr öffnen",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Tooltip - On Return": {
-    "message": "Das Overlay wird geöffnet, wenn ein Tauchboot zurückkehrt",
+    "message": "Öffnet das Overlay automatisch, wenn ein Tauchboot zurückgekehrt ist",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - Automatically Close": {
@@ -763,22 +807,6 @@
     "message": "Allgemein:",
     "description": "ConfigWindow.Overlay"
   },
-  "Config Tab Checkbox - Only FC Tag": {
-    "message": "Nur GC Tag",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Tooltip - Only FC Tag": {
-    "message": "Zeigt nur den GC Tag ohne @World.",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Checkbox - Use Character Name": {
-    "message": "Charaktername verwenden",
-    "description": "ConfigWindow.Overlay"
-  },
-  "Config Tab Tooltip - Use Character Name": {
-    "message": "Benutzt den Charakternamen und nicht den FG Tag.\nAchtung, dies kann zu abgeschnitten Text führen.",
-    "description": "ConfigWindow.Overlay"
-  },
   "Config Tab Checkbox - Show Rank": {
     "message": "Zeige Rang",
     "description": "ConfigWindow.Overlay"
@@ -789,6 +817,10 @@
   },
   "Config Tab Checkbox - As Date": {
     "message": "Als Datum anzeigen",
+    "description": "ConfigWindow.Overlay"
+  },
+  "Config Tab Checkbox - Title Time": {
+    "message": "Zeige Zeit im Titel",
     "description": "ConfigWindow.Overlay"
   },
   "Config Tab Checkbox - First Return Time": {
@@ -855,14 +887,6 @@
     "message": "Fügt einen 'Alle'-Button hinzu, welcher eine Übersicht über alle FGs gleichzeitig gibt.\nHinweis: Unübersichtlich mit zu vielen FGs.",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Checkbox - Anonymize Names": {
-    "message": "Anonymisiere Name & Tag",
-    "description": "ConfigWindow.Tracker"
-  },
-  "Config Tab Tooltip - Anonymize Names": {
-    "message": "Anonymisiere alle Namen und Tags um Screenshots zu machen.\nSeien Sie sich bewusst, dass diese Option zu abgeschnittenen Text führen kann.",
-    "description": "ConfigWindow.Tracker"
-  },
   "Config Tab Checkbox - Let Me Resize": {
     "message": "Lass mich skalieren",
     "description": "ConfigWindow.Tracker"
@@ -919,30 +943,6 @@
     "message": "Liste erweiterter Teile anzeigen",
     "description": "ConfigWindow.Tracker"
   },
-  "Config Tab Upload - Information 1": {
-    "message": "Teilt anonymisierte Daten über Tauchboote.\nMit diesen Daten kann nichts zurückverfolgt werden und jeder profitiert von ihnen!",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - What": {
-    "message": "Welche Daten?",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 1": {
-    "message": "Erhaltene Beute",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 2": {
-    "message": "Entdeckung neuer Sektoren",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Upload - Point 3": {
-    "message": "Erkundungs procs",
-    "description": "ConfigWindow.Upload"
-  },
-  "Config Tab Checkbox - Upload Permission": {
-    "message": "Upload-Berechtigung",
-    "description": "ConfigWindow.Upload"
-  },
   "Builder Tab - Build": {
     "message": "Build",
     "description": "BuilderWindow.BuildTab"
@@ -958,6 +958,38 @@
   "Builder Build Tooltip - Automatic Selection": {
     "message": "Um das Verhalten zu deaktivieren, öffnen sie das Konfigurationsmenü, Schiffbau, und deaktivieren 'Automatisch auswählen'",
     "description": "BuilderWindow.BuildTab"
+  },
+  "Builder Window Button - Reset": {
+    "message": "Zurücksetzen",
+    "description": "BuilderWindow.Draw"
+  },
+  "Builder Window Button - Save": {
+    "message": "Speichern",
+    "description": "BuilderWindow.Draw"
+  },
+  "Builder Window Button - Load": {
+    "message": "Laden",
+    "description": "BuilderWindow.Draw"
+  },
+  "Terms - Name": {
+    "message": "Name",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Button - Save Build": {
+    "message": "Speichere Build",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Error - Same Name": {
+    "message": "Build mit gleichem Namen existiert bereits.",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Tooltip - Overwrite": {
+    "message": "Halte STRG zum Überschreiben",
+    "description": "BuilderWindow.SaveBuild"
+  },
+  "Builder Window Tip - Loading": {
+    "message": "Lade es durch einen Klick",
+    "description": "BuilderWindow.LoadBuild"
   },
   "Builder Tab - Best Exp": {
     "message": "Beste EP",
@@ -1079,12 +1111,20 @@
     "message": "Aufleveln",
     "description": "BuilderWindow.LevelingTab"
   },
+  "Builder Leveling Button - Stop Calculate": {
+    "message": "Berechnung stoppen",
+    "description": "BuilderWindow.LevelingTab"
+  },
   "Terms - Target Rank": {
     "message": "Ziel-Rang",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Tooltip - Target": {
     "message": "Der Rang, welcher von der Berechnung erreicht werden muss, aber auch überzogen werden kann.",
+    "description": "BuilderWindow.LevelingTab"
+  },
+  "Builder Leveling Button - Calculate": {
+    "message": "Berechne",
     "description": "BuilderWindow.LevelingTab"
   },
   "Terms - Swap After": {
@@ -1119,14 +1159,6 @@
     "message": "Verstrichene Zeit für aktuelle Berechnung",
     "description": "BuilderWindow.LevelingTab"
   },
-  "Builder Leveling Button - Calculate": {
-    "message": "Berechne",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Button - Stop Calculate": {
-    "message": "Berechnung stoppen",
-    "description": "BuilderWindow.LevelingTab"
-  },
   "Builder Leveling Checkbox - Ignore Build": {
     "message": "Build ignorieren",
     "description": "BuilderWindow.LevelingTab"
@@ -1137,18 +1169,6 @@
   },
   "Builder Leveling Checkbox - Ignore Unlocks": {
     "message": "Freischaltungen ignorieren",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Checkbox - Avg Exp": {
-    "message": "Verwende durchschnittliche Bonus-EP",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Leveling Tooltip - Avg Exp": {
-    "message": "Diese Berechnung berücksichtigt nur garantierte Bonus-Erfahrungspunkte.\nMit der Option können sie die Berechnung anweisen den Durchschnitt zu verwendet",
-    "description": "BuilderWindow.LevelingTab"
-  },
-  "Terms - Experimental": {
-    "message": "- Experimentell -",
     "description": "BuilderWindow.LevelingTab"
   },
   "Builder Leveling Checkbox - Ignore Shark": {
@@ -1167,6 +1187,14 @@
     "message": "Aufleveln erwartet, dass ein unmodifiziertes Teil existiert, so wird es diese priorisieren, falls es günstiger ist\nDie Option deaktiviert dieses Verhalten\nWarnung: Dies kann zu Fehlern führen",
     "description": "BuilderWindow.LevelingTab"
   },
+  "Builder Leveling Checkbox - Avg Exp": {
+    "message": "Verwende durchschnittliche Bonus-EP",
+    "description": "BuilderWindow.LevelingTab"
+  },
+  "Builder Leveling Tooltip - Avg Exp": {
+    "message": "Diese Berechnung berücksichtigt nur garantierte Bonus-Erfahrungspunkte.\nMit der Option können sie die Berechnung anweisen den Durchschnitt zu verwendet",
+    "description": "BuilderWindow.LevelingTab"
+  },
   "Terms - Allowed Sectors": {
     "message": "Erlaubte Sektoren",
     "description": "BuilderWindow.LevelingTab"
@@ -1175,41 +1203,9 @@
     "message": "Letzte Berechnung:",
     "description": "BuilderWindow.LevelingTab"
   },
-  "Builder Leveling Result - List": {
-    "message": "Liste:",
+  "Builder Leveling Result - Voyage List": {
+    "message": "Reise Liste:",
     "description": "BuilderWindow.LevelingTab"
-  },
-  "Builder Window Button - Reset": {
-    "message": "Zurücksetzen",
-    "description": "BuilderWindow.Draw"
-  },
-  "Builder Window Button - Save": {
-    "message": "Speichern",
-    "description": "BuilderWindow.Draw"
-  },
-  "Builder Window Button - Load": {
-    "message": "Laden",
-    "description": "BuilderWindow.Draw"
-  },
-  "Terms - Name": {
-    "message": "Name",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Button - Save Build": {
-    "message": "Speichere Build",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Error - Same Name": {
-    "message": "Build mit gleichem Namen existiert bereits.",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Tooltip - Overwrite": {
-    "message": "Halte STRG zum Überschreiben",
-    "description": "BuilderWindow.SaveBuild"
-  },
-  "Builder Window Tip - Loading": {
-    "message": "Lade es durch einen Klick",
-    "description": "BuilderWindow.LoadBuild"
   },
   "Builder Tab - Route": {
     "message": "Route",
@@ -1238,6 +1234,10 @@
   "Terms - Unknown": {
     "message": "Unbekannt",
     "description": "BuilderWindow.UnlockedTooltip"
+  },
+  "Builder Tab Route - Common": {
+    "message": "Übliche Routen",
+    "description": "BuilderWindow.CommonRoutes"
   },
   "Builder Tab - Ship": {
     "message": "Schiff",
@@ -1349,59 +1349,55 @@
   },
   "Builder Leveling Result - Limit": {
     "message": "Begrenzung:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Avg": {
-    "message": "Durchschnittlicher Bonus:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Build": {
-    "message": "Build ignorieren:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
-  },
-  "Builder Leveling Result - Unlocks": {
-    "message": "Freischaltungen ignorieren:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
   },
   "Builder Leveling Result - Maximize": {
     "message": "Maximiere Begrenzung:",
-    "description": "BuilderWindow.<LevelingTab>b__43_6"
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
+  },
+  "Builder Leveling Result - Avg": {
+    "message": "Durchschnittlicher Bonus:",
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
+  },
+  "Builder Leveling Result - Unlocks": {
+    "message": "Freischaltungen ignorieren:",
+    "description": "BuilderWindow.<LevelingTab>b__53_2"
   },
   "Builder Leveling Step - Build": {
     "message": "Build:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Voyage": {
     "message": "Reise {0}:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Gained": {
     "message": "EP erhalten:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Step - Reached": {
     "message": "Rang erreicht:",
-    "description": "BuilderWindow.<LevelingTab>b__43_7"
+    "description": "BuilderWindow.<LevelingTab>b__53_3"
   },
   "Builder Leveling Result - Start": {
     "message": "Start-Rang:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Final": {
     "message": "Final-Rang:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Voyages": {
     "message": "Reisen:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Total": {
     "message": "EP Total:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Builder Leveling Result - Leftover": {
-    "message": "Verbliebene EP:",
-    "description": "<>c__DisplayClass43_0.<LevelingTab>b__5"
+    "message": "Übrig:",
+    "description": "<>c__DisplayClass53_0.<LevelingTab>b__1"
   },
   "Duration Limit - No Limit": {
     "message": "Unbegrenzt",
@@ -1470,5 +1466,33 @@
   "Date Limit - 1 Year": {
     "message": "1 Jahr",
     "description": "DateUtil.GetName"
+  },
+  "Name Option - Default": {
+    "message": "Standard",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Full Name": {
+    "message": "Vollständiger Name",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Tag": {
+    "message": "Nur FG Tag",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Name": {
+    "message": "Nur Name",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Initials": {
+    "message": "Initialen",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Only Initials": {
+    "message": "Nur Initiale",
+    "description": "NameUtil.GetName"
+  },
+  "Name Option - Anon": {
+    "message": "Anonymisiert",
+    "description": "NameUtil.GetName"
   }
 }

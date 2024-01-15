@@ -17,7 +17,7 @@ public partial class LootWindow
             Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
             foreach (var (localId, knownFC) in Submarines.KnownSubmarines)
                 foreach (var s in knownFC.Submarines)
-                    existingSubs.Add(s.Register, ($"{Helper.GetFCName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", localId));
+                    existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", localId));
 
             if (!existingSubs.Any())
             {
@@ -91,7 +91,7 @@ public partial class LootWindow
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;
 
                 ImGui.TextColored(ImGuiColors.HealerGreen, ExplorationSheet.GetRow(detailedLoot.Sector)!.ConvertDestination());
-                ImGui.Indent(10.0f);
+                ImGuiHelpers.ScaledIndent(10.0f);
                 if (stats.Valid)
                     ImGui.TextUnformatted($"DD: {ProcToText(detailedLoot.FavProc)} --- Ret: {ProcToText(detailedLoot.PrimaryRetProc)}");
 
@@ -141,7 +141,7 @@ public partial class LootWindow
 
                     ImGui.EndTable();
                 }
-                ImGui.Unindent(10.0f);
+                ImGuiHelpers.ScaledIndent(-10.0f);
 
                 ImGuiHelpers.ScaledDummy(5.0f);
             }

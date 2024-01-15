@@ -32,8 +32,6 @@ public class ReturnOverlay : Window, IDisposable
     public override void Update()
     {
         Flags = (Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0) | (Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
-
-
     }
 
     public override void PreOpenCheck()
@@ -45,21 +43,55 @@ public class ReturnOverlay : Window, IDisposable
     public override void PreDraw()
     {
         VoyageStats = (0, 0, 0);
+        var nextSub = new Submarines.Submarine(Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
         foreach (var sub in Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
         {
             if (sub.IsOnVoyage())
             {
                 if (sub.IsDone())
+                {
                     VoyageStats.Done += 1;
+                }
                 else
+                {
                     VoyageStats.OnRoute += 1;
+                    if (!Configuration.OverlayTitleTime)
+                        continue;
+
+                    if (Configuration.OverlayFirstReturn)
+                    {
+                        if (nextSub.Return > sub.Return)
+                            nextSub = sub;
+                    }
+                    else
+                    {
+                        if (nextSub.Return < sub.Return)
+                            nextSub = sub;
+                    }
+                }
 
                 continue;
             }
 
             VoyageStats.Halt += 1;
         }
-        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}###submarineOverlay";
+
+        var returnText = "";
+        if (Configuration.OverlayTitleTime)
+        {
+            if (Configuration.OverlayFirstReturn)
+            {
+                if (nextSub.Return < uint.MaxValue)
+                    returnText = $"   -   {(nextSub.IsDone() ? "Done" : Utils.ToTime(nextSub.LeftoverTime()))}";
+            }
+            else
+            {
+                if (nextSub.Return > 0)
+                    returnText = $"   -   {Utils.ToTime(nextSub.LeftoverTime())}";
+            }
+        }
+
+        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}{returnText}###submarineOverlay";
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
@@ -110,13 +142,13 @@ public class ReturnOverlay : Window, IDisposable
         var sortedFcList = fcList.ToArray();
         if (!sortedFcList.Any())
         {
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             ImGui.TextColored(ImGuiColors.DalamudOrange,Loc.Localize("Return Overlay Info - No Return", "No sub has returned."));
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
             return;
         }
 
-        ImGui.Indent(10.0f);
+        ImGuiHelpers.ScaledIndent(10.0f);
         foreach (var fc in sortedFcList)
         {
             y = ImGui.GetCursorPosY();
@@ -127,7 +159,7 @@ public class ReturnOverlay : Window, IDisposable
                 continue;
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Configuration.OverlayAllDone : anySubDone ? Configuration.OverlayPartlyDone : Configuration.OverlayNoneDone);
-            var header = ImGui.CollapsingHeader($"{Helper.GetOverlayName(fc)}###overlayFC{fc.Submarines.First().Register}");
+            var header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);
@@ -135,11 +167,11 @@ public class ReturnOverlay : Window, IDisposable
             if (!header)
                 continue;
 
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             foreach (var sub in fc.Submarines)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
-                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Helper.SubNameSimple(sub)}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
                 ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
                 if (needsRepair && ImGui.IsItemHovered())
@@ -152,9 +184,9 @@ public class ReturnOverlay : Window, IDisposable
 
             }
             ImGui.Columns(1);
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
         }
-        ImGui.Unindent(10.0f);
+        ImGuiHelpers.ScaledIndent(-10.0f);
     }
 
     public override void OnOpen()

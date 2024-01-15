@@ -28,7 +28,7 @@ public partial class ConfigWindow
                     {
                         var fc = Submarines.KnownSubmarines[id];
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Helper.GetCombinedName(fc));
+                        ImGui.TextUnformatted(Plugin.NameConverter.GetCombinedName(fc));
 
                         var first = Configuration.FCOrder.First() == id;
                         var last = Configuration.FCOrder.Last() == id;
@@ -81,7 +81,7 @@ public partial class ConfigWindow
                     foreach (var (id, name) in ignoredCharacters)
                     {
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Configuration.AnonNames ? Utils.GenerateHashedName(name) : name);
+                        ImGui.TextUnformatted(Configuration.NameOption == NameOptions.Anon ? Utils.GenerateHashedName(name) : name);
 
                         ImGui.TableNextColumn();
                         if (Helper.Button($"##{id}CharacterDel", FontAwesomeIcon.Trash, !ImGui.GetIO().KeyCtrl))

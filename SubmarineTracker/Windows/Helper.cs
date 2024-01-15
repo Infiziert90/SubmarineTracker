@@ -44,50 +44,6 @@ public static class Helper
         WrappedError(Loc.Localize("Error - No Data", "No data found for this character's FC\nPlease visit your Company Workshop and access Submersible Management at the Voyage Control Panel."));
     }
 
-    public static string GetFCName(FcSubmarines fc)
-    {
-        return GenerateName(fc, !Configuration.UseCharacterName, !Configuration.OnlyFCTag);
-    }
-
-    public static string GetOverlayName(FcSubmarines fc)
-    {
-        return GenerateName(fc, !Configuration.OverlayCharacterName, !Configuration.OverlayOnlyFCTag);
-    }
-
-    public static string GenerateName(FcSubmarines fc, bool tag, bool world)
-    {
-        var name = $"{(tag ? fc.Tag : fc.CharacterName)}{(world ? $"@{fc.World}" : string.Empty)}";
-        if (!Configuration.AnonNames)
-            return name;
-        return $"{Utils.GenerateHashedName($"{name}")}{(world ? $"@{fc.World}" : string.Empty)}";
-    }
-
-    public static string GetCombinedName(FcSubmarines fc)
-    {
-        var name = $"({fc.Tag}) {fc.CharacterName}@{fc.World}";
-        if (!Configuration.AnonNames)
-            return name;
-        return $"{Utils.GenerateHashedName(name)}{(!Configuration.OnlyFCTag ? $"@{fc.World}" : string.Empty)}";
-    }
-
-    public static string SubNameSimple(Submarine sub)
-    {
-        if (!Configuration.AnonNames)
-            return sub.Name;
-        return Utils.GenerateHashedName(sub.Name);
-    }
-
-    public static string GetSubName(Submarine sub, FcSubmarines fc)
-    {
-        var name = sub.Name;
-        if (!Configuration.OnlyFCTag)
-            name += $"@{(!Configuration.UseCharacterName ? fc.World : fc.CharacterName)}";
-
-        if (!Configuration.AnonNames)
-            return name;
-        return Utils.GenerateHashedName(name);
-    }
-
     public static void WrappedError(string text)
     {
         WrappedText(ImGuiColors.DalamudOrange, text);

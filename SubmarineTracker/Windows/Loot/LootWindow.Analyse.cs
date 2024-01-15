@@ -159,7 +159,7 @@ public partial class LootWindow
             ImGui.TableSetupColumn($"{Loc.Localize("Terms - Item", "Item")}##item");
             ImGui.TableSetupColumn($"{Loc.Localize("Terms - Percentage", "Pct")}##percentage", 0, 0.25f);
 
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             foreach (var sortedEntry in sortedList)
             {
                 ImGui.TableNextColumn();
@@ -173,7 +173,7 @@ public partial class LootWindow
 
                 ImGui.TableNextRow();
             }
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGui.EndTable();
         }

@@ -161,6 +161,11 @@ public static class Submarines
         [JsonConstructor]
         public Submarine() : this("", 0, 0, 0, 0, 0, 0, 0) { }
 
+        public Submarine(uint returnTime) : this()
+        {
+            Return = returnTime;
+        }
+
         public Submarine(HousingWorkshopSubmersibleSubData data) : this("", data.RankId, data.HullId, data.SternId, data.BowId, data.BridgeId, 0, 0)
         {
             Register = data.RegisterTime;

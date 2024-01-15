@@ -46,7 +46,7 @@ public partial class ConfigWindow
         ImGuiHelpers.ScaledDummy(10.0f);
 
         ImGui.TextUnformatted("Debug:");
-        ImGui.Indent(10.0f);
+        ImGuiHelpers.ScaledIndent(10.0f);
         if (ImGui.Button("Send Return"))
             Plugin.Notify.SendReturn(TestSub, TestFC);
 
@@ -113,7 +113,7 @@ public partial class ConfigWindow
             ImGui.TextColored(ImGuiColors.ParsedOrange, $"Voyages Total: {LootDict.Count:N0}");
             ImGui.TextColored(ImGuiColors.ParsedOrange, $"Worth: {Worth:N0} Gil");
         }
-        ImGui.Unindent(10.0f);
+        ImGuiHelpers.ScaledIndent(-10.0f);
         #endif
 
         ImGui.EndTabItem();

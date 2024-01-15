@@ -53,7 +53,7 @@ public class MainWindow : Window, IDisposable
         if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
             var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
-            if (Configuration.UseCharacterName)
+            if (Configuration.NameOption == NameOptions.FullName)
                 buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
 
             ImGui.Columns(2, "columns", true);
@@ -91,7 +91,7 @@ public class MainWindow : Window, IDisposable
                     if (!fc.Submarines.Any())
                         continue;
 
-                    var text = Helper.GetFCName(fc);
+                    var text = Plugin.NameConverter.GetName(fc);
                     if (current == key)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPink);
@@ -140,10 +140,10 @@ public class MainWindow : Window, IDisposable
                 var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Configuration.ShowDateInAll ? 3.2f : 2.8f);
                 var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
-                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Helper.GetFCName(fc)}:");
+                ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
                 foreach (var (sub, idx) in fc.Submarines.Select((val, i) => (val, i)))
                 {
-                    ImGui.Indent(10.0f);
+                    ImGuiHelpers.ScaledIndent(10.0f);
                     var begin = ImGui.GetCursorScreenPos();
 
                     ImGui.TextColored(ImGuiColors.HealerGreen, $"{idx + 1}. ");
@@ -193,7 +193,7 @@ public class MainWindow : Window, IDisposable
                     // if (ImGui.GetIO().KeyShift)
                     //     ImGui.GetForegroundDrawList(ImGuiHelpers.MainViewport).AddRect(begin, end, 0xFF00FF00);
 
-                    ImGui.Unindent(10.0f);
+                    ImGuiHelpers.ScaledIndent(-10.0f);
                 }
                 ImGuiHelpers.ScaledDummy(5.0f);
             }
@@ -237,9 +237,9 @@ public class MainWindow : Window, IDisposable
                 foreach (var sub in selectedFc.Submarines)
                 {
                     ImGuiHelpers.ScaledDummy(10.0f);
-                    ImGui.Indent(10.0f);
+                    ImGuiHelpers.ScaledIndent(10.0f);
 
-                    ImGui.TextColored(ImGuiColors.HealerGreen, Helper.SubNameSimple(sub));
+                    ImGui.TextColored(ImGuiColors.HealerGreen, Plugin.NameConverter.GetJustSub(sub));
 
                     ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}");
                     ImGui.SameLine(secondRow);
@@ -287,7 +287,7 @@ public class MainWindow : Window, IDisposable
                         }
                     }
 
-                    ImGui.Unindent(10.0f);
+                    ImGuiHelpers.ScaledIndent(-10.0f);
                 }
 
                 ImGui.EndTabItem();
@@ -295,7 +295,7 @@ public class MainWindow : Window, IDisposable
 
             foreach (var (sub, idx) in selectedFc.Submarines.Select((val, i) => (val, i)))
             {
-                if (ImGui.BeginTabItem($"{Helper.SubNameSimple(sub)}##{idx}"))
+                if (ImGui.BeginTabItem($"{Plugin.NameConverter.GetJustSub(sub)}##{idx}"))
                 {
                     DetailedSub(sub);
                     ImGui.EndTabItem();
@@ -351,7 +351,7 @@ public class MainWindow : Window, IDisposable
                                         ImGuiHelpers.ScaledDummy(5.0f);
                                         foreach (var ((item, count), iIdx) in loot.Select((val, ii) => (val, ii)))
                                         {
-                                            ImGui.Indent(10.0f);
+                                            ImGuiHelpers.ScaledIndent(10.0f);
                                             if (idx % 2 == 1)
                                                 ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
                                             Helper.DrawScaledIcon(item.Icon, IconSize);
@@ -368,7 +368,7 @@ public class MainWindow : Window, IDisposable
                                             ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
                                             ImGui.TextUnformatted($"{count}");
 
-                                            ImGui.Unindent(10.0f);
+                                            ImGuiHelpers.ScaledIndent(-10.0f);
                                         }
 
                                         ImGuiHelpers.ScaledDummy(10.0f);
@@ -399,7 +399,7 @@ public class MainWindow : Window, IDisposable
     private void DetailedSub(Submarines.Submarine sub)
     {
         ImGuiHelpers.ScaledDummy(5.0f);
-        ImGui.Indent(10.0f);
+        ImGuiHelpers.ScaledIndent(10.0f);
 
         if (ImGui.BeginTable($"##submarineOverview##{sub.Name}", 2))
         {
@@ -522,7 +522,7 @@ public class MainWindow : Window, IDisposable
             ImGui.EndTable();
         }
 
-        ImGui.Unindent(10.0f);
+        ImGuiHelpers.ScaledIndent(-10.0f);
     }
 
     private void AddTableSpacing()

@@ -189,7 +189,7 @@ public partial class BuilderWindow : Window, IDisposable
 
         ImGuiHelpers.ScaledDummy(3.0f);
         ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Window Tip - Loading", "Load by clicking"));
-        ImGui.Indent(5.0f);
+        ImGuiHelpers.ScaledIndent(5.0f);
         ImGui.BeginChild("LoadPopupChild", Vector2.Zero, false);
 
         var ret = false;
@@ -213,7 +213,7 @@ public partial class BuilderWindow : Window, IDisposable
             }
         }
 
-        ImGui.Unindent(5.0f);
+        ImGuiHelpers.ScaledIndent(-5.0f);
 
         // ImGui issue #273849, children keep popups from closing automatically
         if (ret)

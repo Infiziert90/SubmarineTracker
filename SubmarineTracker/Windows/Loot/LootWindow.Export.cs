@@ -48,15 +48,15 @@ public partial class LootWindow
             ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Export All", "Export All FCs"), ref ExportAll);
             if (!ExportAll)
             {
-                ImGui.Indent(10.0f);
+                ImGuiHelpers.ScaledIndent(10.0f);
                 foreach (var (key, fc) in Submarines.KnownSubmarines)
                 {
                     ExportSpecific.TryGetValue(key, out var check);
-                    if (ImGui.Checkbox($"{Helper.GetFCName(fc)}##{key}", ref check))
+                    if (ImGui.Checkbox($"{Plugin.NameConverter.GetName(fc)}##{key}", ref check))
                         ExportSpecific[key] = check;
 
                 }
-                ImGui.Unindent(10.0f);
+                ImGuiHelpers.ScaledIndent(-10.0f);
             }
             changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Configuration.ExportExcludeDate);
             changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Configuration.ExportExcludeHash);

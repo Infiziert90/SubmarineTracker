@@ -105,7 +105,7 @@ public class Notify
         var content = new Webhook.WebhookContent();
         content.Embeds.Add(new
         {
-            title = Helper.GetSubName(sub, fc),
+            title = Plugin.NameConverter.GetSub(sub, fc),
             description=Loc.Localize("Webhook On Dispatch", "Returns <t:{0}:R>").Format(returnTime),
             color=15124255
         });
@@ -130,7 +130,7 @@ public class Notify
         var content = new Webhook.WebhookContent();
         content.Embeds.Add(new
         {
-            title = Helper.GetSubName(sub, fc),
+            title = Plugin.NameConverter.GetSub(sub, fc),
             description=Loc.Localize("Webhook On Return", "Returned at <t:{0}:f>").Format(sub.Return),
             color=8447519
         });
@@ -144,7 +144,7 @@ public class Notify
 
     public void SendReturn(Submarine sub, FcSubmarines fc)
     {
-        Plugin.ChatGui.Print(GenerateMessage(Helper.GetSubName(sub, fc)));
+        Plugin.ChatGui.Print(GenerateMessage(Plugin.NameConverter.GetSub(sub, fc)));
 
         if (Configuration.OverlayAlwaysOpen)
             Plugin.ReturnOverlay.IsOpen = true;
@@ -152,7 +152,7 @@ public class Notify
 
     public void SendRepair(Submarine sub, FcSubmarines fc)
     {
-        Plugin.ChatGui.Print(RepairMessage(Helper.GetSubName(sub, fc)));
+        Plugin.ChatGui.Print(RepairMessage(Plugin.NameConverter.GetSub(sub, fc)));
 
         if (Configuration.ShowRepairToast)
             Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});

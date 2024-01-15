@@ -31,7 +31,7 @@ public partial class LootWindow
 
             Plugin.EnsureFCOrderSafety();
             var existingFCs = Configuration.FCOrder
-                                            .Select(id => $"{Helper.GetFCName(KnownSubmarines[id])}##{id}")
+                                            .Select(id => $"{Plugin.NameConverter.GetName(KnownSubmarines[id])}##{id}")
                                             .Prepend(Loc.Localize("Terms - All", "All"))
                                             .ToArray();
 

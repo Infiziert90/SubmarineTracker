@@ -13,7 +13,7 @@ public partial class ConfigWindow
             var changed = false;
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
-            ImGui.Indent(10.0f);
+            ImGuiHelpers.ScaledIndent(10.0f);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Current FC", "Show Only Current FC"), ref Configuration.ShowOnlyCurrentFC);
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Auto Selection", "Auto Select Current Submarine"), ref Configuration.AutoSelectCurrent);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Auto Selection", "Automatically selects the current selected submarine in the games voyage interface."));
@@ -46,7 +46,7 @@ public partial class ConfigWindow
                 ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Include Main", "Auto includes the next main route sector, if there is one."));
                 ImGuiHelpers.ScaledIndent(-10.0f);
             }
-            ImGui.Unindent(10.0f);
+            ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 

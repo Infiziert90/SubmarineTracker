@@ -6,8 +6,8 @@ namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow : Window, IDisposable
 {
-    private Plugin Plugin;
-    private Configuration Configuration;
+    private readonly Plugin Plugin;
+    private readonly Configuration Configuration;
     private static ExcelSheet<Item> ItemSheet = null!;
 
     public ConfigWindow(Plugin plugin) : base("Configuration##SubmarineTracker")
@@ -35,6 +35,8 @@ public partial class ConfigWindow : Window, IDisposable
         {
             if (ImGui.BeginTabBar("##ConfigTabBar"))
             {
+                General();
+
                 Tracker();
 
                 Builder();
@@ -46,8 +48,6 @@ public partial class ConfigWindow : Window, IDisposable
                 Notify();
 
                 Manage();
-
-                Upload();
 
                 aboutOpen = About();
 
@@ -70,7 +70,7 @@ public partial class ConfigWindow : Window, IDisposable
 
                 ImGui.SameLine();
 
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
+                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPurple);
                 if (ImGui.Button(Loc.Localize("Menu - Localization", "Localization")))
                     Plugin.LocHelp();
                 ImGui.PopStyleColor();

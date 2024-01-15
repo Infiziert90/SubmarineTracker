@@ -11,7 +11,7 @@ namespace SubmarineTracker
     {
         public int Version { get; set; } = 1;
 
-        public bool AnonNames = false;
+        public NameOptions NameOption = NameOptions.Default;
 
         public bool ShowExtendedPartsList = false;
         public bool ShowTimeInOverview = true;
@@ -20,8 +20,6 @@ namespace SubmarineTracker
         public bool ShowRouteInOverview = true;
         public bool ShowOnlyLowest = true;
         public bool ShowPrediction = true;
-        public bool UseCharacterName = false;
-        public bool OnlyFCTag = false;
         public bool UserResize = false;
         public bool ShowAll = true;
         public bool ShowRouteInAll = false;
@@ -53,8 +51,6 @@ namespace SubmarineTracker
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;
         public bool OverlayAlwaysOpen = false;
-        public bool OverlayCharacterName = false;
-        public bool OverlayOnlyFCTag = false;
         public bool OverlayFirstReturn = false;
         public bool OverlayShowDate = false;
         public bool OverlayOnlyReturned = false;
@@ -65,6 +61,7 @@ namespace SubmarineTracker
         public bool OverlayShowRank = false;
         public bool OverlayShowBuild = false;
         public bool OverlayHoldClosed = false;
+        public bool OverlayTitleTime = false;
         public Vector4 OverlayAllDone = Helper.CustomFullyDone;
         public Vector4 OverlayPartlyDone = Helper.CustomPartlyDone;
         public Vector4 OverlayNoneDone = Helper.CustomOnRoute;
