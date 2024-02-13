@@ -215,6 +215,7 @@ public static class Submarines
             }
         }
 
+        public string Identifier() => Build.FullIdentifier();
         private string GetPartName(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Name.ToString();
         private uint GetIconId(ushort partId) => ItemSheet.GetRow(PartIdToItemId[partId])!.Icon;
 

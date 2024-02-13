@@ -79,7 +79,7 @@ public partial class ConfigWindow
         if (ImGui.BeginPopup("InputPathDialog"))
         {
             Plugin.FileDialogManager.OpenFolderDialog(
-                "Pick a folder",
+                "Pick the folder",
                 (b, s) => { if (b) InputPath = s; },
                 null,
                 true);

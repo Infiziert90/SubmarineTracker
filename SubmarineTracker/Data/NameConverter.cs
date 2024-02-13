@@ -38,6 +38,12 @@ public class NameConverter
         return Plugin.Configuration.NameOption != NameOptions.Anon ? sub.Name : Utils.GenerateHashedName(sub.Name);
     }
 
+    public string GetSubIdentifier(Submarine sub, FcSubmarines fc)
+    {
+        var name = $"[{GenerateName(fc)}] {sub.Name} ({sub.Identifier()})";
+        return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
+    }
+
     public string GetCombinedName(FcSubmarines fc)
     {
         var name = $"({fc.Tag}) {fc.CharacterName}@{fc.World}";

@@ -317,7 +317,12 @@ namespace SubmarineTracker
         public static void LocHelp() => Dalamud.Utility.Util.OpenLink(Crowdin);
 
         #region Draws
-        private void DrawUI() => WindowSystem.Draw();
+
+        private void DrawUI()
+        {
+            WindowSystem.Draw();
+            FileDialogManager.Draw();
+        }
 
         public void OpenTracker() => MainWindow.IsOpen = true;
         public void OpenBuilder() => BuilderWindow.IsOpen = true;

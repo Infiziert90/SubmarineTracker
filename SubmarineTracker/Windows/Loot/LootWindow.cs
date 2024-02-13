@@ -38,7 +38,6 @@ public partial class LootWindow : Window, IDisposable
 
     public override void Draw()
     {
-        Plugin.FileDialogManager.Draw();
         Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);

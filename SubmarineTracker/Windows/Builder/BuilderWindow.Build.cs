@@ -21,13 +21,18 @@ public partial class BuilderWindow
             {
                 if (!CacheValid)
                 {
+                    var customTerm = Loc.Localize("Terms - Custom", "Custom")!;
+
                     Plugin.EnsureFCOrderSafety();
-                    var existingSubs = Configuration.FCOrder
-                                                    .SelectMany(id => KnownSubmarines[id].Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
-                                                    .ToArray();
+                    var existingSubs = Configuration.FCOrder.SelectMany(id =>
+                    {
+                        var fc = KnownSubmarines[id];
+                        return fc.Submarines.Select(s => Plugin.NameConverter.GetSubIdentifier(s, fc));
+                    }).ToArray();
+
                     if (Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
-                        existingSubs = fcSub.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
-                    existingSubs = existingSubs.Prepend(Loc.Localize("Terms - Custom", "Custom")).ToArray();
+                        existingSubs = fcSub.Submarines.Select(s => Plugin.NameConverter.GetSubIdentifier(s, fcSub)).ToArray();
+                    existingSubs = existingSubs.Prepend(customTerm).ToArray();
 
                     if (existingSubs.Length < CurrentBuild.OriginalSub)
                         CurrentBuild.OriginalSub = 0;
@@ -38,9 +43,9 @@ public partial class BuilderWindow
                     ImGui.PopItemWidth();
 
                     // Calculate first so rank can be changed afterwards
-                    if (existingSubs[CurrentBuild.OriginalSub] != Loc.Localize("Terms - Custom", "Custom"))
+                    if (existingSubs[CurrentBuild.OriginalSub] != customTerm)
                     {
-                        sub = KnownSubmarines.Values.SelectMany(fc => fc.Submarines).First(sub => $"{sub.Name} ({sub.Build.FullIdentifier()})" == existingSubs[CurrentBuild.OriginalSub]);
+                        sub = Configuration.FCOrder.SelectMany(id => KnownSubmarines[id].Submarines).ToArray()[CurrentBuild.OriginalSub - 1];
                         CurrentBuild.UpdateBuild(sub);
                     }
 
