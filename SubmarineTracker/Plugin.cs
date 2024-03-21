@@ -4,9 +4,11 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game;
 using Dalamud.Interface.ImGuiFileDialog;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel;
@@ -37,6 +39,7 @@ namespace SubmarineTracker
         [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
         [PluginService] public static ITextureProvider Texture { get; private set; } = null!;
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
+        [PluginService] public static INotificationManager Notification { get; private set; } = null!;
 
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
@@ -75,6 +78,7 @@ namespace SubmarineTracker
 
         public readonly Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
         private bool ShowIgnoredWarning = true;
+        private bool ShowStorageMessage = true;
 
         public Plugin()
         {
@@ -221,6 +225,7 @@ namespace SubmarineTracker
                 // Clear the cache after we left workshop
                 SubmarinePreVoyage.Clear();
                 ShowIgnoredWarning = true;
+                ShowStorageMessage = true;
                 return;
             }
 
@@ -246,11 +251,41 @@ namespace SubmarineTracker
                                                        "You can opt out of any and all forms of data collection.")));
             }
 
-            if (Configuration.IgnoredCharacters.ContainsKey(ClientState.LocalContentId) && ShowIgnoredWarning)
+            if (Configuration.IgnoredCharacters.ContainsKey(ClientState.LocalContentId))
             {
-                PluginInterface.UiBuilder.AddNotification(Loc.Localize("Warnings - Ignored Character", "Ignored Character"), "[Submarine Tracker]", NotificationType.Warning);
-                ShowIgnoredWarning = false;
+                if (ShowIgnoredWarning)
+                {
+                    Notification.AddNotification(new Notification
+                    {
+                        Content = Loc.Localize("Warnings - Ignored Character", "Ignored Character"),
+                        Type = NotificationType.Warning,
+                        Minimized = false,
+                    });
+                    ShowIgnoredWarning = false;
+                }
+
                 return;
+            }
+
+            if (Configuration.ShowStorageMessage && ShowStorageMessage)
+            {
+                if (Submarines.KnownSubmarines.TryGetValue(ClientState.LocalContentId, out var currentFc))
+                {
+                    var status = currentFc.CheckLeftovers();
+                    if (status is { Voyages: > -1, Repairs: > -1 })
+                    {
+                        if (status is {Voyages: 0, Repairs: 0})
+                            ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - Both","Not enough Tanks and Repair Kits!")));
+                        else if (status.Voyages == 0)
+                            ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - No Tanks","Not enough Tanks!")));
+                        else if (status.Repairs == 0)
+                            ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - No Kits","Not enough Repair Kits!")));
+                        else
+                            ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Storage - All Okay","Your inventory has enough for {0} voyages and {1} repairs").Format(status.Voyages, status.Repairs)));
+                    }
+                }
+
+                ShowStorageMessage = false;
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible;

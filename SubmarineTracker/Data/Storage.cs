@@ -1,4 +1,5 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using FFXIVClientStructs.FFXIV.Client.Game;
+using Lumina.Excel.GeneratedSheets;
 
 namespace SubmarineTracker.Data;
 
@@ -30,5 +31,11 @@ public static class Storage
                     StorageCache[key].Add(item.RowId, new CachedItem(item, count));
             }
         }
+    }
+
+    public static unsafe int InventoryCount(Items item)
+    {
+        var manager = InventoryManager.Instance();
+        return manager == null ? -1 : manager->GetInventoryItemCount((uint) item, false, false);
     }
 }

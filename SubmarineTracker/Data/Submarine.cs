@@ -95,6 +95,31 @@ public static class Submarines
         public Submarine? GetFirstReturn() => Submarines.MinBy(sub => sub.Return);
         public bool AnySubDone() => Submarines.Any(sub => sub.IsDone());
 
+        public (int Voyages, int Repairs) CheckLeftovers()
+        {
+            var tanks = Storage.InventoryCount(Items.Tanks);
+            var kits = Storage.InventoryCount(Items.Kits);
+
+            if (tanks == -1 || kits == -1)
+            {
+                Plugin.Log.Warning("InventoryManager was null");
+                return (-1, -1);
+            }
+
+            var requiredTanks = 0;
+            var requiredKits = 0;
+            foreach (var sub in Submarines)
+            {
+                requiredTanks += sub.Points.Sum(p => ExplorationSheet.GetRow(p)!.CeruleumTankReq);
+                requiredKits += sub.Build.RepairCosts;
+            }
+
+            if (requiredTanks == 0 || requiredKits == 0)
+                return (-1, -1);
+
+            return (tanks / requiredTanks, kits / requiredKits);
+        }
+
         #region Loot
         [JsonIgnore] public bool Refresh = true;
         [JsonIgnore] public Dictionary<uint, Dictionary<Item, int>> AllLoot = new();
@@ -330,7 +355,7 @@ public static class Submarines
 
         public bool IsValid() => Rank > 0;
         public bool ValidExpRange() => NExp > 0;
-        public bool IsOnVoyage() => Points.Any();
+        public bool IsOnVoyage() => Points.Count != 0;
         public bool IsDone() => LeftoverTime().TotalSeconds < 0;
         public TimeSpan LeftoverTime() => ReturnTime - DateTime.Now.ToUniversalTime();
 
@@ -376,7 +401,7 @@ public static class Submarines
 
     public static bool SubmarinesEqual(List<Submarine> l, List<Submarine> r)
     {
-        if (!l.Any() || !r.Any())
+        if (l.Count == 0 || r.Count == 0)
             return false;
 
         if (l.Count != r.Count)

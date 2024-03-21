@@ -78,6 +78,7 @@ namespace SubmarineTracker
         public DateTime UploadNotificationReceived = DateTime.MaxValue;
         public bool UploadPermission = true;
 
+        public bool ShowStorageMessage = true;
         public Dictionary<ulong, string> IgnoredCharacters = new();
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();

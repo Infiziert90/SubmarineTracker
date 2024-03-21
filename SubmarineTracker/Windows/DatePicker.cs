@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
+using Dalamud.Utility;
 
 namespace SubmarineTracker.Windows;
 
@@ -38,7 +40,12 @@ public static class DateWidget
         if (minimal > currentMin)
         {
             currentMin = minimal;
-            Plugin.PluginInterface.UiBuilder.AddNotification("Selected date can not be any earlier", "[Submarine Tracker]", NotificationType.Warning);
+            Plugin.Notification.AddNotification(new Notification
+            {
+                Content = Loc.Localize("Warnings - Minimal Date", "Date before {0} is not possible").Format(minimal.ToShortDateString()),
+                Type = NotificationType.Warning,
+                Minimized = false,
+            });
             needsRefresh = true;
         }
         else if (currentMin > currentMax)

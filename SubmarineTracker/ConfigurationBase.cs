@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -51,7 +52,12 @@ public class ConfigurationBase : IDisposable
             catch
             {
                 if (i == 4)
-                    Plugin.PluginInterface.UiBuilder.AddNotification("Failed to read config", "[Submarine Tracker]", NotificationType.Warning);
+                    Plugin.Notification.AddNotification(new Notification
+                    {
+                        Content = Loc.Localize("Warnings - Config Fail", "Failed to read config"),
+                        Type = NotificationType.Warning,
+                        Minimized = false,
+                    });
 
                 Plugin.Log.Warning($"Config file read failed {i + 1}/5");
             }
@@ -178,7 +184,12 @@ public class ConfigurationBase : IDisposable
                     {
                         // Just try again until counter runs out
                         if (i == 4)
-                            Plugin.PluginInterface.UiBuilder.AddNotification("Failed to move config", "[Submarine Tracker]", NotificationType.Warning);
+                            Plugin.Notification.AddNotification(new Notification
+                            {
+                                Content = Loc.Localize("Warnings - Move Config", "Failed to move config"),
+                                Type = NotificationType.Warning,
+                                Minimized = false,
+                            });
 
                         Plugin.Log.Warning($"Config file couldn't be moved {i + 1}/5");
                         await Task.Delay(30, CancellationToken.Token);

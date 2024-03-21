@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
@@ -62,7 +63,12 @@ public partial class ConfigWindow
             if (ImGuiComponents.IconButton(2, FontAwesomeIcon.Plus))
             {
                 if (!Configuration.CustomLootProfiles.TryAdd(NewProfileName, new Dictionary<uint, int>()))
-                    Plugin.PluginInterface.UiBuilder.AddNotification(Loc.Localize("Error - Collection Exists", "Collection with this name already exists"), "[Submarine Tracker]", NotificationType.Error);
+                    Plugin.Notification.AddNotification(new Notification
+                    {
+                        Content = Loc.Localize("Error - Collection Exists", "Collection with this name already exists"),
+                        Type = NotificationType.Error,
+                        Minimized = false,
+                    });
 
                 combo = Configuration.CustomLootProfiles.Keys.ToArray();
                 CurrentCollectionId = Array.FindIndex(combo, s => s == NewProfileName);
