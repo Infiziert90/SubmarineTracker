@@ -15,15 +15,15 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Notifications", "Notifications:"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Returning Sub", "Returning Sub"), ref Configuration.NotifyForReturns);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Needed Repair", "Needed Repair"), ref Configuration.NotifyForRepairs);
-            if (Configuration.NotifyForRepairs)
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Returning Sub", "Returning Sub"), ref Plugin.Configuration.NotifyForReturns);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Needed Repair", "Needed Repair"), ref Plugin.Configuration.NotifyForRepairs);
+            if (Plugin.Configuration.NotifyForRepairs)
             {
                 ImGuiHelpers.ScaledIndent(10.0f);
-                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Repair Toast", "Show Repair Toast"), ref Configuration.ShowRepairToast);
+                changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Repair Toast", "Show Repair Toast"), ref Plugin.Configuration.ShowRepairToast);
                 ImGuiHelpers.ScaledIndent(-10.0f);
             }
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Storage Message", "Show Storage Message"), ref Configuration.ShowStorageMessage);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Storage Message", "Show Storage Message"), ref Plugin.Configuration.ShowStorageMessage);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Show Storage Message", "Show a message whenever you enter the workshop, informing you about your tank and repair kit status"));
             ImGuiHelpers.ScaledIndent(-10.0f);
 
@@ -31,14 +31,14 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Webhook", "Webhook:"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Dispatch", "Send Dispatch"), ref Configuration.WebhookDispatch);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Dispatch", "Send Dispatch"), ref Plugin.Configuration.WebhookDispatch);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Send Dispatch", "Sends a webhook message on dispatch, containing a timestamp when this submarine will return."));
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Return", "Send Return"), ref Configuration.WebhookReturn);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Send Return", "Send Return"), ref Plugin.Configuration.WebhookReturn);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Send Return", "Sends a webhook message on return."));
             ImGui.AlignTextToFramePadding();
             ImGui.TextUnformatted(Loc.Localize("Terms - URL", "URL"));
             ImGui.SameLine();
-            changed |= ImGui.InputText("##Url", ref Configuration.WebhookUrl, 255);
+            changed |= ImGui.InputText("##Url", ref Plugin.Configuration.WebhookUrl, 255);
             ImGui.SameLine();
             if (ImGuiComponents.IconButton(FontAwesomeIcon.QuestionCircle))
             {
@@ -57,10 +57,10 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Submarines", "Submarines:"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - All Returning", "All Returning Subs"), ref Configuration.NotifyForAll);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - All Returning", "All Returning Subs"), ref Plugin.Configuration.NotifyForAll);
             ImGuiHelpers.ScaledIndent(-10.0f);
 
-            if (!Configuration.NotifyForAll)
+            if (!Plugin.Configuration.NotifyForAll)
             {
                 ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Specific Submarines", "Specific Submarines:"));
                 ImGuiHelpers.ScaledDummy(5.0f);
@@ -73,13 +73,13 @@ public partial class ConfigWindow
                         foreach (var sub in fc.Submarines)
                         {
                             var key = $"{sub.Name}{id}";
-                            Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
-                            var notify = Configuration.NotifySpecific[key];
+                            Plugin.Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
+                            var notify = Plugin.Configuration.NotifySpecific[key];
 
                             if (ImGui.Checkbox($"{Plugin.NameConverter.GetSub(sub, fc)}##{id}{sub.Register}", ref notify))
                             {
-                                Configuration.NotifySpecific[key] = notify;
-                                Configuration.Save();
+                                Plugin.Configuration.NotifySpecific[key] = notify;
+                                Plugin.Configuration.Save();
                             }
                         }
 
@@ -93,7 +93,7 @@ public partial class ConfigWindow
             }
 
             if (changed)
-                Configuration.Save();
+                Plugin.Configuration.Save();
 
             ImGui.EndTabItem();
         }

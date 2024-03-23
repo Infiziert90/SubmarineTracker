@@ -69,7 +69,7 @@ public partial class BuilderWindow
         uint distance = 0;
         var hasRoute = CurrentBuild.Sectors.Count > 0;
         if (hasRoute)
-            distance = (uint) CurrentBuild.OptimizedDistance;
+            distance = CurrentBuild.OptimizedDistance;
 
         var builds = AllBuilds.Where(b => SelectedRank >= b.HighestRankPart() && b.Range >= distance && b.BuildCost <= Rank.Capacity).Where(hasRoute && !IgnoreBreakpoints ? Target.GetSectorFilter(CurrentBuild.Sectors) : Target.GetFilter()).Select(t => new Tuple<Build.SubmarineBuild, TimeSpan>(t, new TimeSpan(12, 0, 0)));
         if (hasRoute)
@@ -77,10 +77,7 @@ public partial class BuilderWindow
             builds = builds.Select(tuple =>
             {
                 var (build, _) = tuple;
-                var route = CurrentBuild.OptimizedRoute.ToArray();
-                var start = ExplorationSheet.First(t => t.Map.Row == route.First().Map.Row);
-
-                return new Tuple<Build.SubmarineBuild, TimeSpan>(build, TimeSpan.FromSeconds(Voyage.CalculateDuration(route.Prepend(start), build)));
+                return new Tuple<Build.SubmarineBuild, TimeSpan>(build, TimeSpan.FromSeconds(Voyage.CalculateDuration(CurrentBuild.OptimizedRoute, build.Speed)));
             });
         }
 

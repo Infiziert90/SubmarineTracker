@@ -16,17 +16,17 @@ public partial class ConfigWindow
 
             Helper.WrappedText(ImGuiColors.HealerGreen, Loc.Localize("Config Tab Naming - Example", "Example: "));
             ImGui.SameLine();
-            ImGui.TextUnformatted($"{Configuration.NameOption.GetExample()}");
+            ImGui.TextUnformatted($"{Plugin.Configuration.NameOption.GetExample()}");
 
             ImGui.SetNextItemWidth(200.0f * ImGuiHelpers.GlobalScale);
-            if (ImGui.BeginCombo($"##NameOptionsCombo", Configuration.NameOption.GetName()))
+            if (ImGui.BeginCombo($"##NameOptionsCombo", Plugin.Configuration.NameOption.GetName()))
             {
                 foreach (var nameOption in (NameOptions[]) Enum.GetValues(typeof(NameOptions)))
                 {
                     if (ImGui.Selectable($"{nameOption.GetName()} ({nameOption.GetExample()})"))
                     {
-                        Configuration.NameOption = nameOption;
-                        Configuration.Save();
+                        Plugin.Configuration.NameOption = nameOption;
+                        Plugin.Configuration.Save();
                     }
                 }
 
@@ -37,7 +37,7 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Uploads", "Uploads:"));
 
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Upload Permission", "Upload Permission"), ref Configuration.UploadPermission);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Upload Permission", "Upload Permission"), ref Plugin.Configuration.UploadPermission);
 
             Helper.WrappedText(ImGuiColors.HealerGreen, Loc.Localize("Config Tab Upload - Information 1", "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!"));
             Helper.WrappedText(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - What", "What data?"));
@@ -50,7 +50,7 @@ public partial class ConfigWindow
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             if (changed)
-                Configuration.Save();
+                Plugin.Configuration.Save();
 
             ImGui.EndTabItem();
         }

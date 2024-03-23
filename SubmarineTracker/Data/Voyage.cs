@@ -1,174 +1,148 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using Lumina.Excel;
+using static SubmarineTracker.Data.Build;
 
 namespace SubmarineTracker.Data;
 
 public static class Voyage
 {
-    private static Plugin Plugin = null!;
+    public const int FixedVoyageTime = 43200; // 12h
 
-    private const int FixedVoyageTime = 43200; // 12h
+    private static ExcelSheet<SubExplPretty> ExplorationSheet;
 
-    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
-    private static List<uint> ReversedMaps = null!;
-    private static readonly Dictionary<uint, SubmarineExplorationPretty> SectorToPretty = new();
+    private static uint[] ReversedMaps;
+    private static FrozenDictionary<uint, SubExplPretty> SectorToPretty;
 
-    public static void Initialize(Plugin plugin)
+    static Voyage()
     {
-        Plugin = plugin;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
+        ReversedMaps = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).Reverse().ToArray();
 
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
-        ReversedMaps = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).Reverse().ToList();
-
-        foreach (var s in ExplorationSheet)
-            SectorToPretty[s.RowId] = s;
+        SectorToPretty = ExplorationSheet.ToFrozenDictionary(s => s.RowId);
     }
 
-    public static uint FindMapFromSector(uint sector)
+    public struct BestRoute(uint distance, uint[]? path)
     {
-        return ExplorationSheet.GetRow(FindVoyageStart(sector))!.Map.Row;
+        public readonly uint Distance = distance;
+        public readonly uint[] Path = path ?? [];
+        public readonly SubExplPretty[] PathPretty = path?.Select(s => SectorToPretty[s]).ToArray() ?? [];
+
+        public static BestRoute Empty() => new(0, []);
     }
 
     public static uint FindVoyageStart(uint sector)
     {
         // This works because we reversed the list of start points
-        foreach (var possibleStart in ReversedMaps)
-            if (sector > possibleStart)
-                return possibleStart;
-
-        return 0;
+        return ReversedMaps.FirstOrDefault(m => sector > m);
     }
 
-    public static SubmarineExplorationPretty FindVoyageStartPretty(uint sector)
-    {
-        return ExplorationSheet.GetRow(FindVoyageStart(sector))!;
-    }
+    public static uint FindMapFromSector(uint sector) => SectorToPretty[FindVoyageStart(sector)].Map.Row;
+    public static SubExplPretty FindVoyageStartPretty(uint sector) => SectorToPretty[FindVoyageStart(sector)];
 
     #region Optimizer
-    public static uint CalculateDuration(IEnumerable<SubmarineExplorationPretty> walkingPoints, Build.SubmarineBuild build)
+    public static uint CalculateDuration(SubExplPretty[] sectors, float speed)
     {
-        var walkWay = walkingPoints.ToArray();
-        var start = walkWay.First();
+        if (sectors.Length is 0 or > 5)
+            return 0;
 
-        var points = new List<SubmarineExplorationPretty>();
-        foreach (var p in walkWay.Skip(1))
-            points.Add(p);
+        var start = FindVoyageStartPretty(sectors[0].RowId);
+        if (sectors.Length == 1)
+            return start.CalcTime(sectors[0], speed) + FixedVoyageTime;
 
-        switch (points.Count)
-        {
-            case 0:
-                return 0;
-            case 1:
-                {
-                    var onlyPoint = points[0];
-                    return VoyageTime(start, onlyPoint, (short)build.Speed) + SurveyTime(onlyPoint, (short)build.Speed) + FixedVoyageTime;
-                }
-            case > 5:
-                return 0;
-        }
+        var durations = start.CalcTime(sectors[0], speed);
+        for (var i = 1; i < sectors.Length; i++)
+            durations += sectors[i - 1].CalcTime(sectors[i], speed);
 
-        var allDurations = new List<long>();
-        for (var i = 0; i < points.Count; i++)
-        {
-            var voyage = i == 0
-                             ? VoyageTime(start, points[0], (short)build.Speed)
-                             : VoyageTime(points[i - 1], points[i], (short)build.Speed);
-            var survey = SurveyTime(points[i], (short)build.Speed);
-            allDurations.Add(voyage + survey);
-        }
-
-        return (uint) allDurations.Sum() + FixedVoyageTime;
+        return durations + FixedVoyageTime;
     }
 
-    public static uint[] FindBestPath(Build.RouteBuild routeBuild, uint[] unlockedSectors, uint[] mustInclude, uint[]? allowedSectors = null, bool ignoreUnlocks = false, bool avgExpBonus = false)
+    public static Route[] FindAllRoutes(uint map)
     {
-        SubmarineExplorationPretty[] valid;
-        if (allowedSectors != null && allowedSectors.Any())
-        {
-            valid = ExplorationSheet
-                    .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
-                    .Where(r => allowedSectors.Contains(r.RowId))
-                    .ToArray();
-        }
-        else
-        {
-            valid = ExplorationSheet
-                        .Where(r => r.Map.Row == routeBuild.Map + 1 && !r.StartingPoint && r.RankReq <= routeBuild.Rank)
-                        .Where(r => ignoreUnlocks || unlockedSectors.Contains(r.RowId))
-                        .ToArray();
-        }
+        var valid = ExplorationSheet.Where(r => r.Map.Row == map && !r.StartingPoint).Select(p => p.RowId).ToArray();
 
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == routeBuild.Map + 1);
-        var paths = valid.Select(t => new[] { startPoint.RowId, t.RowId } ).ToHashSet(new Utils.ArrayComparer());
-        if (mustInclude.Any())
-            paths = new [] { mustInclude.Prepend(startPoint.RowId).ToArray() }.ToHashSet(new Utils.ArrayComparer());
+        var startPoint = FindVoyageStartPretty(valid[0]);
+        var paths = valid.Select(t => new[] { startPoint.RowId, t } ).ToHashSet(new Utils.ArrayComparer());
 
-        var i = mustInclude.Any() ? mustInclude.Length : 1;
+        var i = 1;
         while (i++ < 5)
         {
             foreach (var path in paths.ToArray())
-                foreach (var validPoint in valid.Where(t => !path.Contains(t.RowId)))
-                    paths.Add(path.Append(validPoint.RowId).ToArray());
+                foreach (var validPoint in valid.Where(t => !path.Contains(t)))
+                    paths.Add(path.Append(validPoint).ToArray());
         }
 
-        var allPaths = paths.AsParallel().Select(t => t.Select(f => valid.FirstOrDefault(k => k.RowId == f) ?? startPoint)).ToList();
+        return paths.AsParallel()
+                   .Select(t => t.Skip(1).Select(p => SectorToPretty[p]).ToArray())
+                   .Select(CalculateDistance)
+                   .Select(t => new Route
+                   {
+                       Distance = t.Distance,
+                       Sectors = t.Path.Select(s => s.RowId).ToArray(),
+                   })
+                   .ToArray();
+    }
 
-        if (!allPaths.Any())
-            return Array.Empty<uint>();
+    public static BestRoute FindBestRoute(RouteBuild build, uint[] unlocked, uint[] mustInclude, uint[] allowed, bool ignoreUnlocks, bool avgExpBonus)
+    {
+        var valid = ExplorationSheet
+                .Where(r => r.Map.Row == build.Map + 1 && !r.StartingPoint && r.RankReq <= build.Rank)
+                .Where(r => allowed.Length != 0 ? allowed.Contains(r.RowId) : ignoreUnlocks || unlocked.Contains(r.RowId))
+                .Select(r => r.RowId)
+                .ToArray();
 
-        var build = routeBuild.GetSubmarineBuild;
-        var must = mustInclude.Select(s => ExplorationSheet.GetRow(s)!).ToArray();
-        var bestPath = allPaths.AsParallel()
-                               .Select(CalculateDistance)
-                               .Where(t => t.Item1 <= build.Range && t.Item2.ContainsAllItems(must))
-                               .Select(t =>
-                               {
-                                   return new Tuple<uint[], TimeSpan, double>(
-                                       t.Item2.Select(s => s.RowId).ToArray(),
-                                       TimeSpan.FromSeconds(CalculateDuration(t.Item2.Prepend(startPoint), build)),
-                                       Sectors.CalculateExpForSectors(t.Item2.ToArray(), build, avgExpBonus)
-                                   );
-                               })
-                               .Where(t => t.Item2 < Plugin.Configuration.DurationLimit.ToTime(Plugin.Configuration.CustomHour, Plugin.Configuration.CustomMinute))
-                               .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Item3 : t.Item3 / t.Item2.TotalMinutes)
-                               .ThenByDescending(t => t.Item2.Ticks)
-                               .FirstOrDefault();
+        var subBuild = build.GetSubmarineBuild;
+        var bestPath = Importer.CalculatedData.Maps[build.Map + 1]
+                             .AsParallel()
+                             .Where(t => t.Distance <= subBuild.Range)              // distance sort
+                             .Where(p => valid.ContainsAllItems(p.Sectors))         // only valid routes
+                             .Where(p => p.Sectors.ContainsAllItems(mustInclude))   // must include
+                             .Select(t =>
+                             {
+                                 var sectors = t.Sectors.Select(p => SectorToPretty[p]).ToArray();
+                                 return (
+                                     Path: t.Sectors,
+                                     Distance: t.Distance,
+                                     Duration: CalculateDuration(sectors, subBuild.Speed),
+                                     Exp: Sectors.CalculateExpForSectors(sectors, subBuild, avgExpBonus)
+                                 );
+                             })
+                             .Where(t => t.Duration < Plugin.Configuration.DurationLimit.ToSeconds())
+                             .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Exp : t.Exp / (t.Duration / 60))
+                             .ThenByDescending(t => t.Duration)
+                             .FirstOrDefault();
 
-        return bestPath?.Item1 ?? Array.Empty<uint>();
+        return new BestRoute(bestPath.Distance, bestPath.Path);
     }
 
     private static readonly ConcurrentDictionary<uint, uint> Distances = new();
 
-    public static (uint Distance, SubmarineExplorationPretty[]) CalculateDistance(uint[] walkingPoints, bool findStart)
+    public static BestRoute FindCalculatedRoute(uint[] sectors)
     {
-        var route = walkingPoints.Select(ExplorationSheet.GetRow);
-        if (findStart)
-            route = route.Prepend(FindVoyageStartPretty(walkingPoints.First()));
+        if (sectors.Length == 0)
+            return BestRoute.Empty();
 
-        return CalculateDistance(route!);
+        var map = (int) FindMapFromSector(sectors[0]);
+        return Importer.HashedRoutes[map].TryGetValue(Utils.GetUniqueHash(sectors), out var route)
+                   ? new BestRoute(route.Distance, route.Sectors)
+                   : BestRoute.Empty();
     }
 
-    public static (uint Distance, SubmarineExplorationPretty[]) CalculateDistance(IEnumerable<SubmarineExplorationPretty> walkingPoints)
+    public static (uint Distance, SubExplPretty[] Path) CalculateDistance(IEnumerable<uint> sectors) =>
+        CalculateDistance(sectors.Select(ExplorationSheet.GetRow).ToArray()!);
+
+    public static (uint Distance, SubExplPretty[] Path) CalculateDistance(SubExplPretty[] sectors)
     {
-        var walkWay = walkingPoints.ToArray();
-        var start = walkWay.First();
-        walkWay = walkWay.Skip(1).ToArray();
+        var solution = (0u, Array.Empty<SubExplPretty>());
+        if (sectors.Length is 0 or > 5)
+            return solution;
 
-        var route = walkWay.Select(p => p.RowId).ToArray();
+        var start = FindVoyageStartPretty(sectors[0].RowId);
+        if (sectors.Length == 1)
+            return (start.GetDistance(sectors[0]) + sectors[0].SurveyDistance, [sectors[0]]);
 
-        var solution = (0u, Array.Empty<SubmarineExplorationPretty>());
-        switch (route.Length)
-        {
-            case 0:
-                return solution;
-            case 1:
-                return (BestDistance(start, walkWay[0]) + walkWay[0].SurveyDistance, new [] {walkWay[0]});
-            // More than 5 points isn't allowed ingame
-            case > 5:
-                return solution;
-        }
-
-        foreach (var sector in walkWay)
+        var route = sectors.Select(p => p.RowId).ToArray();
+        foreach (var sector in sectors)
         {
             // Add start -> sector
             Distances.TryAdd(Utils.GetUniqueId(sector.RowId, start.RowId), start.GetDistance(sector));
@@ -183,7 +157,7 @@ public static class Voyage
             }
         }
 
-        (uint Distance, uint[] Path) final = (uint.MaxValue, Array.Empty<uint>());
+        var final = (Distance: uint.MaxValue, Path: Array.Empty<uint>());
         foreach (var path in Utils.Permutations.GetAllPermutation(route))
         {
             var distance = Distances[Utils.GetUniqueId(path[0],start.RowId)] + SectorToPretty[path[0]].SurveyDistance;
@@ -196,27 +170,11 @@ public static class Voyage
 
         return (final.Distance, final.Path.Select(s => ExplorationSheet.GetRow(s)!).ToArray());
     }
-
-    public static uint BestDistance(SubmarineExplorationPretty pointA, SubmarineExplorationPretty pointB)
-    {
-        return pointA.GetDistance(pointB);
-    }
-
-    public static uint VoyageTime(SubmarineExplorationPretty pointA, SubmarineExplorationPretty pointB, short speed)
-    {
-        return pointA.GetVoyageTime(pointB, speed);
-    }
-
-    public static uint SurveyTime(SubmarineExplorationPretty point, short speed)
-    {
-        return point.GetSurveyTime(speed);
-    }
     #endregion
 
     #region CommonRoutes
-
     public record CommonRoute(int Map, params uint[] Route);
-    public static Dictionary<string, CommonRoute> Common = new()
+    public static readonly Dictionary<string, CommonRoute> Common = new()
     {
         { "Fight Club - OJ", new CommonRoute(0, 15, 10) },
         { "Fight Club - JORZ", new CommonRoute(0, 10, 15, 18, 26) },
@@ -230,6 +188,5 @@ public static class Voyage
         { "CryPTO - BACMN", new CommonRoute(1, 33, 32, 34, 44, 45) },
         { "Infi - BACMQ", new CommonRoute(1, 33, 32, 34, 44, 48) },
     };
-
     #endregion
 }

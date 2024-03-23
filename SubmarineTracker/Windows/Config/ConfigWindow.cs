@@ -7,7 +7,6 @@ namespace SubmarineTracker.Windows.Config;
 public partial class ConfigWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
     private static ExcelSheet<Item> ItemSheet = null!;
 
     public ConfigWindow(Plugin plugin) : base("Configuration##SubmarineTracker")
@@ -19,7 +18,6 @@ public partial class ConfigWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        Configuration = plugin.Configuration;
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
 
         InitializeLoot();

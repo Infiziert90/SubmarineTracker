@@ -170,9 +170,7 @@ public static class Export
         }
         catch (Exception e)
         {
-            Plugin.Log.Error(e.Message);
-            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
-
+            Plugin.Log.Error(e, "Error while exporting to string");
             return string.Empty;
         }
     }
@@ -198,9 +196,7 @@ public static class Export
         }
         catch (Exception e)
         {
-            Plugin.Log.Error(e.Message);
-            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
-
+            Plugin.Log.Error(e, "Error while importing");
             return new Dictionary<string, Loot>();
         }
     }
@@ -218,8 +214,7 @@ public static class Export
         }
         catch (Exception e)
         {
-            Plugin.Log.Error(e.Message);
-            Plugin.Log.Error(e.StackTrace ?? "No Stacktrace");
+            Plugin.Log.Error(e, "Error while uploading entry");
         }
     }
 }

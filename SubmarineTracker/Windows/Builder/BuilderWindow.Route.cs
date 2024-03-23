@@ -99,11 +99,8 @@ public partial class BuilderWindow
                     ImGui.EndListBox();
                 }
 
-                if (CurrentBuild.Sectors.Any())
-                {
-                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow);
-                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
-                }
+                if (CurrentBuild.Sectors.Count != 0)
+                    CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
 
                 CommonRoutes();
             }
@@ -113,7 +110,7 @@ public partial class BuilderWindow
         }
     }
 
-    private void UnlockedTooltip(SubmarineExplorationPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
+    private void UnlockedTooltip(SubExplPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
     {
         if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(9876);
@@ -180,7 +177,7 @@ public partial class BuilderWindow
                 if (ImGui.Selectable(name))
                 {
                     CurrentBuild.ChangeMap(route.Map);
-                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(route.Route, true));
+                    CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(route.Route));
 
                     CommonSelection = idx + 1; // + 1 as we manually add None
                 }

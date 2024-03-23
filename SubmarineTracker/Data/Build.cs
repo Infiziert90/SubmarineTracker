@@ -6,10 +6,10 @@ namespace SubmarineTracker.Data;
 
 public static class Build
 {
-    private static ExcelSheet<SubmarineRank> RankSheet = null!;
-    private static ExcelSheet<SubmarinePart> PartSheet = null!;
+    private static readonly ExcelSheet<SubmarineRank> RankSheet;
+    private static readonly ExcelSheet<SubmarinePart> PartSheet;
 
-    public static void Initialize()
+    static Build()
     {
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
@@ -148,18 +148,18 @@ public static class Build
         [JsonIgnore] public int OriginalSub = 0;
 
         [JsonIgnore] public uint OptimizedDistance = 0;
-        [JsonIgnore] public SubmarineExplorationPretty[] OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
+        [JsonIgnore] public SubExplPretty[] OptimizedRoute = Array.Empty<SubExplPretty>();
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
 
-        [JsonIgnore] public int FuelCost => OptimizedRoute.Any() ? OptimizedRoute.Select(p => (int) p.CeruleumTankReq).Sum() : 0;
+        [JsonIgnore] public int FuelCost => OptimizedRoute.Length != 0 ? OptimizedRoute.Select(p => (int) p.CeruleumTankReq).Sum() : 0;
 
         [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort)Hull);
         [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);
         [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort)Bow);
         [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort)Bridge);
 
-        [JsonIgnore] private int[] PartArray => new[] { Bow, Bridge, Hull, Stern };
+        [JsonIgnore] private int[] PartArray => [Bow, Bridge, Hull, Stern];
 
         public void UpdateBuild(Submarines.Submarine sub)
         {
@@ -184,22 +184,24 @@ public static class Build
             Map = newMap;
 
             Sectors.Clear();
+            OptimizedRoute = [];
             OptimizedDistance = 0;
-            OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
         }
 
-        public void UpdateOptimized((uint Distance, SubmarineExplorationPretty[] Points) optimized)
+        public void UpdateOptimized(Voyage.BestRoute route)
         {
-            OptimizedRoute = optimized.Points;
-            OptimizedDistance = optimized.Distance;
-            Sectors = optimized.Points.Select(s => s.RowId).ToList();
+            Sectors = route.Path.ToList();
+
+            OptimizedRoute = route.PathPretty;
+            OptimizedDistance = route.Distance;
         }
 
         public void NotOptimized()
         {
-            OptimizedRoute = Array.Empty<SubmarineExplorationPretty>();
+            Sectors = [];
+
+            OptimizedRoute = [];
             OptimizedDistance = 0;
-            Sectors = new List<uint>();
         }
 
         public int CalculateUntilRepair()
@@ -235,17 +237,8 @@ public static class Build
             return highestDamage;
         }
 
-        public bool SameBuild(RouteBuild other)
-        {
-            return Rank == other.Rank && SameBuildWithoutRank(other);
-        }
-
-        public bool SameBuildWithoutRank(RouteBuild other)
-        {
-            return Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
-        }
-
-        public string ToStringWithRank() => $"{Rank} - {this}";
+        public bool SameBuild(RouteBuild other) => Rank == other.Rank && SameBuildWithoutRank(other);
+        public bool SameBuildWithoutRank(RouteBuild other) => Hull == other.Hull && Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge;
 
         public override string ToString()
         {

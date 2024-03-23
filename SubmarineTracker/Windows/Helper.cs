@@ -6,7 +6,6 @@ namespace SubmarineTracker.Windows;
 
 public static class Helper
 {
-    private static Configuration Configuration = null!;
     private static PopupMenu SettingsMenu = null!;
 
     public static readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
@@ -16,26 +15,46 @@ public static class Helper
 
     public static void Initialize(Plugin plugin)
     {
-        SettingsMenu = new PopupMenu("configMenu",
-                                     PopupMenu.PopupMenuButtons.LeftRight,
-                                     new List<PopupMenu.IPopupMenuItem>
-                                     {
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Tracker", "Tracker"), plugin.OpenTracker,Loc.Localize("Menu Tooltip - Tracker", "Open the tracker window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Builder", "Builder"), plugin.OpenBuilder,Loc.Localize("Menu Tooltip - Builder", "Open the builder window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Loot", "Loot"), plugin.OpenLoot,Loc.Localize("Menu Tooltip - Loot", "Open the loot window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Helpy", "Helpy"), plugin.OpenHelpy,Loc.Localize("Menu Tooltip - Helpy", "Open the helper window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Overlay", "Overlay"), plugin.OpenOverlay,Loc.Localize("Menu Tooltip - Overlay", "Open the return overlay.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Window Name - Config", "Config"), plugin.OpenConfig,Loc.Localize("Menu Tooltip - Config", "Open the config window.")),
+        SettingsMenu = new PopupMenu("configMenu", PopupMenu.PopupMenuButtons.LeftRight,
+                                     [
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Tracker", "Tracker"), plugin.OpenTracker,
+                                             Loc.Localize("Menu Tooltip - Tracker", "Open the tracker window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Builder", "Builder"), plugin.OpenBuilder,
+                                             Loc.Localize("Menu Tooltip - Builder", "Open the builder window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Loot", "Loot"), plugin.OpenLoot,
+                                             Loc.Localize("Menu Tooltip - Loot", "Open the loot window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Helpy", "Helpy"), plugin.OpenHelpy,
+                                             Loc.Localize("Menu Tooltip - Helpy", "Open the helper window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Overlay", "Overlay"), plugin.OpenOverlay,
+                                             Loc.Localize("Menu Tooltip - Overlay", "Open the return overlay.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Window Name - Config", "Config"), plugin.OpenConfig,
+                                             Loc.Localize("Menu Tooltip - Config", "Open the config window.")),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Discord Thread", "Discord Thread"), Plugin.DiscordSupport,Loc.Localize("Menu Tooltip - Discord Thread", "Open the discord support thread.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Localization", "Localization"), Plugin.DiscordSupport,Loc.Localize("Menu Tooltip - Localization", "Open the crowdin page in your browser")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Issues", "Issues"), Plugin.IssuePage,Loc.Localize("Menu Tooltip - Issues", "Open the issue page in your browser.")),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - KoFi", "Ko-Fi Tip"), Plugin.Kofi,Loc.Localize("Menu Tooltip - KoFi", "Open the kofi page in your browser.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Menu Entry - Discord Thread", "Discord Thread"),
+                                             Plugin.DiscordSupport,
+                                             Loc.Localize("Menu Tooltip - Discord Thread", "Open the discord support thread.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Menu Entry - Localization", "Localization"),
+                                             Plugin.DiscordSupport,
+                                             Loc.Localize("Menu Tooltip - Localization", "Open the crowdin page in your browser")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Menu Entry - Issues", "Issues"), Plugin.IssuePage,
+                                             Loc.Localize("Menu Tooltip - Issues", "Open the issue page in your browser.")),
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Menu Entry - KoFi", "Ko-Fi Tip"), Plugin.Kofi,
+                                             Loc.Localize("Menu Tooltip - KoFi", "Open the kofi page in your browser.")),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable(Loc.Localize("Menu Entry - Sync", "Sync"), plugin.Sync,Loc.Localize("Menu Tooltip - Sync", "Reload all stored data from hard drive and refresh the cache.")),
-                                     });
-
-        Configuration = plugin.Configuration;
+                                         new PopupMenu.PopupMenuItemSelectable(
+                                             Loc.Localize("Menu Entry - Sync", "Sync"), plugin.Sync,
+                                             Loc.Localize("Menu Tooltip - Sync", "Reload all stored data from hard drive and refresh the cache."))
+                                     ]);
     }
 
     public static void NoData()

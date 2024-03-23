@@ -5,7 +5,7 @@ using Lumina;
 
 namespace SubmarineTracker;
 
-public class SubmarineExplorationPretty : SubmarineExploration
+public class SubExplPretty : SubmarineExploration
 {
     public Vector3 Position;
 
@@ -20,21 +20,23 @@ public class SubmarineExplorationPretty : SubmarineExploration
         if (speed < 1)
             speed = 1;
 
-        return (uint)Math.Floor(SurveyDurationmin * 7000 / (speed * 100) * 60);
+        return (uint) Math.Floor(SurveyDurationmin * 7000 / (speed * 100) * 60);
     }
 
-    public uint GetVoyageTime(SubmarineExplorationPretty other, float speed)
+    public uint GetVoyageTime(SubExplPretty other, float speed)
     {
         if (speed < 1)
             speed = 1;
 
-        return (uint)Math.Floor(Vector3.Distance( Position, other.Position ) * 3990 / (speed * 100) * 60);
+        return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 3990 / (speed * 100) * 60);
     }
 
-    public uint GetDistance(SubmarineExplorationPretty other)
+    public uint GetDistance(SubExplPretty other)
     {
         return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 0.035);
     }
 
     public string ConvertDestination() => Utils.UpperCaseStr(Destination);
+
+    public uint CalcTime(SubExplPretty other, float speed) => GetVoyageTime(other, speed) + other.GetSurveyTime(speed);
 }

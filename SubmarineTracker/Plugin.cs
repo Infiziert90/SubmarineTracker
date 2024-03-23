@@ -41,9 +41,9 @@ namespace SubmarineTracker
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
         [PluginService] public static INotificationManager Notification { get; private set; } = null!;
 
+        public static Configuration Configuration { get; private set; } = null!;
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
-        public Configuration Configuration { get; init; }
         public readonly WindowSystem WindowSystem = new("Submarine Tracker");
 
         public ConfigWindow ConfigWindow { get; init; }
@@ -56,10 +56,12 @@ namespace SubmarineTracker
         public NextOverlay NextOverlay { get; init; }
         public UnlockOverlay UnlockOverlay { get; init; }
 
-        public ConfigurationBase ConfigurationBase;
+        public readonly ConfigurationBase ConfigurationBase;
 
         public const string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
+
+        public static string PluginDir => PluginInterface.AssemblyLocation.DirectoryName!;
 
         private const string GithubIssue = "https://github.com/Infiziert90/SubmarineTracker/issues";
         private const string DiscordThread = "https://canary.discord.com/channels/581875019861328007/1094255662860599428";
@@ -74,6 +76,7 @@ namespace SubmarineTracker
         public readonly NameConverter NameConverter;
         public static HookManager HookManager = null!;
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
+
         private readonly Localization Localization = new();
 
         public readonly Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
@@ -91,27 +94,19 @@ namespace SubmarineTracker
             NameConverter = new NameConverter(this);
             Notify = new Notify(this);
 
-            Loot.Initialize(this);
-            Build.Initialize();
-            Voyage.Initialize(this);
-            Submarines.Initialize();
-            ImportantItemsMethods.Initialize();
-
-            Webhook.Init(Configuration);
-
             HookManager = new HookManager(this);
             AllaganToolsConsumer = new AllaganToolsConsumer();
 
             ConfigWindow = new ConfigWindow(this);
-            MainWindow = new MainWindow(this, Configuration);
-            BuilderWindow = new BuilderWindow(this, Configuration);
-            LootWindow = new LootWindow(this, Configuration);
-            HelpyWindow = new HelpyWindow(this, Configuration);
+            MainWindow = new MainWindow(this);
+            BuilderWindow = new BuilderWindow(this);
+            LootWindow = new LootWindow(this);
+            HelpyWindow = new HelpyWindow(this);
 
-            ReturnOverlay = new ReturnOverlay(this, Configuration);
-            RouteOverlay = new RouteOverlay(this, Configuration);
-            NextOverlay = new NextOverlay(this, Configuration);
-            UnlockOverlay = new UnlockOverlay(this, Configuration);
+            ReturnOverlay = new ReturnOverlay(this);
+            RouteOverlay = new RouteOverlay(this);
+            NextOverlay = new NextOverlay(this);
+            UnlockOverlay = new UnlockOverlay(this);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
@@ -144,6 +139,9 @@ namespace SubmarineTracker
             var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
                 ReturnOverlay.IsOpen = true;
+
+            // Trigger Importer to precalculate hashes
+            Log.Debug($"Loading: {Importer.Filename}");
         }
 
         public void Dispose() => Dispose(true);
@@ -346,10 +344,10 @@ namespace SubmarineTracker
             LoadFCOrder();
         }
 
-        public static void IssuePage() => Dalamud.Utility.Util.OpenLink(GithubIssue);
-        public static void DiscordSupport() => Dalamud.Utility.Util.OpenLink(DiscordThread);
-        public static void Kofi() => Dalamud.Utility.Util.OpenLink(KoFiLink);
-        public static void LocHelp() => Dalamud.Utility.Util.OpenLink(Crowdin);
+        public static void IssuePage() => Util.OpenLink(GithubIssue);
+        public static void DiscordSupport() => Util.OpenLink(DiscordThread);
+        public static void Kofi() => Util.OpenLink(KoFiLink);
+        public static void LocHelp() => Util.OpenLink(Crowdin);
 
         #region Draws
 
@@ -367,7 +365,7 @@ namespace SubmarineTracker
         public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 
-        public void LoadFCOrder()
+        public static void LoadFCOrder()
         {
             var changed = false;
             foreach (var id in Submarines.KnownSubmarines.Keys)
@@ -381,7 +379,7 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public void EnsureFCOrderSafety()
+        public static void EnsureFCOrderSafety()
         {
             var notSafe = false;
             foreach (var id in Configuration.FCOrder.ToArray())
@@ -397,7 +395,7 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public void EntryUpload(Loot.DetailedLoot loot)
+        public static void EntryUpload(Loot.DetailedLoot loot)
         {
             if (Configuration.UploadPermission)
             {

@@ -8,15 +8,15 @@ namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
-    private SubmarineExplorationPretty SelectedSector = null!;
+    private SubExplPretty SelectedSector = null!;
     private Dictionary<uint, List<DetailedLoot>> LootCache = new();
 
-    private ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> Options = null!;
+    private ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty> Options = null!;
 
     private void InitializeAnalyse()
     {
         SelectedSector = ExplorationSheet.GetRow(1)!;
-        Options = new ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>
+        Options = new ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
             FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0)
@@ -45,7 +45,7 @@ public partial class LootWindow
             var submarineLoot = Submarines.KnownSubmarines.Values
                                           .Select(fc => fc.SubLoot)
                                           .SelectMany(dict => dict.Values)
-                                          .SelectMany(loot => loot.Loot.Values.SelectMany(l => l).Where(detailed => !Configuration.ExcludeLegacy || detailed.Valid).Where(detailed => detailed.Primary > 0));
+                                          .SelectMany(loot => loot.Loot.Values.SelectMany(l => l).Where(detailed => !Plugin.Configuration.ExcludeLegacy || detailed.Valid).Where(detailed => detailed.Primary > 0));
 
             foreach (var loot in submarineLoot)
                 LootCache.GetOrCreate(loot.Sector).Add(loot);

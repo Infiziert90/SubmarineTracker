@@ -9,14 +9,13 @@ namespace SubmarineTracker.Windows.Overlays;
 public class UnlockOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
     private readonly Vector2 OriginalSize = new(300, 60);
 
-    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = new();
 
-    public UnlockOverlay(Plugin plugin, Configuration configuration) : base("Unlock Overlay##SubmarineTracker")
+    public UnlockOverlay(Plugin plugin) : base("Unlock Overlay##SubmarineTracker")
     {
         Size = OriginalSize;
 
@@ -26,9 +25,8 @@ public class UnlockOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-        Configuration = configuration;
 
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
     }
 
     public void Dispose() { }
@@ -36,7 +34,7 @@ public class UnlockOverlay : Window, IDisposable
     public override unsafe void PreOpenCheck()
     {
         IsOpen = false;
-        if (!Configuration.AutoSelectCurrent || !Configuration.ShowUnlockOverlay)
+        if (!Plugin.Configuration.AutoSelectCurrent || !Plugin.Configuration.ShowUnlockOverlay)
             return;
 
         // Always refresh submarine if we have interface selection

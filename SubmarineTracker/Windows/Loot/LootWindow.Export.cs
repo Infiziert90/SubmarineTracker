@@ -58,8 +58,8 @@ public partial class LootWindow
                 }
                 ImGuiHelpers.ScaledIndent(-10.0f);
             }
-            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Configuration.ExportExcludeDate);
-            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Configuration.ExportExcludeHash);
+            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Plugin.Configuration.ExportExcludeDate);
+            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Plugin.Configuration.ExportExcludeHash);
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -76,7 +76,7 @@ public partial class LootWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Output Folder", "Output Folder:"));
-            changed |= ImGui.InputText("##OutputPathInput", ref Configuration.ExportOutputPath, 255);
+            changed |= ImGui.InputText("##OutputPathInput", ref Plugin.Configuration.ExportOutputPath, 255);
             ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
                 ImGui.OpenPopup("OutputPathDialog");
@@ -87,8 +87,8 @@ public partial class LootWindow
                 {
                     if (b)
                     {
-                        Configuration.ExportOutputPath = s;
-                        Configuration.Save();
+                        Plugin.Configuration.ExportOutputPath = s;
+                        Plugin.Configuration.Save();
                     }
                 }, null, true);
                 ImGui.EndPopup();
@@ -114,7 +114,7 @@ public partial class LootWindow
             }
 
             if (changed)
-                Configuration.Save();
+                Plugin.Configuration.Save();
 
             ImGui.EndTabItem();
         }
@@ -150,7 +150,7 @@ public partial class LootWindow
 
     private void ExportToClipboard(List<DetailedLoot> fcLootList)
     {
-        var s = Export.ExportToString(fcLootList, Configuration.ExportExcludeDate, Configuration.ExportExcludeHash);
+        var s = Export.ExportToString(fcLootList, Plugin.Configuration.ExportExcludeDate, Plugin.Configuration.ExportExcludeHash);
         if (s != string.Empty)
         {
             ImGui.SetClipboardText(s);
@@ -160,12 +160,12 @@ public partial class LootWindow
 
     private void ExportToFile(List<DetailedLoot> fcLootList)
     {
-        if (Directory.Exists(Configuration.ExportOutputPath))
+        if (Directory.Exists(Plugin.Configuration.ExportOutputPath))
         {
             try
             {
-                var file = Path.Combine(Configuration.ExportOutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
-                var s = Export.ExportToString(fcLootList, Configuration.ExportExcludeDate, Configuration.ExportExcludeHash);
+                var file = Path.Combine(Plugin.Configuration.ExportOutputPath, $"{DateTime.Now:yyyy_MM_dd__HH_mm_ss}_dump.csv");
+                var s = Export.ExportToString(fcLootList, Plugin.Configuration.ExportExcludeDate, Plugin.Configuration.ExportExcludeHash);
 
                 if (s != string.Empty)
                 {

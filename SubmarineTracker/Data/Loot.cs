@@ -7,17 +7,14 @@ namespace SubmarineTracker.Data;
 
 public static class Loot
 {
-    private static Plugin Plugin = null!;
-    private static ExcelSheet<Item> ItemSheet = null!;
+    private static readonly ExcelSheet<Item> ItemSheet;
 
-    public static void Initialize(Plugin plugin)
+    static Loot()
     {
-        Plugin = plugin;
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
     }
 
     public record LootWithDate(DateTime Date, DetailedLoot Loot);
-
     public class SubmarineLoot
     {
         public Dictionary<uint, List<DetailedLoot>> Loot = new();

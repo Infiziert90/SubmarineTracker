@@ -6,12 +6,11 @@ namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow : Window, IDisposable
 {
-    private Plugin Plugin;
-    private Configuration Configuration;
+    private readonly Plugin Plugin;
 
-    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
-    public HelpyWindow(Plugin plugin, Configuration configuration) : base("Helpy##SubmarineTracker")
+    public HelpyWindow(Plugin plugin) : base("Helpy##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -20,9 +19,8 @@ public partial class HelpyWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        Configuration = configuration;
 
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         InitProgression();
     }

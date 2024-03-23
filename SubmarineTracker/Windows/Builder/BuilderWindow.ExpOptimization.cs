@@ -8,9 +8,9 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    public readonly HashSet<SubmarineExplorationPretty> MustInclude = new();
+    public readonly HashSet<SubExplPretty> MustInclude = new();
 
-    private uint[] BestPath = Array.Empty<uint>();
+    private Voyage.BestRoute BestRoute = Voyage.BestRoute.Empty();
     private bool ComputingPath;
     private Build.RouteBuild LastComputedBuild;
     private DateTime ComputeStart = DateTime.Now;
@@ -24,7 +24,7 @@ public partial class BuilderWindow
     private bool IgnoreUnlocks;
     private bool AvgBonus;
 
-    public ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty>? ExplorationPopupOptions;
+    public ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>? ExplorationPopupOptions;
 
     private void ExpTab()
     {
@@ -69,7 +69,7 @@ public partial class BuilderWindow
                     }
 
                     var beginCalculation = false;
-                    if (Configuration.CalculateOnInteraction)
+                    if (Plugin.Configuration.CalculateOnInteraction)
                     {
                         if (Calculate)
                             beginCalculation = true;
@@ -84,7 +84,7 @@ public partial class BuilderWindow
                         // Don't set it false until we sure it got begins calculation
                         OptionsChanged = false;
 
-                        BestPath = Array.Empty<uint>();
+                        BestRoute = Voyage.BestRoute.Empty();
                         ComputeStart = DateTime.Now;
                         ComputingPath = true;
                         Task.Run(() =>
@@ -94,16 +94,15 @@ public partial class BuilderWindow
 
                             var mustInclude = MustInclude.Select(s => s.RowId).ToArray();
                             var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
-                            var path = Voyage.FindBestPath(CurrentBuild, unlocked, mustInclude, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
-                            if (!path.Any())
+                            var path = Voyage.FindBestRoute(CurrentBuild, unlocked, mustInclude, [], IgnoreUnlocks, AvgBonus);
+                            if (path.Path.Length == 0)
                                 CurrentBuild.NotOptimized();
 
                             ComputingPath = false;
-                            BestPath = path;
+                            BestRoute = path;
                         });
                     }
 
-                    var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
                     var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                     if (ImGui.BeginListBox("##bestPoints", new Vector2(-1, height)))
                     {
@@ -112,28 +111,29 @@ public partial class BuilderWindow
                             ImGui.Text($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                         }
 
-                        if (BestPath.Any())
+                        if (BestRoute.Path.Length != 0)
                         {
-                            foreach (var location in BestPath.Select(s => ExplorationSheet.GetRow(s)!))
+                            var startPoint = Voyage.FindVoyageStart(BestRoute.Path[0]);
+                            foreach (var location in BestRoute.Path.Select(s => ExplorationSheet.GetRow(s)!))
                                 if (location.RowId > startPoint)
                                     ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
 
-                            CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                            CurrentBuild.UpdateOptimized(BestRoute);
                         }
                         else
                         {
-                            ImGui.Text(Configuration.CalculateOnInteraction && !Calculate ? Loc.Localize("Best EXP Calculation - Manual Calculation", "Not calculated ...") : Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
+                            ImGui.Text(Plugin.Configuration.CalculateOnInteraction && !Calculate ? Loc.Localize("Best EXP Calculation - Manual Calculation", "Not calculated ...") : Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
                         }
 
                         ImGui.EndListBox();
                     }
 
-                    if (Configuration.CalculateOnInteraction)
+                    if (Plugin.Configuration.CalculateOnInteraction)
                     {
                         if (ImGui.Button(Loc.Localize("Best EXP Calculation - Calculate", "Calculate")))
                         {
-                            BestPath = Array.Empty<uint>();
                             Calculate = true;
+                            BestRoute = Voyage.BestRoute.Empty();
                         }
                     }
                 }
@@ -146,26 +146,26 @@ public partial class BuilderWindow
 
                     ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
                     ImGuiHelpers.ScaledIndent(10.0f);
-                    OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - No Automatic", "Disable Automatic Calculation"), ref Configuration.CalculateOnInteraction);
+                    OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - No Automatic", "Disable Automatic Calculation"), ref Plugin.Configuration.CalculateOnInteraction);
                     OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Ignore Unlocks", "Ignore Unlocks"), ref IgnoreUnlocks);
                     OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Avg Bonus", "Use Avg Exp Bonus"), ref AvgBonus);
                     ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Avg Bonus", "This calculation takes only guaranteed bonus exp into account.\nWith this option it will instead take the avg of possible exp bonus."));
-                    if (Configuration.DurationLimit != DurationLimit.None)
-                        OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
+                    if (Plugin.Configuration.DurationLimit != DurationLimit.None)
+                        OptionsChanged |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Plugin.Configuration.MaximizeDuration);
                     ImGuiHelpers.ScaledIndent(-10.0f);
 
                     ImGui.AlignTextToFramePadding();
                     ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
                     ImGui.SameLine(length);
                     ImGui.SetNextItemWidth(width);
-                    if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
+                    if (ImGui.BeginCombo($"##durationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
                     {
                         foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                         {
                             if (ImGui.Selectable(durationLimit.GetName()))
                             {
-                                Configuration.DurationLimit = durationLimit;
-                                Configuration.Save();
+                                Plugin.Configuration.DurationLimit = durationLimit;
+                                Plugin.Configuration.Save();
 
                                 OptionsChanged = true;
                             }
@@ -174,26 +174,26 @@ public partial class BuilderWindow
                         ImGui.EndCombo();
                     }
 
-                    if (Configuration.DurationLimit == DurationLimit.Custom)
+                    if (Plugin.Configuration.DurationLimit == DurationLimit.Custom)
                     {
                         ImGui.AlignTextToFramePadding();
                         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Terms - Custom", "Custom"));
                         ImGui.SameLine(length);
 
                         ImGui.SetNextItemWidth(width / 5.0f);
-                        if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
+                        if (ImGui.InputInt("##CustomHourInput", ref Plugin.Configuration.CustomHour, 0))
                         {
-                            Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
-                            Configuration.Save();
+                            Plugin.Configuration.CustomHour = Math.Clamp(Plugin.Configuration.CustomHour, 1, 123);
+                            Plugin.Configuration.Save();
                         }
                         ImGui.SameLine();
                         ImGui.TextUnformatted(":");
                         ImGui.SameLine();
                         ImGui.SetNextItemWidth(width / 5.0f);
-                        if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
+                        if (ImGui.InputInt("##CustomMinInput", ref Plugin.Configuration.CustomMinute, 0))
                         {
-                            Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
-                            Configuration.Save();
+                            Plugin.Configuration.CustomMinute = Math.Clamp(Plugin.Configuration.CustomMinute, 0, 59);
+                            Plugin.Configuration.Save();
                         }
                         ImGui.SameLine();
                         ImGui.TextUnformatted(Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
@@ -255,7 +255,7 @@ public partial class BuilderWindow
                     }
 
                     if (OptionsChanged)
-                        Configuration.Save();
+                        Plugin.Configuration.Save();
                 }
                 ImGui.EndChild();
             }
@@ -268,7 +268,7 @@ public partial class BuilderWindow
     private void Reset(int newMap)
     {
         ComputingPath = false;
-        BestPath = Array.Empty<uint>();
+        BestRoute = Voyage.BestRoute.Empty();
         MustInclude.Clear();
         CurrentBuild.ChangeMap(newMap);
     }

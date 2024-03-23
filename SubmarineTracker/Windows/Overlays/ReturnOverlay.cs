@@ -8,11 +8,10 @@ namespace SubmarineTracker.Windows.Overlays;
 public class ReturnOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
 
     private (int OnRoute, int Done, int Halt) VoyageStats = (0, 0, 0);
 
-    public ReturnOverlay(Plugin plugin, Configuration configuration) : base("Submarines: 0|0|0###submarineOverlay")
+    public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0|0###submarineOverlay")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -24,26 +23,25 @@ public class ReturnOverlay : Window, IDisposable
         DisableWindowSounds = true;
 
         Plugin = plugin;
-        Configuration = configuration;
     }
 
     public void Dispose() { }
 
     public override void Update()
     {
-        Flags = (Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0) | (Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
+        Flags = (Plugin.Configuration.OverlayLockLocation ? ImGuiWindowFlags.NoMove : 0) | (Plugin.Configuration.OverlayLockSize ? ImGuiWindowFlags.NoResize : 0);
     }
 
     public override void PreOpenCheck()
     {
-        if (Configuration.OverlayHoldClosed && !Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone()))
+        if (Plugin.Configuration.OverlayHoldClosed && !Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone()))
             IsOpen = false;
     }
 
     public override void PreDraw()
     {
         VoyageStats = (0, 0, 0);
-        var nextSub = new Submarines.Submarine(Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
+        var nextSub = new Submarines.Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
         foreach (var sub in Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
         {
             if (sub.IsOnVoyage())
@@ -55,10 +53,10 @@ public class ReturnOverlay : Window, IDisposable
                 else
                 {
                     VoyageStats.OnRoute += 1;
-                    if (!Configuration.OverlayTitleTime)
+                    if (!Plugin.Configuration.OverlayTitleTime)
                         continue;
 
-                    if (Configuration.OverlayFirstReturn)
+                    if (Plugin.Configuration.OverlayFirstReturn)
                     {
                         if (nextSub.Return > sub.Return)
                             nextSub = sub;
@@ -77,9 +75,9 @@ public class ReturnOverlay : Window, IDisposable
         }
 
         var returnText = "";
-        if (Configuration.OverlayTitleTime)
+        if (Plugin.Configuration.OverlayTitleTime)
         {
-            if (Configuration.OverlayFirstReturn)
+            if (Plugin.Configuration.OverlayFirstReturn)
             {
                 if (nextSub.Return < uint.MaxValue)
                     returnText = $"   -   {(nextSub.IsDone() ? "Done" : Utils.ToTime(nextSub.LeftoverTime()))}";
@@ -98,7 +96,7 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        var showLast = !Configuration.OverlayFirstReturn;
+        var showLast = !Plugin.Configuration.OverlayFirstReturn;
         Submarines.Submarine? timerSub = null;
         foreach (var fc in Submarines.KnownSubmarines.Values)
         {
@@ -117,8 +115,8 @@ public class ReturnOverlay : Window, IDisposable
         var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
         ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
-                                                  ? Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
-                                                      ? Configuration.OverlayAllDone : Configuration.OverlayNoneDone);
+                                                  ? Plugin.Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
+                                                      ? Plugin.Configuration.OverlayAllDone : Plugin.Configuration.OverlayNoneDone);
         var mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
         ImGui.PopStyleColor();
 
@@ -129,13 +127,13 @@ public class ReturnOverlay : Window, IDisposable
 
 
         Plugin.EnsureFCOrderSafety();
-        var fcList = Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any());
-        if (Configuration.OverlaySortReverse)
+        var fcList = Plugin.Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any());
+        if (Plugin.Configuration.OverlaySortReverse)
             fcList = fcList.OrderByDescending(fc => fc.ReturnTimes().Min());
-        else if (Configuration.OverlaySort)
+        else if (Plugin.Configuration.OverlaySort)
             fcList = fcList.OrderBy(fc => fc.ReturnTimes().Min());
 
-        if (Configuration.OverlayOnlyReturned)
+        if (Plugin.Configuration.OverlayOnlyReturned)
             fcList = fcList.Where(fc => fc.AnySubDone());
 
 
@@ -158,7 +156,7 @@ public class ReturnOverlay : Window, IDisposable
             if (longestSub == null)
                 continue;
 
-            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Configuration.OverlayAllDone : anySubDone ? Configuration.OverlayPartlyDone : Configuration.OverlayNoneDone);
+            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone);
             var header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.Submarines.First().Register}");
             ImGui.PopStyleColor();
 
@@ -171,13 +169,13 @@ public class ReturnOverlay : Window, IDisposable
             foreach (var sub in fc.Submarines)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
-                var subText = $"{(Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                var subText = $"{(Plugin.Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Plugin.Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
                 ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
                 if (needsRepair && ImGui.IsItemHovered())
                     ImGui.SetTooltip(Loc.Localize("Return Overlay Tooltip - Repair Needed", "This submarine needs repair on return."));
 
-                var timeText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
+                var timeText = Helper.GenerateVoyageText(sub, !Plugin.Configuration.OverlayShowDate);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;
                 ImGui.SameLine(windowWidth - timeWidth);
                 ImGui.TextUnformatted(timeText);
@@ -193,8 +191,8 @@ public class ReturnOverlay : Window, IDisposable
     {
         try
         {
-            Configuration.OverlayOpen = true;
-            Configuration.Save();
+            Plugin.Configuration.OverlayOpen = true;
+            Plugin.Configuration.Save();
         }
         catch (IOException)
         {
@@ -206,8 +204,8 @@ public class ReturnOverlay : Window, IDisposable
     {
         try
         {
-            Configuration.OverlayOpen = false;
-            Configuration.Save();
+            Plugin.Configuration.OverlayOpen = false;
+            Plugin.Configuration.Save();
         }
         catch (IOException)
         {
@@ -223,7 +221,7 @@ public class ReturnOverlay : Window, IDisposable
     public void SetHeaderText(Submarines.Submarine sub, float windowWidth, float lastY)
     {
         var cursorPos = ImGui.GetCursorPos();
-        var longestText = Helper.GenerateVoyageText(sub, !Configuration.OverlayShowDate);
+        var longestText = Helper.GenerateVoyageText(sub, !Plugin.Configuration.OverlayShowDate);
         var longestWidth = ImGui.CalcTextSize(longestText).X;
         ImGui.SetCursorPos(new Vector2(windowWidth - longestWidth, lastY));
         ImGui.AlignTextToFramePadding();

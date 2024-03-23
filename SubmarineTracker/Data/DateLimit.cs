@@ -41,15 +41,15 @@ public static class DateUtil
         };
     }
 
-    public static TimeSpan ToTime(this DurationLimit n, int customHour = 0, int customMin = 0)
+    public static uint ToSeconds(this DurationLimit n)
     {
         return n switch
         {
-            DurationLimit.H24 => TimeSpan.FromHours(24),
-            DurationLimit.H36 => TimeSpan.FromHours(36),
-            DurationLimit.H48 => TimeSpan.FromHours(48),
-            DurationLimit.Custom => new TimeSpan(0, customHour, customMin, 0),
-            _ => TimeSpan.MaxValue
+            DurationLimit.H24 => 24 * 60 * 60,
+            DurationLimit.H36 => 36 * 60 * 60,
+            DurationLimit.H48 => 48 * 60 * 60,
+            DurationLimit.Custom => (uint) (((Plugin.Configuration.CustomHour * 60) + Plugin.Configuration.CustomMinute) * 60),
+            _ => uint.MaxValue
         };
     }
 

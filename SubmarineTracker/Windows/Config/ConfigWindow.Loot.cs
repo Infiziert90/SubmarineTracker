@@ -33,19 +33,19 @@ public partial class ConfigWindow
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Options", "Options:"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Legacy", "Exclude Legacy Loot"), ref Configuration.ExcludeLegacy);
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Legacy", "Exclude Legacy Loot"), ref Plugin.Configuration.ExcludeLegacy);
             ImGuiHelpers.ScaledIndent(-10.0f);
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Collections", "Collections:"));
-            var combo = Configuration.CustomLootProfiles.Keys.ToArray();
+            var combo = Plugin.Configuration.CustomLootProfiles.Keys.ToArray();
             Helper.DrawComboWithArrows("##CollectionSelector", ref CurrentCollectionId, ref combo, 0);
             ImGui.SameLine();
             var forbidden = CurrentCollectionId == 0;
             if (forbidden) ImGui.BeginDisabled();
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash))
             {
-                Configuration.CustomLootProfiles.Remove(combo[CurrentCollectionId]);
+                Plugin.Configuration.CustomLootProfiles.Remove(combo[CurrentCollectionId]);
 
                 // Reset to the default collection
                 CurrentCollectionId = 0;
@@ -54,7 +54,7 @@ public partial class ConfigWindow
             if (forbidden && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
                 ImGui.SetTooltip(Loc.Localize("Config Tooltip - Default Collection", "Default collection can't be deleted"));
 
-            var selected = Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
+            var selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
 
             ImGui.InputTextWithHint("##CollectionNameInput", Loc.Localize("Config Text Input - Collection Name", "New Collection Name"), ref NewProfileName, 32);
             ImGui.SameLine();
@@ -62,7 +62,7 @@ public partial class ConfigWindow
             if (notValid) ImGui.BeginDisabled();
             if (ImGuiComponents.IconButton(2, FontAwesomeIcon.Plus))
             {
-                if (!Configuration.CustomLootProfiles.TryAdd(NewProfileName, new Dictionary<uint, int>()))
+                if (!Plugin.Configuration.CustomLootProfiles.TryAdd(NewProfileName, new Dictionary<uint, int>()))
                     Plugin.Notification.AddNotification(new Notification
                     {
                         Content = Loc.Localize("Error - Collection Exists", "Collection with this name already exists"),
@@ -70,14 +70,14 @@ public partial class ConfigWindow
                         Minimized = false,
                     });
 
-                combo = Configuration.CustomLootProfiles.Keys.ToArray();
+                combo = Plugin.Configuration.CustomLootProfiles.Keys.ToArray();
                 CurrentCollectionId = Array.FindIndex(combo, s => s == NewProfileName);
                 if (CurrentCollectionId == -1)
                     CurrentCollectionId = 0;
 
                 NewProfileName = string.Empty;
-                selected = Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
-                Configuration.Save();
+                selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentCollectionId]];
+                Plugin.Configuration.Save();
             }
             if (notValid) ImGui.EndDisabled();
 
@@ -96,7 +96,7 @@ public partial class ConfigWindow
                 var value = (int)(item.PriceLow > 1000 ? item.PriceLow : 0);
 
                 if (selected.TryAdd(row, value))
-                    Configuration.Save();
+                    Plugin.Configuration.Save();
             }
 
             if (ImGui.BeginTable("##DeleteLootTable", 3))
@@ -121,7 +121,7 @@ public partial class ConfigWindow
                     {
                         val = Math.Clamp(val, 0, int.MaxValue);
                         selected[item] = val;
-                        Configuration.Save();
+                        Plugin.Configuration.Save();
                     }
 
                     ImGui.TableNextColumn();
@@ -134,7 +134,7 @@ public partial class ConfigWindow
                 if (deletionKey != 0)
                 {
                     selected.Remove(deletionKey);
-                    Configuration.Save();
+                    Plugin.Configuration.Save();
                 }
 
                 ImGui.EndTable();
@@ -144,7 +144,7 @@ public partial class ConfigWindow
             {
                 foreach (var fc in Submarines.KnownSubmarines.Values)
                     fc.Refresh = true;
-                Configuration.Save();
+                Plugin.Configuration.Save();
             }
 
             ImGui.EndTabItem();

@@ -123,11 +123,11 @@ public static class Unlocks
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)
     {
         if (!SectorToUnlock.TryGetValue(finalSector, out var final))
-            return new List<(uint, UnlockedFrom)>();
+            return [];
 
         // Unknown unlock at the time
         if (final.Sector == 9876)
-            return new List<(uint, UnlockedFrom)>();
+            return [];
 
         var sector = final.Sector;
         var sectorPath = new List<(uint, UnlockedFrom)> { (finalSector, final) };

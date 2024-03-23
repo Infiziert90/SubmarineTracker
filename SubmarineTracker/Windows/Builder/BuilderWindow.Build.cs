@@ -24,13 +24,13 @@ public partial class BuilderWindow
                     var customTerm = Loc.Localize("Terms - Custom", "Custom")!;
 
                     Plugin.EnsureFCOrderSafety();
-                    var existingSubs = Configuration.FCOrder.SelectMany(id =>
+                    var existingSubs = Plugin.Configuration.FCOrder.SelectMany(id =>
                     {
                         var fc = KnownSubmarines[id];
                         return fc.Submarines.Select(s => Plugin.NameConverter.GetSubIdentifier(s, fc));
                     }).ToArray();
 
-                    if (Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                    if (Plugin.Configuration.ShowOnlyCurrentFC && KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
                         existingSubs = fcSub.Submarines.Select(s => Plugin.NameConverter.GetSubIdentifier(s, fcSub)).ToArray();
                     existingSubs = existingSubs.Prepend(customTerm).ToArray();
 
@@ -45,7 +45,7 @@ public partial class BuilderWindow
                     // Calculate first so rank can be changed afterwards
                     if (existingSubs[CurrentBuild.OriginalSub] != customTerm)
                     {
-                        sub = Configuration.FCOrder.SelectMany(id => KnownSubmarines[id].Submarines).ToArray()[CurrentBuild.OriginalSub - 1];
+                        sub = Plugin.Configuration.FCOrder.SelectMany(id => KnownSubmarines[id].Submarines).ToArray()[CurrentBuild.OriginalSub - 1];
                         CurrentBuild.UpdateBuild(sub);
                     }
 
@@ -135,7 +135,7 @@ public partial class BuilderWindow
 
                 // Reset BestEXP to allow automatic calculation trigger
                 LastComputedBuild = Build.RouteBuild.Empty;
-                BestPath = Array.Empty<uint>();
+                BestRoute = Voyage.BestRoute.Empty();
             }
         }
         else

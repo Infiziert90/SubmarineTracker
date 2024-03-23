@@ -13,7 +13,6 @@ namespace SubmarineTracker;
 public class Notify
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
 
     private bool IsInitialized;
     private readonly HashSet<string> FinishedNotifications = new();
@@ -21,7 +20,6 @@ public class Notify
     public Notify(Plugin plugin)
     {
         Plugin = plugin;
-        Configuration = plugin.Configuration;
     }
 
     public void Init()
@@ -45,8 +43,8 @@ public class Notify
         {
             foreach (var sub in fc.Submarines)
             {
-                var found = Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok);
-                if (!Configuration.NotifyForAll && !(found && ok))
+                var found = Plugin.Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok);
+                if (!Plugin.Configuration.NotifyForAll && !(found && ok))
                     continue;
 
                 // this state happens after the rewards got picked up
@@ -55,16 +53,16 @@ public class Notify
 
                 if (FinishedNotifications.Add($"Notify{sub.Name}{id}{sub.Return}"))
                 {
-                    if (Configuration.NotifyForReturns)
+                    if (Plugin.Configuration.NotifyForReturns)
                         SendReturn(sub, fc);
 
-                    if (Configuration.WebhookReturn)
+                    if (Plugin.Configuration.WebhookReturn)
                         Task.Run(() => SendReturnWebhook(sub, fc));
                 }
             }
         }
 
-        if (!Configuration.NotifyForRepairs || !KnownSubmarines.TryGetValue(localId, out var currentFC))
+        if (!Plugin.Configuration.NotifyForRepairs || !KnownSubmarines.TryGetValue(localId, out var currentFC))
             return;
 
         foreach (var sub in currentFC.Submarines)
@@ -81,7 +79,7 @@ public class Notify
 
     public void TriggerDispatch(uint key, uint returnTime)
     {
-        if (!Configuration.WebhookDispatch)
+        if (!Plugin.Configuration.WebhookDispatch)
             return;
 
         if (!FinishedNotifications.Add($"Dispatch{key}{returnTime}"))
@@ -90,8 +88,8 @@ public class Notify
         var fc = KnownSubmarines[Plugin.ClientState.LocalContentId];
         var sub = fc.Submarines.Find(s => s.Register == key)!;
 
-        var found = Configuration.NotifySpecific.TryGetValue($"{sub.Name}{Plugin.ClientState.LocalContentId}", out var ok);
-        if (!Configuration.NotifyForAll && !(found && ok))
+        var found = Plugin.Configuration.NotifySpecific.TryGetValue($"{sub.Name}{Plugin.ClientState.LocalContentId}", out var ok);
+        if (!Plugin.Configuration.NotifyForAll && !(found && ok))
             return;
 
         SendDispatchWebhook(sub, fc, returnTime);
@@ -99,7 +97,7 @@ public class Notify
 
     public void SendDispatchWebhook(Submarine sub, FcSubmarines fc, uint returnTime)
     {
-        if (!Configuration.WebhookUrl.StartsWith("https://"))
+        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         var content = new Webhook.WebhookContent();
@@ -119,7 +117,7 @@ public class Notify
         if (!Plugin.ClientState.IsLoggedIn)
             return;
 
-        if (!Configuration.WebhookUrl.StartsWith("https://"))
+        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         // Prevent that multibox user send multiple webhook triggers
@@ -146,7 +144,7 @@ public class Notify
     {
         Plugin.ChatGui.Print(GenerateMessage(Plugin.NameConverter.GetSub(sub, fc)));
 
-        if (Configuration.OverlayAlwaysOpen)
+        if (Plugin.Configuration.OverlayAlwaysOpen)
             Plugin.ReturnOverlay.IsOpen = true;
     }
 
@@ -154,7 +152,7 @@ public class Notify
     {
         Plugin.ChatGui.Print(RepairMessage(Plugin.NameConverter.GetSub(sub, fc)));
 
-        if (Configuration.ShowRepairToast)
+        if (Plugin.Configuration.ShowRepairToast)
             Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
     }
 

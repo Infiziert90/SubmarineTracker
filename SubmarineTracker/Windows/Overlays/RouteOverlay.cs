@@ -12,20 +12,19 @@ namespace SubmarineTracker.Windows.Overlays;
 public class RouteOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
 
     private int Map = -1;
 
-    private uint[] BestPath = Array.Empty<uint>();
+    private Voyage.BestRoute BestRoute = Voyage.BestRoute.Empty();
     private bool ComputingPath;
     private DateTime ComputeStart = DateTime.Now;
 
     public bool Calculate;
-    public readonly HashSet<SubmarineExplorationPretty> MustInclude = new();
+    public readonly HashSet<SubExplPretty> MustInclude = new();
 
-    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    public static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
-    public RouteOverlay(Plugin plugin, Configuration configuration) : base("Route Overlay##SubmarineTracker")
+    public RouteOverlay(Plugin plugin) : base("Route Overlay##SubmarineTracker")
     {
         Size = new Vector2(300, 330);
 
@@ -35,9 +34,8 @@ public class RouteOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-        Configuration = configuration;
 
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
     }
 
     public void Dispose() { }
@@ -45,7 +43,7 @@ public class RouteOverlay : Window, IDisposable
     public override unsafe void PreOpenCheck()
     {
         IsOpen = false;
-        if (!Configuration.AutoSelectCurrent || !Configuration.ShowRouteOverlay)
+        if (!Plugin.Configuration.AutoSelectCurrent || !Plugin.Configuration.ShowRouteOverlay)
             return;
 
         // Always refresh submarine if we have interface selection
@@ -72,7 +70,7 @@ public class RouteOverlay : Window, IDisposable
             if (selectedMap != Map)
             {
                 Calculate = true;
-                BestPath = Array.Empty<uint>();
+                BestRoute = Voyage.BestRoute.Empty();
                 MustInclude.Clear();
                 Plugin.BuilderWindow.ExplorationPopupOptions = null;
 
@@ -80,7 +78,7 @@ public class RouteOverlay : Window, IDisposable
                 Plugin.BuilderWindow.CurrentBuild.ChangeMap(selectedMap);
             }
 
-            Size = Configuration.DurationLimit != DurationLimit.Custom ? new Vector2(300, 330) : new Vector2(300, 350);
+            Size = Plugin.Configuration.DurationLimit != DurationLimit.Custom ? new Vector2(300, 330) : new Vector2(300, 350);
             IsOpen = true;
         }
         catch
@@ -97,7 +95,7 @@ public class RouteOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        if (Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !MustInclude.Any())
+        if (Plugin.Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !MustInclude.Any())
         {
             if (ImGui.IsWindowHovered())
                 ImGui.SetTooltip(Loc.Localize("Route Overlay Tooltip - High Rank", "Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions."));
@@ -110,7 +108,7 @@ public class RouteOverlay : Window, IDisposable
         if (Calculate && !ComputingPath)
         {
             Calculate = false;
-            BestPath = Array.Empty<uint>();
+            BestRoute = Voyage.BestRoute.Empty();
 
             ComputeStart = DateTime.Now;
             ComputingPath = true;
@@ -119,11 +117,11 @@ public class RouteOverlay : Window, IDisposable
             {
                 var mustInclude = MustInclude.Select(s => s.RowId).ToArray();
                 var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
-                var path = Voyage.FindBestPath(Plugin.BuilderWindow.CurrentBuild, unlocked, mustInclude);
-                if (!path.Any())
+                var path = Voyage.FindBestRoute(Plugin.BuilderWindow.CurrentBuild, unlocked, mustInclude, [], false, false);
+                if (path.Path.Length == 0)
                     Plugin.BuilderWindow.CurrentBuild.NotOptimized();
 
-                BestPath = path;
+                BestRoute = path;
                 ComputingPath = false;
             });
         }
@@ -136,17 +134,17 @@ public class RouteOverlay : Window, IDisposable
             {
                 ImGui.Text($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
             }
-            else if (!BestPath.Any())
+            else if (BestRoute.Path.Length == 0)
             {
                 ImGui.Text(Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
             }
 
-            if (BestPath.Any())
+            if (BestRoute.Path.Length != 0)
             {
-                foreach (var location in BestPath.Select(s => ExplorationSheet.GetRow(s)!))
+                foreach (var location in BestRoute.PathPretty)
                         ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
 
-                Plugin.BuilderWindow.CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(BestPath.Prepend(startPoint).Select(t => ExplorationSheet.GetRow(t)!)));
+                Plugin.BuilderWindow.CurrentBuild.UpdateOptimized(BestRoute);
             }
 
             ImGui.EndListBox();
@@ -159,13 +157,13 @@ public class RouteOverlay : Window, IDisposable
         ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
         ImGui.SetNextItemWidth(width);
-        if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
+        if (ImGui.BeginCombo($"##durationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
         {
             foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
             {
                 if (ImGui.Selectable(durationLimit.GetName()))
                 {
-                    Configuration.DurationLimit = durationLimit;
+                    Plugin.Configuration.DurationLimit = durationLimit;
                     changed = true;
                 }
             }
@@ -173,32 +171,32 @@ public class RouteOverlay : Window, IDisposable
             ImGui.EndCombo();
         }
 
-        if (Configuration.DurationLimit != DurationLimit.None)
+        if (Plugin.Configuration.DurationLimit != DurationLimit.None)
         {
             ImGui.SameLine(length);
-            changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
+            changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Plugin.Configuration.MaximizeDuration);
         }
 
-        if (Configuration.DurationLimit == DurationLimit.Custom)
+        if (Plugin.Configuration.DurationLimit == DurationLimit.Custom)
         {
             ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
             ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width / 2.5f);
-            changed |= ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0);
+            changed |= ImGui.InputInt("##CustomHourInput", ref Plugin.Configuration.CustomHour, 0);
 
             ImGui.SameLine();
             ImGui.TextUnformatted(":");
             ImGui.SameLine();
 
             ImGui.SetNextItemWidth(width / 2.5f);
-            changed |= ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0);
+            changed |= ImGui.InputInt("##CustomMinInput", ref Plugin.Configuration.CustomMinute, 0);
         }
 
         ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5");
         ImGui.SameLine(length);
-        changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Auto Include", "Auto Include"), ref Configuration.MainRouteAutoInclude);
+        changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Auto Include", "Auto Include"), ref Plugin.Configuration.MainRouteAutoInclude);
         ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Auto Include", "Auto include the next main sector, if there is one"));
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
@@ -234,11 +232,11 @@ public class RouteOverlay : Window, IDisposable
 
         if (changed)
         {
-            Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
-            Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
+            Plugin.Configuration.CustomHour = Math.Clamp(Plugin.Configuration.CustomHour, 1, 123);
+            Plugin.Configuration.CustomMinute = Math.Clamp(Plugin.Configuration.CustomMinute, 0, 59);
 
             Calculate = true;
-            Configuration.Save();
+            Plugin.Configuration.Save();
         }
     }
 

@@ -9,14 +9,13 @@ namespace SubmarineTracker.Windows.Overlays;
 public class NextOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private readonly Configuration Configuration;
 
-    public static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    public static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> UnlockPath;
     private (uint Sector, Unlocks.UnlockedFrom UnlockedFrom)? NextSector;
 
-    public NextOverlay(Plugin plugin, Configuration configuration) : base("Next Overlay##SubmarineTracker")
+    public NextOverlay(Plugin plugin) : base("Next Overlay##SubmarineTracker")
     {
         Size = new Vector2(300, 60);
 
@@ -26,9 +25,8 @@ public class NextOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-        Configuration = configuration;
 
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != 9876).Key);
         UnlockPath.Reverse();
@@ -39,7 +37,7 @@ public class NextOverlay : Window, IDisposable
     public override unsafe void PreOpenCheck()
     {
         IsOpen = false;
-        if (!Configuration.AutoSelectCurrent || !Configuration.ShowNextOverlay)
+        if (!Plugin.Configuration.AutoSelectCurrent || !Plugin.Configuration.ShowNextOverlay)
             return;
 
         // Always refresh submarine if we have interface selection
@@ -128,7 +126,7 @@ public class NextOverlay : Window, IDisposable
         ImGui.SetCursorPosX((avail - textWidth2) * 0.5f);
         ImGui.TextColored(ImGuiColors.HealerGreen, visitText);
 
-        if (Configuration.MainRouteAutoInclude && Plugin.RouteOverlay.MustInclude.Add(unlockedFrom))
+        if (Plugin.Configuration.MainRouteAutoInclude && Plugin.RouteOverlay.MustInclude.Add(unlockedFrom))
             Plugin.RouteOverlay.Calculate = true;
     }
 

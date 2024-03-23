@@ -61,7 +61,7 @@ public partial class LootWindow
                 return;
             }
 
-            var lootHistory = submarineLoot.Loot.Where(pair => !Configuration.ExcludeLegacy || pair.Value.First().Valid).Reverse().ToArray();
+            var lootHistory = submarineLoot.Loot.Where(pair => !Plugin.Configuration.ExcludeLegacy || pair.Value.First().Valid).Reverse().ToArray();
             var submarineVoyage = lootHistory.Select(pair => $"{pair.Value.First().Date}").ToArray();
             if (!submarineVoyage.Any())
             {

@@ -70,6 +70,14 @@ public partial class ConfigWindow
             Directory.SetCurrentDirectory(pwd);
         }
 
+        if(ImGui.Button("Calculate All Routes"))
+        {
+            var pwd = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
+            Importer.Export();
+            Directory.SetCurrentDirectory(pwd);
+        }
+
         ImGui.TextColored(ImGuiColors.DalamudViolet, "Input Folder:");
         ImGui.InputText("##InputPath", ref InputPath, 255);
         ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);

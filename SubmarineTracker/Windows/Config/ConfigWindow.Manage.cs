@@ -24,14 +24,14 @@ public partial class ConfigWindow
                     Plugin.EnsureFCOrderSafety();
                     ulong deletion = 0;
                     (int orgIdx, int newIdx) changedOrder = (-1, -1);
-                    foreach (var (id, idx) in Configuration.FCOrder.Select((val, i) => (val, i)))
+                    foreach (var (id, idx) in Plugin.Configuration.FCOrder.Select((val, i) => (val, i)))
                     {
                         var fc = Submarines.KnownSubmarines[id];
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted(Plugin.NameConverter.GetCombinedName(fc));
 
-                        var first = Configuration.FCOrder.First() == id;
-                        var last = Configuration.FCOrder.Last() == id;
+                        var first = Plugin.Configuration.FCOrder.First() == id;
+                        var last = Plugin.Configuration.FCOrder.Last() == id;
 
                         ImGui.TableNextColumn();
                         if (Helper.Button($"##{id}Up", FontAwesomeIcon.ArrowUp, first))
@@ -54,14 +54,14 @@ public partial class ConfigWindow
 
                     if (changedOrder.orgIdx != -1)
                     {
-                        Configuration.FCOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
-                        Configuration.Save();
+                        Plugin.Configuration.FCOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
+                        Plugin.Configuration.Save();
                     }
 
                     if (deletion != 0)
                     {
-                        Configuration.FCOrder.Remove(deletion);
-                        Configuration.Save();
+                        Plugin.Configuration.FCOrder.Remove(deletion);
+                        Plugin.Configuration.Save();
 
                         Plugin.ConfigurationBase.DeleteCharacter(deletion);
                     }
@@ -77,15 +77,15 @@ public partial class ConfigWindow
 
                     ImGui.TableHeadersRow();
 
-                    var ignoredCharacters = Configuration.IgnoredCharacters.ToArray();
+                    var ignoredCharacters = Plugin.Configuration.IgnoredCharacters.ToArray();
                     foreach (var (id, name) in ignoredCharacters)
                     {
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted(Configuration.NameOption == NameOptions.Anon ? Utils.GenerateHashedName(name) : name);
+                        ImGui.TextUnformatted(Plugin.Configuration.NameOption == NameOptions.Anon ? Utils.GenerateHashedName(name) : name);
 
                         ImGui.TableNextColumn();
                         if (Helper.Button($"##{id}CharacterDel", FontAwesomeIcon.Trash, !ImGui.GetIO().KeyCtrl))
-                            Configuration.IgnoredCharacters.Remove(id);
+                            Plugin.Configuration.IgnoredCharacters.Remove(id);
 
                         ImGui.TableNextRow();
                     }
@@ -100,8 +100,8 @@ public partial class ConfigWindow
                             var tag = Utils.ToStr(local.CompanyTag);
                             var world = Utils.ToStr(local.HomeWorld.GameData!.Name);
 
-                            Configuration.IgnoredCharacters.Add(Plugin.ClientState.LocalContentId, $"({tag}) {name}@{world}");
-                            Configuration.Save();
+                            Plugin.Configuration.IgnoredCharacters.Add(Plugin.ClientState.LocalContentId, $"({tag}) {name}@{world}");
+                            Plugin.Configuration.Save();
                         }
                     }
 

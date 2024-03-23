@@ -11,23 +11,23 @@ namespace SubmarineTracker.Data;
 
 public static class Submarines
 {
-    private static ExcelSheet<Item> ItemSheet = null!;
-    private static ExcelSheet<SubmarineRank> RankSheet = null!;
-    private static ExcelSheet<SubmarinePart> PartSheet = null!;
-    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    private static readonly ExcelSheet<Item> ItemSheet;
+    private static readonly ExcelSheet<SubmarineRank> RankSheet;
+    private static readonly ExcelSheet<SubmarinePart> PartSheet;
+    private static readonly ExcelSheet<SubExplPretty> ExplorationSheet;
 
-    private static uint LastRank = 0;
-    private static List<SubmarineExplorationPretty> PossiblePoints = new();
+    private static readonly uint LastRank;
+    private static readonly SubExplPretty[] PossiblePoints;
 
-    public static void Initialize()
+    static Submarines()
     {
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
         PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
-        PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToList();
         LastRank = RankSheet.Last(t => t.Capacity != 0).RowId;
+        PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToArray();
     }
 
     public class FcSubmarines
@@ -477,5 +477,5 @@ public static class Submarines
         { 40, 24367 }
     };
 
-    public static SubmarineExplorationPretty[] ToSheetArray(IEnumerable<uint> sectors) => sectors.Select(s => ExplorationSheet.GetRow(s)!).ToArray();
+    public static SubExplPretty[] ToSheetArray(IEnumerable<uint> sectors) => sectors.Select(s => ExplorationSheet.GetRow(s)!).ToArray();
 }

@@ -30,7 +30,7 @@ public partial class LootWindow
             var length = ImGui.CalcTextSize(longText).X + (10.0f * ImGuiHelpers.GlobalScale);
 
             Plugin.EnsureFCOrderSafety();
-            var existingFCs = Configuration.FCOrder
+            var existingFCs = Plugin.Configuration.FCOrder
                                             .Select(id => $"{Plugin.NameConverter.GetName(KnownSubmarines[id])}##{id}")
                                             .Prepend(Loc.Localize("Terms - All", "All"))
                                             .ToArray();
@@ -40,12 +40,12 @@ public partial class LootWindow
             ImGui.SameLine(length);
             Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs, 3);
 
-            var combo = Configuration.CustomLootProfiles.Keys.ToArray();
+            var combo = Plugin.Configuration.CustomLootProfiles.Keys.ToArray();
             ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.ParsedOrange, longText);
             ImGui.SameLine(length);
             Helper.DrawComboWithArrows("##ProfileSelector", ref CurrentProfileId, ref combo, 1);
-            var selected = Configuration.CustomLootProfiles[combo[CurrentProfileId]];
+            var selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentProfileId]];
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();
@@ -61,12 +61,12 @@ public partial class LootWindow
                     if (selectedFcId != id)
                         continue;
 
-                fc.RebuildStats(Configuration.ExcludeLegacy);
+                fc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
 
                 numSubs += fc.Submarines.Count;
                 numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Select(pair => pair.Value.First())
                                                                              .Where(loot => DateCompare(loot.Date))
-                                                                             .Where(loot => !Configuration.ExcludeLegacy || loot.Valid)).Count();
+                                                                             .Where(loot => !Plugin.Configuration.ExcludeLegacy || loot.Valid)).Count();
 
                 foreach (var (item, count) in fc.TimeLoot.Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
                 {
@@ -78,7 +78,7 @@ public partial class LootWindow
                 }
             }
 
-            var useLimit = (Configuration.DateLimit != DateLimit.None || (CustomMinDate != CustomMinimalDate && CustomMaxDate != DateTime.Now));
+            var useLimit = (Plugin.Configuration.DateLimit != DateLimit.None || (CustomMinDate != CustomMinimalDate && CustomMaxDate != DateTime.Now));
 
             var textHeight = ImGui.CalcTextSize("XXXX").Y * 6.0f; // giving space for 6.0 lines
             var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
@@ -122,7 +122,7 @@ public partial class LootWindow
 
             if (ImGui.BeginChild("##customLootTextChild", new Vector2(0, 0), false, 0))
             {
-                var limit = useLimit ? Configuration.DateLimit != DateLimit.None ? $"over {Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
+                var limit = useLimit ? Plugin.Configuration.DateLimit != DateLimit.None ? $"over {Plugin.Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
                 ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Reward Amount", "The above rewards have been obtained {0} from a total of {1} voyages ({2} submarines).").Format(limit, numVoyages, numSubs));
                 ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Money Made", "This made you a total of {0:N0} gil.").Format(moneyMade));
 
@@ -134,14 +134,14 @@ public partial class LootWindow
                     ImGui.AlignTextToFramePadding();
                     ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Fixed", "Fixed:"));
                     ImGui.SameLine();
-                    if (ImGui.BeginCombo($"##lootOptionCombo", Configuration.DateLimit.GetName()))
+                    if (ImGui.BeginCombo($"##lootOptionCombo", Plugin.Configuration.DateLimit.GetName()))
                     {
                         foreach (var dateLimit in (DateLimit[]) Enum.GetValues(typeof(DateLimit)))
                         {
                             if (ImGui.Selectable(dateLimit.GetName()))
                             {
-                                Configuration.DateLimit = dateLimit;
-                                Configuration.Save();
+                                Plugin.Configuration.DateLimit = dateLimit;
+                                Plugin.Configuration.Save();
                             }
                         }
 
@@ -149,7 +149,7 @@ public partial class LootWindow
                     }
                     ImGuiComponents.HelpMarker(Loc.Localize("Loot Tab Tooltip - Fixed", "Selecting None will allow you to pick a specific time frame."));
 
-                    if (Configuration.DateLimit == DateLimit.None)
+                    if (Plugin.Configuration.DateLimit == DateLimit.None)
                     {
                         ImGui.AlignTextToFramePadding();
                         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
@@ -174,9 +174,9 @@ public partial class LootWindow
 
     public bool DateCompare(DateTime date)
     {
-        if (Configuration.DateLimit != DateLimit.None)
+        if (Plugin.Configuration.DateLimit != DateLimit.None)
         {
-            var dateLimit = Configuration.DateLimit.ToDate();
+            var dateLimit = Plugin.Configuration.DateLimit.ToDate();
             return date >= dateLimit;
         }
 

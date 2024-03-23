@@ -8,16 +8,15 @@ namespace SubmarineTracker.Windows.Loot;
 public partial class LootWindow : Window, IDisposable
 {
     private Plugin Plugin;
-    private Configuration Configuration;
 
     private static ExcelSheet<Item> ItemSheet = null!;
-    private static ExcelSheet<SubmarineExplorationPretty> ExplorationSheet = null!;
+    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
     private static Vector2 IconSize = new(28, 28);
 
     private string Format = string.Empty;
 
-    public LootWindow(Plugin plugin, Configuration configuration) : base("Custom Loot Overview##SubmarineTracker")
+    public LootWindow(Plugin plugin) : base("Custom Loot Overview##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -26,10 +25,9 @@ public partial class LootWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        Configuration = configuration;
 
         ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         InitializeAnalyse();
     }

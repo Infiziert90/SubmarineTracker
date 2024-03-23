@@ -7,18 +7,17 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow : Window, IDisposable
 {
-    private Plugin Plugin;
-    private Configuration Configuration;
+    private readonly Plugin Plugin;
 
     public readonly List<SubmarineRank> RankSheet;
     public readonly ExcelSheet<SubmarineMap> MapSheet;
-    public readonly ExcelSheet<SubmarineExplorationPretty> ExplorationSheet;
+    public readonly ExcelSheet<SubExplPretty> ExplorationSheet;
 
     public Build.RouteBuild CurrentBuild = new();
 
     private string CurrentInput = "";
 
-    public BuilderWindow(Plugin plugin, Configuration configuration) : base("Builder##SubmarineTracker")
+    public BuilderWindow(Plugin plugin) : base("Builder##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -27,11 +26,10 @@ public partial class BuilderWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        Configuration = configuration;
 
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0).ToList();
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExplorationPretty>()!;
+        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         InitializeShip();
         InitializeLeveling();
@@ -137,17 +135,17 @@ public partial class BuilderWindow : Window, IDisposable
         {
             // make sure that original sub hasn't changed in the future
             CurrentBuild.OriginalSub = 0;
-            if (Configuration.SavedBuilds.TryAdd(CurrentInput, CurrentBuild))
+            if (Plugin.Configuration.SavedBuilds.TryAdd(CurrentInput, CurrentBuild))
             {
-                Configuration.Save();
+                Plugin.Configuration.Save();
                 ret = true;
             }
             else
             {
                 if (ImGui.GetIO().KeyCtrl)
                 {
-                    Configuration.SavedBuilds[CurrentInput] = CurrentBuild;
-                    Configuration.Save();
+                    Plugin.Configuration.SavedBuilds[CurrentInput] = CurrentBuild;
+                    Plugin.Configuration.Save();
                     ret = true;
                 }
             }
@@ -177,7 +175,7 @@ public partial class BuilderWindow : Window, IDisposable
             return false;
 
         var longest = 0.0f;
-        foreach (var (key, value) in Configuration.SavedBuilds)
+        foreach (var (key, value) in Plugin.Configuration.SavedBuilds)
         {
             var width = ImGui.CalcTextSize(Utils.FormattedRouteBuild(key, value)).X;
             if (width > longest)
@@ -194,21 +192,15 @@ public partial class BuilderWindow : Window, IDisposable
 
         var ret = false;
 
-        foreach (var (key, value) in Configuration.SavedBuilds)
+        foreach (var (key, value) in Plugin.Configuration.SavedBuilds)
         {
             if (ImGui.Selectable(Utils.FormattedRouteBuild(key, value)))
             {
                 CurrentBuild = value;
-                if (CurrentBuild.Sectors.Any())
-                {
-                    var startPoint = Voyage.FindVoyageStart(CurrentBuild.Sectors.First());
-                    var points = CurrentBuild.Sectors.Prepend(startPoint).Select(ExplorationSheet.GetRow).ToList();
-                    CurrentBuild.UpdateOptimized(Voyage.CalculateDistance(points!));
-                }
+                if (CurrentBuild.Sectors.Count != 0)
+                    CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
                 else
-                {
                     CurrentBuild.NotOptimized();
-                }
                 ret = true;
             }
         }

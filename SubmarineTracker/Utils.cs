@@ -157,16 +157,16 @@ public static class Utils
             return x.Length == y.Length && !x.Except(y).Any();
         }
 
-        public int GetHashCode(uint[] obj)
-        {
-            var hash = 19;
-            foreach (var element in obj.OrderBy(x => x))
-            {
-                hash = (hash * 31) + element.GetHashCode();
-            }
+        public int GetHashCode(uint[] obj) => GetUniqueHash(obj);
+    }
 
-            return hash;
-        }
+    public static int GetUniqueHash(uint[] obj)
+    {
+        var hash = 19;
+        foreach (var element in obj.OrderBy(x => x))
+            hash = (hash * 31) + element.GetHashCode();
+
+        return hash;
     }
 
     public static uint GetUniqueId(uint x, uint y)

@@ -11,7 +11,6 @@ namespace SubmarineTracker.Windows;
 public class MainWindow : Window, IDisposable
 {
     private Plugin Plugin;
-    private Configuration Configuration;
 
     public static ExcelSheet<SubmarineMap> MapSheet = null!;
     public static ExcelSheet<SubmarineExploration> ExplorationSheet = null!;
@@ -22,7 +21,7 @@ public class MainWindow : Window, IDisposable
 
     private static readonly Vector2 WindowMinimumSize = new(800, 550);
 
-    public MainWindow(Plugin plugin, Configuration configuration) : base("Tracker##SubmarineTracker")
+    public MainWindow(Plugin plugin) : base("Tracker##SubmarineTracker")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -31,7 +30,6 @@ public class MainWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        Configuration = configuration;
 
         MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
@@ -53,11 +51,11 @@ public class MainWindow : Window, IDisposable
         if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
             var buttonWidth = ImGui.CalcTextSize("XXXXX@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
-            if (Configuration.NameOption == NameOptions.FullName)
+            if (Plugin.Configuration.NameOption == NameOptions.FullName)
                 buttonWidth = ImGui.CalcTextSize("Character Name@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
 
             ImGui.Columns(2, "columns", true);
-            if (!Configuration.UserResize)
+            if (!Plugin.Configuration.UserResize)
                 ImGui.SetColumnWidth(0, buttonWidth + (20 * ImGuiHelpers.GlobalScale));
             else
                 buttonWidth = ImGui.GetContentRegionAvail().X;
@@ -65,13 +63,13 @@ public class MainWindow : Window, IDisposable
             if (ImGui.BeginChild("##fcList"))
             {
                 Plugin.EnsureFCOrderSafety();
-                if (!(Configuration.ShowAll && CurrentSelection == 1))
+                if (!(Plugin.Configuration.ShowAll && CurrentSelection == 1))
                     if (!Submarines.KnownSubmarines.ContainsKey(CurrentSelection))
-                        CurrentSelection = Configuration.FCOrder.First();
+                        CurrentSelection = Plugin.Configuration.FCOrder.First();
 
                 var current = CurrentSelection;
 
-                if (Configuration.ShowAll)
+                if (Plugin.Configuration.ShowAll)
                 {
                     if (current == 1)
                     {
@@ -85,7 +83,7 @@ public class MainWindow : Window, IDisposable
                         CurrentSelection = 1;
                 }
 
-                foreach (var key in Configuration.FCOrder)
+                foreach (var key in Plugin.Configuration.FCOrder)
                 {
                     var fc = Submarines.KnownSubmarines[key];
                     if (!fc.Submarines.Any())
@@ -130,15 +128,15 @@ public class MainWindow : Window, IDisposable
     private void All()
     {
         Plugin.EnsureFCOrderSafety();
-        var widthCheck = Configuration.ShowRouteInAll && ImGui.GetWindowSize().X < WindowMinimumSize.X + (300.0f * ImGuiHelpers.GlobalScale);
+        var widthCheck = Plugin.Configuration.ShowRouteInAll && ImGui.GetWindowSize().X < WindowMinimumSize.X + (300.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginTable("##allTable", widthCheck ? 1 : 2))
         {
-            foreach (var id in Configuration.FCOrder)
+            foreach (var id in Plugin.Configuration.FCOrder)
             {
                 ImGui.TableNextColumn();
                 var fc = Submarines.KnownSubmarines[id];
-                var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Configuration.ShowDateInAll ? 3.2f : 2.8f);
-                var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Configuration.ShowDateInAll ? 1.9f : 1.6f);
+                var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Plugin.Configuration.ShowDateInAll ? 3.2f : 2.8f);
+                var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Plugin.Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
                 ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
                 foreach (var (sub, idx) in fc.Submarines.Select((val, i) => (val, i)))
@@ -167,10 +165,10 @@ public class MainWindow : Window, IDisposable
                         time = $" {Loc.Localize("Terms - Done", "Done")} ";
                         var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                         if (returnTime.TotalSeconds > 0)
-                            time = !Configuration.ShowDateInAll ? $" {ToTime(returnTime)} " : $" {sub.ReturnTime.ToLocalTime()}";
+                            time = !Plugin.Configuration.ShowDateInAll ? $" {ToTime(returnTime)} " : $" {sub.ReturnTime.ToLocalTime()}";
                     }
 
-                    var fullText = $"[ {time}{(Configuration.ShowRouteInAll ? $"   {route}" : "")} ]";
+                    var fullText = $"[ {time}{(Plugin.Configuration.ShowRouteInAll ? $"   {route}" : "")} ]";
                     ImGui.TextColored(ImGuiColors.ParsedOrange, fullText);
 
                     var textSize = ImGui.CalcTextSize(fullText);
@@ -246,7 +244,7 @@ public class MainWindow : Window, IDisposable
                     ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
 
 
-                    if (Configuration.ShowOnlyLowest)
+                    if (Plugin.Configuration.ShowOnlyLowest)
                     {
                         var repair = $"{sub.LowestCondition():F}%%";
 
@@ -257,32 +255,32 @@ public class MainWindow : Window, IDisposable
                     if (sub.IsOnVoyage())
                     {
                         var time = "";
-                        if (Configuration.ShowTimeInOverview)
+                        if (Plugin.Configuration.ShowTimeInOverview)
                         {
                             time = " Done ";
 
                             var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                             if (returnTime.TotalSeconds > 0)
-                                if (Configuration.ShowBothOptions)
+                                if (Plugin.Configuration.ShowBothOptions)
                                     time = $" {sub.ReturnTime.ToLocalTime()} ({ToTime(returnTime)}) ";
-                                else if (!Configuration.UseDateTimeInstead)
+                                else if (!Plugin.Configuration.UseDateTimeInstead)
                                     time = $" {ToTime(returnTime)} ";
                                 else
                                     time = $" {sub.ReturnTime.ToLocalTime()}";
                         }
 
-                        if (Configuration.ShowRouteInOverview)
+                        if (Plugin.Configuration.ShowRouteInOverview)
                             time += $" {string.Join(" -> ", sub.Points.Select(p => NumToLetter(p, true)))} ";
 
-                        ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                        ImGui.SameLine(Plugin.Configuration.ShowOnlyLowest ? lastRow : thirdRow);
                         ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
                     }
                     else
                     {
 
-                        if (Configuration.ShowTimeInOverview || Configuration.ShowRouteInOverview)
+                        if (Plugin.Configuration.ShowTimeInOverview || Plugin.Configuration.ShowRouteInOverview)
                         {
-                            ImGui.SameLine(Configuration.ShowOnlyLowest ? lastRow : thirdRow);
+                            ImGui.SameLine(Plugin.Configuration.ShowOnlyLowest ? lastRow : thirdRow);
                             ImGui.TextColored(ImGuiColors.ParsedOrange,$"[{Loc.Localize("Terms - No Voyage Data", "No Voyage Data")}]");
                         }
                     }
@@ -306,7 +304,7 @@ public class MainWindow : Window, IDisposable
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
 
-                selectedFc.RebuildStats(Configuration.ExcludeLegacy);
+                selectedFc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
 
                 if (ImGui.BeginChild("##LootOverview"))
                 {
@@ -485,7 +483,7 @@ public class MainWindow : Window, IDisposable
         }
         ImGui.EndTable();
 
-        if (Configuration.ShowExtendedPartsList)
+        if (Plugin.Configuration.ShowExtendedPartsList)
         {
             ImGuiHelpers.ScaledDummy(10.0f);
 

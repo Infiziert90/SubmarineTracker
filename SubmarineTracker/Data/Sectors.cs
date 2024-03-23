@@ -179,7 +179,7 @@ public static class Sectors
         return (guaranteed, avg, max);
     }
 
-    public static uint CalculateExpForSectors(SubmarineExplorationPretty[] sectors, Build.SubmarineBuild build, bool avgExpBonus = false)
+    public static uint CalculateExpForSectors(SubExplPretty[] sectors, Build.SubmarineBuild build, bool avgExpBonus = false)
     {
         var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
         if (!bonusEachSector.Any())

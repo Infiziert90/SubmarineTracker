@@ -16,10 +16,7 @@ public partial class BuilderWindow
             if (sub.IsValid() && !build.EqualsSubmarine(sub))
                 CurrentBuild.OriginalSub = 0;
 
-            var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
-
-            var optimizedPoints = CurrentBuild.OptimizedRoute.Prepend(startPoint).ToList();
-            var optimizedDuration = Voyage.CalculateDuration(optimizedPoints, build);
+            var optimizedDuration = Voyage.CalculateDuration(CurrentBuild.OptimizedRoute, build.Speed);
             var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
             var expPerMinute = 0.0;
             var totalExp = 0u;

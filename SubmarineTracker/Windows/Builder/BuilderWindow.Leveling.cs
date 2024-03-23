@@ -11,9 +11,9 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private ExcelSheetSelector.ExcelSheetPopupOptions<SubmarineExplorationPretty> LevelingAllowedPopupOptions = null!;
+    private ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty> LevelingAllowedPopupOptions = null!;
     private CancellationTokenSource CancelSource = new();
-    private Thread Thread = null!;
+    private Thread? Thread;
 
     private int TargetRank = 85;
 
@@ -35,11 +35,11 @@ public partial class BuilderWindow
     private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
 
     private bool AllowedChanged;
-    private readonly List<SubmarineExplorationPretty> AllowedSectors = new();
+    private readonly List<SubExplPretty> AllowedSectors = [];
 
     private void InitializeLeveling()
     {
-        LevelingAllowedPopupOptions = new()
+        LevelingAllowedPopupOptions = new ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
             FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
@@ -120,17 +120,17 @@ public partial class BuilderWindow
             ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
             ImGuiHelpers.ScaledIndent(10.0f);
-            if (Configuration.DurationLimit != DurationLimit.None)
-                ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Configuration.MaximizeDuration);
+            if (Plugin.Configuration.DurationLimit != DurationLimit.None)
+                ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Plugin.Configuration.MaximizeDuration);
             ImGui.SetNextItemWidth(width);
-            if (ImGui.BeginCombo($"##durationLimitCombo", Configuration.DurationLimit.GetName()))
+            if (ImGui.BeginCombo($"##durationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
             {
                 foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                 {
                     if (ImGui.Selectable(durationLimit.GetName()))
                     {
-                        Configuration.DurationLimit = durationLimit;
-                        Configuration.Save();
+                        Plugin.Configuration.DurationLimit = durationLimit;
+                        Plugin.Configuration.Save();
 
                         OptionsChanged = true;
                     }
@@ -139,22 +139,22 @@ public partial class BuilderWindow
                 ImGui.EndCombo();
             }
 
-            if (Configuration.DurationLimit == DurationLimit.Custom)
+            if (Plugin.Configuration.DurationLimit == DurationLimit.Custom)
             {
                 ImGui.SetNextItemWidth(width / 5f);
-                if (ImGui.InputInt("##CustomHourInput", ref Configuration.CustomHour, 0))
+                if (ImGui.InputInt("##CustomHourInput", ref Plugin.Configuration.CustomHour, 0))
                 {
-                    Configuration.CustomHour = Math.Clamp(Configuration.CustomHour, 1, 123);
-                    Configuration.Save();
+                    Plugin.Configuration.CustomHour = Math.Clamp(Plugin.Configuration.CustomHour, 1, 123);
+                    Plugin.Configuration.Save();
                 }
                 ImGui.SameLine();
                 ImGui.TextUnformatted(":");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(width / 5f);
-                if (ImGui.InputInt("##CustomMinInput", ref Configuration.CustomMinute, 0))
+                if (ImGui.InputInt("##CustomMinInput", ref Plugin.Configuration.CustomMinute, 0))
                 {
-                    Configuration.CustomMinute = Math.Clamp(Configuration.CustomMinute, 0, 59);
-                    Configuration.Save();
+                    Plugin.Configuration.CustomMinute = Math.Clamp(Plugin.Configuration.CustomMinute, 0, 59);
+                    Plugin.Configuration.Save();
                 }
                 ImGui.SameLine();
                 ImGui.TextUnformatted(Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
@@ -262,11 +262,10 @@ public partial class BuilderWindow
     public TimeSpan GetTimesFromJourneys(IEnumerable<Journey> journeys) =>
         journeys.Select(t =>
         {
-            var startPoint = Voyage.FindVoyageStart(t.Route[0]);
             var build = (Build.RouteBuild) t.Build;
             build.Rank = t.OldRank;
 
-            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Prepend(startPoint).Select(f => ExplorationSheet.GetRow(f)!), build));
+            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Select(f => ExplorationSheet.GetRow(f)!).ToArray(), build.GetSubmarineBuild.Speed));
         }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
 
     public void DoThingsOffThread()
@@ -285,7 +284,7 @@ public partial class BuilderWindow
 
         LastCalc = outTree;
 
-        LastOptions = (Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, Configuration.MaximizeDuration);
+        LastOptions = (Plugin.Configuration.DurationLimit.GetName(), IgnoreBuild, IgnoreUnlocks, Plugin.Configuration.MaximizeDuration);
         Processing = false;
     }
 
@@ -441,11 +440,11 @@ public partial class BuilderWindow
         routeBuild.Map = possibleMap;
 
         var allowedSectors = AllowedSectors.Select(s => s.RowId).ToArray();
-        var path = Voyage.FindBestPath(routeBuild, unlocked, Array.Empty<uint>(), allowedSectors: allowedSectors, ignoreUnlocks: IgnoreUnlocks, avgExpBonus: AvgBonus);
-        var exp = Sectors.CalculateExpForSectors(path.Select(ExplorationSheet.GetRow).ToArray()!, routeBuild.GetSubmarineBuild, AvgBonus);
+        var path = Voyage.FindBestRoute(routeBuild, unlocked, [], allowedSectors, IgnoreUnlocks, AvgBonus);
+        var exp = Sectors.CalculateExpForSectors(path.PathPretty, routeBuild.GetSubmarineBuild, AvgBonus);
 
         Progress++;
-        return new Journey(routeBuild.Rank, ProgressRank, exp, exp, path, routeBuild.ToString());
+        return new Journey(routeBuild.Rank, ProgressRank, exp, exp, path.Path, routeBuild.ToString());
     }
 
     private List<Build.RouteBuild> BuildParts()
