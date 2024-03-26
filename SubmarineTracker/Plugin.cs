@@ -279,7 +279,7 @@ namespace SubmarineTracker
                         else if (status.Repairs == 0)
                             ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - No Kits","Not enough Repair Kits!")));
                         else
-                            ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Storage - All Okay","Your inventory has enough for {0} voyages and {1} repairs").Format(status.Voyages, status.Repairs)));
+                            ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Storage - All Okay","Your fleet has enough for {0} voyages and {1} combined repairs.").Format(status.Voyages, status.Repairs)));
                     }
                 }
 
