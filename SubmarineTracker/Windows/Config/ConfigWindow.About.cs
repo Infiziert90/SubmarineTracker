@@ -66,7 +66,7 @@ public partial class ConfigWindow
         {
             var pwd = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
-            Loc.ExportLocalizable();
+            Plugin.Localization.ExportLocalizable();
             Directory.SetCurrentDirectory(pwd);
         }
 

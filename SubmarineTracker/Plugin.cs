@@ -77,7 +77,7 @@ namespace SubmarineTracker
         public static HookManager HookManager = null!;
         public static AllaganToolsConsumer AllaganToolsConsumer = null!;
 
-        private readonly Localization Localization = new();
+        public readonly Localization Localization = new();
 
         public readonly Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
         private bool ShowIgnoredWarning = true;
