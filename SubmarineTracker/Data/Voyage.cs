@@ -93,24 +93,24 @@ public static class Voyage
 
         var subBuild = build.GetSubmarineBuild;
         var bestPath = Importer.CalculatedData.Maps[build.Map + 1]
-                             .AsParallel()
-                             .Where(t => t.Distance <= subBuild.Range)              // distance sort
-                             .Where(p => valid.ContainsAllItems(p.Sectors))         // only valid routes
-                             .Where(p => p.Sectors.ContainsAllItems(mustInclude))   // must include
-                             .Select(t =>
-                             {
-                                 var sectors = t.Sectors.Select(p => SectorToPretty[p]).ToArray();
-                                 return (
-                                     Path: t.Sectors,
-                                     Distance: t.Distance,
-                                     Duration: CalculateDuration(sectors, subBuild.Speed),
-                                     Exp: Sectors.CalculateExpForSectors(sectors, subBuild, avgExpBonus)
-                                 );
-                             })
-                             .Where(t => t.Duration < Plugin.Configuration.DurationLimit.ToSeconds())
-                             .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Exp : t.Exp / (t.Duration / 60))
-                             .ThenByDescending(t => t.Duration)
-                             .FirstOrDefault();
+                               .AsParallel()
+                               .Where(t => t.Distance <= subBuild.Range)            // distance sort
+                               .Where(p => valid.ContainsAllItems(p.Sectors))       // only valid routes
+                               .Where(p => p.Sectors.ContainsAllItems(mustInclude)) // must include
+                               .Select(t =>
+                               {
+                                   var sectors = t.Sectors.Select(p => SectorToPretty[p]).ToArray();
+                                   return (
+                                              Path: t.Sectors,
+                                              Distance: t.Distance,
+                                              Duration: CalculateDuration(sectors, subBuild.Speed),
+                                              Exp: Sectors.CalculateExpForSectors(sectors, subBuild, avgExpBonus)
+                                          );
+                               })
+                               .Where(t => t.Duration < Plugin.Configuration.DurationLimit.ToSeconds())
+                               .OrderByDescending(t => Plugin.Configuration.MaximizeDuration ? t.Exp : t.Exp / (t.Duration / 60))
+                               .ThenBy(t => t.Duration)
+                               .FirstOrDefault();
 
         return new BestRoute(bestPath.Distance, bestPath.Path);
     }
