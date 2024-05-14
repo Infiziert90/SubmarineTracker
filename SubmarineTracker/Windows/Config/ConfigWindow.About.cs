@@ -62,7 +62,7 @@ public partial class ConfigWindow
         if (ImGui.Button("Test Entry Upload"))
             Task.Run(() => Export.UploadEntry(GenerateLootList().Last()));
 
-        if(ImGui.Button("Export Loc"))
+        if (ImGui.Button("Export Loc"))
         {
             var pwd = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
@@ -70,11 +70,19 @@ public partial class ConfigWindow
             Directory.SetCurrentDirectory(pwd);
         }
 
-        if(ImGui.Button("Calculate All Routes"))
+        if (ImGui.Button("Calculate All Routes"))
         {
             var pwd = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
             Importer.Export();
+            Directory.SetCurrentDirectory(pwd);
+        }
+
+        if (ImGui.Button("Calculate Item Detailed"))
+        {
+            var pwd = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
+            Importer.ExportDetailed();
             Directory.SetCurrentDirectory(pwd);
         }
 

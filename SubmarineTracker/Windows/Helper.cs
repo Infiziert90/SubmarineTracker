@@ -90,6 +90,13 @@ public static class Helper
         return time;
     }
 
+    public static void CenterText(string text, float indent = 0.0f)
+    {
+        indent *= ImGuiHelpers.GlobalScale;
+        ImGui.SameLine(((ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X) * 0.5f) + indent);
+        ImGui.TextUnformatted(text);
+    }
+
     public static void MainMenuIcon()
     {
         var avail = ImGui.GetContentRegionAvail().X;
@@ -185,5 +192,19 @@ public static class Helper
         }
 
         return changed;
+    }
+
+    public static void IconHeader(uint icon, Vector2 iconSize, string text, Vector4 textColor)
+    {
+        DrawScaledIcon(icon, iconSize);
+        ImGui.SameLine();
+
+        var textY = ImGui.CalcTextSize(text).Y;
+        var cursorY = ImGui.GetCursorPosY();
+        ImGui.SetCursorPosY(cursorY + iconSize.Y - textY);
+        ImGui.TextColored(textColor, text);
+
+        ImGui.Separator();
+        ImGuiHelpers.ScaledDummy(5.0f);
     }
 }

@@ -26,17 +26,34 @@ public struct Route
     [Key(1)] public uint[] Sectors;
 }
 
+[MessagePackObject]
+public class ItemDetailed
+{
+    [Key(0)] public Dictionary<uint, List<ItemDetail>> Items = new();
+}
+
+[MessagePackObject]
+public struct ItemDetail
+{
+    [Key(0)] public uint Sector;
+    [Key(1)] public string Tier;
+    [Key(2)] public string Poor;
+    [Key(3)] public string Normal;
+    [Key(4)] public string Optimal;
+}
+
 public static class Importer
 {
     public const string Filename = "CalculatedData.msgpack";
+    public const string FilenameItem = "ItemDetailed.msgpack";
 
+    public static ItemDetailed ItemDetailed = new();
     public static CalculatedData CalculatedData = new();
     public static Dictionary<int, FrozenDictionary<int, Route>> HashedRoutes = new();
 
     static Importer()
     {
         Load();
-        ImportDetailed();
 
         HashedRoutes.Clear();
         foreach (var (map, routes) in CalculatedData.Maps)
@@ -53,12 +70,17 @@ public static class Importer
     {
         try
         {
-            using var fileStream = File.OpenRead(Path.Combine(Plugin.PluginDir, Filename));
-            CalculatedData = MessagePackSerializer.Deserialize<CalculatedData>(fileStream);
+            using var calculatedStream = File.OpenRead(Path.Combine(Plugin.PluginDir, Filename));
+            CalculatedData = MessagePackSerializer.Deserialize<CalculatedData>(calculatedStream);
+
+            using var itemStream = File.OpenRead(Path.Combine(Plugin.PluginDir, FilenameItem));
+            ItemDetailed = MessagePackSerializer.Deserialize<ItemDetailed>(itemStream);
         }
         catch (Exception e)
         {
-            Plugin.Log.Error(e, "Failed loading calculated data.");
+            Plugin.Log.Error(e, "Failed loading message pack data.");
+
+            ItemDetailed = new ItemDetailed();
             CalculatedData = new CalculatedData();
         }
     }
@@ -88,7 +110,7 @@ public static class Importer
     }
 
     // ReSharper disable once UnusedType.Global
-    public class SectorDetailed
+    public class SectorCSV
     {
         [Name("Sector name")] public uint Sector { get; set; }
         [Name("T1 high surv proc")] public uint T1HighSurv { get; set; }
@@ -101,7 +123,7 @@ public static class Importer
     }
 
     // ReSharper disable once UnusedType.Global
-    public class ItemDetailed
+    public class ItemCSV
     {
         [Name("Sector name")] public string Sector { get; set; }
         [Name("Item name")] public string Item { get; set; }
@@ -118,24 +140,19 @@ public static class Importer
         [Name("Optimal max")] public string OptimalMax { get; set; }
     }
 
-    public record ItemDetail(uint Sector, string Tier, string Poor, string Normal, string Optimal)
-    {
-        public ItemDetail(uint sector, ItemDetailed detailed) : this(sector, detailed.Tier, $"{detailed.PoorMin} - {detailed.PoorMax}", $"{detailed.NormalMin} - {detailed.NormalMax}", $"{detailed.OptimalMin} - {detailed.OptimalMax}") { }
-    }
-
-    public static readonly Dictionary<uint, List<ItemDetail>> ItemDetails = new();
-
     private const string ItemPath = "Items (detailed).csv";
     private const string SectorPath = "Sectors (detailed).csv";
 
-    public static void ImportDetailed()
+    public static void ExportDetailed()
     {
+        ItemDetailed.Items.Clear();
+
         var itemSheet = Plugin.Data.GetExcelSheet<Item>()!;
         var subSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
 
         using var reader = new FileInfo(Path.Combine(Plugin.PluginDir, "Resources", ItemPath)).OpenText();
         using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true });
-        foreach (var itemDetailed in csv.GetRecords<ItemDetailed>())
+        foreach (var itemDetailed in csv.GetRecords<ItemCSV>())
         {
             itemDetailed.Sector = itemDetailed.Sector switch
             {
@@ -147,13 +164,25 @@ public static class Importer
             var itemRow = itemSheet.First(i => i.Name == itemDetailed.Item).RowId;
             var subRow = subSheet.First(s => string.Equals(Utils.UpperCaseStr(s.Destination), itemDetailed.Sector, StringComparison.InvariantCultureIgnoreCase)).RowId;
 
-            var detail = new ItemDetail(subRow, itemDetailed.Tier,
-                                        $"{itemDetailed.PoorMin} - {itemDetailed.PoorMax}",
-                                        $"{itemDetailed.NormalMin} - {itemDetailed.NormalMax}",
-                                        $"{itemDetailed.OptimalMin} - {itemDetailed.OptimalMax}");
-            if (!ItemDetails.TryAdd(itemRow, [detail]))
-                ItemDetails[itemRow].Add(detail);
+            var detail = new ItemDetail
+            {
+                Sector = subRow,
+                Tier = itemDetailed.Tier,
+                Poor = $"{itemDetailed.PoorMin} - {itemDetailed.PoorMax}",
+                Normal = $"{itemDetailed.NormalMin} - {itemDetailed.NormalMax}",
+                Optimal = $"{itemDetailed.OptimalMin} - {itemDetailed.OptimalMax}"
+
+            };
+
+            if (!ItemDetailed.Items.TryAdd(itemRow, [detail]))
+                ItemDetailed.Items[itemRow].Add(detail);
         }
+
+        var path = Path.Combine(Plugin.PluginDir, FilenameItem);
+        if (File.Exists(path))
+            File.Delete(path);
+
+        File.WriteAllBytes(path, MessagePackSerializer.Serialize(ItemDetailed));
     }
     #endif
     #endregion

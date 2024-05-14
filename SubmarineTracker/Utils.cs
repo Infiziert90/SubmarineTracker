@@ -93,7 +93,7 @@ public static class Utils
 
     public static string PointsToVoyage(string separator, uint[] points)
     {
-        if (!points.Any())
+        if (points.Length == 0)
             return "No Voyage";
 
         var start = Voyage.FindVoyageStart(points[0]);

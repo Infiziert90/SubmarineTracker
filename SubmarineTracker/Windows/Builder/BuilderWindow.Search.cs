@@ -10,72 +10,79 @@ public partial class BuilderWindow
     private uint CurrentSearchSelection;
     public ExcelSheetSelector.ExcelSheetPopupOptions<Item>? SearchPopupOptions;
 
-    private void SearchTab()
+    private bool SearchTab()
     {
-        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Search", "Search")}##Search"))
+        var open = ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Search", "Search")}##Search");
+        if (open)
         {
-            if (ImGui.BeginChild("search", new Vector2(0, 0)))
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            var width = ImGui.GetContentRegionAvail().X / 3;
+            ImGui.AlignTextToFramePadding();
+            ImGui.TextColored(ImGuiColors.DalamudViolet, "Search");
+            ImGui.SameLine();
+            ImGui.PushFont(UiBuilder.IconFont);
+            ImGui.Button(FontAwesomeIcon.Search.ToIconString(), new Vector2(width, 0));
+            ImGui.PopFont();
+
+            SearchPopupOptions ??= new ExcelSheetSelector.ExcelSheetPopupOptions<Item>
             {
-                ImGui.PushFont(UiBuilder.IconFont);
-                ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##addButton");
-                ImGui.PopFont();
+                CloseOnSelection = true,
+                FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
+                FilteredSheet = ItemSheet.Where(i => Importer.ItemDetailed.Items.ContainsKey(i.RowId)),
+            };
 
-                SearchPopupOptions ??= new ExcelSheetSelector.ExcelSheetPopupOptions<Item>
-                {
-                    FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
-                    FilteredSheet = ItemSheet.Where(i => Importer.ItemDetails.ContainsKey(i.RowId))
-                };
+            if (ExcelSheetSelector.ExcelSheetPopup("BuilderSearchAddPopup", out var row, SearchPopupOptions))
+                CurrentSearchSelection = row;
 
-                if (ExcelSheetSelector.ExcelSheetPopup("BuilderSearchAddPopup", out var row, SearchPopupOptions))
-                {
-                    CurrentSearchSelection = row;
-                }
+            ImGuiHelpers.ScaledDummy(10.0f);
 
-                if (CurrentSearchSelection == 0)
-                {
-                    ImGui.TextUnformatted("No item selected ...");
+            if (CurrentSearchSelection == 0)
+            {
+                ImGui.TextUnformatted("No search target selected ...");
 
-                    ImGui.EndChild();
-                    ImGui.EndTabItem();
-                    return;
-                }
-
-                var item = ItemSheet.GetRow(CurrentSearchSelection)!;
-                ImGui.TextUnformatted($"Displaying item: {item.Name}");
-                if (ImGui.BeginTable("##searchColumn", 5))
-                {
-                    ImGui.TableSetupColumn("Sector", 0);
-                    ImGui.TableSetupColumn("Tier", 0);
-                    ImGui.TableSetupColumn("Poor", 0);
-                    ImGui.TableSetupColumn("Normal", 0);
-                    ImGui.TableSetupColumn("Optimal", 0);
-
-                    ImGui.TableHeadersRow();
-
-                    foreach (var itemDetail in Importer.ItemDetails[item.RowId])
-                    {
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{ExplorationSheet.GetRow(itemDetail.Sector)!.Destination}");
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{itemDetail.Tier}");
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{itemDetail.Poor}");
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{itemDetail.Normal}");
-
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{itemDetail.Optimal}");
-                    }
-
-                    ImGui.EndTable();
-                }
+                ImGui.EndTabItem();
+                return open;
             }
 
-            ImGui.EndChild();
+            var item = ItemSheet.GetRow(CurrentSearchSelection)!;
+            Helper.IconHeader(item.Icon, new Vector2(32, 32), ToStr(item.Name), ImGuiColors.ParsedOrange);
+            if (ImGui.BeginTable("##searchColumn", 5, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingStretchProp))
+            {
+                ImGui.TableSetupColumn("Sector", 0);
+                ImGui.TableSetupColumn("Tier", 0);
+                ImGui.TableSetupColumn("Poor", 0);
+                ImGui.TableSetupColumn("Normal", 0);
+                ImGui.TableSetupColumn("Optimal", 0);
+
+                ImGui.TableHeadersRow();
+
+                foreach (var itemDetail in Importer.ItemDetailed.Items[item.RowId])
+                {
+                    var subRow = ExplorationSheet.GetRow(itemDetail.Sector)!;
+
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"{UpperCaseStr(subRow.Destination)} ({NumToLetter(subRow.RowId, true)} - {MapToThreeLetter(subRow.RowId, true)})");
+
+                    ImGui.TableNextColumn();
+                    Helper.CenterText($"{itemDetail.Tier}");
+
+                    ImGui.TableNextColumn();
+                    Helper.CenterText($"{itemDetail.Poor}");
+
+                    ImGui.TableNextColumn();
+                    Helper.CenterText($"{itemDetail.Normal}");
+
+                    ImGui.TableNextColumn();
+                    Helper.CenterText($"{itemDetail.Optimal}");
+                }
+
+                ImGui.EndTable();
+            }
+
             ImGui.EndTabItem();
         }
+
+        return open;
     }
 }
