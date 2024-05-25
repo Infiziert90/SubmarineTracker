@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Utility;
@@ -108,9 +108,7 @@ public partial class LootWindow
 
             if (ImGui.Button(Loc.Localize("Loot Tab Button - Clipboard", "Clipboard")))
             {
-                var fcLootList = BuildExportList();
-                if (CheckList(ref fcLootList))
-                    ExportToClipboard(fcLootList);
+                ExportToClipboard();
             }
 
             if (changed)
@@ -202,5 +200,12 @@ public partial class LootWindow
         ExportMaxDate = DateTime.Now;
 
         ExportRefresh();
+    }
+
+    public void ExportToClipboard()
+    {
+        var fcLootList = BuildExportList();
+        if (CheckList(ref fcLootList))
+            ExportToClipboard(fcLootList);
     }
 }
