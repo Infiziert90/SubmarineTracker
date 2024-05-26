@@ -12,6 +12,12 @@ public partial class ConfigWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             ImGui.AlignTextToFramePadding();
+            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - DtrBar", "Server Bar:"));
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - ServerBar Enabled", "Show Returning Sub"), ref Plugin.Configuration.ShowDtrEntry);
+
+            ImGuiHelpers.ScaledDummy(5.0f);
+
+            ImGui.AlignTextToFramePadding();
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Naming", "Naming Convention:"));
 
             Helper.WrappedText(ImGuiColors.HealerGreen, Loc.Localize("Config Tab Naming - Example", "Example: "));

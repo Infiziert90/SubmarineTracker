@@ -25,6 +25,8 @@ namespace SubmarineTracker
         public bool ShowRouteInAll = false;
         public bool ShowDateInAll = false;
 
+        public bool ShowDtrEntry = false;
+
         public bool ShowOnlyCurrentFC = false;
         public bool AutoSelectCurrent = true;
         public bool ShowRouteOverlay = true;

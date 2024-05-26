@@ -41,6 +41,7 @@ namespace SubmarineTracker
         [PluginService] public static ITextureProvider Texture { get; private set; } = null!;
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
         [PluginService] public static INotificationManager Notification { get; private set; } = null!;
+        [PluginService] public static IDtrBar DtrBar { get; private set; } = null!;
 
         public static Configuration Configuration { get; private set; } = null!;
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
@@ -70,6 +71,7 @@ namespace SubmarineTracker
         private const string KoFiLink = "https://ko-fi.com/infiii";
 
         private readonly PluginCommandManager<Plugin> CommandManager;
+        private readonly ServerBar ServerBar;
 
         private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
 
@@ -121,6 +123,7 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(UnlockOverlay);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
+            ServerBar = new ServerBar(this);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
@@ -163,6 +166,7 @@ namespace SubmarineTracker
 
             CommandManager.Dispose();
             HookManager.Dispose();
+            ServerBar.Dispose();
 
             if (full)
             {
