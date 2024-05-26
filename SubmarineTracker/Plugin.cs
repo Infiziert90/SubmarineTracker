@@ -186,10 +186,18 @@ namespace SubmarineTracker
         }
 
         [Command("/sloot")]
-        [HelpMessage("Opens the custom loot overview")]
+        [HelpMessage("Opens the custom loot overview\n/sloot copy - Export loot history to clipboard in CSV format using current settings")]
         private void OnLootCommand(string command, string args)
         {
-            LootWindow.IsOpen ^= true;
+            switch (args.Trim())
+            {
+                case "copy":
+                    LootWindow.ExportToClipboard();
+                    break;
+                default:
+                    LootWindow.IsOpen ^= true;
+                    break;
+            }
         }
 
         [Command("/shelpy")]
