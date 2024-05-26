@@ -38,6 +38,11 @@ public static class Utils
         return sb.ToString();
     }
 
+    public static string SectorToName(uint key)
+    {
+        return Voyage.FindVoyageStartPretty(key).ToName();
+    }
+
     public static string MapToShort(int key, bool resolveToMap = false) => MapToShort((uint)key, resolveToMap);
     public static string MapToShort(uint key, bool resolveToMap = false)
     {
@@ -70,6 +75,11 @@ public static class Utils
             5 => "TLS",
             _ => ""
         };
+    }
+
+    public static string SectorToMap(uint key)
+    {
+        return UpperCaseStr(Voyage.FindVoyageStartPretty(key).Map.Value!.Name);
     }
 
     public static string NumToLetter(uint num, bool findStart = false)

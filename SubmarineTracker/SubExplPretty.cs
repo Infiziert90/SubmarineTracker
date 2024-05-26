@@ -36,7 +36,7 @@ public class SubExplPretty : SubmarineExploration
         return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 0.035);
     }
 
-    public string ConvertDestination() => Utils.UpperCaseStr(Destination);
+    public string ToName() => Utils.UpperCaseStr(Destination);
 
     public uint CalcTime(SubExplPretty other, float speed) => GetVoyageTime(other, speed) + other.GetSurveyTime(speed);
 }

@@ -1,4 +1,5 @@
-﻿using static ImGuiNET.ImGuiHoveredFlags;
+﻿using Dalamud.Interface.Utility.Raii;
+using static ImGuiNET.ImGuiHoveredFlags;
 
 namespace SubmarineTracker.Windows;
 
@@ -31,8 +32,8 @@ public class PopupMenu
 
         public PopupMenuItemSelectable(string name, Action callback, string tooltip = "")
         {
-            Tooltip = tooltip;
             Name = name;
+            Tooltip = tooltip;
             Callback = callback;
         }
 
@@ -77,12 +78,11 @@ public class PopupMenu
         if (ImGui.IsItemHovered(AllowWhenDisabled & AllowWhenOverlapped & AllowWhenBlockedByPopup & AllowWhenBlockedByActiveItem & AnyWindow) && isMouseReleased)
             ImGui.OpenPopup($"RightClick{Id}");
 
-        if (ImGui.BeginPopup($"RightClick{Id}"))
+        using var popup = ImRaii.Popup($"RightClick{Id}");
+        if (popup)
         {
             foreach (var item in Items)
                 item.DrawPopup();
-
-            ImGui.EndPopup();
         }
     }
 }

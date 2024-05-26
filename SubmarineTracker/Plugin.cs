@@ -17,6 +17,7 @@ using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
 using SubmarineTracker.Manager;
 using SubmarineTracker.Windows;
+using SubmarineTracker.Windows.Main;
 using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;

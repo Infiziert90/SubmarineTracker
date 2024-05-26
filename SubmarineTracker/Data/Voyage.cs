@@ -9,10 +9,10 @@ public static class Voyage
 {
     public const int FixedVoyageTime = 43200; // 12h
 
-    private static ExcelSheet<SubExplPretty> ExplorationSheet;
+    private static readonly ExcelSheet<SubExplPretty> ExplorationSheet;
 
-    private static uint[] ReversedMaps;
-    private static FrozenDictionary<uint, SubExplPretty> SectorToPretty;
+    public static readonly FrozenDictionary<uint, SubExplPretty> SectorToPretty;
+    private static readonly uint[] ReversedMaps;
 
     static Voyage()
     {
