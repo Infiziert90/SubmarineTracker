@@ -21,7 +21,6 @@ public class MigrationWindow : Window, IDisposable
         DisableWindowSounds = true;
 
         LogAndNotify();
-        IsOpen = true;
     }
 
     public void Dispose() { }
