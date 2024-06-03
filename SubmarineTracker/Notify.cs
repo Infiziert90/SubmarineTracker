@@ -78,22 +78,22 @@ public class Notify
         }
     }
 
-    public unsafe void TriggerDispatch(uint key, uint returnTime)
+    public void TriggerDispatch(uint key, uint returnTime)
     {
         if (!Plugin.Configuration.WebhookDispatch)
             return;
 
+        var fcId = Plugin.GetFCId;
+        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(fcId, out var currentFC))
+            return;
+
+        var subs = Plugin.DatabaseCache.GetSubmarines(fcId);
+        if (subs.Length == 0)
+            return;
+
+        var sub = subs.First(s => s.Register == key);
         if (!FinishedNotifications.Add($"Dispatch{key}{returnTime}"))
             return;
-
-        var subs = Plugin.DatabaseCache.GetSubmarines();
-        var fcs = Plugin.DatabaseCache.GetFreeCompanies();
-
-        var fcId = Plugin.GetFCId;
-        if (!fcs.TryGetValue(fcId, out var currentFC))
-            return;
-
-        var sub = subs.Where(s => s.FreeCompanyId == fcId).First(s => s.Register == key);
 
         var found = Plugin.Configuration.NotifyFCSpecific.TryGetValue($"{sub.Name}{fcId}", out var ok);
         if (!Plugin.Configuration.NotifyForAll && !(found && ok))
