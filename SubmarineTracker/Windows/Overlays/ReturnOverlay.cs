@@ -1,6 +1,5 @@
 using System.IO;
 using Dalamud.Interface.Windowing;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Overlays;
 
@@ -34,15 +33,15 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void PreOpenCheck()
     {
-        if (Plugin.Configuration.OverlayHoldClosed && !Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone()))
+        if (Plugin.Configuration.OverlayHoldClosed && !Plugin.DatabaseCache.GetSubmarines().Any(sub => sub.IsDone()))
             IsOpen = false;
     }
 
     public override void PreDraw()
     {
         VoyageStats = (0, 0, 0);
-        var nextSub = new Submarines.Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
-        foreach (var sub in Submarines.KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
+        var nextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
+        foreach (var sub in Plugin.DatabaseCache.GetSubmarines())
         {
             if (sub.IsOnVoyage())
             {
@@ -97,10 +96,12 @@ public class ReturnOverlay : Window, IDisposable
     public override void Draw()
     {
         var showLast = !Plugin.Configuration.OverlayFirstReturn;
-        Submarines.Submarine? timerSub = null;
-        foreach (var fc in Submarines.KnownSubmarines.Values)
+
+        Submarine? timerSub = null;
+        foreach (var fc in Plugin.DatabaseCache.GetFreeCompanies().Keys)
         {
-            var timer = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
+            var subs = Plugin.DatabaseCache.GetSubmarines(fc);
+            var timer = showLast ? subs.MaxBy(s => s.Return) : subs.MinBy(s => s.Return);
             if (timer == null)
                 continue;
 
@@ -127,18 +128,18 @@ public class ReturnOverlay : Window, IDisposable
 
 
         Plugin.EnsureFCOrderSafety();
-        var fcList = Plugin.Configuration.FCOrder.Select(id => Submarines.KnownSubmarines[id]).Where(fc => fc.Submarines.Any());
+        var fcList = Plugin.Configuration.FCIdOrder.Select(id => (Plugin.DatabaseCache.GetFreeCompanies()[id], Plugin.DatabaseCache.GetSubmarines(id))).Where(tuple => tuple.Item2.Length != 0);
         if (Plugin.Configuration.OverlaySortReverse)
-            fcList = fcList.OrderByDescending(fc => fc.ReturnTimes().Min());
+            fcList = fcList.OrderByDescending(tuple => tuple.Item2.Min(s => s.Return));
         else if (Plugin.Configuration.OverlaySort)
-            fcList = fcList.OrderBy(fc => fc.ReturnTimes().Min());
+            fcList = fcList.OrderBy(tuple => tuple.Item2.Min(s => s.Return));
 
         if (Plugin.Configuration.OverlayOnlyReturned)
-            fcList = fcList.Where(fc => fc.AnySubDone());
+            fcList = fcList.Where(tuple => tuple.Item2.Any(s => s.IsDone()));
 
 
         var sortedFcList = fcList.ToArray();
-        if (!sortedFcList.Any())
+        if (sortedFcList.Length == 0)
         {
             ImGuiHelpers.ScaledIndent(10.0f);
             ImGui.TextColored(ImGuiColors.DalamudOrange,Loc.Localize("Return Overlay Info - No Return", "No sub has returned."));
@@ -147,17 +148,17 @@ public class ReturnOverlay : Window, IDisposable
         }
 
         ImGuiHelpers.ScaledIndent(10.0f);
-        foreach (var fc in sortedFcList)
+        foreach (var (fc, subs) in sortedFcList)
         {
             y = ImGui.GetCursorPosY();
-            var anySubDone = fc.Submarines.Any(s => s.IsDone());
-            var longestSub = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
+            var anySubDone = subs.Any(s => s.IsDone());
+            var longestSub = showLast ? subs.MaxBy(s => s.Return) : subs.MinBy(s => s.Return);
 
             if (longestSub == null)
                 continue;
 
             ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone);
-            var header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.Submarines.First().Register}");
+            var header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.FreeCompanyId}");
             ImGui.PopStyleColor();
 
             SetHeaderText(longestSub, windowWidth, y);
@@ -166,7 +167,7 @@ public class ReturnOverlay : Window, IDisposable
                 continue;
 
             ImGuiHelpers.ScaledIndent(10.0f);
-            foreach (var sub in fc.Submarines)
+            foreach (var sub in subs)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
                 var subText = $"{(Plugin.Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Plugin.Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
@@ -218,7 +219,7 @@ public class ReturnOverlay : Window, IDisposable
         ImGui.PopStyleColor();
     }
 
-    public void SetHeaderText(Submarines.Submarine sub, float windowWidth, float lastY)
+    public void SetHeaderText(Submarine sub, float windowWidth, float lastY)
     {
         var cursorPos = ImGui.GetCursorPos();
         var longestText = Helper.GenerateVoyageText(sub, !Plugin.Configuration.OverlayShowDate);

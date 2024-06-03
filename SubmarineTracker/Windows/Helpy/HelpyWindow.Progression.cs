@@ -12,15 +12,15 @@ public partial class HelpyWindow
         UnlockPath.Reverse();
     }
 
-    private void ProgressionTab(Submarines.FcSubmarines fcSub)
+    private void ProgressionTab(FreeCompany fc)
     {
         if (ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Progression", "Progression")}##Progression"))
         {
             if (ImGui.BeginTabBar("##progressionTabBar"))
             {
-                AllSlotsTab(fcSub);
+                AllSlotsTab(fc);
 
-                LastSectorTab(fcSub);
+                LastSectorTab(fc);
 
                 InfoTab();
 
@@ -31,7 +31,7 @@ public partial class HelpyWindow
         }
     }
 
-    private void AllSlotsTab(Submarines.FcSubmarines fcSub)
+    private void AllSlotsTab(FreeCompany fc)
     {
         if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Submarine Path", "4 Submarines")}##SubmarinesPath"))
             return;
@@ -57,8 +57,8 @@ public partial class HelpyWindow
             var rank = explorationPoint.RankReq;
             var special = unlockedFrom.Sub ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>" : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
 
-            fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
-            fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
+            fc.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
+            fc.ExploredSectors.TryGetValue(point, out var hasExplored);
             var color = hasUnlocked
                             ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
                             : ImGuiColors.DalamudRed;
@@ -74,7 +74,7 @@ public partial class HelpyWindow
         ImGui.EndTabItem();
     }
 
-    private void LastSectorTab(Submarines.FcSubmarines fcSub)
+    private void LastSectorTab(FreeCompany fc)
     {
         if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Last Sector", "Last Sector")}##LastSector"))
             return;
@@ -101,8 +101,8 @@ public partial class HelpyWindow
                                 : unlockedFrom.Map ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Map", "Unlocks map")}>"
                                   : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
 
-            fcSub.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
-            fcSub.ExploredSectors.TryGetValue(point, out var hasExplored);
+            fc.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
+            fc.ExploredSectors.TryGetValue(point, out var hasExplored);
             var color = hasUnlocked
                             ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
                             : ImGuiColors.DalamudRed;

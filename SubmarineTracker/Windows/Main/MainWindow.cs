@@ -35,7 +35,7 @@ public partial class MainWindow : Window, IDisposable
     {
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        if (Submarines.KnownSubmarines.Values.All(s => s.Submarines.Count == 0))
+        if (Plugin.DatabaseCache.GetSubmarines().Length == 0)
         {
             Helper.NoData();
             return;
@@ -62,8 +62,8 @@ public partial class MainWindow : Window, IDisposable
                     {
                         Plugin.EnsureFCOrderSafety();
                         if (!(Plugin.Configuration.ShowAll && CurrentSelection == 1))
-                            if (!Submarines.KnownSubmarines.ContainsKey(CurrentSelection))
-                                CurrentSelection = Plugin.Configuration.FCOrder.First();
+                            if (!Plugin.DatabaseCache.GetFreeCompanies().ContainsKey(CurrentSelection))
+                                CurrentSelection = Plugin.Configuration.FCIdOrder.First();
 
                         var current = CurrentSelection;
                         if (Plugin.Configuration.ShowAll)
@@ -73,10 +73,11 @@ public partial class MainWindow : Window, IDisposable
                                 CurrentSelection = 1;
                         }
 
-                        foreach (var key in Plugin.Configuration.FCOrder)
+                        foreach (var key in Plugin.Configuration.FCIdOrder)
                         {
-                            var fc = Submarines.KnownSubmarines[key];
-                            if (fc.Submarines.Count == 0)
+                            var fc = Plugin.DatabaseCache.GetFreeCompanies()[key];
+                            var fcSubs = Plugin.DatabaseCache.GetSubmarines(fc.FreeCompanyId);
+                            if (fcSubs.Length == 0)
                                 continue;
 
                             var text = Plugin.NameConverter.GetName(fc);

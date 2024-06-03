@@ -1,6 +1,5 @@
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker;
 
@@ -49,33 +48,21 @@ public class ServerBar
 
     private void UpdateBarString()
     {
-        var showLast = !Plugin.Configuration.OverlayFirstReturn;
-
-        Submarines.FcSubmarines? fcSub = null;
-        Submarines.Submarine? timerSub = null;
-        foreach (var fc in Submarines.KnownSubmarines.Values)
-        {
-            var timer = showLast ? fc.GetLastReturn() : fc.GetFirstReturn();
-            if (timer == null)
-                continue;
-
-            if (timerSub == null || (showLast ? timer.ReturnTime > timerSub.ReturnTime : timer.ReturnTime < timerSub.ReturnTime))
-            {
-                fcSub = fc;
-                timerSub = timer;
-            }
-        }
-
-        if (fcSub == null || timerSub == null)
+        var subs = Plugin.DatabaseCache.GetSubmarines();
+        var sub = !Plugin.Configuration.OverlayFirstReturn ? subs.MaxBy(s => s.Return) : subs.MinBy(s => s.Return);
+        if (sub is not { FreeCompanyId: > 0 })
             return;
 
-        var name = Plugin.NameConverter.GetSub(timerSub, fcSub);
+        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(sub.FreeCompanyId, out var fc))
+            return;
+
+        var name = Plugin.NameConverter.GetSub(sub, fc);
         var time = Loc.Localize("Terms - No Voyage", "No Voyage");
-        if (timerSub.IsOnVoyage())
+        if (sub.IsOnVoyage())
         {
             time = Loc.Localize("Terms - Done", "Done");
 
-            var returnTime = timerSub.LeftoverTime();
+            var returnTime = sub.LeftoverTime();
             if (returnTime.TotalSeconds > 0)
                 time = Utils.ToTime(returnTime);
         }

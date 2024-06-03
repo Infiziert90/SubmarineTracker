@@ -45,8 +45,12 @@ public static class Loot
         }
     }
 
-    public class DetailedLoot
+    public class DetailedLoot : ICloneable
     {
+        public ulong FreeCompanyId = 0;
+        public uint Register = 0;
+        public uint Return = 0;
+
         public bool Valid;
         public int Rank;
         public int Surv;
@@ -107,6 +111,12 @@ public static class Loot
         [JsonIgnore] public Item PrimaryItem => ItemSheet.GetRow(Primary)!;
         [JsonIgnore] public Item AdditionalItem => ItemSheet.GetRow(Additional)!;
         [JsonIgnore] public bool ValidAdditional => Additional > 0;
+
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 
     public static string ProcToText(uint proc)

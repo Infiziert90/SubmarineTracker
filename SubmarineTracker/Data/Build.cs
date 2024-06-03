@@ -23,6 +23,7 @@ public static class Build
         public readonly SubmarinePart Bow;
         public readonly SubmarinePart Bridge;
 
+        public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
         public SubmarineBuild(Submarines.Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
 
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
@@ -79,7 +80,7 @@ public static class Build
             return identifier;
         }
 
-        public bool EqualsSubmarine(Submarines.Submarine other)
+        public bool EqualsSubmarine(Submarine other)
         {
             return Bonus.RowId == other.Rank && Hull.RowId == other.Hull && Stern.RowId == other.Stern && Bow.RowId == other.Bow && Bridge.RowId == other.Bridge;
         }
@@ -136,7 +137,7 @@ public static class Build
             Bridge = bridge.GetPartId();
         }
 
-        public RouteBuild(Submarines.Submarine sub)
+        public RouteBuild(Submarine sub)
         {
             Rank = sub.Rank;
             Hull = sub.Hull;
@@ -161,7 +162,7 @@ public static class Build
 
         [JsonIgnore] private int[] PartArray => [Bow, Bridge, Hull, Stern];
 
-        public void UpdateBuild(Submarines.Submarine sub)
+        public void UpdateBuild(Submarine sub)
         {
             Rank = sub.Rank;
             Hull = sub.Hull;

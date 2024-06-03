@@ -6,7 +6,7 @@ namespace SubmarineTracker.Windows.Main;
 
 public partial class MainWindow
 {
-    private static void DetailedSub(Submarines.Submarine sub)
+    private static void DetailedSub(Submarine sub)
     {
         ImGuiHelpers.ScaledDummy(5.0f);
 

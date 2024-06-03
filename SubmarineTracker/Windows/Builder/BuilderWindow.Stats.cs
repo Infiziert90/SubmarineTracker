@@ -6,7 +6,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private void BuildStats(ref Submarines.Submarine sub)
+    private void BuildStats(ref Submarine sub)
     {
         if (ImGui.BeginChild("SubStats", new Vector2(0, 0)))
         {

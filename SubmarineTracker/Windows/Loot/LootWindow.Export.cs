@@ -23,10 +23,8 @@ public partial class LootWindow
     {
         if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Export", "Export")}##Export"))
         {
-            var existingSubs = Submarines.KnownSubmarines.Values
-                                         .SelectMany(fc => fc.Submarines.Select(s => $"{s.Name} ({s.Build.FullIdentifier()})"))
-                                         .ToArray();
-            if (!existingSubs.Any())
+            var existingSubs = Plugin.DatabaseCache.GetSubmarines().Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
+            if (existingSubs.Length == 0)
             {
                 Helper.NoData();
                 ImGui.EndTabItem();
@@ -49,7 +47,7 @@ public partial class LootWindow
             if (!ExportAll)
             {
                 ImGuiHelpers.ScaledIndent(10.0f);
-                foreach (var (key, fc) in Submarines.KnownSubmarines)
+                foreach (var (key, fc) in Plugin.DatabaseCache.GetFreeCompanies())
                 {
                     ExportSpecific.TryGetValue(key, out var check);
                     if (ImGui.Checkbox($"{Plugin.NameConverter.GetName(fc)}##{key}", ref check))
@@ -118,26 +116,25 @@ public partial class LootWindow
         }
     }
 
-    private List<DetailedLoot> BuildExportList()
+    private List<SubmarineTracker.Loot> BuildExportList()
     {
         var min = new DateTime(ExportMinDate.Year, ExportMinDate.Month, ExportMinDate.Day, 0, 0, 0);
         var max = new DateTime(ExportMaxDate.Year, ExportMaxDate.Month, ExportMaxDate.Day, 23, 59, 59);
 
         // some of the corrupted loot data is still around, so we check that Rank is above 0
-        return Submarines.KnownSubmarines
-                                   .Where(kv => ExportAll || (ExportSpecific.TryGetValue(kv.Key, out var check) && check))
-                                   .Select(kv => kv.Value.SubLoot)
-                                   .SelectMany(kv => kv.Values)
-                                   .SelectMany(subLoot => subLoot.Loot)
-                                   .SelectMany(innerLoot => innerLoot.Value)
-                                   .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
-                                   .Where(detailedLoot => detailedLoot.Date > min && detailedLoot.Date < max)
+        var lootList = Plugin.DatabaseCache.GetLoot();
+        return Plugin.DatabaseCache.GetFreeCompanies()
+                                   .Where(pair => ExportAll || (ExportSpecific.TryGetValue(pair.Key, out var check) && check))
+                                   .Select(pair => lootList.Where(loot => loot.FreeCompanyId == pair.Key))
+                                   .SelectMany(loot => loot)
+                                   .Where(loot => loot is { Valid: true, Rank: > 0 })
+                                   .Where(loot => loot.Date > min && loot.Date < max)
                                    .ToList();
     }
 
-    private bool CheckList(ref List<DetailedLoot> fcLootList)
+    private bool CheckList(ref List<SubmarineTracker.Loot> fcLootList)
     {
-        if (!fcLootList.Any())
+        if (fcLootList.Count == 0)
         {
             Plugin.ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Loot Export Error - Nothing Found", "Nothing to export in the selected time frame.")));
             return false;
@@ -146,7 +143,7 @@ public partial class LootWindow
         return true;
     }
 
-    private void ExportToClipboard(List<DetailedLoot> fcLootList)
+    private void ExportToClipboard(List<SubmarineTracker.Loot> fcLootList)
     {
         var s = Export.ExportToString(fcLootList, Plugin.Configuration.ExportExcludeDate, Plugin.Configuration.ExportExcludeHash);
         if (s != string.Empty)
@@ -156,7 +153,7 @@ public partial class LootWindow
         }
     }
 
-    private void ExportToFile(List<DetailedLoot> fcLootList)
+    private void ExportToFile(List<SubmarineTracker.Loot> fcLootList)
     {
         if (Directory.Exists(Plugin.Configuration.ExportOutputPath))
         {

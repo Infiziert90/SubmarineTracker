@@ -1,6 +1,4 @@
-﻿using static SubmarineTracker.Data.Submarines;
-
-namespace SubmarineTracker.Data;
+﻿namespace SubmarineTracker.Data;
 
 public enum NameOptions
 {
@@ -15,19 +13,12 @@ public enum NameOptions
 
 public class NameConverter
 {
-    private readonly Plugin Plugin;
-
-    public NameConverter(Plugin plugin)
-    {
-        Plugin = plugin;
-    }
-
-    public string GetName(FcSubmarines fc)
+    public string GetName(FreeCompany fc)
     {
         return GenerateName(fc);
     }
 
-    public string GetSub(Submarine sub, FcSubmarines fc)
+    public string GetSub(Submarine sub, FreeCompany fc)
     {
         var name = $"{sub.Name} ({GenerateName(fc)})";
         return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
@@ -38,19 +29,19 @@ public class NameConverter
         return Plugin.Configuration.NameOption != NameOptions.Anon ? sub.Name : Utils.GenerateHashedName(sub.Name);
     }
 
-    public string GetSubIdentifier(Submarine sub, FcSubmarines fc)
+    public string GetSubIdentifier(Submarine sub, FreeCompany fc)
     {
         var name = $"[{GenerateName(fc)}] {sub.Name} ({sub.Identifier()})";
         return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
     }
 
-    public string GetCombinedName(FcSubmarines fc)
+    public string GetCombinedName(FreeCompany fc)
     {
         var name = $"({fc.Tag}) {fc.CharacterName}@{fc.World}";
         return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
     }
 
-    private string GenerateName(FcSubmarines fc)
+    private string GenerateName(FreeCompany fc)
     {
         return Plugin.Configuration.NameOption switch
         {

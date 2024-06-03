@@ -56,7 +56,7 @@ public class UnlockOverlay : Window, IDisposable
                 return;
 
             var selectedMap = map - 63191; // 63191 = Deep-sea Site
-            var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+            var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
 
             PossibleUnlocks.Clear();
             foreach (var sector in ExplorationSheet.Where(s => s.Map.Row == selectedMap + 1))

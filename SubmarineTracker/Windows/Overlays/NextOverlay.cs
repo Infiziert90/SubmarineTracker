@@ -58,7 +58,7 @@ public class NextOverlay : Window, IDisposable
                 return;
 
             var selectedMap = map - 63191; // 63191 = Deep-sea Site
-            var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+            var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
 
             NextSector = null;
             foreach (var (sector, unlockedFrom) in UnlockPath)

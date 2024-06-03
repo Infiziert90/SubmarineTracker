@@ -3,7 +3,6 @@ using Dalamud.Interface.Components;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -30,8 +29,8 @@ public partial class LootWindow
             var length = ImGui.CalcTextSize(longText).X + (10.0f * ImGuiHelpers.GlobalScale);
 
             Plugin.EnsureFCOrderSafety();
-            var existingFCs = Plugin.Configuration.FCOrder
-                                            .Select(id => $"{Plugin.NameConverter.GetName(KnownSubmarines[id])}##{id}")
+            var existingFCs = Plugin.Configuration.FCIdOrder
+                                            .Select(id => $"{Plugin.NameConverter.GetName(Plugin.DatabaseCache.GetFreeCompanies()[id])}##{id}")
                                             .Prepend(Loc.Localize("Terms - All", "All"))
                                             .ToArray();
 
@@ -55,20 +54,21 @@ public partial class LootWindow
             var numVoyages = 0;
             var moneyMade = 0L;
             var bigList = new Dictionary<Item, int>();
-            foreach (var (id, fc) in KnownSubmarines)
+            foreach (var id in Plugin.DatabaseCache.GetFreeCompanies().Keys)
             {
                 if (FcSelection != 0 && ulong.TryParse(existingFCs[FcSelection].Split("##")[1], out var selectedFcId))
                     if (selectedFcId != id)
                         continue;
 
-                fc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
+                var subs = Plugin.DatabaseCache.GetSubmarines(id);
+                numSubs += subs.Length;
 
-                numSubs += fc.Submarines.Count;
-                numVoyages += fc.SubLoot.Values.SelectMany(subLoot => subLoot.Loot.Select(pair => pair.Value.First())
-                                                                             .Where(loot => DateCompare(loot.Date))
-                                                                             .Where(loot => !Plugin.Configuration.ExcludeLegacy || loot.Valid)).Count();
+                foreach (var loot in Plugin.DatabaseCache.GetLoot().Where(l => subs.Any(s => s.Register == l.Register)))
+                    if (DateCompare(loot.Date) && (!Plugin.Configuration.ExcludeLegacy || loot.Valid))
+                        numVoyages++;
 
-                foreach (var (item, count) in fc.TimeLoot.Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
+
+                foreach (var (item, count) in Plugin.DatabaseCache.GetFCTimeLoot(id).Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
                 {
                     if (!selected.ContainsKey(item.RowId))
                         continue;

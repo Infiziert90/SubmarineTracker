@@ -4,9 +4,7 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using SubmarineTracker.Windows;
-
-using static SubmarineTracker.Data.Submarines;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 
 namespace SubmarineTracker;
 
@@ -26,24 +24,26 @@ public class Notify
     {
         // We call this in the first framework update to ensure all subs have loaded
         IsInitialized = true;
-        foreach (var sub in KnownSubmarines.Values.SelectMany(fc => fc.Submarines))
+        foreach (var sub in Plugin.DatabaseCache.GetSubmarines())
             FinishedNotifications.Add($"Dispatch{sub.Register}{sub.Return}");
     }
 
-    public void NotifyLoop(IFramework _)
+    public unsafe void NotifyLoop(IFramework _)
     {
-        if (!KnownSubmarines.Any())
+        var subs = Plugin.DatabaseCache.GetSubmarines();
+        var fcs = Plugin.DatabaseCache.GetFreeCompanies();
+        if (subs.Length == 0 || fcs.Count == 0)
             return;
 
         if (!IsInitialized)
             Init();
 
         var localId = Plugin.ClientState.LocalContentId;
-        foreach (var (id, fc) in KnownSubmarines)
+        foreach (var (id, fc) in fcs)
         {
-            foreach (var sub in fc.Submarines)
+            foreach (var sub in subs.Where(s => s.FreeCompanyId == id))
             {
-                var found = Plugin.Configuration.NotifySpecific.TryGetValue($"{sub.Name}{id}", out var ok);
+                var found = Plugin.Configuration.NotifyFCSpecific.TryGetValue($"{sub.Name}{id}", out var ok);
                 if (!Plugin.Configuration.NotifyForAll && !(found && ok))
                     continue;
 
@@ -62,10 +62,11 @@ public class Notify
             }
         }
 
-        if (!Plugin.Configuration.NotifyForRepairs || !KnownSubmarines.TryGetValue(localId, out var currentFC))
+        var fcId = Plugin.GetFCId;
+        if (!Plugin.Configuration.NotifyForRepairs || !fcs.TryGetValue(fcId, out var currentFC))
             return;
 
-        foreach (var sub in currentFC.Submarines)
+        foreach (var sub in subs.Where(s => s.FreeCompanyId == fcId))
         {
             // We want this state, as it signals a returned submarine
             if (sub.Return != 0 || sub.NoRepairNeeded)
@@ -77,7 +78,7 @@ public class Notify
         }
     }
 
-    public void TriggerDispatch(uint key, uint returnTime)
+    public unsafe void TriggerDispatch(uint key, uint returnTime)
     {
         if (!Plugin.Configuration.WebhookDispatch)
             return;
@@ -85,17 +86,23 @@ public class Notify
         if (!FinishedNotifications.Add($"Dispatch{key}{returnTime}"))
             return;
 
-        var fc = KnownSubmarines[Plugin.ClientState.LocalContentId];
-        var sub = fc.Submarines.Find(s => s.Register == key)!;
+        var subs = Plugin.DatabaseCache.GetSubmarines();
+        var fcs = Plugin.DatabaseCache.GetFreeCompanies();
 
-        var found = Plugin.Configuration.NotifySpecific.TryGetValue($"{sub.Name}{Plugin.ClientState.LocalContentId}", out var ok);
+        var fcId = Plugin.GetFCId;
+        if (!fcs.TryGetValue(fcId, out var currentFC))
+            return;
+
+        var sub = subs.Where(s => s.FreeCompanyId == fcId).First(s => s.Register == key);
+
+        var found = Plugin.Configuration.NotifyFCSpecific.TryGetValue($"{sub.Name}{fcId}", out var ok);
         if (!Plugin.Configuration.NotifyForAll && !(found && ok))
             return;
 
-        SendDispatchWebhook(sub, fc, returnTime);
+        SendDispatchWebhook(sub, currentFC, returnTime);
     }
 
-    public void SendDispatchWebhook(Submarine sub, FcSubmarines fc, uint returnTime)
+    public void SendDispatchWebhook(Submarine sub, FreeCompany fc, uint returnTime)
     {
         if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
             return;
@@ -111,7 +118,7 @@ public class Notify
         Webhook.PostMessage(content);
     }
 
-    public void SendReturnWebhook(Submarine sub, FcSubmarines fc)
+    public void SendReturnWebhook(Submarine sub, FreeCompany fc)
     {
         // No need to send messages if the user isn't logged in (also prevents sending on startup)
         if (!Plugin.ClientState.IsLoggedIn)
@@ -140,7 +147,7 @@ public class Notify
         mutex.ReleaseMutex();
     }
 
-    public void SendReturn(Submarine sub, FcSubmarines fc)
+    public void SendReturn(Submarine sub, FreeCompany fc)
     {
         Plugin.ChatGui.Print(GenerateMessage(Plugin.NameConverter.GetSub(sub, fc)));
 
@@ -148,7 +155,7 @@ public class Notify
             Plugin.ReturnOverlay.IsOpen = true;
     }
 
-    public void SendRepair(Submarine sub, FcSubmarines fc)
+    public void SendRepair(Submarine sub, FreeCompany fc)
     {
         Plugin.ChatGui.Print(RepairMessage(Plugin.NameConverter.GetSub(sub, fc)));
 

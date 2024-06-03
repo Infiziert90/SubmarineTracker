@@ -295,7 +295,7 @@ public partial class BuilderWindow
         var count = 1;
         var outTree = new Dictionary<int, Journey>();
         var lastBuild = (Build: new Build.RouteBuild(), Voyages: 0);
-        if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
             return null;
 
         var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();

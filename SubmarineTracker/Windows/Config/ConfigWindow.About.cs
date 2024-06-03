@@ -4,17 +4,16 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
 
-using static SubmarineTracker.Data.Submarines;
 namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
     private static readonly Submarine TestSub = new() { Name = "Apollo 11", ReturnTime = new DateTime(1969, 7, 21, 3, 15, 16) };
-    private static readonly FcSubmarines TestFC = new() { CharacterName = "Buzz Aldrin", World = "Moon" };
+    private static readonly FreeCompany TestFC = new() { CharacterName = "Buzz Aldrin", World = "Moon", Tag = "Apollo" };
 
     private string InputPath = string.Empty;
-    private Dictionary<string, Export.Loot> LootDict = new();
-    private ulong Worth = 0;
+    private ulong Worth;
+    private int Records;
 
 
     private bool About()
@@ -26,7 +25,7 @@ public partial class ConfigWindow
 
         ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Author", "Author:"));
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.Authors);
+        ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.PluginInterface.Manifest.Author);
 
         ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Discord", "Discord:"));
         ImGui.SameLine();
@@ -34,7 +33,7 @@ public partial class ConfigWindow
 
         ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Version", "Version:"));
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.Version);
+        ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.PluginInterface.Manifest.AssemblyVersion.ToString());
 
         ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Localization", "Localization:"));
         ImGui.SameLine();
@@ -107,27 +106,34 @@ public partial class ConfigWindow
         {
             Task.Run(() =>
             {
-                LootDict = Export.Import(InputPath);
+                var dict = Export.Import(InputPath);
 
-                foreach (var loot in LootDict.Values)
+                var profile = Plugin.Configuration.CustomLootProfiles["Default"];
+                foreach (var loot in dict.Values)
                 {
-                    var price = ItemSheet.GetRow(loot.Primary)!.PriceLow;
-                    Worth += price * loot.PrimaryCount;
+                    if (profile.TryGetValue(loot.Primary, out var value))
+                        Worth += (ulong) value * loot.PrimaryCount;
+                    else
+                        Worth += ItemSheet.GetRow(loot.Primary)!.PriceLow * loot.PrimaryCount;
 
                     if (loot.Additional > 0)
                     {
-                        price = ItemSheet.GetRow(loot.Additional)!.PriceLow;
-                        Worth += price * loot.AdditionalCount;
+                        if (profile.TryGetValue(loot.Additional, out value))
+                            Worth += (ulong) value * loot.AdditionalCount;
+                        else
+                            Worth += ItemSheet.GetRow(loot.Additional)!.PriceLow * loot.AdditionalCount;
                     }
                 }
+
+                Records = dict.Count;
             });
 
         }
 
-        if (LootDict.Any())
+        if (Worth != 0)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Voyages Total: {LootDict.Count:N0}");
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Worth: {Worth:N0} Gil");
+            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Voyages recorded: {Records:N0}");
+            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Worth of all items: {Worth:N0} Gil");
         }
         ImGuiHelpers.ScaledIndent(-10.0f);
         #endif
@@ -137,15 +143,11 @@ public partial class ConfigWindow
         return true;
     }
 
-    private List<Data.Loot.DetailedLoot> GenerateLootList()
+    private List<SubmarineTracker.Loot> GenerateLootList()
     {
         // some of the corrupted loot data is still around, so we check that Rank is above 0
-        return KnownSubmarines
-               .Select(kv => kv.Value.SubLoot)
-               .SelectMany(kv => kv.Values)
-               .SelectMany(subLoot => subLoot.Loot)
-               .SelectMany(innerLoot => innerLoot.Value)
-               .Where(detailedLoot => detailedLoot is { Valid: true, Rank: > 0 })
+        return Plugin.DatabaseCache.GetLoot()
+               .Where(loot => loot is { Valid: true, Rank: > 0 })
                .ToList();
     }
 }

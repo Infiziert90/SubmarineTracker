@@ -1,7 +1,5 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Loot;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Loot;
@@ -9,7 +7,7 @@ namespace SubmarineTracker.Windows.Loot;
 public partial class LootWindow
 {
     private SubExplPretty SelectedSector = null!;
-    private Dictionary<uint, List<DetailedLoot>> LootCache = new();
+    private Dictionary<uint, List<SubmarineTracker.Loot>> LootCache = new();
 
     private ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty> Options = null!;
 
@@ -42,10 +40,7 @@ public partial class LootWindow
 
         if (LootCache.Count == 0)
         {
-            var submarineLoot = Submarines.KnownSubmarines.Values
-                                          .Select(fc => fc.SubLoot)
-                                          .SelectMany(dict => dict.Values)
-                                          .SelectMany(loot => loot.Loot.Values.SelectMany(l => l).Where(detailed => !Plugin.Configuration.ExcludeLegacy || detailed.Valid).Where(detailed => detailed.Primary > 0));
+            var submarineLoot = Plugin.DatabaseCache.GetLoot().Where(loot  => !Plugin.Configuration.ExcludeLegacy || loot.Valid).Where(detailed => detailed.Primary > 0);
 
             foreach (var loot in submarineLoot)
                 LootCache.GetOrCreate(loot.Sector).Add(loot);

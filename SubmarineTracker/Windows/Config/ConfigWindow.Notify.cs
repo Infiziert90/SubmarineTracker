@@ -1,6 +1,5 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Config;
 
@@ -68,17 +67,17 @@ public partial class ConfigWindow
                 if (ImGui.BeginChild("NotifyTable"))
                 {
                     ImGuiHelpers.ScaledIndent(10.0f);
-                    foreach (var (id, fc) in Submarines.KnownSubmarines)
+                    foreach (var (id, fc) in Plugin.DatabaseCache.GetFreeCompanies())
                     {
-                        foreach (var sub in fc.Submarines)
+                        foreach (var sub in Plugin.DatabaseCache.GetSubmarines(id))
                         {
                             var key = $"{sub.Name}{id}";
-                            Plugin.Configuration.NotifySpecific.TryAdd($"{sub.Name}{id}", false);
-                            var notify = Plugin.Configuration.NotifySpecific[key];
+                            Plugin.Configuration.NotifyFCSpecific.TryAdd($"{sub.Name}{id}", false);
+                            var notify = Plugin.Configuration.NotifyFCSpecific[key];
 
                             if (ImGui.Checkbox($"{Plugin.NameConverter.GetSub(sub, fc)}##{id}{sub.Register}", ref notify))
                             {
-                                Plugin.Configuration.NotifySpecific[key] = notify;
+                                Plugin.Configuration.NotifyFCSpecific[key] = notify;
                                 Plugin.Configuration.Save();
                             }
                         }

@@ -141,11 +141,7 @@ public partial class ConfigWindow
             }
 
             if (changed)
-            {
-                foreach (var fc in Submarines.KnownSubmarines.Values)
-                    fc.Refresh = true;
                 Plugin.Configuration.Save();
-            }
 
             ImGui.EndTabItem();
         }

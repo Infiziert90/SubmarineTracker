@@ -13,7 +13,7 @@ public partial class BuilderWindow
         {
             if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
             {
-                if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+                if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
                 {
                     Helper.NoData();
 
@@ -110,7 +110,7 @@ public partial class BuilderWindow
         }
     }
 
-    private void UnlockedTooltip(SubExplPretty location, Submarines.FcSubmarines fcSub, bool unlockTooltip)
+    private void UnlockedTooltip(SubExplPretty location, FreeCompany fcSub, bool unlockTooltip)
     {
         if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(9876);

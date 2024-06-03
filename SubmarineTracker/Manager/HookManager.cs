@@ -1,6 +1,6 @@
-﻿using Dalamud.Hooking;
+﻿using System.Threading.Tasks;
+using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Manager;
 
@@ -59,19 +59,42 @@ public class HookManager
                 return;
 
             var sub = current.Value;
-            var fc = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+
+            var fcId = Plugin.GetFCId;
             if (!Plugin.SubmarinePreVoyage.TryGetValue(sub->RegisterTime, out var cachedStats))
             {
                 Plugin.Log.Warning("No cached submarine found");
                 return;
             }
 
-            fc.AddSubLoot(sub->RegisterTime, cachedStats.Return, cachedStats.Build, sub->GatheredDataSpan);
+            var register = sub->RegisterTime;
+            var returnTime = cachedStats.Return;
+            var build = cachedStats.Build;
+
+            var data = sub->GatheredDataSpan;
+            if (data[0].ItemIdPrimary == 0)
+                return;
+
+            var lootList = new List<Loot>();
+            foreach (var val in data.ToArray().Where(val => val.Point > 0))
+                lootList.Add(new Loot(build, val) {FreeCompanyId = fcId, Register = register, Return = returnTime});
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    foreach (var loot in lootList)
+                        Plugin.DatabaseCache.Database.UpsertLootEntry(loot);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.Log.Error(ex, "Error while upsert of loot entry");
+                }
+            });
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e.Message);
-            Plugin.Log.Error(e.StackTrace ?? "Unknown");
+            Plugin.Log.Error(ex, "Error in packet receiver");
         }
     }
 }

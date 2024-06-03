@@ -7,7 +7,7 @@ public partial class MainWindow
 {
     private void Overview()
     {
-        var selectedFc = Submarines.KnownSubmarines[CurrentSelection];
+        var selectedFc = Plugin.DatabaseCache.GetFreeCompanies()[CurrentSelection];
         using var tabBar = ImRaii.TabBar("##fcSubmarineDetail");
         if (!tabBar.Success)
             return;
@@ -41,7 +41,7 @@ public partial class MainWindow
                     }
                 }
 
-                foreach (var sub in selectedFc.Submarines)
+                foreach (var sub in Plugin.DatabaseCache.GetSubmarines(selectedFc.FreeCompanyId))
                 {
                     ImGuiHelpers.ScaledDummy(10.0f);
                     using var indent = ImRaii.PushIndent(10.0f);
@@ -93,7 +93,7 @@ public partial class MainWindow
             }
         }
 
-        foreach (var (sub, idx) in selectedFc.Submarines.WithIndex())
+        foreach (var (sub, idx) in Plugin.DatabaseCache.GetSubmarines(selectedFc.FreeCompanyId).WithIndex())
         {
             using var subTab = ImRaii.TabItem($"{Plugin.NameConverter.GetJustSub(sub)}##{idx}");
             if (subTab)
@@ -105,13 +105,15 @@ public partial class MainWindow
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
-        selectedFc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
+        // TODO: FIX
+        // selectedFc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
 
         using var lootChild = ImRaii.Child("##lootOverview");
         if (!lootChild.Success)
             return;
 
-        if (selectedFc.AllLoot.Count == 0)
+        var fcLoot = Plugin.DatabaseCache.GetFCAllLoot(selectedFc.FreeCompanyId);
+        if (fcLoot.Count == 0)
         {
             Helper.NoData();
             return;
@@ -138,7 +140,7 @@ public partial class MainWindow
             var endCursorPositionRight = ImGui.GetCursorPos();
             var cursorPosition = ImGui.GetCursorPos();
 
-            var mapLoot = selectedFc.AllLoot.Where(pair => Voyage.SectorToPretty[pair.Key].Map.Row == map.RowId).WithIndex();
+            var mapLoot = fcLoot.Where(pair => Voyage.SectorToPretty[pair.Key].Map.Row == map.RowId).WithIndex();
             foreach (var ((sector, loot), idx) in mapLoot)
             {
                 if (idx % 2 == 0)

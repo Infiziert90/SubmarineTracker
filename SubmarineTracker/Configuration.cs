@@ -42,7 +42,7 @@ namespace SubmarineTracker
         public int CustomMinute = 30;
 
         public bool NotifyForAll = true;
-        public Dictionary<string, bool> NotifySpecific = new ();
+        public Dictionary<string, bool> NotifyFCSpecific = new();
         public bool NotifyForReturns = true;
         public bool NotifyForRepairs = true;
         public bool ShowRepairToast = true;
@@ -85,7 +85,7 @@ namespace SubmarineTracker
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
-        public List<ulong> FCOrder = new();
+        public List<ulong> FCIdOrder = [];
 
         public void Save()
         {

@@ -22,7 +22,7 @@ public partial class HelpyWindow
             // build cache if needed
             Storage.BuildStorageCache();
 
-            foreach (var (key, fc) in Submarines.KnownSubmarines)
+            foreach (var (key, fc) in Plugin.DatabaseCache.GetFreeCompanies())
             {
                 ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
 

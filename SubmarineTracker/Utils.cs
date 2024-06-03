@@ -195,6 +195,23 @@ public static class Utils
         return $"{sb.ToString()[..10]}";
     }
 
+    public static bool SubmarinesEqual(List<Submarine> l, List<Submarine> r)
+    {
+        if (l.Count == 0 || r.Count == 0)
+            return false;
+
+        if (l.Count != r.Count)
+            return false;
+
+        foreach (var (subL, subR) in l.Zip(r))
+        {
+            if (!subL.Equals(subR))
+                return false;
+        }
+
+        return true;
+    }
+
     // From: https: //stackoverflow.com/a/36634935
     public static class Permutations
     {

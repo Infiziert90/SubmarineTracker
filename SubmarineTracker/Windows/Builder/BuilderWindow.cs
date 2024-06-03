@@ -47,7 +47,7 @@ public partial class BuilderWindow : Window, IDisposable
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
         {
-            var sub = new Submarines.Submarine();
+            var sub = new Submarine();
 
             if (ImGui.BeginTabBar("SubBuilderTab"))
             {

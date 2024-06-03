@@ -24,14 +24,14 @@ public partial class ConfigWindow
                     Plugin.EnsureFCOrderSafety();
                     ulong deletion = 0;
                     (int orgIdx, int newIdx) changedOrder = (-1, -1);
-                    foreach (var (id, idx) in Plugin.Configuration.FCOrder.Select((val, i) => (val, i)))
+                    foreach (var (id, idx) in Plugin.Configuration.FCIdOrder.Select((val, i) => (val, i)))
                     {
-                        var fc = Submarines.KnownSubmarines[id];
+                        var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted(Plugin.NameConverter.GetCombinedName(fc));
 
-                        var first = Plugin.Configuration.FCOrder.First() == id;
-                        var last = Plugin.Configuration.FCOrder.Last() == id;
+                        var first = Plugin.Configuration.FCIdOrder.First() == id;
+                        var last = Plugin.Configuration.FCIdOrder.Last() == id;
 
                         ImGui.TableNextColumn();
                         if (Helper.Button($"##{id}Up", FontAwesomeIcon.ArrowUp, first))
@@ -54,16 +54,17 @@ public partial class ConfigWindow
 
                     if (changedOrder.orgIdx != -1)
                     {
-                        Plugin.Configuration.FCOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
+                        Plugin.Configuration.FCIdOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
                         Plugin.Configuration.Save();
                     }
 
                     if (deletion != 0)
                     {
-                        Plugin.Configuration.FCOrder.Remove(deletion);
+                        Plugin.Configuration.FCIdOrder.Remove(deletion);
                         Plugin.Configuration.Save();
 
-                        Plugin.ConfigurationBase.DeleteCharacter(deletion);
+                        // TODO: FIX
+                        // Plugin.ConfigurationBase.DeleteCharacter(deletion);
                     }
 
                     ImGui.EndTable();

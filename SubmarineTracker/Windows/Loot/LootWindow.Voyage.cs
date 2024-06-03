@@ -1,5 +1,4 @@
-﻿using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Loot;
+﻿using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -15,11 +14,11 @@ public partial class LootWindow
         if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - History", "History")}##VoyageHistory"))
         {
             Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
-            foreach (var (localId, knownFC) in Submarines.KnownSubmarines)
-                foreach (var s in knownFC.Submarines)
-                    existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", localId));
+            foreach (var (id, knownFC) in Plugin.DatabaseCache.GetFreeCompanies())
+                foreach (var s in Plugin.DatabaseCache.GetSubmarines(id))
+                    existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", id));
 
-            if (!existingSubs.Any())
+            if (existingSubs.Count == 0)
             {
                 Helper.NoData();
 
@@ -50,10 +49,11 @@ public partial class LootWindow
                 selectedFC = existingSubs[selectedSubmarine].LocalId;
             }
 
-            var fc = Submarines.KnownSubmarines[selectedFC];
-            var sub = fc.Submarines.First(sub => sub.Register == SelectedSubmarine);
+            var fc = Plugin.DatabaseCache.GetFreeCompanies()[selectedFC];
+            var sub = Plugin.DatabaseCache.GetSubmarines().First(sub => sub.Register == SelectedSubmarine);
 
-            if (!fc.SubLoot.TryGetValue(sub.Register, out var submarineLoot))
+            var submarineLoot = Plugin.DatabaseCache.GetLoot().Where(l => l.FreeCompanyId == fc.FreeCompanyId).Where(l => l.Register == sub.Register).ToArray();
+            if (submarineLoot.Length == 0)
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Wrong", "Something went wrong."));
 
@@ -61,9 +61,14 @@ public partial class LootWindow
                 return;
             }
 
-            var lootHistory = submarineLoot.Loot.Where(pair => !Plugin.Configuration.ExcludeLegacy || pair.Value.First().Valid).Reverse().ToArray();
-            var submarineVoyage = lootHistory.Select(pair => $"{pair.Value.First().Date}").ToArray();
-            if (!submarineVoyage.Any())
+            var dict = new Dictionary<uint, List<SubmarineTracker.Loot>>();
+            foreach (var l in submarineLoot.Where(loot => !Plugin.Configuration.ExcludeLegacy || loot.Valid))
+                if (!dict.TryAdd(l.Return, [l]))
+                    dict[l.Return].Add(l);
+
+            var lootHistory = dict.OrderBy(pair => pair.Key).Select(pair => pair.Value).ToArray();
+            var submarineVoyage = lootHistory.Select(loot => $"{loot[0].Date}").ToArray();
+            if (submarineVoyage.Length == 0)
             {
                 ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Not Tracked", "Tracking starts when you send your subs on voyage again."));
 
@@ -77,7 +82,7 @@ public partial class LootWindow
             ImGuiHelpers.ScaledDummy(5.0f);
 
             var loot = lootHistory[SelectedVoyage];
-            var stats = loot.Value.First();
+            var stats = loot[0];
             if (stats.Valid)
                 ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")}: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
             else
@@ -85,7 +90,7 @@ public partial class LootWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            foreach (var detailedLoot in loot.Value)
+            foreach (var detailedLoot in loot)
             {
                 var primaryItem = ItemSheet.GetRow(detailedLoot.Primary)!;
                 var additionalItem = ItemSheet.GetRow(detailedLoot.Additional)!;

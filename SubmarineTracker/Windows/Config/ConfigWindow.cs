@@ -28,7 +28,7 @@ public partial class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         var aboutOpen = false;
-        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
+        var buttonHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + (1.0f * ImGuiHelpers.GlobalScale);
         if (ImGui.BeginChild("ConfigContent", new Vector2(0, -buttonHeight)))
         {
             if (ImGui.BeginTabBar("##ConfigTabBar"))

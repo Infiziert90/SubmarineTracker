@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.IO;
 using System.Threading.Tasks;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -11,8 +11,8 @@ using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.Game.Housing;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using Newtonsoft.Json;
 using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
 using SubmarineTracker.Manager;
@@ -58,11 +58,6 @@ namespace SubmarineTracker
         public NextOverlay NextOverlay { get; init; }
         public UnlockOverlay UnlockOverlay { get; init; }
 
-        public readonly ConfigurationBase ConfigurationBase;
-
-        public const string Authors = "Infi";
-        public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
-
         public static string PluginDir => PluginInterface.AssemblyLocation.DirectoryName!;
 
         private const string GithubIssue = "https://github.com/Infiziert90/SubmarineTracker/issues";
@@ -73,8 +68,7 @@ namespace SubmarineTracker
         private readonly PluginCommandManager<Plugin> CommandManager;
         private readonly ServerBar ServerBar;
 
-        private static ExcelSheet<TerritoryType> TerritoryTypes = null!;
-
+        public static DatabaseCache DatabaseCache = null!;
         public readonly Notify Notify;
         public readonly NameConverter NameConverter;
         public static HookManager HookManager = null!;
@@ -82,19 +76,21 @@ namespace SubmarineTracker
 
         public readonly Localization Localization = new();
 
-        public readonly Dictionary<uint, Submarines.Submarine> SubmarinePreVoyage = new();
+        public readonly Dictionary<uint, Submarine> SubmarinePreVoyage = new();
         private bool ShowIgnoredWarning = true;
         private bool ShowStorageMessage = true;
 
         public Plugin()
         {
-            ConfigurationBase = new ConfigurationBase();
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             FileDialogManager = new FileDialogManager();
 
-            NameConverter = new NameConverter(this);
+            // Is required by everything, so init it here
+            DatabaseCache = new DatabaseCache();
+
+            NameConverter = new NameConverter();
             Notify = new Notify(this);
 
             HookManager = new HookManager(this);
@@ -129,32 +125,32 @@ namespace SubmarineTracker
             PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
             PluginInterface.LanguageChanged += Localization.SetupWithLangCode;
 
-            TerritoryTypes = Data.GetExcelSheet<TerritoryType>()!;
-
-            ConfigurationBase.Load();
             LoadFCOrder();
 
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
 
+            ClientState.Login += Login;
+
             // Try to init it last, just to make sure that loc actually loaded fine
             Helper.Initialize(this);
 
-            var subDone = Submarines.KnownSubmarines.Values.Any(fc => fc.AnySubDone());
+            var subDone = DatabaseCache.GetSubmarines().Any(s => s.IsDone());
             if (Configuration.OverlayOpen || (Configuration.OverlayStartUp && subDone))
                 ReturnOverlay.IsOpen = true;
 
             // Trigger Importer to precalculate hashes
             Log.Debug($"Loading: {Importer.Filename}");
+
+            if (ClientState.IsLoggedIn)
+                Login();
         }
 
-        public void Dispose() => Dispose(true);
-
-        public void Dispose(bool full)
+        public void Dispose()
         {
-            ConfigurationBase.Dispose();
-            WindowSystem.RemoveAllWindows();
+            DatabaseCache.Dispose();
 
+            WindowSystem.RemoveAllWindows();
             ConfigWindow.Dispose();
             MainWindow.Dispose();
             BuilderWindow.Dispose();
@@ -168,11 +164,10 @@ namespace SubmarineTracker
             HookManager.Dispose();
             ServerBar.Dispose();
 
-            if (full)
-            {
-                Framework.Update -= FrameworkUpdate;
-                Framework.Update -= Notify.NotifyLoop;
-            }
+            ClientState.Login -= Login;
+
+            Framework.Update -= FrameworkUpdate;
+            Framework.Update -= Notify.NotifyLoop;
         }
 
         [Command("/stracker")]
@@ -228,8 +223,97 @@ namespace SubmarineTracker
             Configuration.Save();
         }
 
+        // TODO Remove after migration time
+        private void Login()
+        {
+            string LoadFile(FileSystemInfo fileInfo)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        using var reader = new StreamReader(fileInfo.FullName);
+                        return reader.ReadToEnd();
+                    }
+                    catch
+                    {
+                        if (i == 4)
+                            Notification.AddNotification(new Notification
+                            {
+                                Content = Loc.Localize("Warnings - Config Fail", "Failed to read config"),
+                                Type = NotificationType.Warning,
+                                Minimized = false,
+                            });
+
+                        Log.Warning($"Config file read failed {i + 1}/5");
+                    }
+                }
+
+                return string.Empty;
+            }
+
+            var local = ClientState.LocalPlayer;
+            if (local == null)
+                return;
+
+            var file = new FileInfo(Path.Combine(PluginInterface.ConfigDirectory.FullName, $"{ClientState.LocalContentId}.json"));
+            if (!file.Exists)
+                return;
+
+            try
+            {
+                var config = JsonConvert.DeserializeObject<CharacterConfiguration>(LoadFile(file));
+                var fc = new Submarines.FcSubmarines(config!);
+
+                if (fc.Tag != Utils.ToStr(local.CompanyTag))
+                {
+                    Log.Warning("Stored data for this character is outdated, FC tags don't match");
+                    Log.Warning("Import cancelled");
+                    return;
+                }
+
+                Framework.RunOnTick(() =>
+                {
+                    var fcId = GetFCId;
+                    Log.Information($"Working with id {fcId}");
+                    if (fcId == 0)
+                        return;
+
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            DatabaseCache.Database.UpsertFreeCompany(new FreeCompany(fcId, fc));
+
+                            foreach (var sub in fc.Submarines)
+                                DatabaseCache.Database.UpsertSubmarine(new Submarine(fcId, sub));
+
+                            foreach (var (registerTime, lootEntry) in fc.SubLoot)
+                                foreach (var (returnTime, sectors) in lootEntry.Loot)
+                                    foreach (var sectorLoot in sectors)
+                                        DatabaseCache.Database.UpsertLootEntry(new Loot(fcId, registerTime, returnTime, sectorLoot));
+
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Unable to upsert entry");
+                        }
+                    });
+                }, TimeSpan.FromSeconds(10));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Unable to migrate character data");
+            }
+        }
+
         public unsafe void FrameworkUpdate(IFramework _)
         {
+            var fcId = GetFCId;
+            if (fcId == 0)
+                return;
+
             var instance = HousingManager.Instance();
             if (instance == null || instance->WorkshopTerritory == null)
             {
@@ -245,7 +329,7 @@ namespace SubmarineTracker
                 return;
 
             // 6.4 triggers HousingManager + WorkshopTerritory in Island Sanctuary
-            if (TerritoryTypes.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
+            if (Sheets.TerritorySheet.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
                 return;
 
             // Notify the user once about upload opt out
@@ -280,9 +364,11 @@ namespace SubmarineTracker
 
             if (Configuration.ShowStorageMessage && ShowStorageMessage)
             {
-                if (Submarines.KnownSubmarines.TryGetValue(ClientState.LocalContentId, out var currentFc))
+
+                if (DatabaseCache.GetFreeCompanies().ContainsKey(fcId))
                 {
-                    var status = currentFc.CheckLeftovers();
+                    var subs = DatabaseCache.GetSubmarines().Where(s => s.FreeCompanyId == fcId);
+                    var status = Storage.CheckLeftovers(subs);
                     if (status is { Voyages: > -1, Repairs: > -1 })
                     {
                         if (status is {Voyages: 0, Repairs: 0})
@@ -314,46 +400,60 @@ namespace SubmarineTracker
                 }
             }
 
-            var possibleNewSubs = new List<Submarines.Submarine>();
+            var possibleNewSubs = new List<Submarine>();
             foreach (var (sub, idx) in submarineData.Where(data => data.RankId != 0).WithIndex())
             {
-                possibleNewSubs.Add(new Submarines.Submarine(sub, idx));
+                possibleNewSubs.Add(new Submarine(sub, idx));
 
                 // We prefill the current submarines once to have the original stats
                 if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
-                    SubmarinePreVoyage[sub.RegisterTime] = new Submarines.Submarine(sub);
+                    SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub);
             }
 
-            if (!possibleNewSubs.Any())
+            if (possibleNewSubs.Count == 0)
                 return;
 
-            Submarines.KnownSubmarines.TryAdd(ClientState.LocalContentId, Submarines.FcSubmarines.Empty);
 
-            var fc = Submarines.KnownSubmarines[ClientState.LocalContentId];
-            if (Submarines.SubmarinesEqual(fc.Submarines, possibleNewSubs) && fc.CharacterName != "")
+            var orgSubs = DatabaseCache.GetSubmarines().Where(s => s.FreeCompanyId == fcId).ToList();
+            if (Utils.SubmarinesEqual(orgSubs, possibleNewSubs))
                 return;
 
-            fc.CharacterName = Utils.ToStr(local.Name);
-            fc.Tag = Utils.ToStr(local.CompanyTag);
-            fc.World = Utils.ToStr(local.HomeWorld.GameData!.Name);
-            fc.Submarines = possibleNewSubs;
-            fc.GetUnlockedAndExploredSectors();
+            var fc = new FreeCompany
+            {
+                FreeCompanyId = fcId,
+                Tag = Utils.ToStr(local.CompanyTag),
+                World = Utils.ToStr(local.HomeWorld.GameData!.Name),
+                CharacterName = Utils.ToStr(local.Name),
+            };
+
+            foreach (var submarineExploration in Sheets.ExplorationSheet)
+            {
+                fc.UnlockedSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationUnlocked((byte)submarineExploration.RowId);
+                fc.ExploredSectors[submarineExploration.RowId] = HousingManager.IsSubmarineExplorationExplored((byte)submarineExploration.RowId);
+            }
 
             foreach (var sub in submarineData.Where(data => data.RankId != 0 && data.ReturnTime != 0))
                 Notify.TriggerDispatch(sub.RegisterTime, sub.ReturnTime);
 
-            fc.Refresh = true;
             LoadFCOrder();
-            ConfigurationBase.SaveCharacterConfig();
+            Task.Run(() =>
+            {
+                try
+                {
+                    DatabaseCache.Database.UpsertFreeCompany(fc);
+                    foreach (var sub in possibleNewSubs)
+                        DatabaseCache.Database.UpsertSubmarine(sub);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error while upsert of fc and submarines");
+                }
+            });
         }
 
         public void Sync()
         {
-            foreach (var fc in Submarines.KnownSubmarines.Values)
-                fc.Refresh = true;
-
             Storage.Refresh = true;
-            ConfigurationBase.Load();
             LoadFCOrder();
         }
 
@@ -378,14 +478,16 @@ namespace SubmarineTracker
         public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 
+        public static unsafe ulong GetFCId = InfoProxyFreeCompany.Instance()->ID;
+
         public static void LoadFCOrder()
         {
             var changed = false;
-            foreach (var id in Submarines.KnownSubmarines.Keys)
-                if (!Configuration.FCOrder.Contains(id))
+            foreach (var id in DatabaseCache.GetFreeCompanies().Keys)
+                if (!Configuration.FCIdOrder.Contains(id))
                 {
                     changed = true;
-                    Configuration.FCOrder.Add(id);
+                    Configuration.FCIdOrder.Add(id);
                 }
 
             if (changed)
@@ -395,12 +497,12 @@ namespace SubmarineTracker
         public static void EnsureFCOrderSafety()
         {
             var notSafe = false;
-            foreach (var id in Configuration.FCOrder.ToArray())
+            foreach (var id in Configuration.FCIdOrder.ToArray())
             {
-                if (!Submarines.KnownSubmarines.ContainsKey(id))
+                if (!DatabaseCache.GetFreeCompanies().ContainsKey(id))
                 {
                     notSafe = true;
-                    Configuration.FCOrder.Remove(id);
+                    Configuration.FCIdOrder.Remove(id);
                 }
             }
 
@@ -408,7 +510,7 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public static void EntryUpload(Loot.DetailedLoot loot)
+        public static void EntryUpload(Data.Loot.DetailedLoot loot)
         {
             if (Configuration.UploadPermission)
             {

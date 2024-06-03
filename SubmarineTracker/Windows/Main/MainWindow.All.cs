@@ -15,15 +15,15 @@ public partial class MainWindow
         if (!allTable.Success)
             return;
 
-        foreach (var id in Plugin.Configuration.FCOrder)
+        foreach (var id in Plugin.Configuration.FCIdOrder)
         {
             ImGui.TableNextColumn();
-            var fc = Submarines.KnownSubmarines[id];
+            var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
             var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Plugin.Configuration.ShowDateInAll ? 3.2f : 2.8f);
             var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Plugin.Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
             ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
-            foreach (var (sub, idx) in fc.Submarines.WithIndex())
+            foreach (var (sub, idx) in Plugin.DatabaseCache.GetSubmarines(id).WithIndex())
             {
                 using var indent = ImRaii.PushIndent(10.0f);
                 var begin = ImGui.GetCursorScreenPos();

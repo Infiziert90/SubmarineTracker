@@ -29,7 +29,7 @@ public partial class HelpyWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (!Submarines.KnownSubmarines.TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
         {
             Helper.NoData();
             return;

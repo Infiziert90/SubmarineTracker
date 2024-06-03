@@ -20,7 +20,7 @@ public static class Storage
         StorageCache.Clear();
 
         var possibleItems = (Items[]) Enum.GetValues(typeof(Items));
-        foreach (var key in Submarines.KnownSubmarines.Keys)
+        foreach (var key in  Plugin.DatabaseCache.GetFreeCompanies().Keys)
         {
             StorageCache.Add(key, new Dictionary<uint, CachedItem>());
             foreach (var item in possibleItems.Select(e => e.GetItem()))
@@ -37,5 +37,30 @@ public static class Storage
     {
         var manager = InventoryManager.Instance();
         return manager == null ? -1 : manager->GetInventoryItemCount((uint) item, false, false);
+    }
+
+    public static (int Voyages, int Repairs) CheckLeftovers(IEnumerable<Submarine> subs)
+    {
+        var tanks = InventoryCount(Items.Tanks);
+        var kits = InventoryCount(Items.Kits);
+
+        if (tanks == -1 || kits == -1)
+        {
+            Plugin.Log.Warning("InventoryManager was null");
+            return (-1, -1);
+        }
+
+        var requiredTanks = 0;
+        var requiredKits = 0;
+        foreach (var sub in subs)
+        {
+            requiredTanks += sub.Points.Sum(p => Sheets.ExplorationSheet.GetRow(p)!.CeruleumTankReq);
+            requiredKits += sub.Build.RepairCosts;
+        }
+
+        if (requiredTanks == 0 || requiredKits == 0)
+            return (-1, -1);
+
+        return (tanks / requiredTanks, kits / requiredKits);
     }
 }

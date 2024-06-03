@@ -1,4 +1,3 @@
-using SubmarineTracker.Data;
 using static SubmarineTracker.Data.Submarines;
 
 namespace SubmarineTracker;
@@ -7,6 +6,7 @@ namespace SubmarineTracker;
 [Serializable]
 public class CharacterConfiguration
 {
+    // TODO Remove after migration time
     // Increase with version bump
     public int Version { get; set; } = 3;
 
@@ -15,13 +15,13 @@ public class CharacterConfiguration
     public string CharacterName = "";
     public string Tag = "";
     public string World = "Unknown";
-    public List<Submarine> Submarines = new();
-    public Dictionary<uint, Loot.SubmarineLoot> Loot = new();
+    public List<Data.Submarines.Submarine> Submarines = new();
+    public Dictionary<uint, Data.Loot.SubmarineLoot> Loot = new();
     public List<Tuple<uint, bool, bool>> ExplorationPoints = new();
 
     public CharacterConfiguration() { }
 
-    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Submarine> subs, Dictionary<uint, Loot.SubmarineLoot> loot, List<Tuple<uint, bool, bool>> explorationPoints)
+    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Data.Submarines.Submarine> subs, Dictionary<uint, Data.Loot.SubmarineLoot> loot, List<Tuple<uint, bool, bool>> explorationPoints)
     {
         LocalContentId = id;
         CharacterName = characterName;

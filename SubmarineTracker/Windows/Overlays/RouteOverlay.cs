@@ -104,7 +104,7 @@ public class RouteOverlay : Window, IDisposable
             return;
         }
 
-        var fcSub = Submarines.KnownSubmarines[Plugin.ClientState.LocalContentId];
+        var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
         if (Calculate && !ComputingPath)
         {
             Calculate = false;

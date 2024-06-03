@@ -21,7 +21,7 @@ public static class Export
 
     private static readonly Supabase.Client Client;
     private static readonly CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
-    private static readonly CsvConfiguration CsvReadConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = true };
+    private static readonly CsvConfiguration CsvReadConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = true, PrepareHeaderForMatch = args => args.Header.Replace("_", "").ToLower() };
 
     static Export()
     {
@@ -72,11 +72,47 @@ public static class Export
         public string Hash { get; set; } = "";
 
         [Column("version")]
-        public string Version { get; set; } = Plugin.Version;
+        public string Version { get; set; } = Plugin.PluginInterface.Manifest.AssemblyVersion.ToString();
 
         public Loot() {}
 
         public Loot(DetailedLoot loot)
+        {
+            Sector = loot.Sector;
+            Unlocked = loot.Unlocked;
+
+            Primary = loot.Primary;
+            PrimaryCount = loot.PrimaryCount;
+            Additional = loot.Additional;
+            AdditionalCount = loot.AdditionalCount;
+
+            Rank = loot.Rank;
+            Surv = loot.Surv;
+            Ret = loot.Ret;
+            Fav = loot.Fav;
+
+            PrimarySurvProc = loot.PrimarySurvProc;
+            AdditionalSurvProc = loot.AdditionalSurvProc;
+            PrimaryRetProc = loot.PrimaryRetProc;
+            FavProc = loot.FavProc;
+            Date = loot.Date;
+
+            using var stream = new MemoryStream();
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            {
+                writer.Write(Date.Ticks);
+                writer.Write(Sector);
+            }
+            stream.Position = 0;
+
+            using (var hash = SHA256.Create())
+            {
+                var result = hash.ComputeHash(stream);
+                Hash = string.Join("", result.Select(b => $"{b:X2}"));
+            }
+        }
+
+        public Loot(SubmarineTracker.Loot loot)
         {
             Sector = loot.Sector;
             Unlocked = loot.Unlocked;
@@ -145,9 +181,9 @@ public static class Export
         }
     }
 
-    public static string ExportToString(List<DetailedLoot> fcLootList, bool excludeDate, bool excludeHash)
+    public static string ExportToString(List<SubmarineTracker.Loot> fcLootList, bool excludeDate, bool excludeHash)
     {
-        if (!fcLootList.Any())
+        if (fcLootList.Count == 0)
             return string.Empty;
 
         try
@@ -181,7 +217,7 @@ public static class Export
         try
         {
             var dict = new Dictionary<string, Loot>();
-            foreach (var file in new FileInfo(inputPath).Directory!.EnumerateFiles())
+            foreach (var file in new DirectoryInfo(inputPath).EnumerateFiles())
             {
                 Plugin.Log.Information(file.Name);
                 using var reader = file.OpenText();
@@ -202,6 +238,23 @@ public static class Export
     }
 
     public static async void UploadEntry(DetailedLoot newLoot)
+    {
+        var lootEntry = new Loot(newLoot);
+        try
+        {
+            await Client.InitializeAsync();
+            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
+
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
+        }
+        catch (Exception e)
+        {
+            Plugin.Log.Error(e, "Error while uploading entry");
+        }
+    }
+
+    public static async void UploadEntry(SubmarineTracker.Loot newLoot)
     {
         var lootEntry = new Loot(newLoot);
         try
