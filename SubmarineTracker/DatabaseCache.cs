@@ -28,6 +28,8 @@ public class DatabaseCache : IDisposable
     private long SubRefresh;
     private long LootRefresh;
 
+    public bool NewData;
+
     public DatabaseCache()
     {
         RefreshLoot();
@@ -189,6 +191,9 @@ public class DatabaseCache : IDisposable
         try
         {
             var result = Database.GetFreeCompanies().ToDictionary(f => f.FreeCompanyId, f => f);
+
+            // Reload FC order if needed
+            NewData = result.Count != FreeCompanies.Count;
 
             Thread.MemoryBarrier();
             FreeCompanies = result;

@@ -311,6 +311,13 @@ namespace SubmarineTracker
 
         public unsafe void FrameworkUpdate(IFramework _)
         {
+            // Reload stale data
+            if (DatabaseCache.NewData)
+            {
+                DatabaseCache.NewData = false;
+                LoadFCOrder();
+            }
+
             var fcId = GetFCId;
             if (fcId == 0)
                 return;
@@ -408,7 +415,10 @@ namespace SubmarineTracker
 
                 // We prefill the current submarines once to have the original stats
                 if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
+                {
+                    Log.Information("Prefilling submarine cache");
                     SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub) {FreeCompanyId = fcId};
+                }
             }
 
             if (possibleNewSubs.Count == 0)
@@ -418,6 +428,7 @@ namespace SubmarineTracker
             if (Utils.SubmarinesEqual(orgSubs, possibleNewSubs))
                 return;
 
+            Log.Information("Found new submarines");
             var fc = new FreeCompany
             {
                 FreeCompanyId = fcId,
@@ -478,17 +489,19 @@ namespace SubmarineTracker
         public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 
-        public static unsafe ulong GetFCId = InfoProxyFreeCompany.Instance()->ID;
+        public static unsafe ulong GetFCId => InfoProxyFreeCompany.Instance()->ID;
 
         public static void LoadFCOrder()
         {
             var changed = false;
             foreach (var id in DatabaseCache.GetFreeCompanies().Keys)
+            {
                 if (!Configuration.FCIdOrder.Contains(id))
                 {
                     changed = true;
                     Configuration.FCIdOrder.Add(id);
                 }
+            }
 
             if (changed)
                 Configuration.Save();
