@@ -29,6 +29,8 @@ public class DatabaseCache : IDisposable
     private long LootRefresh;
 
     public bool NewData;
+    public bool FCNeedsRefresh;
+    public bool SubsNeedRefresh;
 
     public DatabaseCache()
     {
@@ -155,9 +157,11 @@ public class DatabaseCache : IDisposable
 
     private void CheckSubmarines()
     {
-        if (SubRefresh < Environment.TickCount64)
+        if (SubsNeedRefresh || SubRefresh < Environment.TickCount64)
         {
             SubRefresh = Environment.TickCount64 + ShortDelay;
+            SubsNeedRefresh = false;
+
             Task.Run(RefreshSubmarines);
         }
     }
@@ -179,9 +183,11 @@ public class DatabaseCache : IDisposable
 
     private void CheckFreeCompany()
     {
-        if (FCRefresh < Environment.TickCount64)
+        if (FCNeedsRefresh || FCRefresh < Environment.TickCount64)
         {
             FCRefresh = Environment.TickCount64 + ShortDelay;
+            FCNeedsRefresh = false;
+
             Task.Run(RefreshFreeCompanies);
         }
     }

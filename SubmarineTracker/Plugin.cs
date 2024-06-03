@@ -309,6 +309,9 @@ namespace SubmarineTracker
             }
         }
 
+        private bool IsUpserting;
+        public bool NeedsRefresh => IsUpserting || DatabaseCache.FCNeedsRefresh || DatabaseCache.SubsNeedRefresh;
+
         public unsafe void FrameworkUpdate(IFramework _)
         {
             // Reload stale data
@@ -421,7 +424,7 @@ namespace SubmarineTracker
                 }
             }
 
-            if (possibleNewSubs.Count == 0)
+            if (NeedsRefresh || possibleNewSubs.Count == 0)
                 return;
 
             var orgSubs = DatabaseCache.GetSubmarines(fcId).ToList();
@@ -447,6 +450,7 @@ namespace SubmarineTracker
                 Notify.TriggerDispatch(sub.RegisterTime, sub.ReturnTime);
 
             LoadFCOrder();
+            IsUpserting = true;
             Task.Run(() =>
             {
                 try
@@ -458,6 +462,12 @@ namespace SubmarineTracker
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error while upsert of fc and submarines");
+                }
+                finally
+                {
+                    IsUpserting = false;
+                    DatabaseCache.FCNeedsRefresh = true;
+                    DatabaseCache.SubsNeedRefresh = true;
                 }
             });
         }
