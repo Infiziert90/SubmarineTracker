@@ -48,7 +48,7 @@ public class Database : IDisposable
         GC.WaitForPendingFinalizers();
     }
 
-    internal static string DatabasePath()
+    public static string DatabasePath()
     {
         return Path.Join(Plugin.PluginInterface.ConfigDirectory.FullName, "submarine-sqlite.db");
     }

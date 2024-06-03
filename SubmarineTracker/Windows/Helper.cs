@@ -65,14 +65,21 @@ public static class Helper
 
     public static void WrappedError(string text)
     {
-        WrappedText(ImGuiColors.DalamudOrange, text);
+        WrappedTextWithColor(ImGuiColors.DalamudOrange, text);
     }
 
-    public static void WrappedText(Vector4 color, string text)
+    public static void WrappedTextWithColor(Vector4 color, string text)
     {
         ImGui.PushStyleColor(ImGuiCol.Text, color);
         ImGui.TextWrapped(text);
         ImGui.PopStyleColor();
+    }
+
+    public static void WrappedText(string text)
+    {
+        ImGui.PushTextWrapPos();
+        ImGui.TextUnformatted(text);
+        ImGui.PopTextWrapPos();
     }
 
     public static string GenerateVoyageText(Submarine sub, bool useTime = false)

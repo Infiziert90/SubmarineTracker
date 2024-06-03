@@ -22,6 +22,7 @@ using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
+using SubmarineTracker.Windows.Migration;
 using SubmarineTracker.Windows.Overlays;
 
 namespace SubmarineTracker
@@ -47,7 +48,6 @@ namespace SubmarineTracker
         public static FileDialogManager FileDialogManager { get; private set; } = null!;
 
         public readonly WindowSystem WindowSystem = new("Submarine Tracker");
-
         public ConfigWindow ConfigWindow { get; init; }
         public MainWindow MainWindow { get; init; }
         public BuilderWindow BuilderWindow { get; init; }
@@ -57,6 +57,7 @@ namespace SubmarineTracker
         public RouteOverlay RouteOverlay { get; init; }
         public NextOverlay NextOverlay { get; init; }
         public UnlockOverlay UnlockOverlay { get; init; }
+        public MigrationWindow MigrationWindow { get; init; }
 
         public static string PluginDir => PluginInterface.AssemblyLocation.DirectoryName!;
 
@@ -80,6 +81,8 @@ namespace SubmarineTracker
         private bool ShowIgnoredWarning = true;
         private bool ShowStorageMessage = true;
 
+        public readonly bool FirstTimeMigration;
+
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -88,6 +91,7 @@ namespace SubmarineTracker
             FileDialogManager = new FileDialogManager();
 
             // Is required by everything, so init it here
+            FirstTimeMigration = !File.Exists(Database.DatabasePath());
             DatabaseCache = new DatabaseCache();
 
             NameConverter = new NameConverter();
@@ -106,6 +110,7 @@ namespace SubmarineTracker
             RouteOverlay = new RouteOverlay(this);
             NextOverlay = new NextOverlay(this);
             UnlockOverlay = new UnlockOverlay(this);
+            MigrationWindow = new MigrationWindow(this);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
@@ -117,6 +122,7 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(RouteOverlay);
             WindowSystem.AddWindow(NextOverlay);
             WindowSystem.AddWindow(UnlockOverlay);
+            WindowSystem.AddWindow(MigrationWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
             ServerBar = new ServerBar(this);
@@ -155,6 +161,13 @@ namespace SubmarineTracker
             MainWindow.Dispose();
             BuilderWindow.Dispose();
             LootWindow.Dispose();
+            HelpyWindow.Dispose();
+
+            ReturnOverlay.Dispose();
+            RouteOverlay.Dispose();
+            NextOverlay.Dispose();
+            UnlockOverlay.Dispose();
+            MigrationWindow.Dispose();
 
             PluginInterface.UiBuilder.Draw -= DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi -= OpenConfig;
