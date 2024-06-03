@@ -291,9 +291,10 @@ namespace SubmarineTracker
                             foreach (var (registerTime, lootEntry) in fc.SubLoot)
                                 foreach (var (returnTime, sectors) in lootEntry.Loot)
                                     foreach (var sectorLoot in sectors)
-                                        DatabaseCache.Database.UpsertLootEntry(new Loot(fcId, registerTime, returnTime, sectorLoot));
+                                        DatabaseCache.Database.InsertLootEntry(new Loot(fcId, registerTime, returnTime, sectorLoot));
 
                             file.Delete();
+                            Log.Information($"Migrating id {fcId} done");
                         }
                         catch (Exception ex)
                         {
@@ -403,18 +404,17 @@ namespace SubmarineTracker
             var possibleNewSubs = new List<Submarine>();
             foreach (var (sub, idx) in submarineData.Where(data => data.RankId != 0).WithIndex())
             {
-                possibleNewSubs.Add(new Submarine(sub, idx));
+                possibleNewSubs.Add(new Submarine(sub, idx) {FreeCompanyId = fcId});
 
                 // We prefill the current submarines once to have the original stats
                 if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
-                    SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub);
+                    SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub) {FreeCompanyId = fcId};
             }
 
             if (possibleNewSubs.Count == 0)
                 return;
 
-
-            var orgSubs = DatabaseCache.GetSubmarines().Where(s => s.FreeCompanyId == fcId).ToList();
+            var orgSubs = DatabaseCache.GetSubmarines(fcId).ToList();
             if (Utils.SubmarinesEqual(orgSubs, possibleNewSubs))
                 return;
 
@@ -510,7 +510,7 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public static void EntryUpload(Data.Loot.DetailedLoot loot)
+        public static void EntryUpload(Loot loot)
         {
             if (Configuration.UploadPermission)
             {

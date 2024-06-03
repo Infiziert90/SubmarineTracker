@@ -16,9 +16,9 @@ public class DatabaseCache : IDisposable
 
     public readonly Database Database = new();
 
-    private Loot[] Loot;
-    private Submarine[] Submarines;
-    private Dictionary<ulong, FreeCompany> FreeCompanies;
+    private Loot[] Loot = [];
+    private Submarine[] Submarines = [];
+    private Dictionary<ulong, FreeCompany> FreeCompanies = [];
 
     // Build from data
     private Dictionary<ulong, Dictionary<uint, Dictionary<Item, int>>> AllLoot = new();
@@ -30,9 +30,9 @@ public class DatabaseCache : IDisposable
 
     public DatabaseCache()
     {
-        Loot = Database.GetLoot().ToArray();
-        Submarines = Database.GetSubmarines().ToArray();
-        FreeCompanies = Database.GetFreeCompanies().ToDictionary(f => f.FreeCompanyId, f => f);
+        RefreshLoot();
+        RefreshSubmarines();
+        RefreshFreeCompanies();
 
         FCRefresh = Environment.TickCount64;
         SubRefresh = Environment.TickCount64;
@@ -47,14 +47,14 @@ public class DatabaseCache : IDisposable
 
     public Loot[] GetLoot()
     {
-        RefreshLoot();
+        CheckLoot();
 
         return Loot;
     }
 
     public Dictionary<uint, Dictionary<Item, int>> GetFCAllLoot(ulong id)
     {
-        RefreshLoot();
+        CheckLoot();
 
         AllLoot.TryGetValue(id, out var dict);
         return dict ?? new();
@@ -62,7 +62,7 @@ public class DatabaseCache : IDisposable
 
     public Dictionary<DateTime, Dictionary<Item, int>> GetFCTimeLoot(ulong id)
     {
-        RefreshLoot();
+        CheckLoot();
 
         TimeLoot.TryGetValue(id, out var dict);
         return dict ?? new();
@@ -70,7 +70,7 @@ public class DatabaseCache : IDisposable
 
     public Submarine[] GetSubmarines()
     {
-        RefreshSubmarines();
+        CheckSubmarines();
 
         return Submarines;
     }
@@ -82,94 +82,120 @@ public class DatabaseCache : IDisposable
 
     public Dictionary<ulong, FreeCompany> GetFreeCompanies()
     {
-        RefreshFreeCompanies();
+        CheckFreeCompany();
 
         return FreeCompanies;
     }
 
-    private void RefreshLoot()
+    private void CheckLoot()
     {
         if (LootRefresh < Environment.TickCount64)
         {
             LootRefresh = Environment.TickCount64 + LongDelay;
-            Task.Run(() =>
+            Task.Run(RefreshLoot);
+        }
+    }
+
+    private void RefreshLoot()
+    {
+        try
+        {
+            var result = Database.GetLoot().ToArray();
+
+            var allDict = new Dictionary<ulong, Dictionary<uint, Dictionary<Item, int>>>();
+            foreach (var point in Sheets.PossiblePoints)
             {
-                Plugin.Log.Information("Refreshing Loot");
-                var result = Database.GetLoot().ToArray();
-
-                var allDict = new Dictionary<ulong, Dictionary<uint, Dictionary<Item, int>>>();
-                foreach (var point in Sheets.PossiblePoints)
+                foreach (var loot in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)))
                 {
-                    foreach (var loot in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)))
-                    {
-                        var fc = allDict.GetOrCreate(loot.FreeCompanyId);
+                    var fc = allDict.GetOrCreate(loot.FreeCompanyId);
 
-                        var lootList = fc.GetOrCreate(point.RowId);
-                        if (!lootList.TryAdd(loot.PrimaryItem, loot.PrimaryCount))
-                            lootList[loot.PrimaryItem] += loot.PrimaryCount;
+                    var lootList = fc.GetOrCreate(point.RowId);
+                    if (!lootList.TryAdd(loot.PrimaryItem, loot.PrimaryCount))
+                        lootList[loot.PrimaryItem] += loot.PrimaryCount;
 
-                        if (!loot.ValidAdditional)
-                            continue;
+                    if (!loot.ValidAdditional)
+                        continue;
 
-                        if (!lootList.TryAdd(loot.AdditionalItem, loot.AdditionalCount))
-                            lootList[loot.AdditionalItem] += loot.AdditionalCount;
-                    }
+                    if (!lootList.TryAdd(loot.AdditionalItem, loot.AdditionalCount))
+                        lootList[loot.AdditionalItem] += loot.AdditionalCount;
                 }
+            }
 
-                var timeDict = new Dictionary<ulong, Dictionary<DateTime, Dictionary<Item, int>>>();
-                foreach (var point in Sheets.PossiblePoints)
+            var timeDict = new Dictionary<ulong, Dictionary<DateTime, Dictionary<Item, int>>>();
+            foreach (var point in Sheets.PossiblePoints)
+            {
+                foreach (var (date, loot) in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)).Select(loot => new LootWithDate(loot.Date, loot)))
                 {
-                    foreach (var (date, loot) in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)).Select(loot => new LootWithDate(loot.Date, loot)))
-                    {
-                        var fc = timeDict.GetOrCreate(loot.FreeCompanyId);
+                    var fc = timeDict.GetOrCreate(loot.FreeCompanyId);
 
-                        var lootList = fc.GetOrCreate(date);
-                        if (!lootList.TryAdd(loot.PrimaryItem, loot.PrimaryCount))
-                            lootList[loot.PrimaryItem] += loot.PrimaryCount;
+                    var lootList = fc.GetOrCreate(date);
+                    if (!lootList.TryAdd(loot.PrimaryItem, loot.PrimaryCount))
+                        lootList[loot.PrimaryItem] += loot.PrimaryCount;
 
-                        if (!loot.ValidAdditional)
-                            continue;
+                    if (!loot.ValidAdditional)
+                        continue;
 
-                        if (!lootList.TryAdd(loot.AdditionalItem, loot.AdditionalCount))
-                            lootList[loot.AdditionalItem] += loot.AdditionalCount;
-                    }
+                    if (!lootList.TryAdd(loot.AdditionalItem, loot.AdditionalCount))
+                        lootList[loot.AdditionalItem] += loot.AdditionalCount;
                 }
+            }
 
-                Thread.MemoryBarrier();
-                Loot = result;
-                AllLoot = allDict;
-                TimeLoot = timeDict;
-            });
+            Thread.MemoryBarrier();
+            Loot = result;
+            AllLoot = allDict;
+            TimeLoot = timeDict;
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Unable to refresh loot data");
+        }
+    }
+
+    private void CheckSubmarines()
+    {
+        if (SubRefresh < Environment.TickCount64)
+        {
+            SubRefresh = Environment.TickCount64 + ShortDelay;
+            Task.Run(RefreshSubmarines);
         }
     }
 
     private void RefreshSubmarines()
     {
-        if (SubRefresh < Environment.TickCount64)
+        try
         {
-            SubRefresh = Environment.TickCount64 + ShortDelay;
-            Task.Run(() =>
-            {
-                var result = Database.GetSubmarines().ToArray();
+            var result = Database.GetSubmarines().ToArray();
 
-                Thread.MemoryBarrier();
-                Submarines = result;
-            });
+            Thread.MemoryBarrier();
+            Submarines = result;
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Unable to refresh submarine data");
+        }
+    }
+
+    private void CheckFreeCompany()
+    {
+        if (FCRefresh < Environment.TickCount64)
+        {
+            FCRefresh = Environment.TickCount64 + ShortDelay;
+            Task.Run(RefreshFreeCompanies);
         }
     }
 
     private void RefreshFreeCompanies()
     {
-        if (FCRefresh < Environment.TickCount64)
+        try
         {
-            FCRefresh = Environment.TickCount64 + ShortDelay;
-            Task.Run(() =>
-            {
-                var result = Database.GetFreeCompanies().ToDictionary(f => f.FreeCompanyId, f => f);
+            var result = Database.GetFreeCompanies().ToDictionary(f => f.FreeCompanyId, f => f);
 
-                Thread.MemoryBarrier();
-                FreeCompanies = result;
-            });
+            Thread.MemoryBarrier();
+            FreeCompanies = result;
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Unable to refresh freecompany data");
         }
     }
 }
@@ -437,40 +463,21 @@ public record Submarine
     #region equals
     public bool VoyageEqual(List<uint> l, List<uint> r) => l.SequenceEqual(r);
 
+    #pragma warning disable CS8851 // Doesn't need GetHashCode
     public virtual bool Equals(Submarine? other)
     {
         if (ReferenceEquals(null, other))
             return false;
         if (ReferenceEquals(this, other))
             return true;
-        return Name == other.Name && Rank == other.Rank && Hull == other.Hull &&
-               Stern == other.Stern && Bow == other.Bow && Bridge == other.Bridge &&
-               CExp == other.CExp && Return == other.Return && Register == other.Register &&
-               HullDurability == other.HullDurability && SternDurability == other.SternDurability &&
-               BowDurability == other.BowDurability && BridgeDurability == other.BridgeDurability &&
-               ReturnTime == other.ReturnTime && VoyageEqual(Points, other.Points);
+
+        return Return == other.Return && Register == other.Register && Name == other.Name &&
+               Rank == other.Rank && Hull == other.Hull && Stern == other.Stern && Bow == other.Bow &&
+               Bridge == other.Bridge && CExp == other.CExp && HullDurability == other.HullDurability &&
+               SternDurability == other.SternDurability && BowDurability == other.BowDurability &&
+               BridgeDurability == other.BridgeDurability && VoyageEqual(Points, other.Points);
     }
-
-    public bool Equals(Submarine x, Submarine y)
-    {
-        if (ReferenceEquals(x, y))
-            return true;
-        if (ReferenceEquals(x, null))
-            return false;
-        if (ReferenceEquals(y, null))
-            return false;
-        if (x.GetType() != y.GetType())
-            return false;
-
-        return x.Name == y.Name && x.Rank == y.Rank && x.Hull == y.Hull &&
-               x.Stern == y.Stern && x.Bow == y.Bow && x.Bridge == y.Bridge &&
-               x.CExp == y.CExp && x.Return == y.Return && x.Register == y.Register &&
-               x.HullDurability == y.HullDurability && x.SternDurability == y.SternDurability &&
-               x.BowDurability == y.BowDurability && x.BridgeDurability == y.BridgeDurability &&
-               x.ReturnTime == y.ReturnTime && VoyageEqual(x.Points, y.Points);
-    }
-
-    public override int GetHashCode() => HashCode.Combine(Name, Rank, Hull, Stern, Bow, Bridge, CExp, Points);
+    #pragma warning restore CS8851
     #endregion
 }
 
@@ -566,7 +573,7 @@ public record Loot
 
         Date = DateTime.Now;
 
-        // Plugin.EntryUpload(this);
+        Plugin.EntryUpload(this);
     }
 
     public Item PrimaryItem => Sheets.ItemSheet.GetRow(Primary)!;

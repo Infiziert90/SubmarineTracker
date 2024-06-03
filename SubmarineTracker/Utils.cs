@@ -204,10 +204,8 @@ public static class Utils
             return false;
 
         foreach (var (subL, subR) in l.Zip(r))
-        {
             if (!subL.Equals(subR))
                 return false;
-        }
 
         return true;
     }

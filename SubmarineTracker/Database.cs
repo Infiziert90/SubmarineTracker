@@ -3,7 +3,6 @@ using System.Data.Common;
 using System.IO;
 using MessagePack;
 using Microsoft.Data.Sqlite;
-using SubmarineTracker.Data;
 using DalamudUtil = Dalamud.Utility.Util;
 
 namespace SubmarineTracker;
@@ -94,75 +93,78 @@ public class Database : IDisposable
 
     private void Migrate0()
     {
-        Connection.Execute(@"
-            CREATE TABLE IF NOT EXISTS loot (
-                FreeCompanyId BLOB NOT NULL,            -- MessagePack encoded uint64
-                SubmarineId INTEGER NOT NULL,           -- unix timestamp with second precision
-                Return INTEGER NOT NULL,                -- unix timestamp with second precision
-                Sector INTEGER NOT NULL,                -- uint
-                Rank INTEGER NOT NULL,                  -- int32
-                Surv INTEGER NOT NULL,                  -- int32
-                Ret INTEGER NOT NULL,                   -- int32
-                Fav INTEGER NOT NULL,                   -- int32
-                PrimarySurvProc INTEGER NOT NULL,       -- uint32
-                AdditionalSurvProc INTEGER NOT NULL,    -- uint32
-                PrimaryRetProc INTEGER NOT NULL,        -- uint32
-                AdditionalRetProc INTEGER NOT NULL,     -- uint32
-                FavProc INTEGER NOT NULL,               -- uint32
-                PrimaryItem INTEGER NOT NULL,           -- uint32
-                PrimaryCount INTEGER NOT NULL,          -- uint32
-                PrimaryHQ BOOLEAN NOT NULL,             -- Bool
-                AdditionalItem INTEGER NOT NULL,        -- uint32
-                AdditionalCount INTEGER NOT NULL,       -- uint32
-                AdditionalHQ BOOLEAN NOT NULL,          -- Bool
-                Unlocked INTEGER NOT NULL,              -- uint32
-                Date INTEGER NOT NULL,                  -- unix timestamp with second precision
-                Valid BOOLEAN NOT NULL                  -- Bool
-            );
+        Connection.Execute("""
+                   CREATE TABLE IF NOT EXISTS freecompany (
+                       FreeCompanyId BLOB PRIMARY KEY NOT NULL,            -- MessagePack encoded uint64
+                       FreeCompanyTag TEXT NOT NULL,                       -- fc tag
+                       World TEXT NOT NULL,                                -- fc world
+                       CharacterName TEXT NOT NULL,                        -- last character name
+                       UnlockedSectors BLOB NOT NULL,                      -- Dictionary<uint, bool>
+                       ExploredSectors BLOB NOT NULL                       -- Dictionary<uint, bool>
+                   );
+                   """);
 
-            CREATE INDEX IF NOT EXISTS idx_loot_freeCompanyid ON loot (FreeCompanyId);
-            CREATE INDEX IF NOT EXISTS idx_loot_submarineid ON loot (SubmarineId);
-            CREATE INDEX IF NOT EXISTS idx_loot_return ON loot (Return);
-            CREATE INDEX IF NOT EXISTS idx_loot_sector ON loot (Sector);
-            CREATE INDEX IF NOT EXISTS idx_loot_date ON loot (Date);
-            CREATE INDEX IF NOT EXISTS idx_loot_Valid ON loot (Valid);
-        ");
+        Connection.Execute("""
+                   CREATE TABLE IF NOT EXISTS loot (
+                       FreeCompanyId BLOB NOT NULL,            -- MessagePack encoded uint64
+                       SubmarineId INTEGER NOT NULL,           -- unix timestamp with second precision
+                       Return INTEGER NOT NULL,                -- unix timestamp with second precision
+                       Sector INTEGER NOT NULL,                -- uint
+                       Rank INTEGER NOT NULL,                  -- int32
+                       Surv INTEGER NOT NULL,                  -- int32
+                       Ret INTEGER NOT NULL,                   -- int32
+                       Fav INTEGER NOT NULL,                   -- int32
+                       PrimarySurvProc INTEGER NOT NULL,       -- uint32
+                       AdditionalSurvProc INTEGER NOT NULL,    -- uint32
+                       PrimaryRetProc INTEGER NOT NULL,        -- uint32
+                       AdditionalRetProc INTEGER NOT NULL,     -- uint32
+                       FavProc INTEGER NOT NULL,               -- uint32
+                       PrimaryItem INTEGER NOT NULL,           -- uint32
+                       PrimaryCount INTEGER NOT NULL,          -- uint32
+                       PrimaryHQ BOOLEAN NOT NULL,             -- Bool
+                       AdditionalItem INTEGER NOT NULL,        -- uint32
+                       AdditionalCount INTEGER NOT NULL,       -- uint32
+                       AdditionalHQ BOOLEAN NOT NULL,          -- Bool
+                       Unlocked INTEGER NOT NULL,              -- uint32
+                       Date INTEGER NOT NULL,                  -- unix timestamp with second precision
+                       Valid BOOLEAN NOT NULL,                  -- Bool
+                       
+                       FOREIGN KEY (FreeCompanyId) REFERENCES freecompany(FreeCompanyId)
+                   );
+       
+                   CREATE INDEX IF NOT EXISTS idx_loot_freeCompanyid ON loot (FreeCompanyId);
+                   CREATE INDEX IF NOT EXISTS idx_loot_submarineid ON loot (SubmarineId);
+                   CREATE INDEX IF NOT EXISTS idx_loot_return ON loot (Return);
+                   CREATE INDEX IF NOT EXISTS idx_loot_sector ON loot (Sector);
+                   CREATE INDEX IF NOT EXISTS idx_loot_date ON loot (Date);
+                   CREATE INDEX IF NOT EXISTS idx_loot_Valid ON loot (Valid);
+                   """);
 
-        Connection.Execute(@"
-            CREATE TABLE IF NOT EXISTS freecompany (
-                FreeCompanyId BLOB PRIMARY KEY NOT NULL,            -- MessagePack encoded uint64
-                FreeCompanyTag TEXT NOT NULL,                       -- fc tag
-                World TEXT NOT NULL,                                -- fc world
-                CharacterName TEXT NOT NULL,                        -- last character name
-                UnlockedSectors BLOB NOT NULL,                      -- Dictionary<uint, bool>
-                ExploredSectors BLOB NOT NULL                       -- Dictionary<uint, bool>
-            );
-        ");
-
-        Connection.Execute(@"
-            CREATE TABLE IF NOT EXISTS submarine (
-                FreeCompanyId BLOB NOT NULL,            -- MessagePack encoded uint64
-                SubmarineId INTEGER NOT NULL,           -- unix timestamp with second precision
-                Return INTEGER NOT NULL,                -- unix timestamp with second precision
-                Name TEXT NOT NULL,                     -- submarine name
-                Rank INTEGER NOT NULL,                  -- ushort
-                Route BLOB NOT NULL,                    -- uint array
-                Hull INTEGER NOT NULL,                  -- ushort
-                Stern INTEGER NOT NULL,                 -- ushort
-                Bow INTEGER NOT NULL,                   -- ushort
-                Bridge INTEGER NOT NULL,                -- ushort
-                CExp INTEGER NOT NULL,                  -- uint
-                NExp INTEGER NOT NULL,                  -- uint
-                HullDurability INTEGER NOT NULL,        -- ushort
-                SternDurability INTEGER NOT NULL,       -- ushort
-                BowDurability INTEGER NOT NULL,         -- ushort
-                BridgeDurability INTEGER NOT NULL,       -- ushort
-                
-                PRIMARY KEY (FreeCompanyId, SubmarineId)
-            );
-
-            CREATE INDEX IF NOT EXISTS idx_submarine_return ON submarine (Return);
-        ");
+        Connection.Execute("""
+                   CREATE TABLE IF NOT EXISTS submarine (
+                       FreeCompanyId BLOB NOT NULL,            -- MessagePack encoded uint64
+                       SubmarineId INTEGER NOT NULL,           -- unix timestamp with second precision
+                       Return INTEGER NOT NULL,                -- unix timestamp with second precision
+                       Name TEXT NOT NULL,                     -- submarine name
+                       Rank INTEGER NOT NULL,                  -- ushort
+                       Route BLOB NOT NULL,                    -- uint array
+                       Hull INTEGER NOT NULL,                  -- ushort
+                       Stern INTEGER NOT NULL,                 -- ushort
+                       Bow INTEGER NOT NULL,                   -- ushort
+                       Bridge INTEGER NOT NULL,                -- ushort
+                       CExp INTEGER NOT NULL,                  -- uint
+                       NExp INTEGER NOT NULL,                  -- uint
+                       HullDurability INTEGER NOT NULL,        -- ushort
+                       SternDurability INTEGER NOT NULL,       -- ushort
+                       BowDurability INTEGER NOT NULL,         -- ushort
+                       BridgeDurability INTEGER NOT NULL,       -- ushort
+                       
+                       PRIMARY KEY (FreeCompanyId, SubmarineId),
+                       FOREIGN KEY (FreeCompanyId) REFERENCES freecompany(FreeCompanyId)                      
+                   );
+       
+                   CREATE INDEX IF NOT EXISTS idx_submarine_return ON submarine (Return);
+                   """);
 
         SetMigrationVersion(0);
     }
@@ -189,7 +191,7 @@ public class Database : IDisposable
     internal long DatabaseSize() => !File.Exists(DbPath) ? 0 : new FileInfo(DbPath).Length;
     internal long DatabaseLogSize() => !File.Exists(LogPath) ? 0 : new FileInfo(LogPath).Length;
 
-    internal void UpsertLootEntry(Loot loot)
+    internal void InsertLootEntry(Loot loot)
     {
         var cmd = Connection.CreateCommand();
         cmd.CommandText = """

@@ -84,7 +84,7 @@ public class HookManager
                 try
                 {
                     foreach (var loot in lootList)
-                        Plugin.DatabaseCache.Database.UpsertLootEntry(loot);
+                        Plugin.DatabaseCache.Database.InsertLootEntry(loot);
                 }
                 catch (Exception ex)
                 {

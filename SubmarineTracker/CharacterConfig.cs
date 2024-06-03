@@ -1,4 +1,4 @@
-using static SubmarineTracker.Data.Submarines;
+using Newtonsoft.Json;
 
 namespace SubmarineTracker;
 
@@ -19,31 +19,8 @@ public class CharacterConfiguration
     public Dictionary<uint, Data.Loot.SubmarineLoot> Loot = new();
     public List<Tuple<uint, bool, bool>> ExplorationPoints = new();
 
+    [JsonConstructor]
     public CharacterConfiguration() { }
-
-    public CharacterConfiguration(ulong id, string characterName, string tag, string world, List<Data.Submarines.Submarine> subs, Dictionary<uint, Data.Loot.SubmarineLoot> loot, List<Tuple<uint, bool, bool>> explorationPoints)
-    {
-        LocalContentId = id;
-        CharacterName = characterName;
-        Tag = tag;
-        World = world;
-        Submarines = subs;
-        Loot = loot;
-        ExplorationPoints = explorationPoints;
-    }
-
-    public CharacterConfiguration(ulong id, FcSubmarines playerFc)
-    {
-        LocalContentId = id;
-        CharacterName = playerFc.CharacterName;
-        Tag = playerFc.Tag;
-        World = playerFc.World;
-        Submarines = playerFc.Submarines;
-        Loot = playerFc.SubLoot;
-        ExplorationPoints = playerFc.UnlockedSectors
-                                    .Select(t => new Tuple<uint, bool, bool>(t.Key, t.Value, playerFc.ExploredSectors[t.Key]))
-                                    .ToList();;
-    }
 
     public static CharacterConfiguration CreateNew() => new()
     {
