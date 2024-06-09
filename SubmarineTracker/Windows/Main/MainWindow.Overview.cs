@@ -156,7 +156,7 @@ public partial class MainWindow
                     ImGui.SetCursorPos(cursorPosition);
                 }
 
-                ImGui.TextUnformatted(Utils.SectorToName(sector));
+                ImGui.TextUnformatted(Voyage.SectorToName(sector));
                 ImGuiHelpers.ScaledDummy(5.0f);
                 foreach (var (item, count) in loot)
                 {

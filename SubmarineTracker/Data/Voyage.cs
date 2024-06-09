@@ -19,7 +19,7 @@ public static class Voyage
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
         ReversedMaps = ExplorationSheet.Where(s => s.StartingPoint).Select(s => s.RowId).Reverse().ToArray();
 
-        SectorToPretty = ExplorationSheet.ToFrozenDictionary(s => s.RowId);
+        SectorToPretty = ExplorationSheet.ToFrozenDictionary(s => s.RowId, s => s);
     }
 
     public struct BestRoute(uint distance, uint[]? path)
@@ -39,6 +39,9 @@ public static class Voyage
 
     public static uint FindMapFromSector(uint sector) => SectorToPretty[FindVoyageStart(sector)].Map.Row;
     public static SubExplPretty FindVoyageStartPretty(uint sector) => SectorToPretty[FindVoyageStart(sector)];
+
+    public static string SectorToName(uint key) => SectorToPretty[key].ToName();
+    public static string SectorToMapName(uint key) => Utils.UpperCaseStr(FindVoyageStartPretty(key).Map.Value!.Name);
 
     #region Optimizer
     public static uint CalculateDuration(SubExplPretty[] sectors, float speed)

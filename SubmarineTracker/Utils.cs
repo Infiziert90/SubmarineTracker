@@ -38,11 +38,6 @@ public static class Utils
         return sb.ToString();
     }
 
-    public static string SectorToName(uint key)
-    {
-        return Voyage.FindVoyageStartPretty(key).ToName();
-    }
-
     public static string MapToShort(int key, bool resolveToMap = false) => MapToShort((uint)key, resolveToMap);
     public static string MapToShort(uint key, bool resolveToMap = false)
     {
@@ -77,11 +72,6 @@ public static class Utils
         };
     }
 
-    public static string SectorToMap(uint key)
-    {
-        return UpperCaseStr(Voyage.FindVoyageStartPretty(key).Map.Value!.Name);
-    }
-
     public static string NumToLetter(uint num, bool findStart = false)
     {
         if (findStart)
@@ -113,7 +103,7 @@ public static class Utils
     public static string FormattedRouteBuild(string name, Build.RouteBuild build)
     {
         var route = "No Route";
-        if (build.Sectors.Any())
+        if (build.Sectors.Count != 0)
         {
             var startPoint = Voyage.FindVoyageStart(build.Sectors.First());
             route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";
