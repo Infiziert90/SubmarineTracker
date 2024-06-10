@@ -431,10 +431,7 @@ namespace SubmarineTracker
 
                 // We prefill the current submarines once to have the original stats
                 if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
-                {
-                    Log.Information("Prefilling submarine cache");
                     SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub) {FreeCompanyId = fcId};
-                }
             }
 
             if (NeedsRefresh || possibleNewSubs.Count == 0)
@@ -444,7 +441,6 @@ namespace SubmarineTracker
             if (Utils.SubmarinesEqual(orgSubs, possibleNewSubs))
                 return;
 
-            Log.Information("Found new submarines");
             var fc = new FreeCompany
             {
                 FreeCompanyId = fcId,
