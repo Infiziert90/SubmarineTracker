@@ -302,9 +302,19 @@ namespace SubmarineTracker
                                 DatabaseCache.Database.UpsertSubmarine(new Submarine(fcId, sub));
 
                             foreach (var (registerTime, lootEntry) in fc.SubLoot)
+                            {
                                 foreach (var (returnTime, sectors) in lootEntry.Loot)
+                                {
                                     foreach (var sectorLoot in sectors)
+                                    {
+                                        // Some people have dates that are deserialized as "0001-01-01T00:00:00"
+                                        if (sectorLoot.Date.Ticks < 1000)
+                                            continue;
+
                                         DatabaseCache.Database.InsertLootEntry(new Loot(fcId, registerTime, returnTime, sectorLoot));
+                                    }
+                                }
+                            }
 
                             file.Delete();
                             Log.Information($"Migrating id {fcId} done");
