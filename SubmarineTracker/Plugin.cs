@@ -5,12 +5,11 @@ using Dalamud.Plugin;
 using Dalamud.Game;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using SubmarineTracker.Attributes;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
@@ -32,7 +31,7 @@ namespace SubmarineTracker
         [PluginService] public static IDataManager Data { get; private set; } = null!;
         [PluginService] public static IFramework Framework { get; private set; } = null!;
         [PluginService] public static ICommandManager Commands { get; private set; } = null!;
-        [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static IClientState ClientState { get; private set; } = null!;
         [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
         [PluginService] public static IToastGui ToastGui { get; private set; } = null!;
@@ -420,12 +419,12 @@ namespace SubmarineTracker
             }
 
             var workshopData = instance->WorkshopTerritory->Submersible;
-            var submarineData = workshopData.DataListSpan.ToArray();
+            var submarineData = workshopData.Data.ToArray();
 
             BuilderWindow.VoyageInterfaceSelection = 0;
             if (Configuration.AutoSelectCurrent)
             {
-                var current = workshopData.DataPointerListSpan[4];
+                var current = workshopData.DataPointers[4];
                 if (current.Value != null)
                 {
                     BuilderWindow.VoyageInterfaceSelection = current.Value->RegisterTime;
@@ -518,7 +517,7 @@ namespace SubmarineTracker
         public void OpenConfig() => ConfigWindow.IsOpen = true;
         #endregion
 
-        public static unsafe ulong GetFCId => InfoProxyFreeCompany.Instance()->ID;
+        public static unsafe ulong GetFCId => InfoProxyFreeCompany.Instance()->Id;
 
         public static void LoadFCOrder()
         {

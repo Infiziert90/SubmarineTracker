@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Dalamud.Hooking;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 namespace SubmarineTracker.Manager;
 
@@ -54,7 +54,7 @@ public class HookManager
             if (instance == null || instance->WorkshopTerritory == null)
                 return;
 
-            var current = instance->WorkshopTerritory->Submersible.DataPointerListSpan[4];
+            var current = instance->WorkshopTerritory->Submersible.DataPointers[4];
             if (current.Value == null)
                 return;
 
@@ -71,7 +71,7 @@ public class HookManager
             var returnTime = cachedStats.Return;
             var build = cachedStats.Build;
 
-            var data = sub->GatheredDataSpan;
+            var data = sub->GatheredData;
             if (data[0].ItemIdPrimary == 0)
                 return;
 

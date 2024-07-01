@@ -1,9 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Memory;
+using Dalamud.Game.Text.SeStringHandling;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 
@@ -312,7 +310,7 @@ public record Submarine
 
     public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx)
     {
-        Name = MemoryHelper.ReadSeStringNullTerminated((nint) data.Name).ToString();
+        Name = SeString.Parse(data.Name).ToString();
         Rank = data.RankId;
         Hull = data.HullId;
         Stern = data.SternId;
@@ -325,10 +323,7 @@ public record Submarine
         Return = data.ReturnTime;
         ReturnTime = data.GetReturnTime();
 
-        var managedArray = new byte[5];
-        Marshal.Copy((nint)data.CurrentExplorationPoints, managedArray, 0, 5);
-
-        foreach (var point in managedArray)
+        foreach (var point in data.CurrentExplorationPoints)
         {
             if (point > 0)
                 Points.Add(point);

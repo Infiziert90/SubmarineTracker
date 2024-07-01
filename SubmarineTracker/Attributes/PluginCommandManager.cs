@@ -1,7 +1,6 @@
 using Dalamud.Game.Command;
 using System.Reflection;
 using Dalamud.Plugin.Services;
-using static Dalamud.Game.Command.CommandInfo;
 
 namespace SubmarineTracker.Attributes
 {
@@ -42,7 +41,7 @@ namespace SubmarineTracker.Attributes
 
         private IEnumerable<(string, CommandInfo)> GetCommandInfoTuple(MethodInfo method)
         {
-            var handlerDelegate = (HandlerDelegate)Delegate.CreateDelegate(typeof(HandlerDelegate), this.Host, method);
+            var handlerDelegate = (IReadOnlyCommandInfo.HandlerDelegate)Delegate.CreateDelegate(typeof(IReadOnlyCommandInfo.HandlerDelegate), this.Host, method);
 
             var command = handlerDelegate.Method.GetCustomAttribute<CommandAttribute>();
             var aliases = handlerDelegate.Method.GetCustomAttribute<AliasesAttribute>();

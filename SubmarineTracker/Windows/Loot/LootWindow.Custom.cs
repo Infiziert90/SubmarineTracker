@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface;
+﻿using System.Diagnostics;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
@@ -60,13 +61,8 @@ public partial class LootWindow
                     if (selectedFcId != id)
                         continue;
 
-                var subs = Plugin.DatabaseCache.GetSubmarines(id);
-                numSubs += subs.Length;
-
-                foreach (var loot in Plugin.DatabaseCache.GetLoot().Where(l => subs.Any(s => s.Register == l.Register)))
-                    if (DateCompare(loot.Date) && (!Plugin.Configuration.ExcludeLegacy || loot.Valid))
-                        numVoyages++;
-
+                numSubs += Plugin.DatabaseCache.GetSubmarines(id).Length;
+                numVoyages += Plugin.DatabaseCache.GetLoot().Where(l => l.FreeCompanyId == id).Count(l => DateCompare(l.Date) && (!Plugin.Configuration.ExcludeLegacy || l.Valid));
 
                 foreach (var (item, count) in Plugin.DatabaseCache.GetFCTimeLoot(id).Where(pair => DateCompare(pair.Key)).SelectMany(pair => pair.Value))
                 {
@@ -84,12 +80,12 @@ public partial class LootWindow
             var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
             if (ImGui.BeginChild("##customLootTableChild", new Vector2(0, -textHeight + optionHeight)))
             {
-                if (!selected.Any())
+                if (selected.Count == 0)
                 {
                     Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Empty", "This profile has no tracked items."));
                     Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Tip", "You can add items via the loot tab under configuration."));
                 }
-                else if (!bigList.Any())
+                else if (bigList.Count == 0)
                 {
                     Helper.WrappedError($"{Loc.Localize("Loot Tab Custom - None 1", "None of the selected items have been looted")} {(useLimit ? Loc.Localize("Loot Tab Custom - None 2 Timeframe", "in the time frame") : Loc.Localize("Loot Tab Custom - None 2 Yet", "yet"))}.");
                 }

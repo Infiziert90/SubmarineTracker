@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 

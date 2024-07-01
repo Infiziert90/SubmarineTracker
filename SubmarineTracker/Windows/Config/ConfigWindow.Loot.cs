@@ -1,9 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Internal.Notifications;
 using Lumina.Excel.GeneratedSheets;
-using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Config;

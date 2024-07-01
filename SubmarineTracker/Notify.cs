@@ -4,7 +4,6 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using FFXIVClientStructs.FFXIV.Client.UI.Info;
 
 namespace SubmarineTracker;
 

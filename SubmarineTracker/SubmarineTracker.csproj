@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>Infi</Authors>
-        <Version>1.9.1.0</Version>
+        <Version>1.9.2.0</Version>
         <Description>You do not talk about Fight Club, same for Submarines</Description>
         <PackageProjectUrl>https://github.com/Infiziert90/SubmarineTracker</PackageProjectUrl>
     </PropertyGroup>
@@ -46,9 +46,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="31.0.2" />
-        <PackageReference Include="DalamudPackager" Version="2.1.12" />
-        <PackageReference Include="MessagePack" Version="2.6.100-alpha" />
+        <PackageReference Include="CsvHelper" Version="33.0.1" />
+        <PackageReference Include="DalamudPackager" Version="2.1.13" />
+        <PackageReference Include="MessagePack" Version="3.0.54-alpha" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
         <PackageReference Include="supabase-csharp" Version="0.16.1" />
         <Reference Include="FFXIVClientStructs">

@@ -157,7 +157,7 @@ public static class Helper
     public static void DrawScaledIcon(uint iconId, Vector2 iconSize)
     {
         iconSize *= ImGuiHelpers.GlobalScale;
-        var texture = Plugin.Texture.GetIcon(iconId);
+        var texture = Plugin.Texture.GetFromGameIcon(iconId).GetWrapOrDefault();
         if (texture == null)
         {
             ImGui.Text($"Unknown icon {iconId}");

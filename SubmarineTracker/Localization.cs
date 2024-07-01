@@ -1,7 +1,6 @@
 using System.IO;
 using System.Reflection;
-using CheapLoc;
-using Dalamud;
+using Dalamud.Game;
 
 namespace SubmarineTracker;
 

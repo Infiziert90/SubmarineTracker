@@ -6,7 +6,7 @@ namespace SubmarineTracker;
 public class ServerBar
 {
     private readonly Plugin Plugin;
-    private readonly DtrBarEntry? DtrEntry;
+    private readonly IDtrBarEntry? DtrEntry;
 
     public ServerBar(Plugin plugin)
     {
@@ -31,7 +31,7 @@ public class ServerBar
 
         Plugin.Framework.Update -= UpdateDtrBar;
         DtrEntry.OnClick -= OnClick;
-        DtrEntry.Dispose();
+        DtrEntry.Remove();
     }
 
     public void UpdateDtrBar(IFramework framework)

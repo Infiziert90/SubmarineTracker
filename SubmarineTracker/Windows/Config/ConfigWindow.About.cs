@@ -146,8 +146,6 @@ public partial class ConfigWindow
     private List<SubmarineTracker.Loot> GenerateLootList()
     {
         // some of the corrupted loot data is still around, so we check that Rank is above 0
-        return Plugin.DatabaseCache.GetLoot()
-               .Where(loot => loot is { Valid: true, Rank: > 0 })
-               .ToList();
+        return Plugin.DatabaseCache.GetLoot().Where(loot => loot is { Valid: true, Rank: > 0 }).ToList();
     }
 }

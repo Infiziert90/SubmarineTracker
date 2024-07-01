@@ -66,7 +66,7 @@ public partial class LootWindow
                 if (!dict.TryAdd(l.Return, [l]))
                     dict[l.Return].Add(l);
 
-            var lootHistory = dict.OrderBy(pair => pair.Key).Select(pair => pair.Value).ToArray();
+            var lootHistory = dict.OrderByDescending(pair => pair.Key).Select(pair => pair.Value).ToArray();
             var submarineVoyage = lootHistory.Select(loot => $"{loot[0].Date}").ToArray();
             if (submarineVoyage.Length == 0)
             {
