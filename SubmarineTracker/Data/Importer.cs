@@ -91,6 +91,7 @@ public static class Importer
     {
         try
         {
+            Plugin.Log.Information("Start route build");
             var dict = new Dictionary<int, Route[]>();
             foreach (var mapId in Plugin.Data.GetExcelSheet<SubmarineMap>()!.Where(m => m.RowId != 0).Select(m => m.RowId))
                 dict.Add((int) mapId, Voyage.FindAllRoutes(mapId));
@@ -102,6 +103,7 @@ public static class Importer
                 File.Delete(path);
 
             File.WriteAllBytes(path, MessagePackSerializer.Serialize(CalculatedData));
+            Plugin.Log.Information("Finished route build");
         }
         catch (Exception e)
         {
