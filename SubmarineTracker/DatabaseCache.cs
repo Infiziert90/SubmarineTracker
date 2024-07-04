@@ -310,7 +310,7 @@ public record Submarine
 
     public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx)
     {
-        Name = SeString.Parse(data.Name).ToString();
+        Name = Utils.NameToSeString(data.Name).ExtractText();
         Rank = data.RankId;
         Hull = data.HullId;
         Stern = data.SternId;

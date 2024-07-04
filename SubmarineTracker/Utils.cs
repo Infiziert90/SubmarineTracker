@@ -4,12 +4,15 @@ using System.Security.Cryptography;
 using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Utility;
+using Lumina.Text.ReadOnly;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker;
 
 public static class Utils
 {
+    public static unsafe ReadOnlySeStringSpan NameToSeString(Span<byte> name) => new((byte*)Unsafe.AsPointer(ref name[0]));
+
     public static string ToStr(SeString content) => content.ToString();
     public static string ToStr(Lumina.Text.SeString content) => content.ToDalamudString().ToString();
     public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
