@@ -90,7 +90,10 @@ public class Notify
         if (subs.Length == 0)
             return;
 
-        var sub = subs.First(s => s.Register == key);
+        var sub = subs.FirstOrDefault(s => s.Register == key);
+        if (sub == null || !sub.IsValid())
+            return;
+
         if (!FinishedNotifications.Add($"Dispatch{key}{returnTime}"))
             return;
 
