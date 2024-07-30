@@ -12,7 +12,9 @@ public partial class ConfigWindow
             if (ImGui.BeginChild("FCContent", new Vector2(0, 0)))
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
-                ImGui.TextUnformatted("Deletion is currently disabled");
+                Helper.CenterText("Deletion is currently disabled", color: ImGuiColors.DalamudOrange);
+                ImGuiHelpers.ScaledDummy(5.0f);
+
                 if (ImGui.BeginTable("##DeleteSavesTable", 4, ImGuiTableFlags.BordersH))
                 {
                     ImGui.TableSetupColumn(Loc.Localize("Terms - Saved FCs", "Saved FCs"));

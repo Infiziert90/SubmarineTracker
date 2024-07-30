@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game.Text.SeStringHandling;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
@@ -25,6 +24,8 @@ public class DatabaseCache : IDisposable
     private long FCRefresh;
     private long SubRefresh;
     private long LootRefresh;
+
+    private long LootCounter = -1;
 
     public bool NewData;
     public bool FCNeedsRefresh;
@@ -94,6 +95,9 @@ public class DatabaseCache : IDisposable
         if (LootRefresh < Environment.TickCount64)
         {
             LootRefresh = Environment.TickCount64 + LongDelay;
+            if (LootCounter == Database.GetCounter("Loot"))
+                return;
+
             Task.Run(RefreshLoot);
         }
     }
@@ -102,6 +106,8 @@ public class DatabaseCache : IDisposable
     {
         try
         {
+            LootCounter = Database.GetCounter("Loot");
+
             var result = Database.GetLoot().ToArray();
 
             var allDict = new Dictionary<ulong, Dictionary<uint, Dictionary<Item, int>>>();

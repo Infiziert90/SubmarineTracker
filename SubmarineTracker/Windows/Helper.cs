@@ -1,6 +1,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using static SubmarineTracker.Data.Submarines;
+using Dalamud.Interface.Utility.Raii;
 
 namespace SubmarineTracker.Windows;
 
@@ -97,8 +97,10 @@ public static class Helper
         return time;
     }
 
-    public static void CenterText(string text, float indent = 0.0f)
+    public static void CenterText(string text, float indent = 0.0f, Vector4? color = null)
     {
+        using var pushedColor = ImRaii.PushColor(ImGuiCol.Text, color ?? Vector4.Zero, color.HasValue);
+
         indent *= ImGuiHelpers.GlobalScale;
         ImGui.SameLine(((ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X) * 0.5f) + indent);
         ImGui.TextUnformatted(text);

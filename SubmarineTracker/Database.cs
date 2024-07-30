@@ -84,6 +84,7 @@ public class Database : IDisposable
         {
             case <= 0:
                 migrationsToDo.Add(Migrate0);
+                migrationsToDo.Add(Migrate1);
                 break;
         }
 
@@ -167,6 +168,34 @@ public class Database : IDisposable
                    """);
 
         SetMigrationVersion(0);
+    }
+
+    private void Migrate1()
+    {
+        Connection.Execute(@"
+            -- Migration 1: Add Counters Table
+        ");
+
+        Connection.Execute("""
+                           CREATE TABLE IF NOT EXISTS counters (               
+                               Key TEXT NOT NULL,               -- Counter Name                    
+                               Count INTEGER NOT NULL           -- int64                    
+                           );
+
+                           CREATE INDEX IF NOT EXISTS key_index ON counters(Key);
+
+                           INSERT INTO counters (Key, Count) VALUES ('Loot', 0);
+
+                           CREATE TRIGGER increase_loot_counter 
+                              AFTER INSERT ON loot
+                           BEGIN
+                              UPDATE counters
+                                SET count = count + 1
+                              WHERE Key = 'Loot';
+                           END;
+                           """);
+
+        SetMigrationVersion(1);
     }
 
     private void SetMigrationVersion(int version)
@@ -416,6 +445,16 @@ public class Database : IDisposable
         cmd.CommandTimeout = 120;
 
         return new FCReader(cmd.ExecuteReader());
+    }
+
+    internal long GetCounter(string counter)
+    {
+        var cmd = Connection.CreateCommand();
+
+        cmd.CommandText = $"SELECT (count) FROM counters WHERE Key = '{counter}'";
+        cmd.CommandTimeout = 120;
+
+        return (long) (cmd.ExecuteScalar() ?? -1);
     }
 }
 
