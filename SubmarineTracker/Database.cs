@@ -456,6 +456,24 @@ public class Database : IDisposable
 
         return (long) (cmd.ExecuteScalar() ?? -1);
     }
+
+    internal bool DeleteFreeCompany(ulong fcId)
+    {
+        var cmd = Connection.CreateCommand();
+        cmd.CommandText = """
+                          DELETE FROM loot
+                          WHERE FreeCompanyId = $FreeCompanyId;
+
+                          DELETE FROM submarine
+                          WHERE FreeCompanyId = $FreeCompanyId;
+
+                          DELETE FROM freecompany
+                          WHERE FreeCompanyId = $FreeCompanyId;
+                          """;
+
+        cmd.Parameters.AddWithValue("$FreeCompanyId", MessagePackSerializer.Serialize(fcId));
+        return cmd.ExecuteNonQuery() > 0;
+    }
 }
 
 internal class LootReader(DbDataReader reader) : IEnumerable<Loot>

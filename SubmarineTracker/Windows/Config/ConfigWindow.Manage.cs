@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface;
+using Dalamud.Interface.ImGuiNotification;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Config;
@@ -11,10 +12,6 @@ public partial class ConfigWindow
         {
             if (ImGui.BeginChild("FCContent", new Vector2(0, 0)))
             {
-                ImGuiHelpers.ScaledDummy(5.0f);
-                Helper.CenterText("Deletion is currently disabled", color: ImGuiColors.DalamudOrange);
-                ImGuiHelpers.ScaledDummy(5.0f);
-
                 if (ImGui.BeginTable("##DeleteSavesTable", 4, ImGuiTableFlags.BordersH))
                 {
                     ImGui.TableSetupColumn(Loc.Localize("Terms - Saved FCs", "Saved FCs"));
@@ -66,8 +63,16 @@ public partial class ConfigWindow
                         Plugin.Configuration.FCIdOrder.Remove(deletion);
                         Plugin.Configuration.Save();
 
-                        // TODO: FIX
-                        // Plugin.ConfigurationBase.DeleteCharacter(deletion);
+                        var ok = Plugin.DatabaseCache.Database.DeleteFreeCompany(deletion);
+                        if (!ok)
+                        {
+                            Plugin.Notification.AddNotification(new Notification
+                            {
+                                Content = Loc.Localize("Error - Deletion Failed", "Unable to delete this entry, report this error to the author"),
+                                Type = NotificationType.Error,
+                                Minimized = false,
+                            });
+                        }
                     }
 
                     ImGui.EndTable();
