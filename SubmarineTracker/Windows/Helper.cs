@@ -216,4 +216,18 @@ public static class Helper
         ImGui.Separator();
         ImGuiHelpers.ScaledDummy(5.0f);
     }
+
+    public static void ClippedCombo<T>(string label, ref int selected, T[] items, Func<T, string> toString)
+    {
+        var height = ImGui.GetTextLineHeightWithSpacing();
+
+        using var combo = ImRaii.Combo(label, toString(items[selected]));
+        if (!combo.Success)
+            return;
+
+        using var clipper = new ListClipper(items.Length, itemHeight: height);
+        foreach (var idx in clipper.Rows)
+            if (ImGui.Selectable(toString(items[idx]), idx == selected))
+                selected = idx;
+    }
 }

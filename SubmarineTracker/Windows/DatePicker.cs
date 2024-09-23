@@ -45,7 +45,7 @@ public static class DateWidget
         return needsRefresh;
     }
 
-    public static void DatePickerWithInput(string label, int id, ref string dateString, ref DateTime date, string format, bool sameLine = false, bool closeWhenMouseLeavesIt = true)
+    public static bool DatePickerWithInput(string label, int id, ref string dateString, ref DateTime date, string format, bool sameLine = false, bool closeWhenMouseLeavesIt = true)
     {
         if (sameLine)
             ImGui.SameLine();
@@ -61,7 +61,12 @@ public static class DateWidget
 
         Helper.Button(id.ToString(), FontAwesomeIcon.Calendar, false);
         if (DatePicker(label, ref date, closeWhenMouseLeavesIt))
+        {
             dateString = date.ToString(format);
+            return true;
+        }
+
+        return false;
     }
 
     private static bool DatePicker(string label, ref DateTime dateOut, bool closeWhenMouseLeavesIt, string leftArrow = "", string rightArrow = "")

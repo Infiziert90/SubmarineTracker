@@ -1,16 +1,16 @@
 using System.IO;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using SubmarineTracker.Data;
-using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
     private bool ExportAll = true;
-    private Dictionary<ulong, bool> ExportSpecific = new();
+    private readonly Dictionary<ulong, bool> ExportSpecific = [];
 
     private static readonly DateTime ExportMinimalDate = new(2023, 6, 11);
     private DateTime ExportMinDate = ExportMinimalDate;
@@ -21,65 +21,68 @@ public partial class LootWindow
 
     private void ExportTab()
     {
-        if (ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Export", "Export")}##Export"))
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Loot Tab - Export", "Export")}##Export");
+        if (!tabItem.Success)
+            return;
+
+        var existingSubs = Plugin.DatabaseCache.GetSubmarines().Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
+        if (existingSubs.Length == 0)
         {
-            var existingSubs = Plugin.DatabaseCache.GetSubmarines().Select(s => $"{s.Name} ({s.Build.FullIdentifier()})").ToArray();
-            if (existingSubs.Length == 0)
+            Helper.NoData();
+            return;
+        }
+
+        ImGuiHelpers.ScaledDummy(10.0f);
+        var wip = Loc.Localize("Terms - WiP", "- Work in Progress -");
+        var width = ImGui.GetWindowWidth();
+        var textWidth = ImGui.CalcTextSize(wip).X;
+
+        ImGui.SetCursorPosX((width - textWidth) * 0.5f);
+        ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
+        ImGuiHelpers.ScaledDummy(10.0f);
+        ImGui.Separator();
+        ImGuiHelpers.ScaledDummy(5.0f);
+
+        var changed = false;
+        ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Export All", "Export All FCs"), ref ExportAll);
+        if (!ExportAll)
+        {
+            ImGuiHelpers.ScaledIndent(10.0f);
+            foreach (var (key, fc) in Plugin.DatabaseCache.GetFreeCompanies())
             {
-                Helper.NoData();
-                ImGui.EndTabItem();
-                return;
+                ExportSpecific.TryGetValue(key, out var check);
+                if (ImGui.Checkbox($"{Plugin.NameConverter.GetName(fc)}##{key}", ref check))
+                    ExportSpecific[key] = check;
+
             }
+            ImGuiHelpers.ScaledIndent(-10.0f);
+        }
+        changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Plugin.Configuration.ExportExcludeDate);
+        changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Plugin.Configuration.ExportExcludeHash);
 
-            ImGuiHelpers.ScaledDummy(10.0f);
-            var wip = Loc.Localize("Terms - WiP", "- Work in Progress -");
-            var width = ImGui.GetWindowWidth();
-            var textWidth = ImGui.CalcTextSize(wip).X;
+        ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGui.SetCursorPosX((width - textWidth) * 0.5f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
-            ImGuiHelpers.ScaledDummy(10.0f);
-            ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(5.0f);
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
+        DateWidget.DatePickerWithInput("FromDate", 1, ref ExportMinString, ref ExportMinDate, Format);
+        DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format, true);
+        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
+            ExportReset();
 
-            var changed = false;
-            ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Export All", "Export All FCs"), ref ExportAll);
-            if (!ExportAll)
-            {
-                ImGuiHelpers.ScaledIndent(10.0f);
-                foreach (var (key, fc) in Plugin.DatabaseCache.GetFreeCompanies())
-                {
-                    ExportSpecific.TryGetValue(key, out var check);
-                    if (ImGui.Checkbox($"{Plugin.NameConverter.GetName(fc)}##{key}", ref check))
-                        ExportSpecific[key] = check;
+        if (DateWidget.Validate(ExportMinimalDate, ref ExportMinDate, ref ExportMaxDate))
+            ExportRefresh();
 
-                }
-                ImGuiHelpers.ScaledIndent(-10.0f);
-            }
-            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Date", "Exclude Date"), ref Plugin.Configuration.ExportExcludeDate);
-            changed |= ImGui.Checkbox(Loc.Localize("Loot Tab Checkbox - Exclude Hash", "Exclude Hash"), ref Plugin.Configuration.ExportExcludeHash);
+        ImGuiHelpers.ScaledDummy(5.0f);
 
-            ImGuiHelpers.ScaledDummy(5.0f);
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Output Folder", "Output Folder:"));
+        changed |= ImGui.InputText("##OutputPathInput", ref Plugin.Configuration.ExportOutputPath, 255);
+        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
+            ImGui.OpenPopup("OutputPathDialog");
 
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
-            DateWidget.DatePickerWithInput("FromDate", 1, ref ExportMinString, ref ExportMinDate, Format);
-            DateWidget.DatePickerWithInput("ToDate", 2, ref ExportMaxString, ref ExportMaxDate, Format, true);
-            ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
-                ExportReset();
-
-            if (DateWidget.Validate(ExportMinimalDate, ref ExportMinDate, ref ExportMaxDate))
-                ExportRefresh();
-
-            ImGuiHelpers.ScaledDummy(5.0f);
-
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Output Folder", "Output Folder:"));
-            changed |= ImGui.InputText("##OutputPathInput", ref Plugin.Configuration.ExportOutputPath, 255);
-            ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
-                ImGui.OpenPopup("OutputPathDialog");
-
-            if (ImGui.BeginPopup("OutputPathDialog"))
+        using (var popup = ImRaii.Popup("OutputPathDialog"))
+        {
+            if (popup.Success)
             {
                 Plugin.FileDialogManager.OpenFolderDialog(Loc.Localize("Loot Tab Title - Pick Folder", "Pick a folder"), (b, s) =>
                 {
@@ -89,31 +92,26 @@ public partial class LootWindow
                         Plugin.Configuration.Save();
                     }
                 }, null, true);
-                ImGui.EndPopup();
             }
-
-            ImGuiHelpers.ScaledDummy(5.0f);
-
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Export", "Export:"));
-            if (ImGui.Button(Loc.Localize("Loot Tab Button - File", "File")))
-            {
-                var fcLootList = BuildExportList();
-                if (CheckList(ref fcLootList))
-                    ExportToFile(fcLootList);
-            }
-
-            ImGui.SameLine();
-
-            if (ImGui.Button(Loc.Localize("Loot Tab Button - Clipboard", "Clipboard")))
-            {
-                ExportToClipboard();
-            }
-
-            if (changed)
-                Plugin.Configuration.Save();
-
-            ImGui.EndTabItem();
         }
+
+        ImGuiHelpers.ScaledDummy(5.0f);
+
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Export", "Export:"));
+        if (ImGui.Button(Loc.Localize("Loot Tab Button - File", "File")))
+        {
+            var fcLootList = BuildExportList();
+            if (CheckList(ref fcLootList))
+                ExportToFile(fcLootList);
+        }
+
+        ImGui.SameLine();
+
+        if (ImGui.Button(Loc.Localize("Loot Tab Button - Clipboard", "Clipboard")))
+            ExportToClipboard();
+
+        if (changed)
+            Plugin.Configuration.Save();
     }
 
     private List<SubmarineTracker.Loot> BuildExportList()

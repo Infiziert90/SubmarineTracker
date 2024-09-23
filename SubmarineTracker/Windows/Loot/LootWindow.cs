@@ -1,20 +1,15 @@
 using System.Globalization;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 
 namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow : Window, IDisposable
 {
-    private Plugin Plugin;
-
-    private static ExcelSheet<Item> ItemSheet = null!;
-    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
-
-    private static Vector2 IconSize = new(28, 28);
+    private readonly Plugin Plugin;
 
     private string Format = string.Empty;
+    private static readonly Vector2 IconSize = new(28, 28);
 
     public LootWindow(Plugin plugin) : base("Custom Loot Overview##SubmarineTracker")
     {
@@ -25,10 +20,6 @@ public partial class LootWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-
-        ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
-
         InitializeAnalyse();
     }
 
@@ -39,28 +30,31 @@ public partial class LootWindow : Window, IDisposable
         Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
+        using (var contentChild = ImRaii.Child("SubContent", new Vector2(0, -buttonHeight)))
         {
-            if (ImGui.BeginTabBar("##LootTabBar"))
+            if (contentChild.Success)
             {
-                CustomLootTab();
+                using var tabBar = ImRaii.TabBar("##LootTabBar");
+                if (tabBar.Success)
+                {
+                    CustomLootTab();
 
-                VoyageTab();
+                    VoyageTab();
 
-                AnalyseTab();
+                    AnalyseTab();
 
-                ExportTab();
-
-                ImGui.EndTabBar();
+                    ExportTab();
+                }
             }
         }
-        ImGui.EndChild();
 
         ImGui.Separator();
         ImGuiHelpers.ScaledDummy(1.0f);
 
-        if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-            Helper.MainMenuIcon();
-        ImGui.EndChild();
+        using var bottomChild = ImRaii.Child("BottomBar", new Vector2(0, 0), false, 0);
+        if (!bottomChild.Success)
+            return;
+
+        Helper.MainMenuIcon();
     }
 }

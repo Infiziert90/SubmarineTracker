@@ -60,7 +60,7 @@ public class DatabaseCache : IDisposable
         CheckLoot();
 
         AllLoot.TryGetValue(id, out var dict);
-        return dict ?? new();
+        return dict ?? [];
     }
 
     public Dictionary<DateTime, Dictionary<Item, int>> GetFCTimeLoot(ulong id)
