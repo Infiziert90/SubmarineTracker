@@ -234,7 +234,7 @@ public static class DateWidget
             }
 
             if (dw != 6)
-                ImGui.SameLine(ImGui.GetWindowWidth() - ((6 - dw) * (ImGui.GetWindowWidth() / 7.0f)));
+                ImGui.SameLine(ImGui.GetWindowWidth() - (6 - dw) * (ImGui.GetWindowWidth() / 7.0f));
         }
 
         style.WindowRounding = oldWindowRounding;

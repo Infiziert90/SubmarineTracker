@@ -154,10 +154,11 @@ public partial class LootWindow
                 ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
                 ImGui.SameLine();
 
-                if (DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format))
-                    LastRefreshTime = 0;
+                var changed = false;
+                changed |= DateWidget.DatePickerWithInput("FromDate", 1, ref CustomMinString, ref CustomMinDate, Format);
+                changed |= DateWidget.DatePickerWithInput("ToDate", 2, ref CustomMaxString, ref CustomMaxDate, Format, true);
 
-                if (DateWidget.DatePickerWithInput("ToDate", 2, ref CustomMaxString, ref CustomMaxDate, Format, true))
+                if (changed)
                     LastRefreshTime = 0;
 
                 ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
