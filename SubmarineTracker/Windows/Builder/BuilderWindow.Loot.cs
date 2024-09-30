@@ -10,9 +10,9 @@ public partial class BuilderWindow
     private uint CurrentSearchSelection;
     public ExcelSheetSelector.ExcelSheetPopupOptions<Item>? SearchPopupOptions;
 
-    private bool SearchTab()
+    private bool LootTab()
     {
-        var open = ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Search", "Search")}##Search");
+        var open = ImGui.BeginTabItem($"{Loc.Localize("Loot Tab - Search", "Loot")}##Loot");
         if (open)
         {
             ImGuiHelpers.ScaledDummy(5.0f);

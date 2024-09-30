@@ -63,7 +63,7 @@ public partial class MainWindow : Window, IDisposable
                         Plugin.EnsureFCOrderSafety();
                         if (!(Plugin.Configuration.ShowAll && CurrentSelection == 1))
                             if (!Plugin.DatabaseCache.GetFreeCompanies().ContainsKey(CurrentSelection))
-                                CurrentSelection = Plugin.Configuration.FCIdOrder.First();
+                                CurrentSelection = Plugin.GetFCOrderWithoutHidden().First();
 
                         var current = CurrentSelection;
                         if (Plugin.Configuration.ShowAll)
@@ -73,7 +73,7 @@ public partial class MainWindow : Window, IDisposable
                                 CurrentSelection = 1;
                         }
 
-                        foreach (var key in Plugin.Configuration.FCIdOrder)
+                        foreach (var key in Plugin.GetFCOrderWithoutHidden())
                         {
                             var fc = Plugin.DatabaseCache.GetFreeCompanies()[key];
                             var fcSubs = Plugin.DatabaseCache.GetSubmarines(fc.FreeCompanyId);

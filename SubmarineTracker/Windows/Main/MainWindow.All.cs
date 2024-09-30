@@ -15,7 +15,7 @@ public partial class MainWindow
         if (!allTable.Success)
             return;
 
-        foreach (var id in Plugin.Configuration.FCIdOrder)
+        foreach (var id in Plugin.GetFCOrderWithoutHidden())
         {
             ImGui.TableNextColumn();
             var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];

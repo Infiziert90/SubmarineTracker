@@ -1,6 +1,5 @@
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -9,8 +8,6 @@ namespace SubmarineTracker.Windows.Overlays;
 public class NextOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
-
-    public static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> UnlockPath;
     private (uint Sector, Unlocks.UnlockedFrom UnlockedFrom)? NextSector;
@@ -25,8 +22,6 @@ public class NextOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != 9876).Key);
         UnlockPath.Reverse();
@@ -94,8 +89,8 @@ public class NextOverlay : Window, IDisposable
 
         var nextSector = NextSector.Value;
 
-        var nextUnlock = ExplorationSheet.GetRow(nextSector.Sector)!;
-        var unlockedFrom = ExplorationSheet.GetRow(nextSector.UnlockedFrom.Sector)!;
+        var nextUnlock = Sheets.ExplorationSheet.GetRow(nextSector.Sector)!;
+        var unlockedFrom = Sheets.ExplorationSheet.GetRow(nextSector.UnlockedFrom.Sector)!;
         if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())

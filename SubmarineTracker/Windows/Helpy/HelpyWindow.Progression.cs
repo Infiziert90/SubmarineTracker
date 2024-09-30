@@ -1,9 +1,11 @@
+using Dalamud.Interface.Utility.Raii;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow
 {
+    private FreeCompany LastFC;
     private List<(uint, Unlocks.UnlockedFrom)> UnlockPath = null!;
 
     private void InitProgression()
@@ -14,113 +16,58 @@ public partial class HelpyWindow
 
     private void ProgressionTab(FreeCompany fc)
     {
-        if (ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Progression", "Progression")}##Progression"))
-        {
-            if (ImGui.BeginTabBar("##progressionTabBar"))
-            {
-                AllSlotsTab(fc);
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Helpy Tab - Progression", "Progression")}##Progression");
+        if (!tabItem.Success)
+            return;
 
-                LastSectorTab(fc);
+        using var tabBar = ImRaii.TabBar("##ProgressionTabBar");
+        if (!tabBar.Success)
+            return;
 
-                InfoTab();
+        AllSlotsTab(fc);
 
-                ImGui.EndTabBar();
-            }
+        LastSectorTab(fc);
 
-            ImGui.EndTabItem();
-        }
+        InfoTab();
     }
 
     private void AllSlotsTab(FreeCompany fc)
     {
-        if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Submarine Path", "4 Submarines")}##SubmarinesPath"))
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Progression Tab - Submarine Path", "4 Submarines")}##SubmarinesPath");
+        if (!tabItem.Success)
             return;
 
-        var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
         var unlockPath = Unlocks.FindUnlockPath(20);
         unlockPath.Reverse();
 
+        LastFC = fc;
         var mod = new Box.Modifier();
         mod.Padding(10 * ImGuiHelpers.GlobalScale);
-        var bColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey));
-        mod.BorderColor(bColor);
+        mod.BorderColor(ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)));
 
         ImGuiHelpers.ScaledDummy(10.0f);
-        BoxList.RenderList(unlockPath, mod, 2f, tuple =>
-        {
-            var (point, unlockedFrom) = tuple;
-            var explorationPoint = ExplorationSheet.GetRow(point)!;
-            var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
-
-            var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
-            var dest = Utils.UpperCaseStr(explorationPoint.Destination);
-            var rank = explorationPoint.RankReq;
-            var special = unlockedFrom.Sub ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>" : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
-
-            fc.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
-            fc.ExploredSectors.TryGetValue(point, out var hasExplored);
-            var color = hasUnlocked
-                            ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
-                            : ImGuiColors.DalamudRed;
-
-            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight));
-            ImGui.PushTextWrapPos();
-            ImGui.TextColored(color, $"{letter}. {dest}");
-            ImGui.PopTextWrapPos();
-            ImGui.TextColored(ImGuiColors.TankBlue, special);
-            ImGui.EndChild();
-        });
-
-        ImGui.EndTabItem();
+        BoxList.RenderList(unlockPath, mod, 2f, PathBoxRenderer);
     }
 
     private void LastSectorTab(FreeCompany fc)
     {
-        if (!ImGui.BeginTabItem($"{Loc.Localize("Progression Tab - Last Sector", "Last Sector")}##LastSector"))
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Progression Tab - Last Sector", "Last Sector")}##LastSector");
+        if (!tabItem.Success)
             return;
 
-        var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
-
+        LastFC = fc;
         var mod = new Box.Modifier();
         mod.Padding(10 * ImGuiHelpers.GlobalScale);
-        var bColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey));
-        mod.BorderColor(bColor);
+        mod.BorderColor(ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)));
 
         ImGuiHelpers.ScaledDummy(10.0f);
-        BoxList.RenderList(UnlockPath, mod, 2f, tuple =>
-        {
-            var (point, unlockedFrom) = tuple;
-            var explorationPoint = ExplorationSheet.GetRow(point)!;
-            var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
-
-            var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
-            var dest = Utils.UpperCaseStr(explorationPoint.Destination);
-            var rank = explorationPoint.RankReq;
-            var special = unlockedFrom.Sub
-                              ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>"
-                                : unlockedFrom.Map ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Map", "Unlocks map")}>"
-                                  : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
-
-            fc.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
-            fc.ExploredSectors.TryGetValue(point, out var hasExplored);
-            var color = hasUnlocked
-                            ? hasExplored ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
-                            : ImGuiColors.DalamudRed;
-
-            ImGui.BeginChild($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight));
-            ImGui.PushTextWrapPos();
-            ImGui.TextColored(color, $"{letter}. {dest}");
-            ImGui.PopTextWrapPos();
-            ImGui.TextColored(ImGuiColors.TankBlue, special);
-            ImGui.EndChild();
-        });
-
-        ImGui.EndTabItem();
+        BoxList.RenderList(UnlockPath, mod, 2f, PathBoxRenderer);
     }
 
     private static void InfoTab()
     {
-        if (!ImGui.BeginTabItem($"{Loc.Localize("Helpy Tab - Info", "Info")}##Info"))
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Helpy Tab - Info", "Info")}##Info");
+        if (!tabItem.Success)
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
@@ -146,7 +93,36 @@ public partial class HelpyWindow
         ImGui.TextColored(ImGuiColors.DalamudRed,Loc.Localize("Colors - Red", "Red"));
         ImGui.SameLine(spacing);
         ImGui.TextUnformatted(Loc.Localize("Helpy Tab Info - Red Text", "Not unlocked"));
+    }
 
-        ImGui.EndTabItem();
+    private void PathBoxRenderer((uint, Unlocks.UnlockedFrom) tuple)
+    {
+        var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
+
+        var (point, unlockedFrom) = tuple;
+        var explorationPoint = ExplorationSheet.GetRow(point)!;
+        var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
+
+        var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);
+        var dest = Utils.UpperCaseStr(explorationPoint.Destination);
+        var rank = explorationPoint.RankReq;
+        var special = unlockedFrom.Sub
+                          ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Slot", "Unlocks slot")}>"
+                          : unlockedFrom.Map
+                              ? $"{Loc.Localize("Terms - Rank", "Rank")} {rank} <{Loc.Localize("Progression Tab Tooltip - Unlocks Map", "Unlocks map")}>"
+                              : $"{Loc.Localize("Terms - Rank", "Rank")} {rank}";
+
+        LastFC.UnlockedSectors.TryGetValue(point, out var hasUnlocked);
+        LastFC.ExploredSectors.TryGetValue(point, out var hasExplored);
+        var color = hasUnlocked
+                        ? hasExplored
+                              ? ImGuiColors.HealerGreen : ImGuiColors.DalamudViolet
+                        : ImGuiColors.DalamudRed;
+
+        using var child = ImRaii.Child($"##{point}", new Vector2(150.0f * ImGuiHelpers.GlobalScale, textHeight));
+        ImGui.PushTextWrapPos();
+        ImGui.TextColored(color, $"{letter}. {dest}");
+        ImGui.TextColored(ImGuiColors.TankBlue, special);
+        ImGui.PopTextWrapPos();
     }
 }

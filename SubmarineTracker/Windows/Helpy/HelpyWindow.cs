@@ -1,6 +1,6 @@
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Lumina.Excel;
-using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;
 
@@ -36,25 +36,28 @@ public partial class HelpyWindow : Window, IDisposable
         }
 
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("HelpyContent", new Vector2(0, -buttonHeight)))
+        using (var contentChild = ImRaii.Child("HelpyContent", new Vector2(0, -buttonHeight)))
         {
-            if (ImGui.BeginTabBar("##helperTabBar"))
+            if (contentChild.Success)
             {
-                ProgressionTab(fcSub);
+                using var tabBar = ImRaii.TabBar("##HelperTabBar");
+                if (tabBar.Success)
+                {
+                    ProgressionTab(fcSub);
 
-                StorageTab();
-
-                ImGui.EndTabBar();
+                    StorageTab();
+                }
             }
         }
-        ImGui.EndChild();
 
         ImGui.Separator();
         ImGuiHelpers.ScaledDummy(1.0f);
 
-        if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
-            Helper.MainMenuIcon();
-        ImGui.EndChild();
+        using var bottomChild = ImRaii.Child("BottomBar", new Vector2(0, 0), false, 0);
+        if (!bottomChild.Success)
+            return;
+
+        Helper.MainMenuIcon();
     }
 }
 

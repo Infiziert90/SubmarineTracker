@@ -1,4 +1,5 @@
 using System.IO;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -115,20 +116,23 @@ public class ReturnOverlay : Window, IDisposable
         var scrollbarSpacing = ImGui.GetScrollMaxY() > 0.0f ? ImGui.GetStyle().ScrollbarSize : 0;
         var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
-        ImGui.PushStyleColor(ImGuiCol.Header, VoyageStats is { Done: > 0, OnRoute: > 0 }
-                                                  ? Plugin.Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
-                                                      ? Plugin.Configuration.OverlayAllDone : Plugin.Configuration.OverlayNoneDone);
-        var mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
-        ImGui.PopStyleColor();
+
+        var color = VoyageStats is { Done: > 0, OnRoute: > 0 }
+                        ? Plugin.Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
+                            ? Plugin.Configuration.OverlayAllDone : Plugin.Configuration.OverlayNoneDone;
+        bool mainHeader;
+        using (ImRaii.PushColor(ImGuiCol.Header, color))
+        {
+            mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
+        }
 
         SetHeaderText(timerSub, windowWidth, y);
 
         if (!mainHeader)
             return;
 
-
         Plugin.EnsureFCOrderSafety();
-        var fcList = Plugin.Configuration.FCIdOrder.Select(id => (Plugin.DatabaseCache.GetFreeCompanies()[id], Plugin.DatabaseCache.GetSubmarines(id))).Where(tuple => tuple.Item2.Length != 0);
+        var fcList = Plugin.GetFCOrderWithoutHidden().Select(id => (Plugin.DatabaseCache.GetFreeCompanies()[id], Plugin.DatabaseCache.GetSubmarines(id))).Where(tuple => tuple.Item2.Length != 0);
         if (Plugin.Configuration.OverlaySortReverse)
             fcList = fcList.OrderByDescending(tuple => tuple.Item2.Min(s => s.Return));
         else if (Plugin.Configuration.OverlaySort)
@@ -141,13 +145,12 @@ public class ReturnOverlay : Window, IDisposable
         var sortedFcList = fcList.ToArray();
         if (sortedFcList.Length == 0)
         {
-            ImGuiHelpers.ScaledIndent(10.0f);
+            using var indent = ImRaii.PushIndent(10.0f);
             ImGui.TextColored(ImGuiColors.DalamudOrange,Loc.Localize("Return Overlay Info - No Return", "No sub has returned."));
-            ImGuiHelpers.ScaledIndent(-10.0f);
             return;
         }
 
-        ImGuiHelpers.ScaledIndent(10.0f);
+        using var outerIndent = ImRaii.PushIndent(10.0f);
         foreach (var (fc, subs) in sortedFcList)
         {
             y = ImGui.GetCursorPosY();
@@ -157,16 +160,18 @@ public class ReturnOverlay : Window, IDisposable
             if (longestSub == null)
                 continue;
 
-            ImGui.PushStyleColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone);
-            var header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.FreeCompanyId}");
-            ImGui.PopStyleColor();
+            bool header;
+            using (ImRaii.PushColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone))
+            {
+                header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.FreeCompanyId}");
+            }
 
             SetHeaderText(longestSub, windowWidth, y);
 
             if (!header)
                 continue;
 
-            ImGuiHelpers.ScaledIndent(10.0f);
+            using var innerIndent = ImRaii.PushIndent(10.0f);
             foreach (var sub in subs)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
@@ -183,9 +188,7 @@ public class ReturnOverlay : Window, IDisposable
 
             }
             ImGui.Columns(1);
-            ImGuiHelpers.ScaledIndent(-10.0f);
         }
-        ImGuiHelpers.ScaledIndent(-10.0f);
     }
 
     public override void OnOpen()
@@ -219,7 +222,7 @@ public class ReturnOverlay : Window, IDisposable
         ImGui.PopStyleColor();
     }
 
-    public void SetHeaderText(Submarine sub, float windowWidth, float lastY)
+    public static void SetHeaderText(Submarine sub, float windowWidth, float lastY)
     {
         var cursorPos = ImGui.GetCursorPos();
         var longestText = Helper.GenerateVoyageText(sub, !Plugin.Configuration.OverlayShowDate);

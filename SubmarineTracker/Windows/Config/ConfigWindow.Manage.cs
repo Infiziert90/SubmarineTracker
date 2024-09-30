@@ -12,58 +12,70 @@ public partial class ConfigWindow
         {
             if (ImGui.BeginChild("FCContent", new Vector2(0, 0)))
             {
-                if (ImGui.BeginTable("##DeleteSavesTable", 4, ImGuiTableFlags.BordersH))
+                if (ImGui.BeginTable("##DeleteSavesTable", 5, ImGuiTableFlags.BordersH))
                 {
                     ImGui.TableSetupColumn(Loc.Localize("Terms - Saved FCs", "Saved FCs"));
-                    ImGui.TableSetupColumn("##OrderUp", 0, 0.05f);
-                    ImGui.TableSetupColumn("##OrderDown", 0, 0.05f);
-                    ImGui.TableSetupColumn("##Del", 0, 0.07f);
+                    ImGui.TableSetupColumn("##OrderUp", 0, 0.07f);
+                    ImGui.TableSetupColumn("##OrderDown", 0, 0.07f);
+                    ImGui.TableSetupColumn("##Hidden", 0, 0.07f);
+                    ImGui.TableSetupColumn("##Del", 0, 0.09f);
 
                     ImGui.TableHeadersRow();
 
                     Plugin.EnsureFCOrderSafety();
-                    ulong deletion = 0;
-                    (int orgIdx, int newIdx) changedOrder = (-1, -1);
-                    foreach (var (id, idx) in Plugin.Configuration.FCIdOrder.Select((val, i) => (val, i)))
+                    (int DelIdx, ulong FCId) deletion = (-1, 0);
+                    (int OrgIdx, int NewIdx) changedOrder = (-1, -1);
+                    (int Idx, (ulong, bool) Status) changedStatus = (-1, (0, false));
+
+                    var firstFC = Plugin.Configuration.ManagedFCs.First();
+                    var lastFC = Plugin.Configuration.ManagedFCs.Last();
+                    foreach (var ((id, hidden), idx) in Plugin.Configuration.ManagedFCs.Select((val, i) => (val, i)))
                     {
                         var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted(Plugin.NameConverter.GetCombinedName(fc));
 
-                        var first = Plugin.Configuration.FCIdOrder.First() == id;
-                        var last = Plugin.Configuration.FCIdOrder.Last() == id;
-
                         ImGui.TableNextColumn();
-                        if (Helper.Button($"##{id}Up", FontAwesomeIcon.ArrowUp, first))
+                        if (Helper.Button($"##{id}Up", FontAwesomeIcon.ArrowUp, firstFC.Id == id))
                             changedOrder = (idx, idx - 1);
 
                         ImGui.TableNextColumn();
-                        if (Helper.Button($"##{id}Down", FontAwesomeIcon.ArrowDown, last))
+                        if (Helper.Button($"##{id}Down", FontAwesomeIcon.ArrowDown, lastFC.Id == id))
                             changedOrder = (idx, idx + 1);
 
                         ImGui.TableNextColumn();
+                        if (Helper.Button($"##{id}Hide", hidden ? FontAwesomeIcon.EyeSlash : FontAwesomeIcon.Eye))
+                            changedStatus = (idx, (id, !hidden));
+
+                        ImGui.TableNextColumn();
                         if (Helper.Button($"##{id}Del", FontAwesomeIcon.Trash, !ImGui.GetIO().KeyCtrl))
-                            deletion = id;
+                            deletion = (idx, id);
 
                         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
                             ImGui.SetTooltip(Loc.Localize("Config Tab Tooltip - Saved FCs Deletion", "Deleting an FC entry will additionally remove all of its loot history.\nHold Control to delete"));
 
-                        if (!last)
+                        if (lastFC.Id != id)
                             ImGui.TableNextRow();
                     }
 
-                    if (changedOrder.orgIdx != -1)
+                    if (changedOrder.OrgIdx != -1)
                     {
-                        Plugin.Configuration.FCIdOrder.Swap(changedOrder.orgIdx, changedOrder.newIdx);
+                        Plugin.Configuration.ManagedFCs.Swap(changedOrder.OrgIdx, changedOrder.NewIdx);
                         Plugin.Configuration.Save();
                     }
 
-                    if (deletion != 0)
+                    if (changedStatus.Idx != -1)
                     {
-                        Plugin.Configuration.FCIdOrder.Remove(deletion);
+                        Plugin.Configuration.ManagedFCs[changedStatus.Idx] = changedStatus.Status;
+                        Plugin.Configuration.Save();
+                    }
+
+                    if (deletion.DelIdx != -1)
+                    {
+                        Plugin.Configuration.ManagedFCs.RemoveAt(deletion.DelIdx);
                         Plugin.Configuration.Save();
 
-                        var ok = Plugin.DatabaseCache.Database.DeleteFreeCompany(deletion);
+                        var ok = Plugin.DatabaseCache.Database.DeleteFreeCompany(deletion.FCId);
                         if (!ok)
                         {
                             Plugin.Notification.AddNotification(new Notification

@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -20,9 +20,7 @@ public class RouteOverlay : Window, IDisposable
     private DateTime ComputeStart = DateTime.Now;
 
     public bool Calculate;
-    public readonly HashSet<SubExplPretty> MustInclude = new();
-
-    public static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
+    public readonly HashSet<SubExplPretty> MustInclude = [];
 
     public RouteOverlay(Plugin plugin) : base("Route Overlay##SubmarineTracker")
     {
@@ -34,8 +32,6 @@ public class RouteOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
     }
 
     public void Dispose() { }
@@ -126,28 +122,30 @@ public class RouteOverlay : Window, IDisposable
             });
         }
 
-        var startPoint = ExplorationSheet.First(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1).RowId;
+        var startPoint = Sheets.ExplorationSheet.First(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1).RowId;
+
         var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-        if (ImGui.BeginListBox("##BestPoints", new Vector2(-1, height)))
+        using (var listBox = ImRaii.ListBox("##BestPoints", new Vector2(-1, height)))
         {
-            if (ComputingPath)
+            if (listBox.Success)
             {
-                ImGui.Text($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
-            }
-            else if (BestRoute.Path.Length == 0)
-            {
-                ImGui.Text(Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
-            }
+                if (ComputingPath)
+                {
+                    ImGui.TextUnformatted($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                }
+                else if (BestRoute.Path.Length == 0)
+                {
+                    ImGui.TextUnformatted(Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
+                }
 
-            if (BestRoute.Path.Length != 0)
-            {
-                foreach (var location in BestRoute.PathPretty)
-                        ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
+                if (BestRoute.Path.Length != 0)
+                {
+                    foreach (var location in BestRoute.PathPretty)
+                        ImGui.TextUnformatted($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
 
-                Plugin.BuilderWindow.CurrentBuild.UpdateOptimized(BestRoute);
+                    Plugin.BuilderWindow.CurrentBuild.UpdateOptimized(BestRoute);
+                }
             }
-
-            ImGui.EndListBox();
         }
 
         var changed = false;
@@ -157,18 +155,19 @@ public class RouteOverlay : Window, IDisposable
         ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
         ImGui.SetNextItemWidth(width);
-        if (ImGui.BeginCombo($"##durationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
+        using (var combo = ImRaii.Combo("##DurationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
         {
-            foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
+            if (combo.Success)
             {
-                if (ImGui.Selectable(durationLimit.GetName()))
+                foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
                 {
-                    Plugin.Configuration.DurationLimit = durationLimit;
-                    changed = true;
+                    if (ImGui.Selectable(durationLimit.GetName()))
+                    {
+                        Plugin.Configuration.DurationLimit = durationLimit;
+                        changed = true;
+                    }
                 }
             }
-
-            ImGui.EndCombo();
         }
 
         if (Plugin.Configuration.DurationLimit != DurationLimit.None)
@@ -200,11 +199,11 @@ public class RouteOverlay : Window, IDisposable
         ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Auto Include", "Auto include the next main sector, if there is one"));
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-        if (MustInclude.Count >= 5) ImGui.BeginDisabled();
-        ImGui.PushFont(UiBuilder.IconFont);
-        ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
-        ImGui.PopFont();
-        if (MustInclude.Count >= 5) ImGui.EndDisabled();
+        using (ImRaii.Disabled(MustInclude.Count >= 5))
+        using (ImRaii.PushFont(UiBuilder.IconFont))
+        {
+            ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
+        }
 
         if (Plugin.BuilderWindow.ExplorationPopupOptions == null)
         {
@@ -212,22 +211,23 @@ public class RouteOverlay : Window, IDisposable
             Plugin.BuilderWindow.ExplorationPopupOptions = new()
             {
                 FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
-                FilteredSheet = ExplorationSheet.Where(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
+                FilteredSheet = Sheets.ExplorationSheet.Where(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
             };
         }
 
         if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
-            changed |= MustInclude.Add(ExplorationSheet.GetRow(row)!);
+            changed |= MustInclude.Add(Sheets.ExplorationSheet.GetRow(row)!);
 
         ImGui.SameLine();
 
-        if (ImGui.BeginListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
+        using (var listBox = ImRaii.ListBox("##MustIncludePoints", new Vector2(-1, listHeight)))
         {
-            foreach (var p in MustInclude.ToArray())
-                if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                    changed |= MustInclude.Remove(p);
-
-            ImGui.EndListBox();
+            if (listBox.Success)
+            {
+                foreach (var p in MustInclude.ToArray())
+                    if (ImGui.Selectable($"{NumToLetter(p.RowId - startPoint)}. {UpperCaseStr(p.Destination)}"))
+                        changed |= MustInclude.Remove(p);
+            }
         }
 
         if (changed)

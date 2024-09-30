@@ -130,16 +130,12 @@ public static class Importer
         [Name("Sector name")] public string Sector { get; set; }
         [Name("Item name")] public string Item { get; set; }
         [Name("Loot tier")] public string Tier { get; set; }
-        [Name("High surv drop chance")] public string T3SurvDrop { get; set; }
-        [Name("High surv tier proc chance")] public string T3SurvTierDrop { get; set; }
-        [Name("High surv drop chance (within tier)")] public string T3SurvDropTier { get; set; }
-        [Name("Overall drop chance (within tier)")] public string OverallDropTier { get; set; }
-        [Name("Poor min")] public string PoorMin { get; set; }
-        [Name("Poor max")] public string PoorMax { get; set; }
-        [Name("Normal min")] public string NormalMin { get; set; }
-        [Name("Normal max")] public string NormalMax { get; set; }
-        [Name("Optimal min")] public string OptimalMin { get; set; }
-        [Name("Optimal max")] public string OptimalMax { get; set; }
+        [Name("Poor min")] public double PoorMin { get; set; }
+        [Name("Poor max")] public double PoorMax { get; set; }
+        [Name("Normal min")] public double NormalMin { get; set; }
+        [Name("Normal max")] public double NormalMax { get; set; }
+        [Name("Optimal min")] public double OptimalMin { get; set; }
+        [Name("Optimal max")] public double OptimalMax { get; set; }
     }
 
     private const string ItemPath = "Items (detailed).csv";
@@ -149,30 +145,20 @@ public static class Importer
     {
         ItemDetailed.Items.Clear();
 
-        var itemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-        var subSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>()!;
-
         using var reader = new FileInfo(Path.Combine(Plugin.PluginDir, "Resources", ItemPath)).OpenText();
         using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true });
         foreach (var itemDetailed in csv.GetRecords<ItemCSV>())
         {
-            itemDetailed.Sector = itemDetailed.Sector switch
-            {
-                "The Lilac Sea 1" => "Lilac Sea 1",
-                "The Lilac Sea 2" => "Lilac Sea 2",
-                _ => itemDetailed.Sector
-            };
-
-            var itemRow = itemSheet.First(i => i.Name == itemDetailed.Item).RowId;
-            var subRow = subSheet.First(s => string.Equals(Utils.UpperCaseStr(s.Destination), itemDetailed.Sector, StringComparison.InvariantCultureIgnoreCase)).RowId;
+            var itemRow = Sheets.ItemSheet.First(i => i.Name == itemDetailed.Item).RowId;
+            var subRow = Sheets.ExplorationSheet.First(s => string.Equals(Utils.UpperCaseStr(s.Destination), itemDetailed.Sector, StringComparison.InvariantCultureIgnoreCase)).RowId;
 
             var detail = new ItemDetail
             {
                 Sector = subRow,
                 Tier = itemDetailed.Tier,
-                Poor = $"{itemDetailed.PoorMin} - {itemDetailed.PoorMax}",
-                Normal = $"{itemDetailed.NormalMin} - {itemDetailed.NormalMax}",
-                Optimal = $"{itemDetailed.OptimalMin} - {itemDetailed.OptimalMax}"
+                Poor = $"{itemDetailed.PoorMin:N0} - {itemDetailed.PoorMax:N0}",
+                Normal = $"{itemDetailed.NormalMin:N0} - {itemDetailed.NormalMax:N0}",
+                Optimal = $"{itemDetailed.OptimalMin:N0} - {itemDetailed.OptimalMax:N0}"
 
             };
 

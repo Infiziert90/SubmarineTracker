@@ -23,7 +23,7 @@ public partial class BuilderWindow
                     var customTerm = Loc.Localize("Terms - Custom", "Custom")!;
 
                     Plugin.EnsureFCOrderSafety();
-                    var existingSubs = Plugin.Configuration.FCIdOrder.SelectMany(id =>
+                    var existingSubs = Plugin.GetFCOrderWithoutHidden().SelectMany(id =>
                     {
                         var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
                         var subs = Plugin.DatabaseCache.GetSubmarines(id);
@@ -46,7 +46,7 @@ public partial class BuilderWindow
                     // Calculate first so rank can be changed afterwards
                     if (existingSubs[CurrentBuild.OriginalSub] != customTerm)
                     {
-                        sub = Plugin.Configuration.FCIdOrder.SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub - 1];
+                        sub = Plugin.GetFCOrderWithoutHidden().SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub - 1];
                         CurrentBuild.UpdateBuild(sub);
                     }
 

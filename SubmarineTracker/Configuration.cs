@@ -9,7 +9,7 @@ namespace SubmarineTracker
     [Serializable]
     public class Configuration : IPluginConfiguration
     {
-        public int Version { get; set; } = 1;
+        public int Version { get; set; } = 2;
 
         public NameOptions NameOption = NameOptions.Default;
 
@@ -85,7 +85,21 @@ namespace SubmarineTracker
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
-        public List<ulong> FCIdOrder = [];
+        [Obsolete("Replaced by ManagedFCs, remove after 30.11.2024", false)] public List<ulong> FCIdOrder = [];
+        public List<(ulong Id, bool Hidden)> ManagedFCs = [];
+
+        public void Migration()
+        {
+            // Current version, return early
+            if (Version == 2)
+                return;
+
+            foreach (var id in FCIdOrder)
+                ManagedFCs.Add((id, false));
+
+            Version = 2;
+            Save();
+        }
 
         public void Save()
         {

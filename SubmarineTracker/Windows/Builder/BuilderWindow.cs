@@ -61,7 +61,7 @@ public partial class BuilderWindow : Window, IDisposable
 
                 shipTabOpen |= LevelingTab();
 
-                shipTabOpen |= SearchTab();
+                shipTabOpen |= LootTab();
 
                 infoTabOpen |= InfoTab();
 

@@ -41,8 +41,9 @@ public partial class LootWindow
         var length = ImGui.CalcTextSize(longText).X + (10.0f * ImGuiHelpers.GlobalScale);
 
         Plugin.EnsureFCOrderSafety();
-        var existingFCs = Plugin.Configuration.FCIdOrder
-                                        .Select(id => $"{Plugin.NameConverter.GetName(Plugin.DatabaseCache.GetFreeCompanies()[id])}##{id}")
+        var existingFCs = Plugin.Configuration.ManagedFCs
+                                        .Select(status => $"{Plugin.NameConverter.GetName(Plugin.DatabaseCache.GetFreeCompanies()[status.Id])}##{status.Id}")
+                                        .Prepend(Loc.Localize("Terms - Not Hidden", "Not Hidden"))
                                         .Prepend(Loc.Localize("Terms - All", "All"))
                                         .ToArray();
 
@@ -210,9 +211,13 @@ public partial class LootWindow
         CachedList = [];
         foreach (var id in Plugin.DatabaseCache.GetFreeCompanies().Keys)
         {
-            if (FcSelection != 0)
-                if (Plugin.Configuration.FCIdOrder[FcSelection - 1] != id)
-                    continue;
+            // 0 and 1 are used separately
+            if (FcSelection > 1 && Plugin.Configuration.ManagedFCs[FcSelection - 2].Id != id)
+                continue;
+
+            // Removes Hidden FCs
+            if (FcSelection == 1 && Plugin.Configuration.ManagedFCs.FirstOrDefault(status => status.Id == id).Hidden)
+                continue;
 
             NumSubs += Plugin.DatabaseCache.GetSubmarines(id).Length;
             NumVoyages += Plugin.DatabaseCache.GetLoot()

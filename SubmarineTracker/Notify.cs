@@ -12,7 +12,7 @@ public class Notify
     private readonly Plugin Plugin;
 
     private bool IsInitialized;
-    private readonly HashSet<string> FinishedNotifications = new();
+    private readonly HashSet<string> FinishedNotifications = [];
 
     public Notify(Plugin plugin)
     {
@@ -27,7 +27,7 @@ public class Notify
             FinishedNotifications.Add($"Dispatch{sub.Register}{sub.Return}");
     }
 
-    public unsafe void NotifyLoop(IFramework _)
+    public void NotifyLoop(IFramework _)
     {
         var subs = Plugin.DatabaseCache.GetSubmarines();
         var fcs = Plugin.DatabaseCache.GetFreeCompanies();
@@ -37,9 +37,9 @@ public class Notify
         if (!IsInitialized)
             Init();
 
-        var localId = Plugin.ClientState.LocalContentId;
-        foreach (var (id, fc) in fcs)
+        foreach (var id in Plugin.GetFCOrderWithoutHidden())
         {
+            var fc = fcs[id];
             foreach (var sub in subs.Where(s => s.FreeCompanyId == id))
             {
                 var found = Plugin.Configuration.NotifyFCSpecific.TryGetValue($"{sub.Name}{id}", out var ok);
@@ -72,7 +72,7 @@ public class Notify
                 continue;
 
             // using just date here because subs can't come back the same day and be broken again
-            if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{localId}{DateTime.Now.Date}"))
+            if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}"))
                 SendRepair(sub, currentFC);
         }
     }

@@ -1,6 +1,5 @@
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -11,9 +10,7 @@ public class UnlockOverlay : Window, IDisposable
     private readonly Plugin Plugin;
     private readonly Vector2 OriginalSize = new(300, 60);
 
-    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
-
-    private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = new();
+    private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = [];
 
     public UnlockOverlay(Plugin plugin) : base("Unlock Overlay##SubmarineTracker")
     {
@@ -25,8 +22,6 @@ public class UnlockOverlay : Window, IDisposable
         ForceMainWindow = true;
 
         Plugin = plugin;
-
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
     }
 
     public void Dispose() { }
@@ -59,7 +54,7 @@ public class UnlockOverlay : Window, IDisposable
             var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
 
             PossibleUnlocks.Clear();
-            foreach (var sector in ExplorationSheet.Where(s => s.Map.Row == selectedMap + 1))
+            foreach (var sector in Sheets.ExplorationSheet.Where(s => s.Map.Row == selectedMap + 1))
             {
                 if (!Unlocks.SectorToUnlock.TryGetValue(sector.RowId, out var unlockedFrom))
                     continue;
@@ -76,7 +71,7 @@ public class UnlockOverlay : Window, IDisposable
                     PossibleUnlocks.Add((sector.RowId, unlockedFrom));
             }
 
-            if (!PossibleUnlocks.Any())
+            if (PossibleUnlocks.Count == 0)
                 return;
 
             Size = OriginalSize with { Y = (OriginalSize.Y * PossibleUnlocks.Count) + 50.0f };
@@ -95,14 +90,14 @@ public class UnlockOverlay : Window, IDisposable
 
     public override void Draw()
     {
-        if (!PossibleUnlocks.Any())
+        if (PossibleUnlocks.Count == 0)
             return;
 
         foreach (var (sector, from) in PossibleUnlocks.ToArray())
         {
 
-            var unlocked = ExplorationSheet.GetRow(sector)!;
-            var unlockedFrom = ExplorationSheet.GetRow(from.Sector)!;
+            var unlocked = Sheets.ExplorationSheet.GetRow(sector)!;
+            var unlockedFrom = Sheets.ExplorationSheet.GetRow(from.Sector)!;
             if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
             {
                 PossibleUnlocks.Remove((sector, from));
@@ -137,7 +132,7 @@ public class UnlockOverlay : Window, IDisposable
         if (ImGui.Button(Loc.Localize("Terms - Must Include", "Must Include")))
         {
             foreach (var (_, from) in PossibleUnlocks)
-                if (Plugin.RouteOverlay.MustInclude.Add(ExplorationSheet.GetRow(from.Sector)!))
+                if (Plugin.RouteOverlay.MustInclude.Add(Sheets.ExplorationSheet.GetRow(from.Sector)!))
                     Plugin.RouteOverlay.Calculate = true;
         }
     }

@@ -169,22 +169,14 @@ public static class Helper
         ImGui.Image(texture.ImGuiHandle, iconSize);
     }
 
-    public static bool Button(string id, FontAwesomeIcon icon, bool disabled)
+    public static bool Button(string id, FontAwesomeIcon icon, bool disabled = false)
     {
-        var clicked = false;
-        if (disabled)
+        using (ImRaii.PushId(id))
+        using (ImRaii.Disabled(disabled))
+        using (Plugin.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push())
         {
-            ImGui.BeginDisabled();
-            ImGuiComponents.IconButton(id, icon);
-            ImGui.EndDisabled();
+            return ImGui.Button(icon.ToIconString());
         }
-        else
-        {
-            if (ImGuiComponents.IconButton(id, icon))
-                clicked = true;
-        }
-
-        return clicked;
     }
 
     public static bool ColorPickerWithReset(string name, ref Vector4 current, Vector4 reset, float spacing)

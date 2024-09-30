@@ -11,6 +11,7 @@ using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using Lumina.Excel.GeneratedSheets2;
 using Newtonsoft.Json;
 using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
@@ -519,15 +520,20 @@ namespace SubmarineTracker
 
         public static unsafe ulong GetFCId => InfoProxyFreeCompany.Instance()->Id;
 
+        public static IEnumerable<ulong> GetFCOrderWithoutHidden()
+        {
+            return Configuration.ManagedFCs.Where(status => !status.Hidden).Select(status => status.Id);
+        }
+
         public static void LoadFCOrder()
         {
             var changed = false;
             foreach (var id in DatabaseCache.GetFreeCompanies().Keys)
             {
-                if (!Configuration.FCIdOrder.Contains(id))
+                if (Configuration.ManagedFCs.All(status => status.Id != id))
                 {
                     changed = true;
-                    Configuration.FCIdOrder.Add(id);
+                    Configuration.ManagedFCs.Add((id, false));
                 }
             }
 
@@ -538,12 +544,13 @@ namespace SubmarineTracker
         public static void EnsureFCOrderSafety()
         {
             var notSafe = false;
-            foreach (var id in Configuration.FCIdOrder.ToArray())
+            var knownFCs = DatabaseCache.GetFreeCompanies();
+            foreach (var status in Configuration.ManagedFCs.ToArray())
             {
-                if (!DatabaseCache.GetFreeCompanies().ContainsKey(id))
+                if (!knownFCs.ContainsKey(status.Id))
                 {
                     notSafe = true;
-                    Configuration.FCIdOrder.Remove(id);
+                    Configuration.ManagedFCs.Remove(status);
                 }
             }
 
