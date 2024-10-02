@@ -37,7 +37,7 @@ public partial class LootWindow
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        var longText = "Profile:";
+        var longText = "Collection:";
         var length = ImGui.CalcTextSize(longText).X + (10.0f * ImGuiHelpers.GlobalScale);
 
         Plugin.EnsureFCOrderSafety();

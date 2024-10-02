@@ -1,4 +1,3 @@
-using System.IO;
 using System.Threading.Tasks;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -11,8 +10,6 @@ using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using SubmarineTracker.Attributes;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
-using Lumina.Excel.GeneratedSheets2;
-using Newtonsoft.Json;
 using SubmarineTracker.Data;
 using SubmarineTracker.IPC;
 using SubmarineTracker.Manager;
@@ -22,7 +19,6 @@ using SubmarineTracker.Windows.Loot;
 using SubmarineTracker.Windows.Helpy;
 using SubmarineTracker.Windows.Config;
 using SubmarineTracker.Windows.Builder;
-using SubmarineTracker.Windows.Migration;
 using SubmarineTracker.Windows.Overlays;
 
 namespace SubmarineTracker
@@ -57,7 +53,6 @@ namespace SubmarineTracker
         public RouteOverlay RouteOverlay { get; init; }
         public NextOverlay NextOverlay { get; init; }
         public UnlockOverlay UnlockOverlay { get; init; }
-        public MigrationWindow MigrationWindow { get; init; }
 
         public static string PluginDir => PluginInterface.AssemblyLocation.DirectoryName!;
 
@@ -81,8 +76,6 @@ namespace SubmarineTracker
         private bool ShowIgnoredWarning = true;
         private bool ShowStorageMessage = true;
 
-        public readonly bool FirstTimeMigration;
-
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -91,7 +84,6 @@ namespace SubmarineTracker
             FileDialogManager = new FileDialogManager();
 
             // Is required by everything, so init it here
-            FirstTimeMigration = !File.Exists(Database.DatabasePath());
             DatabaseCache = new DatabaseCache();
 
             NameConverter = new NameConverter();
@@ -110,7 +102,6 @@ namespace SubmarineTracker
             RouteOverlay = new RouteOverlay(this);
             NextOverlay = new NextOverlay(this);
             UnlockOverlay = new UnlockOverlay(this);
-            MigrationWindow = new MigrationWindow(this);
 
             WindowSystem.AddWindow(ConfigWindow);
             WindowSystem.AddWindow(MainWindow);
@@ -122,7 +113,6 @@ namespace SubmarineTracker
             WindowSystem.AddWindow(RouteOverlay);
             WindowSystem.AddWindow(NextOverlay);
             WindowSystem.AddWindow(UnlockOverlay);
-            WindowSystem.AddWindow(MigrationWindow);
 
             CommandManager = new PluginCommandManager<Plugin>(this, Commands);
             ServerBar = new ServerBar(this);
@@ -167,7 +157,6 @@ namespace SubmarineTracker
             RouteOverlay.Dispose();
             NextOverlay.Dispose();
             UnlockOverlay.Dispose();
-            MigrationWindow.Dispose();
 
             PluginInterface.UiBuilder.Draw -= DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi -= OpenConfig;
@@ -236,100 +225,10 @@ namespace SubmarineTracker
             Configuration.Save();
         }
 
-        // TODO Remove after migration time
         private void Login()
         {
-            string LoadFile(FileSystemInfo fileInfo)
-            {
-                for (var i = 0; i < 5; i++)
-                {
-                    try
-                    {
-                        using var reader = new StreamReader(fileInfo.FullName);
-                        return reader.ReadToEnd();
-                    }
-                    catch
-                    {
-                        if (i == 4)
-                            Notification.AddNotification(new Notification
-                            {
-                                Content = Loc.Localize("Warnings - Config Fail", "Failed to read config"),
-                                Type = NotificationType.Warning,
-                                Minimized = false,
-                            });
-
-                        Log.Warning($"Config file read failed {i + 1}/5");
-                    }
-                }
-
-                return string.Empty;
-            }
-
-            var local = ClientState.LocalPlayer;
-            if (local == null)
-                return;
-
-            var file = new FileInfo(Path.Combine(PluginInterface.ConfigDirectory.FullName, $"{ClientState.LocalContentId}.json"));
-            if (!file.Exists)
-                return;
-
-            try
-            {
-                var config = JsonConvert.DeserializeObject<CharacterConfiguration>(LoadFile(file));
-                var fc = new Submarines.FcSubmarines(config!);
-
-                if (fc.Tag != Utils.ToStr(local.CompanyTag))
-                {
-                    Log.Warning("Stored data for this character is outdated, FC tags don't match");
-                    Log.Warning("Import cancelled");
-                    return;
-                }
-
-                Framework.RunOnTick(() =>
-                {
-                    var fcId = GetFCId;
-                    Log.Information($"Working with id {fcId}");
-                    if (fcId == 0)
-                        return;
-
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            DatabaseCache.Database.UpsertFreeCompany(new FreeCompany(fcId, fc));
-
-                            foreach (var sub in fc.Submarines)
-                                DatabaseCache.Database.UpsertSubmarine(new Submarine(fcId, sub));
-
-                            foreach (var (registerTime, lootEntry) in fc.SubLoot)
-                            {
-                                foreach (var (returnTime, sectors) in lootEntry.Loot)
-                                {
-                                    foreach (var sectorLoot in sectors)
-                                    {
-                                        // Some people have dates that are deserialized as "0001-01-01T00:00:00"
-                                        if (sectorLoot.Date.Ticks < 1000)
-                                            continue;
-
-                                        DatabaseCache.Database.InsertLootEntry(new Loot(fcId, registerTime, returnTime, sectorLoot));
-                                    }
-                                }
-                            }
-
-                            file.Delete();
-                            Log.Information($"Migrating id {fcId} done");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(ex, "Unable to upsert entry");
-                        }
-                    });
-                }, TimeSpan.FromSeconds(10));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Unable to migrate character data");
-            }
+            // Clear it on every login to prevent cases of people having duplicated subs
+            SubmarinePreVoyage.Clear();
         }
 
         private bool IsUpserting;
