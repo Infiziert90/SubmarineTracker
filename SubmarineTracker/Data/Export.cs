@@ -237,23 +237,6 @@ public static class Export
         }
     }
 
-    public static async void UploadEntry(DetailedLoot newLoot)
-    {
-        var lootEntry = new Loot(newLoot);
-        try
-        {
-            await Client.InitializeAsync();
-            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
-
-            Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
-            Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
-        }
-        catch (Exception e)
-        {
-            Plugin.Log.Error(e, "Error while uploading entry");
-        }
-    }
-
     public static async void UploadEntry(SubmarineTracker.Loot newLoot)
     {
         var lootEntry = new Loot(newLoot);

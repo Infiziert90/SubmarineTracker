@@ -98,7 +98,8 @@ public partial class LootWindow
 
                         foreach (var (item, count) in CachedList.OrderBy(pair => pair.Key.RowId))
                         {
-                            moneyMade += count * selected[item.RowId];
+                            // Long cast is required to prevent the calculation product from overflowing
+                            moneyMade += (long) count * selected[item.RowId];
 
                             ImGui.TableNextColumn();
                             Helper.DrawScaledIcon(item.Icon, IconSize);
