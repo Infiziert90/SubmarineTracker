@@ -18,7 +18,8 @@ public partial class ConfigWindow
 
     private bool About()
     {
-        if (!ImGui.BeginTabItem($"{Loc.Localize("Config Tab - About", "About")}##About"))
+        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Config Tab - About", "About")}##About");
+        if (!tabItem.Success)
             return false;
 
         ImGuiHelpers.ScaledDummy(5.0f);
@@ -91,15 +92,10 @@ public partial class ConfigWindow
         if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
             ImGui.OpenPopup("InputPathDialog");
 
-        if (ImGui.BeginPopup("InputPathDialog"))
+        using (var popup = ImRaii.Popup("InputPathDialog"))
         {
-            Plugin.FileDialogManager.OpenFolderDialog(
-                "Pick the folder",
-                (b, s) => { if (b) InputPath = s; },
-                null,
-                true);
-
-            ImGui.EndPopup();
+            if (popup.Success)
+                Plugin.FileDialogManager.OpenFolderDialog("Pick the folder", (b, s) => { if (b) InputPath = s; }, null, true);
         }
 
         if (ImGui.Button("Import Data"))
@@ -114,14 +110,14 @@ public partial class ConfigWindow
                     if (profile.TryGetValue(loot.Primary, out var value))
                         Worth += (ulong) value * loot.PrimaryCount;
                     else
-                        Worth += ItemSheet.GetRow(loot.Primary)!.PriceLow * loot.PrimaryCount;
+                        Worth += Sheets.ItemSheet.GetRow(loot.Primary)!.PriceLow * loot.PrimaryCount;
 
                     if (loot.Additional > 0)
                     {
                         if (profile.TryGetValue(loot.Additional, out value))
                             Worth += (ulong) value * loot.AdditionalCount;
                         else
-                            Worth += ItemSheet.GetRow(loot.Additional)!.PriceLow * loot.AdditionalCount;
+                            Worth += Sheets.ItemSheet.GetRow(loot.Additional)!.PriceLow * loot.AdditionalCount;
                     }
                 }
 
@@ -137,8 +133,6 @@ public partial class ConfigWindow
         }
         ImGuiHelpers.ScaledIndent(-10.0f);
         #endif
-
-        ImGui.EndTabItem();
 
         return true;
     }

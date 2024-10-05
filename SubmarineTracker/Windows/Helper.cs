@@ -179,6 +179,14 @@ public static class Helper
         }
     }
 
+    public static bool Button(FontAwesomeIcon icon, Vector2? size = null)
+    {
+        size ??= Vector2.Zero;
+
+        using var _ = ImRaii.PushFont(UiBuilder.IconFont);
+        return ImGui.Button(icon.ToIconString(), size.Value);
+    }
+
     public static bool ColorPickerWithReset(string name, ref Vector4 current, Vector4 reset, float spacing)
     {
         var changed = ImGui.ColorEdit4($"##{name}ColorPicker", ref current, ImGuiColorEditFlags.NoInputs);

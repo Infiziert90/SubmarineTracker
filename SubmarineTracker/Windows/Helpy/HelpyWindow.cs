@@ -1,14 +1,10 @@
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using Lumina.Excel;
 
 namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
-
-    private static ExcelSheet<SubExplPretty> ExplorationSheet = null!;
 
     public HelpyWindow(Plugin plugin) : base("Helpy##SubmarineTracker")
     {
@@ -19,8 +15,6 @@ public partial class HelpyWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         InitProgression();
     }

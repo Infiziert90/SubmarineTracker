@@ -1,4 +1,3 @@
-using Dalamud.Interface.Utility.Raii;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;
@@ -100,7 +99,7 @@ public partial class HelpyWindow
         var textHeight = ImGui.CalcTextSize("XXX").Y * 3.5f; // 3.5 items padding
 
         var (point, unlockedFrom) = tuple;
-        var explorationPoint = ExplorationSheet.GetRow(point)!;
+        var explorationPoint = Sheets.ExplorationSheet.GetRow(point)!;
         var startPoint = Voyage.FindVoyageStart(explorationPoint.RowId);
 
         var letter = Utils.NumToLetter(explorationPoint.RowId - startPoint);

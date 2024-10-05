@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Utility;
 using Lumina.Text.ReadOnly;
 using SubmarineTracker.Data;
@@ -130,6 +131,11 @@ public static class Utils
                .AddUiForeground("[Submarine Tracker] ", 540)
                .AddUiForeground($"{error}", 17)
                .BuiltString;
+    }
+
+    public static void AddNotification(string content, NotificationType type, bool minimized = true)
+    {
+        Plugin.Notification.AddNotification(new Notification { Content = content, Type = type, Minimized = minimized });
     }
 
     public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : new()

@@ -1,13 +1,13 @@
 using Dalamud.Interface.Windowing;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 
 namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
-    private static ExcelSheet<Item> ItemSheet = null!;
+
+    private const float SeparatorPadding = 1.0f;
+    private static float GetSeparatorPaddingHeight => SeparatorPadding * ImGuiHelpers.GlobalScale;
 
     public ConfigWindow(Plugin plugin) : base("Configuration##SubmarineTracker")
     {
@@ -18,7 +18,6 @@ public partial class ConfigWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-        ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
 
         InitializeLoot();
     }
@@ -28,68 +27,73 @@ public partial class ConfigWindow : Window, IDisposable
     public override void Draw()
     {
         var aboutOpen = false;
-        var buttonHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + (1.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("ConfigContent", new Vector2(0, -buttonHeight)))
+        var bottomContentHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + GetSeparatorPaddingHeight;
+        using (var contentChild = ImRaii.Child("ConfigContent", new Vector2(0, -bottomContentHeight)))
         {
-            if (ImGui.BeginTabBar("##ConfigTabBar"))
+            if (contentChild.Success)
             {
-                General();
+                using var tabBar = ImRaii.TabBar("##ConfigTabBar");
+                if (tabBar.Success)
+                {
+                    General();
 
-                Tracker();
+                    Tracker();
 
-                Builder();
+                    Builder();
 
-                Loot();
+                    Loot();
 
-                Overlay();
+                    Overlay();
 
-                Notify();
+                    Notify();
 
-                Manage();
+                    Manage();
 
-                aboutOpen = About();
-
-                ImGui.EndTabBar();
+                    aboutOpen = About();
+                }
             }
         }
-        ImGui.EndChild();
 
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(1.0f);
+        ImGuiHelpers.ScaledDummy(SeparatorPadding);
 
-        if (ImGui.BeginChild("ConfigBottomBar", new Vector2(0, 0), false, 0))
+        using var bottomChild = ImRaii.Child("ConfigBottomBar", new Vector2(0, 0), false, 0);
+        if (!bottomChild.Success)
+            return;
+
+        if (aboutOpen)
         {
-            if (aboutOpen)
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedBlue))
             {
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
                 if (ImGui.Button(Loc.Localize("Menu - Discord Thread", "Discord Thread")))
                     Plugin.DiscordSupport();
-                ImGui.PopStyleColor();
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedPurple);
-                if (ImGui.Button(Loc.Localize("Menu - Localization", "Localization")))
-                    Plugin.LocHelp();
-                ImGui.PopStyleColor();
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
-                if (ImGui.Button(Loc.Localize("Menu - Issues", "Issues")))
-                    Plugin.IssuePage();
-                ImGui.PopStyleColor();
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, Helper.CustomFullyDone);
-                if (ImGui.Button(Loc.Localize("Menu - KoFi", "Ko-Fi Tip")))
-                    Plugin.Kofi();
-                ImGui.PopStyleColor();
             }
 
-            Helper.MainMenuIcon();
+            ImGui.SameLine();
+
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedPurple))
+            {
+                if (ImGui.Button(Loc.Localize("Menu - Localization", "Localization")))
+                    Plugin.LocHelp();
+            }
+
+            ImGui.SameLine();
+
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DPSRed))
+            {
+                if (ImGui.Button(Loc.Localize("Menu - Issues", "Issues")))
+                    Plugin.IssuePage();
+            }
+
+            ImGui.SameLine();
+
+            using (ImRaii.PushColor(ImGuiCol.Button, Helper.CustomFullyDone))
+            {
+                if (ImGui.Button(Loc.Localize("Menu - KoFi", "Ko-Fi Tip")))
+                    Plugin.Kofi();
+            }
         }
-        ImGui.EndChild();
+
+        Helper.MainMenuIcon();
     }
 }

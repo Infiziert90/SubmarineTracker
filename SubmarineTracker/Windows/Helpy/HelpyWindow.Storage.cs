@@ -1,4 +1,3 @@
-using Dalamud.Interface.Utility.Raii;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Helpy;

@@ -41,6 +41,11 @@ public class NameConverter
         return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
     }
 
+    public string GetCharacterName(string name)
+    {
+        return Plugin.Configuration.NameOption == NameOptions.Anon ? Utils.GenerateHashedName(name) : name;
+    }
+
     private string GenerateName(FreeCompany fc)
     {
         return Plugin.Configuration.NameOption switch
