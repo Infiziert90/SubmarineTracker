@@ -525,39 +525,6 @@ public record Loot
 
     public Loot() {}
 
-    // TODO Remove after migration time
-    public Loot(ulong fcId, uint register, uint returnTime, Data.Loot.DetailedLoot loot)
-    {
-        FreeCompanyId = fcId;
-        Register = register;
-        Return = returnTime;
-
-        Valid = loot.Valid;
-        Rank = loot.Rank;
-        Surv = loot.Surv;
-        Ret = loot.Ret;
-        Fav = loot.Fav;
-
-        PrimarySurvProc = loot.PrimarySurvProc;
-        AdditionalSurvProc = loot.AdditionalSurvProc;
-        PrimaryRetProc = loot.PrimaryRetProc;
-        AdditionalRetProc = loot.AdditionalRetProc;
-        FavProc = loot.FavProc;
-
-        Sector = loot.Sector;
-        Unlocked = loot.Unlocked;
-
-        Primary = loot.Primary;
-        PrimaryCount = loot.PrimaryCount;
-        PrimaryHQ = loot.PrimaryHQ;
-
-        Additional = loot.Additional;
-        AdditionalCount = loot.AdditionalCount;
-        AdditionalHQ = loot.AdditionalHQ;
-
-        Date = loot.Date;
-    }
-
     public Loot(Build.SubmarineBuild build, HousingWorkshopSubmarineGathered data)
     {
         Valid = true;
