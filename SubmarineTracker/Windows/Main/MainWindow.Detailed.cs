@@ -80,16 +80,15 @@ public partial class MainWindow
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
-            var startPoint = Voyage.FindVoyageStart(sub.Points.First());
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(Loc.Localize("Terms - Map", "Map"));
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Voyage.SectorToMapName(startPoint));
+            ImGui.TextUnformatted(Voyage.SectorToMapName(sub.Points.First()));
 
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(Loc.Localize("Terms - Route", "Route"));
             ImGui.TableNextColumn();
-            ImGui.TextWrapped($"{string.Join(" -> ", sub.Points.Select(p => Utils.NumToLetter(p - startPoint)))}");
+            ImGui.TextWrapped($"{string.Join(" -> ", sub.Points.Select(p => Utils.NumToLetter(p, true)))}");
         }
         AddTableSpacing();
 

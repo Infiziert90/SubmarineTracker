@@ -34,7 +34,7 @@ public static class Voyage
     public static uint FindVoyageStart(uint sector)
     {
         // This works because we reversed the list of start points
-        return ReversedMaps.FirstOrDefault(m => sector > m);
+        return ReversedMaps.FirstOrDefault(m => sector >= m);
     }
 
     public static uint FindMapFromSector(uint sector) => SectorToPretty[FindVoyageStart(sector)].Map.Row;
