@@ -15,11 +15,11 @@ public static class Utils
     public static unsafe ReadOnlySeStringSpan NameToSeString(Span<byte> name) => new((byte*)Unsafe.AsPointer(ref name[0]));
 
     public static string ToStr(SeString content) => content.ToString();
-    public static string ToStr(Lumina.Text.SeString content) => content.ToDalamudString().ToString();
+    public static string ToStr(ReadOnlySeString content) => content.ToDalamudString().ToString();
     public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
     public static string GetStringFromTimespan(TimeSpan span) => $"{span.Days}d {span.Hours}h {span.Minutes}m {span.Seconds}s";
 
-    public static string UpperCaseStr(Lumina.Text.SeString s, sbyte article = 0)
+    public static string UpperCaseStr(ReadOnlySeString s, sbyte article = 0)
     {
         if (article == 1)
             return s.ToDalamudString().ToString();

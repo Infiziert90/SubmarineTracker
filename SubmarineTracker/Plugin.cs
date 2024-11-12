@@ -262,7 +262,7 @@ namespace SubmarineTracker
                 return;
 
             // 6.4 triggers HousingManager + WorkshopTerritory in Island Sanctuary
-            if (Sheets.TerritorySheet.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse == 49)
+            if (Sheets.TerritorySheet.GetRow(ClientState.TerritoryType)!.TerritoryIntendedUse.RowId == 49)
                 return;
 
             // Notify the user once about upload opt out
@@ -354,7 +354,7 @@ namespace SubmarineTracker
             {
                 FreeCompanyId = fcId,
                 Tag = Utils.ToStr(local.CompanyTag),
-                World = Utils.ToStr(local.HomeWorld.GameData!.Name),
+                World = Utils.ToStr(local.HomeWorld.Value.Name),
                 CharacterName = Utils.ToStr(local.Name),
             };
 

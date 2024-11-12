@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -8,7 +9,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    public readonly HashSet<SubExplPretty> MustInclude = new();
+    public readonly HashSet<SubmarineExploration> MustInclude = [];
 
     private Voyage.BestRoute BestRoute = Voyage.BestRoute.Empty();
     private bool ComputingPath;
@@ -24,7 +25,7 @@ public partial class BuilderWindow
     private bool IgnoreUnlocks;
     private bool AvgBonus;
 
-    public ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>? ExplorationPopupOptions;
+    public ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions? ExplorationPopupOptions;
 
     private void ExpTab()
     {
@@ -43,13 +44,13 @@ public partial class BuilderWindow
 
                 if (ImGui.BeginChild("BestPath", new Vector2(0, (170 * ImGuiHelpers.GlobalScale))))
                 {
-                    var maps = ExplorationSheet
-                           .Where(r => r.StartingPoint)
-                           .Select(r => ExplorationSheet.GetRow(r.RowId + 1)!)
-                           .Where(r => r.RankReq <= CurrentBuild.Rank)
-                           .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
-                           .Select(r => ToStr(r.Map.Value!.Name))
-                           .ToArray();
+                    var maps = Sheets.ExplorationSheet
+                                     .Where(r => r.StartingPoint)
+                                     .Select(r => Sheets.ExplorationSheet.GetRow(r.RowId + 1)!)
+                                     .Where(r => r.RankReq <= CurrentBuild.Rank)
+                                     .Where(r => IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId])
+                                     .Select(r => ToStr(r.Map.Value!.Name))
+                                     .ToArray();
 
                     // Always pick highest rank map if smaller than possible
                     if (maps.Length <= CurrentBuild.Map)
@@ -114,7 +115,7 @@ public partial class BuilderWindow
                         if (BestRoute.Path.Length != 0)
                         {
                             var startPoint = Voyage.FindVoyageStart(BestRoute.Path[0]);
-                            foreach (var location in BestRoute.Path.Select(s => ExplorationSheet.GetRow(s)!))
+                            foreach (var location in BestRoute.Path.Select(s => Sheets.ExplorationSheet.GetRow(s)!))
                                 if (location.RowId > startPoint)
                                     ImGui.Text($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
 
@@ -219,21 +220,21 @@ public partial class BuilderWindow
                     LastSeenMap = CurrentBuild.Map;
                     LastSeenRank = CurrentBuild.Rank;
 
-                    var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                    var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == CurrentBuild.Map + 1).RowId;
                     var error = !fcSub.UnlockedSectors.ContainsKey(startPoint);
                     if (ExplorationPopupOptions == null)
                     {
-                        ExcelSheetSelector.FilteredSearchSheet = null!;
+                        ExcelSheetSelector<SubmarineExploration>.FilteredSearchSheet = null!;
                         ExplorationPopupOptions = new()
                         {
                             FormatRow = e => $"{NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
-                            FilteredSheet = ExplorationSheet.Where(r => !error && !r.StartingPoint && r.Map.Row == CurrentBuild.Map + 1 && (IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId]) && r.RankReq <= CurrentBuild.Rank)
+                            FilteredSheet = Sheets.ExplorationSheet.Where(r => !error && !r.StartingPoint && r.Map.RowId == CurrentBuild.Map + 1 && (IgnoreUnlocks || fcSub.UnlockedSectors[r.RowId]) && r.RankReq <= CurrentBuild.Rank)
                         };
                     }
 
-                    if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, error || MustInclude.Count >= 5))
+                    if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("ExplorationAddPopup", out var row, ExplorationPopupOptions, error || MustInclude.Count >= 5))
                     {
-                        var point = ExplorationSheet.GetRow(row)!;
+                        var point = Sheets.ExplorationSheet.GetRow(row)!;
                         if (MustInclude.Add(point))
                             OptionsChanged = true;
                     }

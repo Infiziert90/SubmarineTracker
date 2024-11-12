@@ -1,6 +1,4 @@
 using Dalamud.Interface.Windowing;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Builder;
@@ -8,12 +6,6 @@ namespace SubmarineTracker.Windows.Builder;
 public partial class BuilderWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
-
-    public readonly List<SubmarineRank> RankSheet;
-    public readonly ExcelSheet<Item> ItemSheet;
-    public readonly ExcelSheet<SubmarineMap> MapSheet;
-    public readonly ExcelSheet<SubExplPretty> ExplorationSheet;
-
     public Build.RouteBuild CurrentBuild = new();
 
     private string CurrentInput = "";
@@ -27,11 +19,6 @@ public partial class BuilderWindow : Window, IDisposable
         };
 
         Plugin = plugin;
-
-        ItemSheet = Plugin.Data.GetExcelSheet<Item>()!;
-        MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!.Where(t => t.Capacity != 0).ToList();
-        ExplorationSheet = Plugin.Data.GetExcelSheet<SubExplPretty>()!;
 
         InitializeShip();
         InitializeLeveling();

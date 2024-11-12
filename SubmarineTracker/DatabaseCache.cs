@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker;
@@ -228,19 +228,6 @@ public record FreeCompany
     public Dictionary<uint, bool> ExploredSectors = new();
 
     public FreeCompany() {}
-
-    // TODO Remove after migration time
-    public FreeCompany(ulong id, Submarines.FcSubmarines fc)
-    {
-        FreeCompanyId = id;
-
-        Tag = fc.Tag;
-        World = fc.World;
-        CharacterName = fc.CharacterName;
-
-        UnlockedSectors = fc.UnlockedSectors;
-        ExploredSectors = fc.ExploredSectors;
-    }
 };
 
 public record Submarine
@@ -269,33 +256,6 @@ public record Submarine
     public ushort BridgeDurability = 30000;
 
     public Submarine() {}
-
-    // TODO Remove after migration time
-    public Submarine(ulong fcId, Submarines.Submarine sub)
-    {
-        FreeCompanyId = fcId;
-
-        Name = sub.Name;
-        Rank = sub.Rank;
-
-        Hull = sub.Hull;
-        Stern = sub.Stern;
-        Bow = sub.Bow;
-        Bridge = sub.Bridge;
-
-        CExp = sub.CExp;
-        NExp = sub.NExp;
-
-        Register = sub.Register;
-        Return = sub.Return;
-
-        Points = sub.Points;
-
-        HullDurability = sub.HullDurability;
-        SternDurability = sub.SternDurability;
-        BowDurability = sub.BowDurability;
-        BridgeDurability = sub.BridgeDurability;
-    }
 
     public Submarine(uint returnTime)
     {

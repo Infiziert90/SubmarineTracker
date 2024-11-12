@@ -1,5 +1,5 @@
 ﻿using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace SubmarineTracker.Data;
 
@@ -88,13 +88,6 @@ public enum Items : uint
 
 internal static class ImportantItemsMethods
 {
-    private static readonly ExcelSheet<Item> Item;
-
-    static ImportantItemsMethods()
-    {
-        Item = Plugin.Data.GetExcelSheet<Item>()!;
-    }
-
-    public static Item GetItem(this Items item) => Item.GetRow((uint)item)!;
+    public static Item GetItem(this Items item) => Sheets.ItemSheet.GetRow((uint)item)!;
     public static int GetPartId(this Items item) => Submarines.PartIdToItemId.First(d => d.Value == (uint) item).Key;
 }

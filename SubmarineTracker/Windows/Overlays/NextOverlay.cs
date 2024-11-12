@@ -89,8 +89,8 @@ public class NextOverlay : Window, IDisposable
 
         var nextSector = NextSector.Value;
 
-        var nextUnlock = Sheets.ExplorationSheet.GetRow(nextSector.Sector)!;
-        var unlockedFrom = Sheets.ExplorationSheet.GetRow(nextSector.UnlockedFrom.Sector)!;
+        var nextUnlock = Sheets.ExplorationSheet.GetRow(nextSector.Sector);
+        var unlockedFrom = Sheets.ExplorationSheet.GetRow(nextSector.UnlockedFrom.Sector);
         if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())

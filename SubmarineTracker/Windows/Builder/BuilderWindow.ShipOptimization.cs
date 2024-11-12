@@ -1,6 +1,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -8,9 +8,9 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    public static List<Build.SubmarineBuild> AllBuilds = new();
+    public static List<Build.SubmarineBuild> AllBuilds = [];
     public int SelectedRank;
-    private SubmarineRank Rank = null!;
+    private SubmarineRank Rank;
     private const int PartsCount = 10;
     private TargetValues Target;
     private TargetValues LockedTarget;
@@ -21,7 +21,7 @@ public partial class BuilderWindow
     {
         AllBuilds.Clear();
 
-        Rank = RankSheet.Last();
+        Rank = Sheets.RankSheet.Last();
         SelectedRank = (int) Rank.RowId;
 
         for (var hull = 0; hull < PartsCount; hull++)
@@ -115,9 +115,9 @@ public partial class BuilderWindow
         var open = ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Ship", "Ship")}##Ship");
         if (open)
         {
-            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int)RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
+            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int) Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
             {
-                Rank = RankSheet.ElementAt(SelectedRank - 1);
+                Rank = Sheets.RankSheet.ElementAt(SelectedRank - 1);
                 RefreshList();
             }
 

@@ -125,7 +125,7 @@ public partial class MainWindow
 
         var fullWindowWidth = ImGui.GetWindowWidth();
         var halfWindowWidth = fullWindowWidth / 2;
-        foreach (var map in MapSheet.Where(r => r.RowId != 0))
+        foreach (var map in Sheets.MapSheet.Where(r => r.RowId != 0))
         {
             var text = Utils.MapToShort(map.RowId);
             if (text == "")
@@ -140,7 +140,7 @@ public partial class MainWindow
             var endCursorPositionRight = ImGui.GetCursorPos();
             var cursorPosition = ImGui.GetCursorPos();
 
-            var mapLoot = fcLoot.Where(pair => Voyage.SectorToPretty[pair.Key].Map.Row == map.RowId).WithIndex();
+            var mapLoot = fcLoot.Where(pair => Voyage.SectorToPretty[pair.Key].Map.RowId == map.RowId).WithIndex();
             foreach (var ((sector, loot), idx) in mapLoot)
             {
                 if (idx % 2 == 0)

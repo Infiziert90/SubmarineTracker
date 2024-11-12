@@ -1,20 +1,10 @@
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 
 namespace SubmarineTracker.Data;
 
 public static class Build
 {
-    private static readonly ExcelSheet<SubmarineRank> RankSheet;
-    private static readonly ExcelSheet<SubmarinePart> PartSheet;
-
-    static Build()
-    {
-        RankSheet = Plugin.Data.GetExcelSheet<SubmarineRank>()!;
-        PartSheet = Plugin.Data.GetExcelSheet<SubmarinePart>()!;
-    }
-
     public struct SubmarineBuild
     {
         public SubmarineRank Bonus;
@@ -24,7 +14,7 @@ public static class Build
         public readonly SubmarinePart Bridge;
 
         public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
-        public SubmarineBuild(Submarines.Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
+        // public SubmarineBuild(Submarines.Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
 
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
@@ -62,8 +52,8 @@ public static class Build
         public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
         public byte[] GetPartRanks() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank };
 
-        private SubmarineRank GetRank(int rank) => RankSheet.GetRow((uint)rank)!;
-        private SubmarinePart GetPart(int partId) => PartSheet.GetRow((uint)partId)!;
+        private SubmarineRank GetRank(int rank) => Sheets.RankSheet.GetRow((uint)rank)!;
+        private SubmarinePart GetPart(int partId) => Sheets.PartSheet.GetRow((uint)partId)!;
 
         public string HullIdentifier => ToIdentifier((ushort)Hull.RowId);
         public string SternIdentifier => ToIdentifier((ushort)Stern.RowId);
@@ -149,7 +139,7 @@ public static class Build
         [JsonIgnore] public int OriginalSub = 0;
 
         [JsonIgnore] public uint OptimizedDistance = 0;
-        [JsonIgnore] public SubExplPretty[] OptimizedRoute = Array.Empty<SubExplPretty>();
+        [JsonIgnore] public SubmarineExploration[] OptimizedRoute = [];
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
         [JsonIgnore] public static RouteBuild Empty => new();
 
@@ -229,7 +219,7 @@ public static class Build
             {
                 var damaged = 0;
                 foreach (var sector in OptimizedRoute)
-                    damaged += (335 + sector.RankReq - PartSheet.GetRow((uint) part)!.Rank) * 7;
+                    damaged += (335 + sector.RankReq - Sheets.PartSheet.GetRow((uint) part)!.Rank) * 7;
 
                 if (highestDamage < damaged)
                     highestDamage = damaged;

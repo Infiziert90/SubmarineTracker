@@ -1,58 +1,7 @@
-using Newtonsoft.Json;
-
 namespace SubmarineTracker.Data;
 
 public static class Submarines
 {
-    // TODO Remove after migration time
-    public class FcSubmarines
-    {
-        public ulong FreeCompanyId = 0;
-        public string CharacterName = "";
-        public string Tag = "";
-        public string World = "";
-        public List<Submarine> Submarines = new();
-
-        public Dictionary<uint, Loot.SubmarineLoot> SubLoot = new();
-        public Dictionary<uint, bool> UnlockedSectors = new();
-        public Dictionary<uint, bool> ExploredSectors = new();
-
-        [JsonConstructor]
-        public FcSubmarines() { }
-
-        public FcSubmarines(CharacterConfiguration config)
-        {
-            CharacterName = config.CharacterName;
-            Tag = config.Tag;
-            World = config.World;
-            Submarines = config.Submarines;
-            SubLoot = config.Loot;
-            foreach (var (point, unlocked, explored) in config.ExplorationPoints)
-            {
-                UnlockedSectors[point] = unlocked;
-                ExploredSectors[point] = explored;
-            }
-        }
-    }
-
-    // TODO Remove after migration time
-    public record Submarine(string Name, ushort Rank, ushort Hull, ushort Stern, ushort Bow, ushort Bridge, uint CExp, uint NExp)
-    {
-        public ulong FreeCompanyId = 0;
-
-        public uint Register;
-        public uint Return;
-        public List<uint> Points = new();
-
-        public ushort HullDurability = 30000;
-        public ushort SternDurability = 30000;
-        public ushort BowDurability = 30000;
-        public ushort BridgeDurability = 30000;
-
-        [JsonConstructor]
-        public Submarine() : this("", 0, 0, 0, 0, 0, 0, 0) { }
-    }
-
     public static readonly Dictionary<ushort, uint> PartIdToItemId = new()
     {
         // Shark

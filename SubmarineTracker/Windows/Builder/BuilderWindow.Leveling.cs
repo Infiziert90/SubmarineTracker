@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Utility;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 
 using static SubmarineTracker.Utils;
@@ -11,7 +12,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty> LevelingAllowedPopupOptions = null!;
+    private ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions LevelingAllowedPopupOptions = null!;
     private CancellationTokenSource CancelSource = new();
     private Thread? Thread;
 
@@ -35,14 +36,14 @@ public partial class BuilderWindow
     private (string Limit, bool IgnoreBuild, bool IgnoreUnlocks, bool MaximizeDurationLimit) LastOptions = ("", false, false, false);
 
     private bool AllowedChanged;
-    private readonly List<SubExplPretty> AllowedSectors = [];
+    private readonly List<SubmarineExploration> AllowedSectors = [];
 
     private void InitializeLeveling()
     {
-        LevelingAllowedPopupOptions = new ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>
+        LevelingAllowedPopupOptions = new ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
-            FilteredSheet = ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
+            FilteredSheet = Sheets.ExplorationSheet.Where(r => r.RankReq > 0).Where(r => !r.StartingPoint).Where(r => !AllowedSectors.Contains(r))
         };
     }
 
@@ -56,7 +57,7 @@ public partial class BuilderWindow
 
             ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Build", "Build")}: {(!IgnoreBuild ? $"{CurrentBuild} ({Loc.Localize("Terms - Rank", "Rank")} {CurrentBuild.Rank})" : $"{Loc.Localize("Terms - All", "All")}")}");
             ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)RankSheet.Last().RowId, $"{Loc.Localize("Terms - Target Rank", "Target Rank")} %d");
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Target Rank", "Target Rank")} %d");
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Target", "The rank this calculation must reach, but can overshot."));
             ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
             if (ImGui.Button(Loc.Localize("Builder Leveling Button - Calculate","Calculate"), new Vector2(longText, 0)))
@@ -166,7 +167,7 @@ public partial class BuilderWindow
             if (AllowedChanged)
             {
                 AllowedChanged = false;
-                ExcelSheetSelector.FilteredSearchSheet = null!;
+                ExcelSheetSelector<SubmarineExploration>.FilteredSearchSheet = null!;
             }
 
             var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
@@ -174,9 +175,9 @@ public partial class BuilderWindow
             ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), new Vector2(30.0f * ImGuiHelpers.GlobalScale, listHeight));
             ImGui.PopFont();
 
-            if (ExcelSheetSelector.ExcelSheetPopup("LevelingAllowedSectorsAddPopup", out var row, LevelingAllowedPopupOptions))
+            if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("LevelingAllowedSectorsAddPopup", out var row, LevelingAllowedPopupOptions))
             {
-                var point = ExplorationSheet.GetRow(row)!;
+                var point = Sheets.ExplorationSheet.GetRow(row)!;
                 if (!AllowedSectors.Contains(point))
                 {
                     AllowedSectors.Add(point);
@@ -255,8 +256,8 @@ public partial class BuilderWindow
 
     public float GetRemaindExp(int rank, uint exp)
     {
-        var expToNext = RankSheet[rank - 1].ExpToNext;
-        return rank == RankSheet.Count ? 0 : exp / (float)expToNext;
+        var expToNext = Sheets.RankSheet[(uint) rank - 1].ExpToNext;
+        return rank == Sheets.RankSheet.Count ? 0 : exp / (float)expToNext;
     }
 
     public TimeSpan GetTimesFromJourneys(IEnumerable<Journey> journeys) =>
@@ -265,7 +266,7 @@ public partial class BuilderWindow
             var build = (Build.RouteBuild) t.Build;
             build.Rank = t.OldRank;
 
-            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Select(f => ExplorationSheet.GetRow(f)!).ToArray(), build.GetSubmarineBuild.Speed));
+            return TimeSpan.FromSeconds(Voyage.CalculateDuration(t.Route.Select(f => Sheets.ExplorationSheet.GetRow(f)!).ToArray(), build.GetSubmarineBuild.Speed));
         }).Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
 
     public void DoThingsOffThread()
@@ -299,11 +300,11 @@ public partial class BuilderWindow
             return null;
 
         var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
-        var hasAllowed = AllowedSectors.Any();
-        var mapBreaks = ExplorationSheet
-                    .Where(f => ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
-                    .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || unlocked.Contains(r.RowId))
-                    .ToDictionary(t => t.RankReq, t => (int)t.Map.Row);
+        var hasAllowed = AllowedSectors.Count != 0;
+        var mapBreaks = Sheets.ExplorationSheet
+                              .Where(f => Sheets.ExplorationSheet.Where(t => t.StartingPoint).Select(t => t.RowId + 1).Contains(f.RowId))
+                              .Where(r => (hasAllowed && AllowedSectors.Contains(r)) || IgnoreUnlocks || unlocked.Contains(r.RowId))
+                              .ToDictionary(t => t.RankReq, t => (int)t.Map.RowId);
 
         ProgressRank = CurrentBuild.Rank;
 
@@ -366,7 +367,7 @@ public partial class BuilderWindow
                     // we can still continue if this would be false, we also want to check if allowed list is set
                     var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
                     if (best.Route.Any() && !hasAllowed)
-                        lastMap = (int) ExplorationSheet.GetRow(best.Route.First())!.Map.Row - 2;
+                        lastMap = (int) Sheets.ExplorationSheet.GetRow(best.Route.First())!.Map.RowId - 2;
 
                     if (bestJourney.RouteExp < best.RouteExp || (bestJourney.RouteExp == best.RouteExp && best.Build == lastBuild.Build.ToString()))
                     {
@@ -393,21 +394,21 @@ public partial class BuilderWindow
                 return null;
 
             var newLeftover = leftover + bestJourney!.RouteExp;
-            if (RankSheet[ProgressRank - 1].ExpToNext <= newLeftover)
+            if (Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext <= newLeftover)
             {
-                leftover = newLeftover - RankSheet[ProgressRank - 1].ExpToNext;
+                leftover = newLeftover - Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext;
                 ProgressRank++;
-                if (ProgressRank > RankSheet.Count)
+                if (ProgressRank > Sheets.RankSheet.Count)
                 {
                     ProgressRank--;
                     leftover = 0;
                 }
 
-                while (RankSheet[ProgressRank - 1].ExpToNext <= leftover)
+                while (Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext <= leftover)
                 {
-                    leftover -= RankSheet[ProgressRank - 1].ExpToNext;
+                    leftover -= Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext;
                     ProgressRank++;
-                    if (ProgressRank > RankSheet.Count)
+                    if (ProgressRank > Sheets.RankSheet.Count)
                     {
                         ProgressRank--;
                         leftover = 0;

@@ -7,7 +7,7 @@ using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using MessagePack;
 
 namespace SubmarineTracker.Data;

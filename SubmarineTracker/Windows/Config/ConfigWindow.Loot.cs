@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.ImGuiNotification;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 using static SubmarineTracker.Utils;
 
@@ -9,14 +9,14 @@ namespace SubmarineTracker.Windows.Config;
 
 public partial class ConfigWindow
 {
-    private static ExcelSheetSelector.ExcelSheetPopupOptions<Item> ItemPopupOptions = null!;
+    private static ExcelSheetSelector<Item>.ExcelSheetPopupOptions ItemPopupOptions = null!;
 
     private int CurrentCollectionId;
     private string NewProfileName = string.Empty;
 
     private void InitializeLoot()
     {
-        ItemPopupOptions = new ExcelSheetSelector.ExcelSheetPopupOptions<Item>
+        ItemPopupOptions = new ExcelSheetSelector<Item>.ExcelSheetPopupOptions
         {
             FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
             FilteredSheet = Sheets.ItemSheet.Skip(1).Where(i => ToStr(i.Name) != "")
@@ -82,7 +82,7 @@ public partial class ConfigWindow
         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Collection Items", "Collection Items:"));
         Helper.Button(FontAwesomeIcon.Plus, new Vector2(ImGui.GetContentRegionAvail().X / 3, 0));
 
-        if (ExcelSheetSelector.ExcelSheetPopup("ItemAddPopup", out var row, ItemPopupOptions))
+        if (ExcelSheetSelector<Item>.ExcelSheetPopup("ItemAddPopup", out var row, ItemPopupOptions))
         {
             var item = Sheets.ItemSheet.GetRow(row)!;
             var value = (int)(item.PriceLow > 1000 ? item.PriceLow : 0);

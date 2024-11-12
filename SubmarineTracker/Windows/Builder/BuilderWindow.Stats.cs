@@ -161,7 +161,7 @@ public partial class BuilderWindow
     {
         if (CurrentBuild.OptimizedRoute.Any())
         {
-            var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1);
+            var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == CurrentBuild.Map + 1);
             ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
         }
         else

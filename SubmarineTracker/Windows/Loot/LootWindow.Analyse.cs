@@ -1,21 +1,22 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
+using Lumina.Excel.Sheets;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Loot;
 
 public partial class LootWindow
 {
-    private SubExplPretty SelectedSector = null!;
-    private Dictionary<uint, List<SubmarineTracker.Loot>> LootCache = new();
+    private SubmarineExploration SelectedSector;
+    private readonly Dictionary<uint, List<SubmarineTracker.Loot>> LootCache = new();
 
-    private ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty> Options = null!;
+    private ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions Options = null!;
 
     private void InitializeAnalyse()
     {
         SelectedSector = Sheets.ExplorationSheet.GetRow(1)!;
-        Options = new ExcelSheetSelector.ExcelSheetPopupOptions<SubExplPretty>
+        Options = new ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
             FilteredSheet = Sheets.ExplorationSheet.Where(r => r.RankReq > 0)
@@ -49,7 +50,7 @@ public partial class LootWindow
         }
 
         ImGuiComponents.IconButton(FontAwesomeIcon.Search);
-        if (ExcelSheetSelector.ExcelSheetPopup("LootSectorAnalyseAddPopup", out var row, Options))
+        if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("LootSectorAnalyseAddPopup", out var row, Options))
             SelectedSector = Sheets.ExplorationSheet.GetRow(row)!;
 
         ImGui.SameLine();

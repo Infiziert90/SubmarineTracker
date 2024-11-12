@@ -1,5 +1,5 @@
 using Dalamud.Interface;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -8,7 +8,7 @@ namespace SubmarineTracker.Windows.Builder;
 public partial class BuilderWindow
 {
     private uint CurrentSearchSelection;
-    public ExcelSheetSelector.ExcelSheetPopupOptions<Item>? SearchPopupOptions;
+    public ExcelSheetSelector<Item>.ExcelSheetPopupOptions? SearchPopupOptions;
 
     private bool LootTab()
     {
@@ -25,14 +25,14 @@ public partial class BuilderWindow
             ImGui.Button(FontAwesomeIcon.Search.ToIconString(), new Vector2(width, 0));
             ImGui.PopFont();
 
-            SearchPopupOptions ??= new ExcelSheetSelector.ExcelSheetPopupOptions<Item>
+            SearchPopupOptions ??= new ExcelSheetSelector<Item>.ExcelSheetPopupOptions
             {
                 CloseOnSelection = true,
                 FormatRow = a => a.RowId switch { _ => $"[#{a.RowId}] {ToStr(a.Name)}" },
-                FilteredSheet = ItemSheet.Where(i => Importer.ItemDetailed.Items.ContainsKey(i.RowId)),
+                FilteredSheet = Sheets.ItemSheet.Where(i => Importer.ItemDetailed.Items.ContainsKey(i.RowId)),
             };
 
-            if (ExcelSheetSelector.ExcelSheetPopup("BuilderSearchAddPopup", out var row, SearchPopupOptions))
+            if (ExcelSheetSelector<Item>.ExcelSheetPopup("BuilderSearchAddPopup", out var row, SearchPopupOptions))
                 CurrentSearchSelection = row;
 
             ImGuiHelpers.ScaledDummy(10.0f);
@@ -45,7 +45,7 @@ public partial class BuilderWindow
                 return open;
             }
 
-            var item = ItemSheet.GetRow(CurrentSearchSelection)!;
+            var item = Sheets.ItemSheet.GetRow(CurrentSearchSelection)!;
             Helper.IconHeader(item.Icon, new Vector2(32, 32), ToStr(item.Name), ImGuiColors.ParsedOrange);
             if (ImGui.BeginTable("##searchColumn", 5, ImGuiTableFlags.BordersInner | ImGuiTableFlags.RowBg | ImGuiTableFlags.SizingStretchProp))
             {
@@ -59,7 +59,7 @@ public partial class BuilderWindow
 
                 foreach (var itemDetail in Importer.ItemDetailed.Items[item.RowId])
                 {
-                    var subRow = ExplorationSheet.GetRow(itemDetail.Sector)!;
+                    var subRow = Sheets.ExplorationSheet.GetRow(itemDetail.Sector)!;
 
                     ImGui.TableNextColumn();
                     ImGui.TextUnformatted($"{UpperCaseStr(subRow.Destination)} ({NumToLetter(subRow.RowId, true)} - {MapToThreeLetter(subRow.RowId, true)})");

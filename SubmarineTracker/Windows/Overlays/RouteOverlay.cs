@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
+
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -20,7 +21,7 @@ public class RouteOverlay : Window, IDisposable
     private DateTime ComputeStart = DateTime.Now;
 
     public bool Calculate;
-    public readonly HashSet<SubExplPretty> MustInclude = [];
+    public readonly HashSet<SubmarineExploration> MustInclude = [];
 
     public RouteOverlay(Plugin plugin) : base("Route Overlay##SubmarineTracker")
     {
@@ -122,7 +123,7 @@ public class RouteOverlay : Window, IDisposable
             });
         }
 
-        var startPoint = Sheets.ExplorationSheet.First(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1).RowId;
+        var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == Plugin.BuilderWindow.CurrentBuild.Map + 1).RowId;
 
         var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
         using (var listBox = ImRaii.ListBox("##BestPoints", new Vector2(-1, height)))
@@ -207,15 +208,15 @@ public class RouteOverlay : Window, IDisposable
 
         if (Plugin.BuilderWindow.ExplorationPopupOptions == null)
         {
-            ExcelSheetSelector.FilteredSearchSheet = null!;
+            ExcelSheetSelector<SubmarineExploration>.FilteredSearchSheet = null!;
             Plugin.BuilderWindow.ExplorationPopupOptions = new()
             {
                 FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
-                FilteredSheet = Sheets.ExplorationSheet.Where(r => r.Map.Row == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
+                FilteredSheet = Sheets.ExplorationSheet.Where(r => r.Map.RowId == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
             };
         }
 
-        if (ExcelSheetSelector.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
+        if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
             changed |= MustInclude.Add(Sheets.ExplorationSheet.GetRow(row)!);
 
         ImGui.SameLine();

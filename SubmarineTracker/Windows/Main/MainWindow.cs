@@ -1,7 +1,4 @@
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Windows.Main;
@@ -9,8 +6,6 @@ namespace SubmarineTracker.Windows.Main;
 public partial class MainWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
-
-    public readonly ExcelSheet<SubmarineMap> MapSheet;
 
     private ulong CurrentSelection = 1;
     private static readonly Vector2 IconSize = new(28, 28);
@@ -25,8 +20,6 @@ public partial class MainWindow : Window, IDisposable
             MinimumSize = new Vector2(800, 550),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
-
-        MapSheet = Plugin.Data.GetExcelSheet<SubmarineMap>()!;
     }
 
     public void Dispose() { }

@@ -42,7 +42,7 @@ public partial class ConfigWindow
                                                "\nEmpty if:" +
                                                "\n  a) Highest Rank threshold has been passed" +
                                                "\n  b) MustInclude is empty"));
-            changed |= ImGui.SliderInt(Loc.Localize("Config Tab Slider - Rank", "Highest Rank"), ref Plugin.Configuration.HighestLevel, 1, (int) Plugin.BuilderWindow.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
+            changed |= ImGui.SliderInt(Loc.Localize("Config Tab Slider - Rank", "Highest Rank"), ref Plugin.Configuration.HighestLevel, 1, (int) Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Rank", "No route suggestions above this rank."));
             changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Include Main", "Auto Include Main Sector"), ref Plugin.Configuration.MainRouteAutoInclude);
             ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Include Main", "Auto includes the next main route sector, if there is one."));

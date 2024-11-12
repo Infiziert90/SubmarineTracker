@@ -54,7 +54,7 @@ public class UnlockOverlay : Window, IDisposable
             var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
 
             PossibleUnlocks.Clear();
-            foreach (var sector in Sheets.ExplorationSheet.Where(s => s.Map.Row == selectedMap + 1))
+            foreach (var sector in Sheets.ExplorationSheet.Where(s => s.Map.RowId == selectedMap + 1))
             {
                 if (!Unlocks.SectorToUnlock.TryGetValue(sector.RowId, out var unlockedFrom))
                     continue;

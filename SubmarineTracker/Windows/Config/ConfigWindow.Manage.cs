@@ -130,7 +130,7 @@ public partial class ConfigWindow
                 {
                     var name = Utils.ToStr(local.Name);
                     var tag = Utils.ToStr(local.CompanyTag);
-                    var world = Utils.ToStr(local.HomeWorld.GameData!.Name);
+                    var world = Utils.ToStr(local.HomeWorld.Value.Name);
 
                     Plugin.Configuration.IgnoredCharacters.Add(Plugin.ClientState.LocalContentId, $"({tag}) {name}@{world}");
                     Plugin.Configuration.Save();

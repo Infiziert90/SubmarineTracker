@@ -1,42 +1,31 @@
-using Lumina.Data;
-using Lumina.Excel.GeneratedSheets;
-using Lumina.Excel;
-using Lumina;
+using Lumina.Excel.Sheets;
 
 namespace SubmarineTracker;
 
-public class SubExplPretty : SubmarineExploration
+public static class SubmarineExplorationExtensions
 {
-    public Vector3 Position;
+    public static string ToName(this SubmarineExploration sheet) =>
+        Utils.UpperCaseStr(sheet.Destination);
 
-    public override void PopulateData( RowParser parser, GameData gameData, Language language )
-    {
-        base.PopulateData( parser, gameData, language );
-        Position = new Vector3( X, Y, Z );
-    }
-
-    public uint GetSurveyTime(float speed)
+    public static uint GetSurveyTime(this SubmarineExploration sheet, float speed)
     {
         if (speed < 1)
             speed = 1;
 
-        return (uint) Math.Floor(SurveyDurationmin * 7000 / (speed * 100) * 60);
+        return (uint) Math.Floor(sheet.SurveyDurationmin * 7000 / (speed * 100) * 60);
     }
 
-    public uint GetVoyageTime(SubExplPretty other, float speed)
+    public static uint GetVoyageTime(this SubmarineExploration sheet, SubmarineExploration otherSheet, float speed)
     {
         if (speed < 1)
             speed = 1;
 
-        return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 3990 / (speed * 100) * 60);
+        return (uint) Math.Floor(Vector3.Distance(new Vector3(sheet.X, sheet.Y, sheet.Z), new Vector3(otherSheet.X, otherSheet.Y, otherSheet.Z)) * 3990 / (speed * 100) * 60);
     }
 
-    public uint GetDistance(SubExplPretty other)
-    {
-        return (uint) Math.Floor(Vector3.Distance( Position, other.Position ) * 0.035);
-    }
+    public static uint GetDistance(this SubmarineExploration sheet, SubmarineExploration otherSheet) =>
+        (uint)Math.Floor(Vector3.Distance(new Vector3(sheet.X, sheet.Y, sheet.Z), new Vector3(otherSheet.X, otherSheet.Y, otherSheet.Z)) * 0.035);
 
-    public string ToName() => Utils.UpperCaseStr(Destination);
-
-    public uint CalcTime(SubExplPretty other, float speed) => GetVoyageTime(other, speed) + other.GetSurveyTime(speed);
+    public static uint CalcTime(this SubmarineExploration sheet, SubmarineExploration otherSheet, float speed) =>
+        GetVoyageTime(sheet, otherSheet, speed) + otherSheet.GetSurveyTime(speed);
 }

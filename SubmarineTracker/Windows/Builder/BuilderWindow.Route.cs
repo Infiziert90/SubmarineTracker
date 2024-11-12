@@ -1,3 +1,4 @@
+using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using static SubmarineTracker.Utils;
 
@@ -22,7 +23,7 @@ public partial class BuilderWindow
                     return;
                 }
 
-                var maps = MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
+                var maps = Sheets.MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
                 var selectedMap = CurrentBuild.Map;
                 ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
                 if (selectedMap != CurrentBuild.Map)
@@ -30,21 +31,21 @@ public partial class BuilderWindow
                     CurrentBuild.ChangeMap(selectedMap);
                 }
 
-                var explorations = ExplorationSheet
-                                   .Where(r => r.Map.Row == CurrentBuild.Map + 1)
-                                   .Where(r => !r.StartingPoint)
-                                   .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
-                                   .ToList();
+                var explorations = Sheets.ExplorationSheet
+                                         .Where(r => r.Map.RowId == CurrentBuild.Map + 1)
+                                         .Where(r => !r.StartingPoint)
+                                         .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
+                                         .ToList();
 
                 ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Sectors", "Sectors")} {CurrentBuild.Sectors.Count} / 5");
-                var startPoint = ExplorationSheet.First(r => r.Map.Row == CurrentBuild.Map + 1).RowId;
+                var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == CurrentBuild.Map + 1).RowId;
 
                 var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
                 if (ImGui.BeginListBox("##selectedPoints", new Vector2(-1, height)))
                 {
                     foreach (var location in CurrentBuild.Sectors.ToArray())
                     {
-                        var p = ExplorationSheet.GetRow(location)!;
+                        var p = Sheets.ExplorationSheet.GetRow(location)!;
                         if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}"))
                             CurrentBuild.Sectors.Remove(location);
                     }
@@ -110,7 +111,7 @@ public partial class BuilderWindow
         }
     }
 
-    private void UnlockedTooltip(SubExplPretty location, FreeCompany fcSub, bool unlockTooltip)
+    private void UnlockedTooltip(SubmarineExploration location, FreeCompany fcSub, bool unlockTooltip)
     {
         if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
             unlockedFrom = new Unlocks.UnlockedFrom(9876);
@@ -131,7 +132,7 @@ public partial class BuilderWindow
             {
                 if (unlockedFrom.Sector != 9000)
                 {
-                    var unlockPoint = ExplorationSheet.GetRow(unlockedFrom.Sector)!;
+                    var unlockPoint = Sheets.ExplorationSheet.GetRow(unlockedFrom.Sector)!;
                     var mapPoint = Voyage.FindVoyageStart(unlockPoint.RowId);
                     ImGui.TextColored(otherUnlocked
                                           ? ImGuiColors.HealerGreen
