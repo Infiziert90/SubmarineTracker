@@ -117,7 +117,7 @@ public partial class BuilderWindow
         {
             if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int) Sheets.LastRank, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
             {
-                Rank = Sheets.RankSheet.ElementAt(SelectedRank - 1);
+                Rank = Sheets.RankSheet.GetRow((uint)SelectedRank);
                 RefreshList();
             }
 

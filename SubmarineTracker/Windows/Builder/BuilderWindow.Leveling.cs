@@ -256,8 +256,7 @@ public partial class BuilderWindow
 
     public float GetRemaindExp(int rank, uint exp)
     {
-        var expToNext = Sheets.RankSheet[(uint) rank - 1].ExpToNext;
-        return rank == Sheets.RankSheet.Count ? 0 : exp / (float)expToNext;
+        return rank == Sheets.LastRank ? 0 : exp / (float)Sheets.RankSheet.GetRow((uint)rank).ExpToNext;
     }
 
     public TimeSpan GetTimesFromJourneys(IEnumerable<Journey> journeys) =>
@@ -393,35 +392,7 @@ public partial class BuilderWindow
             if (CancelSource.IsCancellationRequested)
                 return null;
 
-            var newLeftover = leftover + bestJourney!.RouteExp;
-            if (Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext <= newLeftover)
-            {
-                leftover = newLeftover - Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext;
-                ProgressRank++;
-                if (ProgressRank > Sheets.RankSheet.Count)
-                {
-                    ProgressRank--;
-                    leftover = 0;
-                }
-
-                while (Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext <= leftover)
-                {
-                    leftover -= Sheets.RankSheet[(uint) ProgressRank - 1].ExpToNext;
-                    ProgressRank++;
-                    if (ProgressRank > Sheets.RankSheet.Count)
-                    {
-                        ProgressRank--;
-                        leftover = 0;
-                        break;
-                    }
-                }
-
-                ProgressStartTime = DateTime.Now;
-            }
-            else
-            {
-                leftover += bestJourney.RouteExp;
-            }
+            (ProgressRank, leftover) = Sectors.CalculateRankUp(ProgressRank, leftover + bestJourney!.RouteExp);
 
             bestJourney = bestJourney with { RankReached = ProgressRank, Leftover = leftover };
             outTree.Add(count++, bestJourney);

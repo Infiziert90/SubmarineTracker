@@ -105,8 +105,6 @@ public partial class MainWindow
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
-        // TODO: FIX
-        // selectedFc.RebuildStats(Plugin.Configuration.ExcludeLegacy);
 
         using var lootChild = ImRaii.Child("##lootOverview");
         if (!lootChild.Success)

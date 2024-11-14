@@ -276,4 +276,17 @@ public static class Extensions
     {
         return list.Select((val, idx) => (val, idx));
     }
+
+    /// <summary>
+    /// Simple filter for Span like LINQs `Where()`
+    /// </summary>
+    public static List<T> Filter<T>(this Span<T> span, Func<T, bool> predicate)
+    {
+        var ret = new List<T>(span.Length);
+        foreach(var item in span)
+            if (predicate(item))
+                ret.Add(item);
+
+        return ret;
+    }
 }

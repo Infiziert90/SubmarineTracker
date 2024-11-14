@@ -213,4 +213,54 @@ public static class Sectors
             _ => exp
         };
     }
+
+    /// <summary>
+    /// Calculates the potential new rank and exp that carry over after a voyage.
+    /// </summary>
+    /// <param name="currentRank">Rank the submarine holds</param>
+    /// <param name="totalExp">Current exp and voyage exp reward combined</param>
+    /// <returns>Rank after the voyage and remaining exp</returns>
+    public static (int Rank, uint RemainingExp) CalculateRankUp(int currentRank, uint totalExp)
+    {
+        uint expToNext;
+        while ((expToNext = Sheets.RankSheet.GetRow((uint)currentRank).ExpToNext) <= totalExp)
+        {
+            currentRank++;
+            totalExp -= expToNext;
+
+            if (currentRank > Sheets.LastRank)
+            {
+                currentRank--;
+                totalExp = 0;
+                break;
+            }
+        }
+
+        return (currentRank, totalExp);
+    }
+
+    /// <summary>
+    /// Calculates the original rank that a submarine had before undertaking the latest voyage.
+    /// </summary>
+    /// <param name="currentRank">Rank after the voyage</param>
+    /// <param name="currentExp">Exp leftover after the voyage</param>
+    /// <param name="expReceived">Total exp received from the voyage</param>
+    /// <returns>Previous rank</returns>
+    public static int CalculateOriginalRank(int currentRank, uint currentExp, uint expReceived)
+    {
+        if (currentExp < expReceived)
+        {
+            currentRank--;
+            expReceived -= currentExp;
+
+            uint expToNext;
+            while (currentRank >= 2 && (expToNext = Sheets.RankSheet.GetRow((uint) currentRank).ExpToNext) < expReceived)
+            {
+                currentRank--;
+                expReceived -= expToNext;
+            }
+        }
+
+        return currentRank;
+    }
 }

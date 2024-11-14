@@ -72,7 +72,6 @@ namespace SubmarineTracker
 
         public readonly Localization Localization = new();
 
-        public readonly Dictionary<uint, Submarine> SubmarinePreVoyage = new();
         private bool ShowIgnoredWarning = true;
         private bool ShowStorageMessage = true;
 
@@ -126,8 +125,6 @@ namespace SubmarineTracker
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
 
-            ClientState.Login += Login;
-
             // Try to init it last, just to make sure that loc actually loaded fine
             Helper.Initialize(this);
 
@@ -137,9 +134,6 @@ namespace SubmarineTracker
 
             // Trigger Importer to precalculate hashes
             Log.Debug($"Loading: {Importer.Filename}");
-
-            if (ClientState.IsLoggedIn)
-                Login();
         }
 
         public void Dispose()
@@ -165,8 +159,6 @@ namespace SubmarineTracker
             CommandManager.Dispose();
             HookManager.Dispose();
             ServerBar.Dispose();
-
-            ClientState.Login -= Login;
 
             Framework.Update -= FrameworkUpdate;
             Framework.Update -= Notify.NotifyLoop;
@@ -225,12 +217,6 @@ namespace SubmarineTracker
             Configuration.Save();
         }
 
-        private void Login()
-        {
-            // Clear it on every login to prevent cases of people having duplicated subs
-            SubmarinePreVoyage.Clear();
-        }
-
         private bool IsUpserting;
         public bool NeedsRefresh => IsUpserting || DatabaseCache.FCNeedsRefresh || DatabaseCache.SubsNeedRefresh;
 
@@ -250,8 +236,6 @@ namespace SubmarineTracker
             var instance = HousingManager.Instance();
             if (instance == null || instance->WorkshopTerritory == null)
             {
-                // Clear the cache after we left workshop
-                SubmarinePreVoyage.Clear();
                 ShowIgnoredWarning = true;
                 ShowStorageMessage = true;
                 return;
@@ -335,13 +319,7 @@ namespace SubmarineTracker
 
             var possibleNewSubs = new List<Submarine>();
             foreach (var (sub, idx) in submarineData.Where(data => data.RankId != 0).WithIndex())
-            {
                 possibleNewSubs.Add(new Submarine(sub, idx) {FreeCompanyId = fcId});
-
-                // We prefill the current submarines once to have the original stats
-                if (!SubmarinePreVoyage.ContainsKey(sub.RegisterTime))
-                    SubmarinePreVoyage[sub.RegisterTime] = new Submarine(sub) {FreeCompanyId = fcId};
-            }
 
             if (NeedsRefresh || possibleNewSubs.Count == 0)
                 return;

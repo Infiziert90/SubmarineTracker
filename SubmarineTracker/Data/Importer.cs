@@ -93,7 +93,7 @@ public static class Importer
         {
             Plugin.Log.Information("Start route build");
             var dict = new Dictionary<int, Route[]>();
-            foreach (var mapId in Plugin.Data.GetExcelSheet<SubmarineMap>()!.Where(m => m.RowId != 0).Select(m => m.RowId))
+            foreach (var mapId in Sheets.MapSheet.Where(m => m.RowId != 0).Select(m => m.RowId))
                 dict.Add((int) mapId, Voyage.FindAllRoutes(mapId));
 
             CalculatedData = new CalculatedData {Maps = dict};

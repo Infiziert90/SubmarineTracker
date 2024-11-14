@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Manager;
 
@@ -61,22 +62,20 @@ public class HookManager
             var sub = current.Value;
 
             var fcId = Plugin.GetFCId;
-            if (!Plugin.SubmarinePreVoyage.TryGetValue(sub->RegisterTime, out var cachedStats))
-            {
-                Plugin.Log.Warning("No cached submarine found");
-                return;
-            }
-
             var register = sub->RegisterTime;
-            var returnTime = cachedStats.Return;
-            var build = cachedStats.Build;
+            var returnTime = sub->RegisterTime;
 
             var data = sub->GatheredData;
             if (data[0].ItemIdPrimary == 0)
                 return;
 
+            var validSectors = data.Filter(val => val.Point > 0);
+            var expGathered = (uint) validSectors.Sum(val => val.ExpGained);
+            var buildRank = Sectors.CalculateOriginalRank(sub->RankId, sub->CurrentExp, expGathered);
+            var build = new Build.SubmarineBuild(buildRank, sub->HullId, sub->SternId, sub->BowId, sub->BridgeId);
+
             var lootList = new List<Loot>();
-            foreach (var val in data.ToArray().Where(val => val.Point > 0))
+            foreach (var val in validSectors)
                 lootList.Add(new Loot(build, val) {FreeCompanyId = fcId, Register = register, Return = returnTime});
 
             Task.Run(() =>

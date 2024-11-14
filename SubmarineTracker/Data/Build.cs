@@ -14,7 +14,6 @@ public static class Build
         public readonly SubmarinePart Bridge;
 
         public SubmarineBuild(Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
-        // public SubmarineBuild(Submarines.Submarine sub) : this(sub.Rank, sub.Hull, sub.Stern, sub.Bow, sub.Bridge) { }
 
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
