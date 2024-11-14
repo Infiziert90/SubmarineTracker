@@ -57,7 +57,7 @@ public partial class BuilderWindow
 
             ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Build", "Build")}: {(!IgnoreBuild ? $"{CurrentBuild} ({Loc.Localize("Terms - Rank", "Rank")} {CurrentBuild.Rank})" : $"{Loc.Localize("Terms - All", "All")}")}");
             ImGui.SetNextItemWidth(width);
-            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Target Rank", "Target Rank")} %d");
+            ImGui.SliderInt("##targetRank", ref TargetRank, 15, (int)Sheets.LastRank, $"{Loc.Localize("Terms - Target Rank", "Target Rank")} %d");
             ImGuiComponents.HelpMarker(Loc.Localize("Builder Leveling Tooltip - Target", "The rank this calculation must reach, but can overshot."));
             ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
             if (ImGui.Button(Loc.Localize("Builder Leveling Button - Calculate","Calculate"), new Vector2(longText, 0)))
@@ -204,7 +204,7 @@ public partial class BuilderWindow
 
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            if (LastCalc.Any())
+            if (LastCalc.Count != 0)
             {
                 var lastIdx = LastCalc.Last().Key;
                 var modifier = new Box.Modifier { FPadding = new Vector4(7 * ImGuiHelpers.GlobalScale), FBorderColor = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)) };

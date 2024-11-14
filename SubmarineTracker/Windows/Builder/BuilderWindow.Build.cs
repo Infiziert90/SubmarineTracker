@@ -52,7 +52,7 @@ public partial class BuilderWindow
 
                     ImGui.SameLine();
                     ImGui.PushItemWidth(windowWidth - (3.0f * ImGuiHelpers.GlobalScale));
-                    ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
+                    ImGui.SliderInt("##SliderRank", ref CurrentBuild.Rank, 1, (int) Sheets.LastRank, $"{Loc.Localize("Terms - Rank", "Rank")} %d");
                     ImGui.PopItemWidth();
                 }
                 else

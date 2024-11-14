@@ -21,7 +21,7 @@ public partial class BuilderWindow
     {
         AllBuilds.Clear();
 
-        Rank = Sheets.RankSheet.Last();
+        Rank = Sheets.RankSheet.GetRow(Sheets.LastRank);
         SelectedRank = (int) Rank.RowId;
 
         for (var hull = 0; hull < PartsCount; hull++)
@@ -115,7 +115,7 @@ public partial class BuilderWindow
         var open = ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Ship", "Ship")}##Ship");
         if (open)
         {
-            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int) Sheets.RankSheet.Last().RowId, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
+            if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int) Sheets.LastRank, $"{Loc.Localize("Terms - Rank", "Rank")} %d"))
             {
                 Rank = Sheets.RankSheet.ElementAt(SelectedRank - 1);
                 RefreshList();
