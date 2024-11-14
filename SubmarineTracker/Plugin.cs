@@ -281,7 +281,6 @@ namespace SubmarineTracker
 
             if (Configuration.ShowStorageMessage && ShowStorageMessage)
             {
-
                 if (DatabaseCache.GetFreeCompanies().ContainsKey(fcId))
                 {
                     var subs = DatabaseCache.GetSubmarines().Where(s => s.FreeCompanyId == fcId);

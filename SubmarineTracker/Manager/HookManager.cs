@@ -11,7 +11,7 @@ public class HookManager
 
     private const string PacketReceiverSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 43 ?? 4C 8D 4B 17";
     private const string PacketReceiverSigCN = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ?? 4C 8D 4E 17";
-    private delegate void PacketDelegate(uint param1, ushort param2, sbyte param3, Int64 param4, char param5);
+    private delegate void PacketDelegate(uint param1, ushort param2, sbyte param3, nint param4, char param5);
     private readonly Hook<PacketDelegate> PacketHandlerHook;
 
     public HookManager(Plugin plugin)
@@ -41,11 +41,11 @@ public class HookManager
         PacketHandlerHook.Dispose();
     }
 
-    private unsafe void PacketReceiver(uint param1, ushort param2, sbyte param3, Int64 param4, char param5)
+    private unsafe void PacketReceiver(uint param1, ushort param2, sbyte param3, nint param4, char param5)
     {
         PacketHandlerHook.Original(param1, param2, param3, param4, param5);
 
-        // We only care about voyage Result
+        // We only care about voyage results
         if (param1 != 721343)
             return;
 
@@ -63,7 +63,7 @@ public class HookManager
 
             var fcId = Plugin.GetFCId;
             var register = sub->RegisterTime;
-            var returnTime = sub->RegisterTime;
+            var returnTime = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // sub->ReturnTime is 0 at this point
 
             var data = sub->GatheredData;
             if (data[0].ItemIdPrimary == 0)
