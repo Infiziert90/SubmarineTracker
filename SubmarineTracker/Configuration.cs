@@ -90,8 +90,8 @@ namespace SubmarineTracker
 
         public void Migration()
         {
-            // Current version, return early
-            if (Version == 2)
+            // Current version, return early (i forgot to call the migration code, so some people already have filled lists
+            if (Version == 2 || ManagedFCs.Count > 0)
                 return;
 
             foreach (var id in FCIdOrder)

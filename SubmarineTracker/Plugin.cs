@@ -78,6 +78,8 @@ namespace SubmarineTracker
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.Migration();
+
             Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             FileDialogManager = new FileDialogManager();
