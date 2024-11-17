@@ -46,6 +46,7 @@ public partial class ConfigWindow
             ImGuiHelpers.ScaledIndent(-10.0f);
         }
         changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Only Returned", "Only Show Returned"), ref Plugin.Configuration.OverlayOnlyReturned);
+        changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - No Hidden", "Remove Hidden From Numbers"), ref Plugin.Configuration.OverlayNoHidden);
         ImGuiHelpers.ScaledIndent(-10.0f);
 
         ImGuiHelpers.ScaledDummy(5.0f);

@@ -67,7 +67,11 @@ public class ServerBar
                 time = Utils.ToTime(returnTime);
         }
 
-        DtrEntry!.Text = $"{name} ({time})";
+        var numbers = "";
+        if (Plugin.Configuration.DtrShowOverlayNumbers)
+            numbers = $" - [{Plugin.ReturnOverlay.OverlayNumbers()}]";
+
+        DtrEntry!.Text = $"{name} ({time}){numbers}";
     }
 
     private void UpdateVisibility(bool shown) => DtrEntry!.Shown = shown;

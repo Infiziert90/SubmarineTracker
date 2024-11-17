@@ -1,5 +1,4 @@
 using System.IO;
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -9,9 +8,10 @@ public class ReturnOverlay : Window, IDisposable
 {
     private readonly Plugin Plugin;
 
-    private (int OnRoute, int Done, int Halt) VoyageStats = (0, 0, 0);
+    private long LastRefresh;
+    private (int OnRoute, int Done) VoyageStats = (0, 0);
 
-    public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0|0###submarineOverlay")
+    public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0###submarineOverlay")
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -36,43 +36,47 @@ public class ReturnOverlay : Window, IDisposable
     {
         if (Plugin.Configuration.OverlayHoldClosed && !Plugin.DatabaseCache.GetSubmarines().Any(sub => sub.IsDone()))
             IsOpen = false;
+
+        // Values are shared between this window and server bar, so always calculate it even with a closed window
+        // Only calculate it once a second
+        if (Environment.TickCount64 < LastRefresh)
+            return;
+        LastRefresh = Environment.TickCount64 + 1000; // 1s
+
+        VoyageStats = (0, 0);
+        var nextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
+        foreach (var sub in Plugin.DatabaseCache.GetSubmarines())
+        {
+            if (Plugin.Configuration.OverlayNoHidden && Plugin.Configuration.ManagedFCs.FirstOrDefault(f => f.Id == sub.FreeCompanyId).Hidden)
+                continue;
+
+            if (sub.IsDone())
+            {
+                VoyageStats.Done += 1;
+            }
+            else
+            {
+                VoyageStats.OnRoute += 1;
+                if (!Plugin.Configuration.OverlayTitleTime)
+                    continue;
+
+                if (Plugin.Configuration.OverlayFirstReturn)
+                {
+                    if (nextSub.Return > sub.Return)
+                        nextSub = sub;
+                }
+                else
+                {
+                    if (nextSub.Return < sub.Return)
+                        nextSub = sub;
+                }
+            }
+        }
     }
 
     public override void PreDraw()
     {
-        VoyageStats = (0, 0, 0);
         var nextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
-        foreach (var sub in Plugin.DatabaseCache.GetSubmarines())
-        {
-            if (sub.IsOnVoyage())
-            {
-                if (sub.IsDone())
-                {
-                    VoyageStats.Done += 1;
-                }
-                else
-                {
-                    VoyageStats.OnRoute += 1;
-                    if (!Plugin.Configuration.OverlayTitleTime)
-                        continue;
-
-                    if (Plugin.Configuration.OverlayFirstReturn)
-                    {
-                        if (nextSub.Return > sub.Return)
-                            nextSub = sub;
-                    }
-                    else
-                    {
-                        if (nextSub.Return < sub.Return)
-                            nextSub = sub;
-                    }
-                }
-
-                continue;
-            }
-
-            VoyageStats.Halt += 1;
-        }
 
         var returnText = "";
         if (Plugin.Configuration.OverlayTitleTime)
@@ -89,7 +93,7 @@ public class ReturnOverlay : Window, IDisposable
             }
         }
 
-        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {VoyageStats.Done} | {VoyageStats.Halt} | {VoyageStats.OnRoute}{returnText}###submarineOverlay";
+        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {OverlayNumbers()}{returnText}###submarineOverlay";
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
@@ -231,5 +235,10 @@ public class ReturnOverlay : Window, IDisposable
         ImGui.AlignTextToFramePadding();
         ImGui.Text(longestText);
         ImGui.SetCursorPos(cursorPos);
+    }
+
+    public string OverlayNumbers()
+    {
+        return $"{VoyageStats.Done} | {VoyageStats.OnRoute}";
     }
 }

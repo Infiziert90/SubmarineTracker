@@ -26,6 +26,7 @@ namespace SubmarineTracker
         public bool ShowDateInAll = false;
 
         public bool ShowDtrEntry = false;
+        public bool DtrShowOverlayNumbers = true;
 
         public bool ShowOnlyCurrentFC = false;
         public bool AutoSelectCurrent = true;
@@ -64,6 +65,7 @@ namespace SubmarineTracker
         public bool OverlayShowBuild = false;
         public bool OverlayHoldClosed = false;
         public bool OverlayTitleTime = false;
+        public bool OverlayNoHidden = true;
         public Vector4 OverlayAllDone = Helper.CustomFullyDone;
         public Vector4 OverlayPartlyDone = Helper.CustomPartlyDone;
         public Vector4 OverlayNoneDone = Helper.CustomOnRoute;
