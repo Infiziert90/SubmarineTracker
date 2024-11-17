@@ -9,6 +9,7 @@ public class ReturnOverlay : Window, IDisposable
     private readonly Plugin Plugin;
 
     private long LastRefresh;
+    private Submarine NextSub = new();
     private (int OnRoute, int Done) VoyageStats = (0, 0);
 
     public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0###submarineOverlay")
@@ -44,7 +45,7 @@ public class ReturnOverlay : Window, IDisposable
         LastRefresh = Environment.TickCount64 + 1000; // 1s
 
         VoyageStats = (0, 0);
-        var nextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
+        NextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
         foreach (var sub in Plugin.DatabaseCache.GetSubmarines())
         {
             if (Plugin.Configuration.OverlayNoHidden && Plugin.Configuration.ManagedFCs.FirstOrDefault(f => f.Id == sub.FreeCompanyId).Hidden)
@@ -62,13 +63,13 @@ public class ReturnOverlay : Window, IDisposable
 
                 if (Plugin.Configuration.OverlayFirstReturn)
                 {
-                    if (nextSub.Return > sub.Return)
-                        nextSub = sub;
+                    if (NextSub.Return > sub.Return)
+                        NextSub = sub;
                 }
                 else
                 {
-                    if (nextSub.Return < sub.Return)
-                        nextSub = sub;
+                    if (NextSub.Return < sub.Return)
+                        NextSub = sub;
                 }
             }
         }
@@ -76,20 +77,18 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void PreDraw()
     {
-        var nextSub = new Submarine(Plugin.Configuration.OverlayFirstReturn ? uint.MaxValue : 0);
-
         var returnText = "";
         if (Plugin.Configuration.OverlayTitleTime)
         {
             if (Plugin.Configuration.OverlayFirstReturn)
             {
-                if (nextSub.Return < uint.MaxValue)
-                    returnText = $"   -   {(nextSub.IsDone() ? "Done" : Utils.ToTime(nextSub.LeftoverTime()))}";
+                if (NextSub.Return < uint.MaxValue)
+                    returnText = $"   -   {(NextSub.IsDone() ? "Done" : Utils.ToTime(NextSub.LeftoverTime()))}";
             }
             else
             {
-                if (nextSub.Return > 0)
-                    returnText = $"   -   {Utils.ToTime(nextSub.LeftoverTime())}";
+                if (NextSub.Return > 0)
+                    returnText = $"   -   {Utils.ToTime(NextSub.LeftoverTime())}";
             }
         }
 
