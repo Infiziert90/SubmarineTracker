@@ -55,6 +55,7 @@ public static class Utils
             3 => "Sea of Jade",
             4 => "Sirensong",
             5 => "Lilac Sea",
+            6 => "South Indigo",
             _ => "Unknown"
         };
     }
@@ -72,6 +73,7 @@ public static class Utils
             3 => "SOJ",
             4 => "SSS",
             5 => "TLS",
+            6 => "SID",
             _ => ""
         };
     }

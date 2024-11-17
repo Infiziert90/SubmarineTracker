@@ -126,6 +126,14 @@ public static class Unlocks
         { 112, new UnlockedFrom(109) },                         // R    East Dodie's Abyss            <-       The Fluttering Bay
         { 113, new UnlockedFrom(108) },                         // S    Lilac Sea 5                   <-       The Floating Standard
         { 114, new UnlockedFrom(111) },                         // T    West Dodie's Abyss            <-       Proudkeel
+
+        { 116, new UnlockedFrom(114) },                         // A    The Indigo Shallows           <-       West Dodie's Abyss
+        { 117, new UnlockedFrom(116) },                         // B    Voyagers' Reprieve            <-       The Indigo Shallows
+        { 118, new UnlockedFrom(116) },                         // C    North Delphinium Seashelf     <-       The Indigo Shallows
+        { 119, new UnlockedFrom(117) },                         // D    Rainbringer Rift              <-       Voyagers' Reprieve
+        { 120, new UnlockedFrom(118) },                         // E    South Indigo Deep 1           <-       North Delphinium Seashelf
+        { 121, new UnlockedFrom(117) },                         // F    The Central Blue              <-       Voyagers' Reprieve
+        { 122, new UnlockedFrom(118) },                         // G    South Indigo Deep 2           <-       North Delphinium Seashelf
     };
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)
