@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>Infi</Authors>
-        <Version>1.9.3.7</Version>
+        <Version>1.9.3.8</Version>
         <Description>You do not talk about Fight Club, same for Submarines</Description>
         <PackageProjectUrl>https://github.com/Infiziert90/SubmarineTracker</PackageProjectUrl>
     </PropertyGroup>

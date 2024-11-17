@@ -36,7 +36,7 @@ public class ServerBar
 
     public void UpdateDtrBar(IFramework framework)
     {
-        if (!Plugin.Configuration.ShowDtrEntry)
+        if (!Plugin.Configuration.ShowDtrEntry && !Plugin.Configuration.DtrShowOverlayNumbers)
         {
             UpdateVisibility(false);
             return;
@@ -48,30 +48,38 @@ public class ServerBar
 
     private void UpdateBarString()
     {
-        var subs = Plugin.DatabaseCache.GetSubmarines();
-        var sub = !Plugin.Configuration.OverlayFirstReturn ? subs.MaxBy(s => s.Return) : subs.MinBy(s => s.Return);
-        if (sub is not { FreeCompanyId: > 0 })
-            return;
-
-        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(sub.FreeCompanyId, out var fc))
-            return;
-
-        var name = Plugin.NameConverter.GetSub(sub, fc);
-        var time = Loc.Localize("Terms - No Voyage", "No Voyage");
-        if (sub.IsOnVoyage())
+        var returning = "";
+        if (Plugin.Configuration.ShowDtrEntry)
         {
-            time = Loc.Localize("Terms - Done", "Done");
+            var subs = Plugin.DatabaseCache.GetSubmarines();
+            var sub = !Plugin.Configuration.OverlayFirstReturn ? subs.MaxBy(s => s.Return) : subs.MinBy(s => s.Return);
+            if (sub is not { FreeCompanyId: > 0 })
+                return;
 
-            var returnTime = sub.LeftoverTime();
-            if (returnTime.TotalSeconds > 0)
-                time = Utils.ToTime(returnTime);
+            if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(sub.FreeCompanyId, out var fc))
+                return;
+
+            var name = Plugin.NameConverter.GetSub(sub, fc);
+            var time = Loc.Localize("Terms - No Voyage", "No Voyage");
+            if (sub.IsOnVoyage())
+            {
+                time = Loc.Localize("Terms - Done", "Done");
+
+                var returnTime = sub.LeftoverTime();
+                if (returnTime.TotalSeconds > 0)
+                    time = Utils.ToTime(returnTime);
+            }
+
+            returning = $"{name} ({time})";
         }
+
+        var separator = Plugin.Configuration.DtrShowOverlayNumbers && Plugin.Configuration.ShowDtrEntry ? " - " : string.Empty;
 
         var numbers = "";
         if (Plugin.Configuration.DtrShowOverlayNumbers)
-            numbers = $" - [{Plugin.ReturnOverlay.OverlayNumbers()}]";
+            numbers = $"[{Plugin.ReturnOverlay.OverlayNumbers()}]";
 
-        DtrEntry!.Text = $"{name} ({time}){numbers}";
+        DtrEntry!.Text = $"{returning}{separator}{numbers}";
     }
 
     private void UpdateVisibility(bool shown) => DtrEntry!.Shown = shown;
