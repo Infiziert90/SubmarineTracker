@@ -114,7 +114,10 @@ public partial class ConfigWindow
 
                 ImGui.TableNextColumn();
                 if (Helper.Button($"##{id}CharacterDel", FontAwesomeIcon.Trash, !ImGui.GetIO().KeyCtrl))
+                {
                     Plugin.Configuration.IgnoredCharacters.Remove(id);
+                    Plugin.Configuration.Save();
+                }
 
                 if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
                     ImGui.SetTooltip(Loc.Localize("Config Tab Tooltip - Ignored Character Delete", "Hold Control to delete"));

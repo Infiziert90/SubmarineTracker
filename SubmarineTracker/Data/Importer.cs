@@ -7,7 +7,6 @@ using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-using Lumina.Excel.Sheets;
 using MessagePack;
 
 namespace SubmarineTracker.Data;
@@ -127,8 +126,8 @@ public static class Importer
     // ReSharper disable once UnusedType.Global
     public class ItemCSV
     {
-        [Name("Sector name")] public string Sector { get; set; }
-        [Name("Item name")] public string Item { get; set; }
+        [Name("SectorID")] public uint SectorId { get; set; }
+        [Name("ItemID")] public uint ItemId { get; set; }
         [Name("Loot tier")] public string Tier { get; set; }
         [Name("Poor min")] public double PoorMin { get; set; }
         [Name("Poor max")] public double PoorMax { get; set; }
@@ -149,8 +148,8 @@ public static class Importer
         using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true });
         foreach (var itemDetailed in csv.GetRecords<ItemCSV>())
         {
-            var itemRow = Sheets.ItemSheet.First(i => i.Name == itemDetailed.Item).RowId;
-            var subRow = Sheets.ExplorationSheet.First(s => string.Equals(Utils.UpperCaseStr(s.Destination), itemDetailed.Sector, StringComparison.InvariantCultureIgnoreCase)).RowId;
+            var itemRow = Sheets.ItemSheet.GetRow(itemDetailed.ItemId).RowId;
+            var subRow = Sheets.ExplorationSheet.GetRow(itemDetailed.SectorId).RowId;
 
             var detail = new ItemDetail
             {
