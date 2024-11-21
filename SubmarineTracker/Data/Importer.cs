@@ -142,6 +142,7 @@ public static class Importer
 
     public static void ExportDetailed()
     {
+        Plugin.Log.Information("Start item build");
         ItemDetailed.Items.Clear();
 
         using var reader = new FileInfo(Path.Combine(Plugin.PluginDir, "Resources", ItemPath)).OpenText();
@@ -170,6 +171,7 @@ public static class Importer
             File.Delete(path);
 
         File.WriteAllBytes(path, MessagePackSerializer.Serialize(ItemDetailed));
+        Plugin.Log.Information("Finished item build");
     }
     #endif
     #endregion
