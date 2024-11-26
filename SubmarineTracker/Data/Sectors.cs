@@ -256,6 +256,11 @@ public static class Sectors
     /// <returns>Previous rank</returns>
     public static int CalculateOriginalRank(int currentRank, uint currentExp, uint expReceived)
     {
+        // LastRank is always 0 currentExp
+        // TODO: find better solution to differentiate
+        if (currentRank == Sheets.LastRank)
+            return currentRank;
+
         if (currentExp < expReceived)
         {
             currentRank--;
