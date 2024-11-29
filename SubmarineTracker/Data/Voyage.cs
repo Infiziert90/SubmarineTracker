@@ -36,8 +36,10 @@ public static class Voyage
     public static uint FindMapFromSector(uint sector) => SectorToPretty[FindVoyageStart(sector)].Map.RowId;
     public static SubmarineExploration FindVoyageStartPretty(uint sector) => SectorToPretty[FindVoyageStart(sector)];
 
-    public static string SectorToName(uint key) => SectorToPretty[key].ToName();
-    public static string SectorToMapName(uint key) => Utils.UpperCaseStr(FindVoyageStartPretty(key).Map.Value!.Name);
+    public static string SectorToName(uint sector) => SectorToPretty[sector].ToName();
+    public static string SectorToMapName(uint sector) => Utils.UpperCaseStr(FindVoyageStartPretty(sector).Map.Value.Name);
+    public static string SectorToMapShort(uint sector) => Utils.MapToShort(FindMapFromSector(sector));
+    public static string SectorToMapThreeLetter(uint sector) => Utils.MapToThreeLetter(FindMapFromSector(sector));
 
     #region Optimizer
     public static uint CalculateDuration(SubmarineExploration[] sectors, float speed)

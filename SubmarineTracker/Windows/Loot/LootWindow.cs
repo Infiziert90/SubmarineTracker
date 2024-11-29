@@ -41,6 +41,8 @@ public partial class LootWindow : Window, IDisposable
 
                     VoyageTab();
 
+                    RouteTab();
+
                     AnalyseTab();
 
                     ExportTab();

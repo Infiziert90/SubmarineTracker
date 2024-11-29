@@ -83,7 +83,7 @@ public partial class MainWindow
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(Loc.Localize("Terms - Map", "Map"));
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Voyage.SectorToMapName(sub.Points.First()));
+            ImGui.TextUnformatted(Voyage.SectorToMapName(sub.Points[0]));
 
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(Loc.Localize("Terms - Route", "Route"));
