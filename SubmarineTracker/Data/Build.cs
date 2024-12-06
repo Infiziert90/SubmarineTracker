@@ -331,7 +331,7 @@ public static class Build
                 var org = original.PartArray[i];
 
                 // current is shark part and always valid
-                if (!ignoreShark && cur <= 3)
+                if (!ignoreShark && cur <= 4)
                     continue;
 
                 // current is same

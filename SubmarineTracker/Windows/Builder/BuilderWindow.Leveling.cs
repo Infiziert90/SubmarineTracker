@@ -315,7 +315,6 @@ public partial class BuilderWindow
             var leftover = bestJourney?.Leftover ?? 0;
             var curBuild = lastBuild.Build;
 
-
             if (lastBuildRouteRank != ProgressRank)
             {
                 lastBuildRouteRank = ProgressRank;
@@ -330,7 +329,7 @@ public partial class BuilderWindow
                 Progress = 0;
                 PossibleBuilds = builds.Length * possibleMaps.Length;
 
-                bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, new uint[] { 0 }, curBuild.ToString());
+                bestJourney ??= new Journey(curBuild.Rank, ProgressRank, 0, 0, [0], curBuild.ToString());
                 foreach (var build in builds)
                 {
                     if (CancelSource.IsCancellationRequested)
@@ -357,7 +356,7 @@ public partial class BuilderWindow
                     if (CancelSource.IsCancellationRequested)
                         return null;
 
-                    if (!taskJourneys.Any())
+                    if (taskJourneys.Count == 0)
                     {
                         Plugin.Log.Error("No journeys returned, cancelling current build!");
                         return null;
@@ -365,8 +364,8 @@ public partial class BuilderWindow
 
                     // we can still continue if this would be false, we also want to check if allowed list is set
                     var best = taskJourneys.Select(t => t.Result).OrderBy(t => t.RouteExp).Last();
-                    if (best.Route.Any() && !hasAllowed)
-                        lastMap = (int) Sheets.ExplorationSheet.GetRow(best.Route.First())!.Map.RowId - 2;
+                    if (best.Route.Length != 0 && !hasAllowed)
+                        lastMap = (int) Sheets.ExplorationSheet.GetRow(best.Route.First()).Map.RowId - 2;
 
                     if (bestJourney.RouteExp < best.RouteExp || (bestJourney.RouteExp == best.RouteExp && best.Build == lastBuild.Build.ToString()))
                     {
@@ -391,6 +390,12 @@ public partial class BuilderWindow
 
             if (CancelSource.IsCancellationRequested)
                 return null;
+
+            if (bestJourney!.RouteExp == 0)
+            {
+                Plugin.Log.Error("Journey returned 0 route exp!");
+                return null;
+            }
 
             (ProgressRank, leftover) = Sectors.CalculateRankUp(ProgressRank, leftover + bestJourney!.RouteExp);
 
