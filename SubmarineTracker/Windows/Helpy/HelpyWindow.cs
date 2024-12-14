@@ -23,12 +23,6 @@ public partial class HelpyWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
-        {
-            Helper.NoData();
-            return;
-        }
-
         var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
         using (var contentChild = ImRaii.Child("HelpyContent", new Vector2(0, -buttonHeight)))
         {
@@ -37,7 +31,7 @@ public partial class HelpyWindow : Window, IDisposable
                 using var tabBar = ImRaii.TabBar("##HelperTabBar");
                 if (tabBar.Success)
                 {
-                    ProgressionTab(fcSub);
+                    ProgressionTab();
 
                     StorageTab();
                 }

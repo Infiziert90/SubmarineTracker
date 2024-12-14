@@ -90,6 +90,16 @@ public class DatabaseCache : IDisposable
         return FreeCompanies;
     }
 
+    public bool TryGetFC(ulong id, out FreeCompany fc)
+    {
+        CheckFreeCompany();
+
+        var ok = FreeCompanies.TryGetValue(id, out var returnedFC);
+        fc = returnedFC ?? new FreeCompany();
+
+        return ok;
+    }
+
     private void CheckLoot()
     {
         if (LootRefresh < Environment.TickCount64)

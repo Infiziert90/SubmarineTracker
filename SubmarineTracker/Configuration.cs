@@ -87,21 +87,7 @@ namespace SubmarineTracker
 
         public Dictionary<string, Build.RouteBuild> SavedBuilds = new();
 
-        [Obsolete("Replaced by ManagedFCs, remove after 30.11.2024", false)] public List<ulong> FCIdOrder = [];
         public List<(ulong Id, bool Hidden)> ManagedFCs = [];
-
-        public void Migration()
-        {
-            // Current version, return early (i forgot to call the migration code, so some people already have filled lists
-            if (Version == 2 || ManagedFCs.Count > 0)
-                return;
-
-            foreach (var id in FCIdOrder)
-                ManagedFCs.Add((id, false));
-
-            Version = 2;
-            Save();
-        }
 
         public void Save()
         {

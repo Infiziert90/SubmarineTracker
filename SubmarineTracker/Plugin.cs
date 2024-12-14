@@ -78,7 +78,6 @@ namespace SubmarineTracker
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Migration();
 
             Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
@@ -446,6 +445,11 @@ namespace SubmarineTracker
 
                 Task.Run(() => Export.UploadEntry(loot));
             }
+        }
+
+        public static (ulong Id, bool Hidden) GetManagedFCOrDefault(int index)
+        {
+            return Configuration.ManagedFCs.ElementAtOrDefault(index);
         }
     }
 }

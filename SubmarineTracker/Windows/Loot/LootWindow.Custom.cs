@@ -212,7 +212,7 @@ public partial class LootWindow
         foreach (var id in Plugin.DatabaseCache.GetFreeCompanies().Keys)
         {
             // 0 and 1 are used separately
-            if (FcSelection > 1 && Plugin.Configuration.ManagedFCs[FcSelection - 2].Id != id)
+            if (FcSelection > 1 && Plugin.GetManagedFCOrDefault(FcSelection - 2).Id != id)
                 continue;
 
             // Removes Hidden FCs

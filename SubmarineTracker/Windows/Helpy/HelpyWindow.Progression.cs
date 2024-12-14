@@ -4,6 +4,8 @@ namespace SubmarineTracker.Windows.Helpy;
 
 public partial class HelpyWindow
 {
+    private int FcSelection;
+
     private FreeCompany LastFC;
     private List<(uint, Unlocks.UnlockedFrom)> UnlockPath = null!;
 
@@ -13,7 +15,7 @@ public partial class HelpyWindow
         UnlockPath.Reverse();
     }
 
-    private void ProgressionTab(FreeCompany fc)
+    private void ProgressionTab()
     {
         using var tabItem = ImRaii.TabItem($"{Loc.Localize("Helpy Tab - Progression", "Progression")}##Progression");
         if (!tabItem.Success)
@@ -23,23 +25,30 @@ public partial class HelpyWindow
         if (!tabBar.Success)
             return;
 
-        AllSlotsTab(fc);
+        AllSlotsTab();
 
-        LastSectorTab(fc);
+        LastSectorTab();
 
         InfoTab();
     }
 
-    private void AllSlotsTab(FreeCompany fc)
+    private void AllSlotsTab()
     {
         using var tabItem = ImRaii.TabItem($"{Loc.Localize("Progression Tab - Submarine Path", "4 Submarines")}##SubmarinesPath");
         if (!tabItem.Success)
             return;
 
+        FCSelection();
+        if (!Plugin.DatabaseCache.TryGetFC(Plugin.GetManagedFCOrDefault(FcSelection).Id, out var fcSub))
+        {
+            Helper.NoData();
+            return;
+        }
+
         var unlockPath = Unlocks.FindUnlockPath(20);
         unlockPath.Reverse();
 
-        LastFC = fc;
+        LastFC = fcSub;
         var mod = new Box.Modifier();
         mod.Padding(10 * ImGuiHelpers.GlobalScale);
         mod.BorderColor(ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)));
@@ -48,13 +57,20 @@ public partial class HelpyWindow
         BoxList.RenderList(unlockPath, mod, 2f, PathBoxRenderer);
     }
 
-    private void LastSectorTab(FreeCompany fc)
+    private void LastSectorTab()
     {
         using var tabItem = ImRaii.TabItem($"{Loc.Localize("Progression Tab - Last Sector", "Last Sector")}##LastSector");
         if (!tabItem.Success)
             return;
 
-        LastFC = fc;
+        FCSelection();
+        if (!Plugin.DatabaseCache.TryGetFC(Plugin.GetManagedFCOrDefault(FcSelection).Id, out var fcSub))
+        {
+            Helper.NoData();
+            return;
+        }
+
+        LastFC = fcSub;
         var mod = new Box.Modifier();
         mod.Padding(10 * ImGuiHelpers.GlobalScale);
         mod.BorderColor(ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudGrey)));
@@ -123,5 +139,18 @@ public partial class HelpyWindow
         ImGui.TextColored(color, $"{letter}. {dest}");
         ImGui.TextColored(ImGuiColors.TankBlue, special);
         ImGui.PopTextWrapPos();
+    }
+
+    private void FCSelection()
+    {
+        Plugin.EnsureFCOrderSafety();
+        var existingFCs = Plugin.Configuration.ManagedFCs
+                                .Select(status => $"{Plugin.NameConverter.GetName(Plugin.DatabaseCache.GetFreeCompanies()[status.Id])}##{status.Id}")
+                                .ToArray();
+
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextColored(ImGuiColors.ParsedOrange, "FC:");
+        ImGui.SameLine();
+        Helper.DrawComboWithArrows("##fcSelection", ref FcSelection, ref existingFCs);
     }
 }
