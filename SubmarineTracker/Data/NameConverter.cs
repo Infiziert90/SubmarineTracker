@@ -18,9 +18,9 @@ public class NameConverter
         return GenerateName(fc);
     }
 
-    public string GetSub(Submarine sub, FreeCompany fc)
+    public string GetSub(Submarine sub, FreeCompany fc, bool includeSubName = true)
     {
-        var name = $"{sub.Name} ({GenerateName(fc)})";
+        var name = includeSubName ? $"{sub.Name} ({GenerateName(fc)})" : GenerateName(fc);
         return Plugin.Configuration.NameOption != NameOptions.Anon ? name : $"{Utils.GenerateHashedName(name)}@{fc.World}";
     }
 

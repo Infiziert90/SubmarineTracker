@@ -16,6 +16,10 @@ public partial class ConfigWindow
         ImGui.AlignTextToFramePadding();
         ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - DtrBar", "Server Bar:"));
         changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - ServerBar Enabled", "Show Returning Sub"), ref Plugin.Configuration.ShowDtrEntry);
+        using (ImRaii.PushIndent(10.0f))
+        {
+            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - No Sub Name", "Show Submarine Name"), ref Plugin.Configuration.DtrShowSubmarineName);
+        }
         changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - ServerBar Numbers", "Show On Route And Done Numbers"), ref Plugin.Configuration.DtrShowOverlayNumbers);
 
         ImGuiHelpers.ScaledDummy(5.0f);

@@ -59,7 +59,7 @@ public class ServerBar
             if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(sub.FreeCompanyId, out var fc))
                 return;
 
-            var name = Plugin.NameConverter.GetSub(sub, fc);
+            var name = Plugin.NameConverter.GetSub(sub, fc, Plugin.Configuration.DtrShowSubmarineName);
             var time = Loc.Localize("Terms - No Voyage", "No Voyage");
             if (sub.IsOnVoyage())
             {

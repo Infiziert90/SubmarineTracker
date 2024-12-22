@@ -27,6 +27,7 @@ namespace SubmarineTracker
 
         public bool ShowDtrEntry = false;
         public bool DtrShowOverlayNumbers = true;
+        public bool DtrShowSubmarineName = true;
 
         public bool ShowOnlyCurrentFC = false;
         public bool AutoSelectCurrent = true;
