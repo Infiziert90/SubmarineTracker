@@ -2,81 +2,93 @@
 
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-using Postgrest;
-using Postgrest.Attributes;
-using Postgrest.Models;
+using Newtonsoft.Json;
 using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Data;
 
 public static class Export
 {
-    private const string SupabaseUrl = "https://xzwnvwjxgmaqtrxewngh.supabase.co";
-    private const string SupabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6d252d2p4Z21hcXRyeGV3bmdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODk3NzcwMDIsImV4cCI6MjAwNTM1MzAwMn0.aNYTnhY_Sagi9DyH5Q9tCz9lwaRCYzMC12SZ7q7jZBc";
+    private const string BaseUrl = "https://infi.ovh/api/";
+    private const string AnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.Ur6wgi_rD4dr3uLLvbLoaEvfLCu4QFWdrF-uHRtbl_s";
+    private static readonly HttpClient Client = new();
 
-    private static readonly Supabase.Client Client;
     private static readonly CsvConfiguration CsvConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
     private static readonly CsvConfiguration CsvReadConfig = new(CultureInfo.InvariantCulture) { HasHeaderRecord = true, PrepareHeaderForMatch = args => args.Header.Replace("_", "").ToLower() };
 
     static Export()
     {
-        Client = new Supabase.Client(SupabaseUrl, SupabaseAnonKey);
+        Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {AnonKey}");
+        Client.DefaultRequestHeaders.Add("Prefer", "return=minimal");
     }
 
-    [Table("Loot")]
-    public class Loot : BaseModel
+    public class Upload
     {
-        [Column("sector")]
+        [Ignore]
+        [JsonIgnore]
+        public string Table;
+
+        [JsonProperty("version")]
+        public string Version = Plugin.PluginInterface.Manifest.AssemblyVersion.ToString();
+
+        public Upload(string table)
+        {
+            Table = table;
+        }
+    }
+
+    public class Loot : Upload
+    {
+        [JsonProperty("sector")]
         public uint Sector { get; set; }
 
-        [Column("unlocked")]
+        [JsonProperty("unlocked")]
         public uint Unlocked { get; set; }
 
-        [Column("primary")]
+        [JsonProperty("primary")]
         public uint Primary { get; set; }
-        [Column("primary_count")]
+        [JsonProperty("primary_count")]
         public ushort PrimaryCount { get; set; }
-        [Column("additional")]
+        [JsonProperty("additional")]
         public uint Additional { get; set; }
-        [Column("additional_count")]
+        [JsonProperty("additional_count")]
         public ushort AdditionalCount { get; set; }
 
-        [Column("rank")]
+        [JsonProperty("rank")]
         public int Rank { get; set; }
-        [Column("surv")]
+        [JsonProperty("surv")]
         public int Surv { get; set; }
-        [Column("ret")]
+        [JsonProperty("ret")]
         public int Ret { get; set; }
-        [Column("fav")]
+        [JsonProperty("fav")]
         public int Fav { get; set; }
 
-        [Column("primary_surv_proc")]
+        [JsonProperty("primary_surv_proc")]
         public uint PrimarySurvProc { get; set; }
-        [Column("additional_surv_proc")]
+        [JsonProperty("additional_surv_proc")]
         public uint AdditionalSurvProc { get; set; }
-        [Column("primary_ret_proc")]
+        [JsonProperty("primary_ret_proc")]
         public uint PrimaryRetProc { get; set; }
-        [Column("fav_proc")]
+        [JsonProperty("fav_proc")]
         public uint FavProc { get; set; }
 
         [Format("s")]
-        [Column(ignoreOnInsert: true, ignoreOnUpdate: true)]
+        [JsonIgnore]
         public DateTime Date { get; set; }
 
-        [Column("hash")]
+        [JsonProperty("hash")]
         public string Hash { get; set; } = "";
 
-        [Column("version")]
-        public string Version { get; set; } = Plugin.PluginInterface.Manifest.AssemblyVersion.ToString();
+        public Loot() : base("Loot") {}
 
-        public Loot() {}
-
-        public Loot(DetailedLoot loot)
+        public Loot(DetailedLoot loot) : base("Loot")
         {
             Sector = loot.Sector;
             Unlocked = loot.Unlocked;
@@ -112,7 +124,7 @@ public static class Export
             }
         }
 
-        public Loot(SubmarineTracker.Loot loot)
+        public Loot(SubmarineTracker.Loot loot) : base("Loot")
         {
             Sector = loot.Sector;
             Unlocked = loot.Unlocked;
@@ -239,18 +251,21 @@ public static class Export
 
     public static async void UploadEntry(SubmarineTracker.Loot newLoot)
     {
-        var lootEntry = new Loot(newLoot);
         try
         {
-            await Client.InitializeAsync();
-            var result = await Client.From<Loot>().Insert(lootEntry, new QueryOptions { Returning = QueryOptions.ReturnType.Minimal });
+            var lootEntry = new Loot(newLoot);
+            var content = new StringContent(JsonConvert.SerializeObject(lootEntry), Encoding.UTF8, "application/json");
+            var response = await Client.PostAsync($"{BaseUrl}{lootEntry.Table}", content);
 
-            Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {result.ResponseMessage?.StatusCode.ToString() ?? "Unknown"}");
-            Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {result.Content ?? "None"}");
+            if (response.StatusCode != HttpStatusCode.Created)
+                Plugin.Log.Debug($"Table {lootEntry.Table} | Content: {response.Content.ReadAsStringAsync().Result}");
+
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {response.StatusCode.ToString()}");
+            Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {response.Content.ReadAsStringAsync().Result}");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e, "Error while uploading entry");
+            Plugin.Log.Error(ex, "Upload failed!");
         }
     }
 }

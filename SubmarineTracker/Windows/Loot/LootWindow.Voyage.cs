@@ -1,5 +1,4 @@
-﻿using Dalamud.Interface.Utility.Raii;
-using static SubmarineTracker.Data.Loot;
+﻿using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 

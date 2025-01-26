@@ -6,7 +6,7 @@ public partial class HelpyWindow
 {
     private int FcSelection;
 
-    private FreeCompany LastFC;
+    private FreeCompany LastFC = null!;
     private List<(uint, Unlocks.UnlockedFrom)> UnlockPath = null!;
 
     private void InitProgression()
