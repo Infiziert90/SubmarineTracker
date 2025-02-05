@@ -4,6 +4,8 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
+using SubmarineTracker.Data;
+using SubmarineTracker.Windows.Config;
 
 namespace SubmarineTracker;
 
@@ -102,11 +104,14 @@ public class Notify
             return;
 
         SendDispatchWebhook(sub, currentFC, returnTime);
+
+        if (Plugin.Configuration.WebhookOfflineMode)
+            SendOfflineModeData(sub, currentFC, returnTime);
     }
 
     public void SendDispatchWebhook(Submarine sub, FreeCompany fc, uint returnTime)
     {
-        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
+        if (!ConfigWindow.WebhookRegex().IsMatch(Plugin.Configuration.WebhookUrl))
             return;
 
         var content = new Webhook.WebhookContent();
@@ -126,7 +131,10 @@ public class Notify
         if (!Plugin.ClientState.IsLoggedIn)
             return;
 
-        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
+        if (Plugin.Configuration.WebhookOfflineMode)
+            return;
+
+        if (!ConfigWindow.WebhookRegex().IsMatch(Plugin.Configuration.WebhookUrl))
             return;
 
         // Prevent that multibox user send multiple webhook triggers
@@ -147,6 +155,19 @@ public class Notify
         // Ensure that the other process had time to catch up
         Thread.Sleep(500);
         mutex.ReleaseMutex();
+    }
+
+    public void SendOfflineModeData(Submarine sub, FreeCompany fc, uint returnTime)
+    {
+        if (!ConfigWindow.WebhookRegex().IsMatch(Plugin.Configuration.WebhookUrl))
+            return;
+
+        Plugin.UploadNotify(new Export.SubNotify(
+                                Plugin.Configuration.WebhookUrl,
+                                Loc.Localize("Webhook On Return", "Returned at <t:{0}:f>").Format(returnTime),
+                                Plugin.NameConverter.GetSub(sub, fc),
+                                Plugin.Configuration.WebhookMention,
+                                returnTime));
     }
 
     public void SendReturn(Submarine sub, FreeCompany fc)

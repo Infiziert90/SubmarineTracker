@@ -48,9 +48,12 @@ namespace SubmarineTracker
         public bool NotifyForReturns = true;
         public bool NotifyForRepairs = true;
         public bool ShowRepairToast = true;
+
+        public bool WebhookOfflineMode = false;
         public bool WebhookDispatch = true;
         public bool WebhookReturn = true;
         public string WebhookUrl = string.Empty;
+        public ulong WebhookMention = 0;
 
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;

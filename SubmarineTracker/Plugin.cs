@@ -435,7 +435,7 @@ namespace SubmarineTracker
                 Configuration.Save();
         }
 
-        public static void EntryUpload(Loot loot)
+        public static void UploadLoot(Loot loot)
         {
             if (Configuration.UploadPermission)
             {
@@ -443,7 +443,19 @@ namespace SubmarineTracker
                 if (Configuration.UploadNotificationReceived > DateTime.Now)
                     return;
 
-                Task.Run(() => Export.UploadEntry(loot));
+                Task.Run(() => Export.UploadLoot(loot));
+            }
+        }
+
+        public static void UploadNotify(Export.SubNotify notify)
+        {
+            if (Configuration.UploadPermission)
+            {
+                // Check that the user had enough time to opt out after notification
+                if (Configuration.UploadNotificationReceived > DateTime.Now)
+                    return;
+
+                Task.Run(() => Export.UploadNotify(notify));
             }
         }
 

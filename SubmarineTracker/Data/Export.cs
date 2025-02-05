@@ -193,6 +193,33 @@ public static class Export
         }
     }
 
+    public class SubNotify : Upload
+    {
+        [JsonProperty("webhook")]
+        public string Webhook;
+
+        [JsonProperty("content")]
+        public string Content;
+
+        [JsonProperty("name")]
+        public string Name;
+
+        [JsonProperty("mention")]
+        public ulong Mention;
+
+        [JsonProperty("return_time")]
+        public uint ReturnTime;
+
+        public SubNotify(string webhook, string content, string name, ulong mention, uint returnTime) : base("SubNotify")
+        {
+            Webhook = webhook;
+            Mention = mention;
+            ReturnTime = returnTime;
+            Name = name;
+            Content = content;
+        }
+    }
+
     public static string ExportToString(List<SubmarineTracker.Loot> fcLootList, bool excludeDate, bool excludeHash)
     {
         if (fcLootList.Count == 0)
@@ -249,7 +276,7 @@ public static class Export
         }
     }
 
-    public static async void UploadEntry(SubmarineTracker.Loot newLoot)
+    public static async void UploadLoot(SubmarineTracker.Loot newLoot)
     {
         try
         {
@@ -262,6 +289,22 @@ public static class Export
 
             Plugin.Log.Debug($"Sector {newLoot.Sector} | StatusCode {response.StatusCode.ToString()}");
             Plugin.Log.Debug($"Sector {newLoot.Sector} | Content {response.Content.ReadAsStringAsync().Result}");
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Upload failed!");
+        }
+    }
+
+    public static async void UploadNotify(SubNotify notify)
+    {
+        try
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(notify), Encoding.UTF8, "application/json");
+            var response = await Client.PostAsync($"{BaseUrl}{notify.Table}", content);
+
+            if (response.StatusCode != HttpStatusCode.Created)
+                Plugin.Log.Debug($"Table {notify.Table} | Content: {response.Content.ReadAsStringAsync().Result}");
         }
         catch (Exception ex)
         {

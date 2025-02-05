@@ -300,10 +300,8 @@ public record Submarine
         ReturnTime = data.GetReturnTime();
 
         foreach (var point in data.CurrentExplorationPoints)
-        {
             if (point > 0)
                 Points.Add(point);
-        }
 
         try
         {
@@ -325,8 +323,8 @@ public record Submarine
     }
 
     public string Identifier() => Build.FullIdentifier();
-    private string GetPartName(ushort partId) => Sheets.ItemSheet.GetRow(Submarines.PartIdToItemId[partId])!.Name.ToString();
-    private uint GetIconId(ushort partId) => Sheets.ItemSheet.GetRow(Submarines.PartIdToItemId[partId])!.Icon;
+    private string GetPartName(ushort partId) => Sheets.ItemSheet.GetRow(Submarines.PartIdToItemId[partId]).Name.ExtractText();
+    private uint GetIconId(ushort partId) => Sheets.ItemSheet.GetRow(Submarines.PartIdToItemId[partId]).Icon;
 
     #region parts
     public string HullName => GetPartName(Hull);
@@ -522,10 +520,10 @@ public record Loot
 
         Date = DateTime.Now;
 
-        Plugin.EntryUpload(this);
+        Plugin.UploadLoot(this);
     }
 
-    public Item PrimaryItem => Sheets.ItemSheet.GetRow(Primary)!;
-    public Item AdditionalItem => Sheets.ItemSheet.GetRow(Additional)!;
+    public Item PrimaryItem => Sheets.ItemSheet.GetRow(Primary);
+    public Item AdditionalItem => Sheets.ItemSheet.GetRow(Additional);
     public bool ValidAdditional => Additional > 0;
 }

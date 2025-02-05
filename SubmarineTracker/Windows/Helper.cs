@@ -57,6 +57,60 @@ public static class Helper
                                      ]);
     }
 
+    /// <summary>
+    /// An unformatted version for ImGui.TextColored
+    /// </summary>
+    /// <param name="color">color to be used</param>
+    /// <param name="text">text to display</param>
+    public static void TextColored(Vector4 color, string text)
+    {
+        using (ImRaii.PushColor(ImGuiCol.Text, color))
+            ImGui.TextUnformatted(text);
+    }
+
+    /// <summary>
+    /// An unformatted version for ImGui.SetTooltip
+    /// </summary>
+    /// <param name="tooltip">tooltip to display</param>
+    public static void Tooltip(string tooltip)
+    {
+        using (ImRaii.Tooltip())
+        using (ImRaii.TextWrapPos(ImGui.GetFontSize() * 35.0f))
+            ImGui.TextUnformatted(tooltip);
+    }
+
+    /// <summary>
+    /// An unformatted version for ImGui.TextWrapped
+    /// </summary>
+    /// <param name="text">text to display</param>
+    public static void TextWrapped(string text)
+    {
+        using (ImRaii.TextWrapPos(0.0f))
+            ImGui.TextUnformatted(text);
+    }
+
+    /// <summary>
+    /// An unformatted version for ImGui.TextWrapped with color
+    /// </summary>
+    /// <param name="color">color to be used</param>
+    /// <param name="text">text to display</param>
+    public static void WrappedTextWithColor(Vector4 color, string text)
+    {
+        using (ImRaii.PushColor(ImGuiCol.Text, color))
+            TextWrapped(text);
+    }
+
+    /// <summary>
+    /// An unformatted version for ImGui.BulletText
+    /// </summary>
+    /// <param name="text">text to display</param>
+    public static void BulletText(string text)
+    {
+        ImGui.Bullet();
+        ImGui.SameLine();
+        ImGui.TextUnformatted(text);
+    }
+
     public static void NoData()
     {
         ImGuiHelpers.ScaledDummy(10.0f);
@@ -66,20 +120,6 @@ public static class Helper
     public static void WrappedError(string text)
     {
         WrappedTextWithColor(ImGuiColors.DalamudOrange, text);
-    }
-
-    public static void WrappedTextWithColor(Vector4 color, string text)
-    {
-        ImGui.PushStyleColor(ImGuiCol.Text, color);
-        ImGui.TextWrapped(text);
-        ImGui.PopStyleColor();
-    }
-
-    public static void WrappedText(string text)
-    {
-        ImGui.PushTextWrapPos();
-        ImGui.TextUnformatted(text);
-        ImGui.PopTextWrapPos();
     }
 
     public static string GenerateVoyageText(Submarine sub, bool useTime = false)
@@ -185,6 +225,16 @@ public static class Helper
 
         using var _ = ImRaii.PushFont(UiBuilder.IconFont);
         return ImGui.Button(icon.ToIconString(), size.Value);
+    }
+
+    public static void UrlButton(string id, FontAwesomeIcon icon, string url, string tooltip)
+    {
+        if (Button(id, icon))
+            Dalamud.Utility.Util.OpenLink(url);
+
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip(tooltip);
+
     }
 
     public static bool ColorPickerWithReset(string name, ref Vector4 current, Vector4 reset, float spacing)

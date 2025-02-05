@@ -60,7 +60,7 @@ public partial class ConfigWindow
             Task.Run(() => Plugin.Notify.SendReturnWebhook(TestSub, TestFC));
 
         if (ImGui.Button("Test Entry Upload"))
-            Task.Run(() => Export.UploadEntry(GenerateLootList().Last()));
+            Task.Run(() => Export.UploadLoot(GenerateLootList().Last()));
 
         if (ImGui.Button("Export Loc"))
         {

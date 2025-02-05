@@ -20,6 +20,7 @@ public partial class ConfigWindow : Window, IDisposable
         Plugin = plugin;
 
         InitializeLoot();
+        InitializeNotify();
     }
 
     public void Dispose() { }

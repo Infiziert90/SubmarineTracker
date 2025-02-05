@@ -13,7 +13,7 @@ public static class Webhook
     {
         [JsonProperty("username")] public string Username = "[Submarine Tracker]";
         [JsonProperty("avatar_url")] public string AvatarUrl ="https://raw.githubusercontent.com/Infiziert90/SubmarineTracker/master/SubmarineTracker/images/icon.png";
-        [JsonProperty("embeds")] public List<object> Embeds = new();
+        [JsonProperty("embeds")] public List<object> Embeds = [];
 
         public WebhookContent() { }
     }
