@@ -88,8 +88,19 @@ public partial class ConfigWindow
                 Helper.UrlButton("##userIdGuide", FontAwesomeIcon.QuestionCircle,
                                  "https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5H5D7JBY2QKKPVKNA",
                                  "Click to open discord user id guide in your browser.");
+
+                Helper.TextWrapped("Need help finding your discord role id?");
+                Helper.TextWrapped("Note: Same works for user ids");
+                ImGui.AlignTextToFramePadding();
+                Helper.TextWrapped("Click the button:");
+                ImGui.SameLine();
+                Helper.UrlButton("##roleIdGuide", FontAwesomeIcon.QuestionCircle,
+                                 "https://discordhelp.net/role-id",
+                                 "Click to open discord role id guide in your browser.");
             }
         }
+
+        ImGuiHelpers.ScaledDummy(5.0f);
 
         ImGui.AlignTextToFramePadding();
         ImGui.TextUnformatted("Discord Webhook Url:");
@@ -106,6 +117,18 @@ public partial class ConfigWindow
             if (ulong.TryParse(mentionId, out var id))
             {
                 Plugin.Configuration.WebhookMention = id;
+                changed = true;
+            }
+        }
+
+        ImGui.AlignTextToFramePadding();
+        ImGui.TextUnformatted("RoleId For Ping:");
+        var roleMentionId = Plugin.Configuration.WebhookRoleMention.ToString();
+        if (ImGui.InputText("##RoleMentionId", ref roleMentionId, 19, ImGuiInputTextFlags.CharsDecimal))
+        {
+            if (ulong.TryParse(roleMentionId, out var id))
+            {
+                Plugin.Configuration.WebhookRoleMention = id;
                 changed = true;
             }
         }

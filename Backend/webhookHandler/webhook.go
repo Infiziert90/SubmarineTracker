@@ -1,5 +1,6 @@
 ﻿package main
 
+// WebhookContent - Corresponds to https://discord.com/developers/docs/resources/webhook#execute-webhook-jsonform-params
 type WebhookContent struct {
 	Username  string  `json:"username,omitempty"`
 	Content   string  `json:"content,omitempty"`
@@ -7,6 +8,7 @@ type WebhookContent struct {
 	Embeds    []Embed `json:"embeds,omitempty"`
 }
 
+// Embed - Corresponds to https://discord.com/developers/docs/resources/message#embed-object
 type Embed struct {
 	Title       string `json:"title,omitempty"`
 	Url         string `json:"url,omitempty"`
@@ -14,6 +16,7 @@ type Embed struct {
 	Color       string `json:"color,omitempty"`
 }
 
+// NewContent - Creates an empty WebhookContent object and fills a few default fields.
 func NewContent() WebhookContent {
 	webhook := WebhookContent{}
 	webhook.Username = "[Submarine Tracker]"

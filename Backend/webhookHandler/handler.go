@@ -10,22 +10,35 @@ import (
 	"time"
 )
 
+// ActiveReturn - Database layout of a running timer that is soon to be executed.
 type ActiveReturn struct {
-	Id         int64
-	WebhookURL string
-	Content    string
-	Name       string
-	Mention    int64
-	ReturnTime int64
+	Id          int64
+	WebhookURL  string
+	Content     string
+	Name        string
+	Mention     int64
+	RoleMention int64
+	ReturnTime  int64
 }
 
+// HandleReturn - Sleeps until the time has elapsed and prepares the notification.
 func HandleReturn(active ActiveReturn) {
 	var sleepTime = active.ReturnTime - time.Now().Unix()
 	time.Sleep(time.Duration(sleepTime) * time.Second)
 
 	var content = NewContent()
+
+	var mentionContent = ""
 	if active.Mention > 0 {
-		content.Content = fmt.Sprintf(`<@%d>`, active.Mention)
+		mentionContent += fmt.Sprintf(`<@%d>`, active.Mention)
+	}
+
+	if active.RoleMention > 0 {
+		mentionContent += fmt.Sprintf(`<@&%d>`, active.RoleMention)
+	}
+
+	if len(mentionContent) > 0 {
+		content.Content = mentionContent
 	}
 
 	var embed = Embed{}
@@ -38,6 +51,7 @@ func HandleReturn(active ActiveReturn) {
 	SendWebhook(active.WebhookURL, content)
 }
 
+// SendWebhook - Sends the webhook as JSON encoded payload and check if the return value for errors.
 func SendWebhook(webhookUrl string, content WebhookContent) {
 	payload := new(bytes.Buffer)
 	err := json.NewEncoder(payload).Encode(content)

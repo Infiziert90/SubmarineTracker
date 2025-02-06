@@ -54,6 +54,7 @@ namespace SubmarineTracker
         public bool WebhookReturn = true;
         public string WebhookUrl = string.Empty;
         public ulong WebhookMention = 0;
+        public ulong WebhookRoleMention = 0;
 
         public bool OverlayOpen = false;
         public bool OverlayStartUp = false;

@@ -167,6 +167,7 @@ public class Notify
                                 Loc.Localize("Webhook On Return", "Returned at <t:{0}:f>").Format(returnTime),
                                 Plugin.NameConverter.GetSub(sub, fc),
                                 Plugin.Configuration.WebhookMention,
+                                Plugin.Configuration.WebhookRoleMention,
                                 returnTime));
     }
 

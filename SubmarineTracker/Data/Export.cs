@@ -207,13 +207,17 @@ public static class Export
         [JsonProperty("mention")]
         public ulong Mention;
 
+        [JsonProperty("role_mention")]
+        public ulong RoleMention;
+
         [JsonProperty("return_time")]
         public uint ReturnTime;
 
-        public SubNotify(string webhook, string content, string name, ulong mention, uint returnTime) : base("SubNotify")
+        public SubNotify(string webhook, string content, string name, ulong mention, ulong roleMention, uint returnTime) : base("SubNotify")
         {
             Webhook = webhook;
             Mention = mention;
+            RoleMention = roleMention;
             ReturnTime = returnTime;
             Name = name;
             Content = content;
