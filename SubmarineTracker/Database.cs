@@ -65,10 +65,11 @@ public class Database : IDisposable
 
         var conn = new SqliteConnection(uriBuilder.ToString());
         conn.Open();
-        conn.Execute(@"PRAGMA journal_mode=WAL;");
-        conn.Execute(@"PRAGMA synchronous=NORMAL;");
+        conn.Execute("PRAGMA journal_mode=WAL;");
+        conn.Execute("PRAGMA synchronous=NORMAL;");
         if (DalamudUtil.IsWine())
-            conn.Execute(@"PRAGMA cache_size = 32768;");
+            conn.Execute("PRAGMA cache_size = 32768;");
+
         return conn;
     }
 
@@ -175,6 +176,18 @@ public class Database : IDisposable
         Connection.Execute(@"
             -- Migration 1: Add Counters Table
         ");
+
+        var cmd = Connection.CreateCommand();
+        cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='counters';";
+        var reader = cmd.ExecuteReader();
+        reader.Close();
+        if (cmd.ExecuteReader().HasRows)
+        {
+            Plugin.Log.Error("Counters table already exists, corrupted database?");
+            SetMigrationVersion(1);
+
+            return;
+        }
 
         Connection.Execute("""
                            CREATE TABLE IF NOT EXISTS counters (               

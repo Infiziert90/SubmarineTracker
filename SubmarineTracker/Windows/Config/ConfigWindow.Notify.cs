@@ -55,7 +55,7 @@ public partial class ConfigWindow
                 ImGuiHelpers.ScaledDummy(5.0f);
                 Helper.TextColored(ImGuiColors.DalamudViolet, "What Data?");
                 Helper.BulletText("Discord Webhook Url");
-                Helper.BulletText("Submarine + FC name [Naming Convention]");
+                Helper.BulletText("Submarine + FC Name [Naming Convention]");
                 Helper.BulletText("Return Time");
                 Helper.BulletText("Discord UserId [If set]");
                 ImGuiHelpers.ScaledDummy(5.0f);
