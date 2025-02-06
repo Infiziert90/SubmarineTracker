@@ -111,7 +111,7 @@ public class Notify
 
     public void SendDispatchWebhook(Submarine sub, FreeCompany fc, uint returnTime)
     {
-        if (!ConfigWindow.WebhookRegex().IsMatch(Plugin.Configuration.WebhookUrl))
+        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         var content = new Webhook.WebhookContent();
@@ -134,7 +134,7 @@ public class Notify
         if (Plugin.Configuration.WebhookOfflineMode)
             return;
 
-        if (!ConfigWindow.WebhookRegex().IsMatch(Plugin.Configuration.WebhookUrl))
+        if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
             return;
 
         // Prevent that multibox user send multiple webhook triggers

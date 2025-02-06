@@ -106,7 +106,7 @@ public partial class ConfigWindow
         ImGui.TextUnformatted("Discord Webhook Url:");
         changed |= ImGui.InputText("##Url", ref Plugin.Configuration.WebhookUrl, 255);
 
-        if (!ValidRegex)
+        if (Plugin.Configuration.WebhookOfflineMode && !ValidRegex)
             ImGui.TextColored(ImGuiColors.DPSRed, "Url is not a valid discord webhook.");
 
         ImGui.AlignTextToFramePadding();
