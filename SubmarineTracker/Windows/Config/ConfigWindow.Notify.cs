@@ -124,7 +124,7 @@ public partial class ConfigWindow
             ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Specific Submarines", "Specific Submarines:"));
             ImGuiHelpers.ScaledDummy(5.0f);
 
-            using var child = ImRaii.Child("NotifyTable");
+            using var child = ImRaii.Child("##NotifyTable", new Vector2(0, 400 * ImGuiHelpers.GlobalScale), true);
             if (child.Success)
             {
                 ImGuiHelpers.ScaledIndent(10.0f);
@@ -133,7 +133,7 @@ public partial class ConfigWindow
                     foreach (var sub in Plugin.DatabaseCache.GetSubmarines(id))
                     {
                         var key = $"{sub.Name}{id}";
-                        Plugin.Configuration.NotifyFCSpecific.TryAdd($"{sub.Name}{id}", false);
+                        Plugin.Configuration.NotifyFCSpecific.TryAdd(key, false);
                         var notify = Plugin.Configuration.NotifyFCSpecific[key];
 
                         if (ImGui.Checkbox($"{Plugin.NameConverter.GetSub(sub, fc)}##{id}{sub.Register}", ref notify))
