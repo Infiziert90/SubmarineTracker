@@ -125,6 +125,10 @@ namespace SubmarineTracker
 
             Framework.Update += FrameworkUpdate;
             Framework.Update += Notify.NotifyLoop;
+            ClientState.Login += StartupStorageMessage;
+
+            if (ClientState.IsLoggedIn)
+                StartupStorageMessage();
 
             // Try to init it last, just to make sure that loc actually loaded fine
             Helper.Initialize(this);
@@ -135,6 +139,30 @@ namespace SubmarineTracker
 
             // Trigger Importer to precalculate hashes
             Log.Debug($"Loading: {Importer.Filename}");
+        }
+
+        private void StartupStorageMessage()
+        {
+            if (Configuration is { ShowStorageAtStartup: true, ShowStorageMessage: true })
+            {
+                var fcId = GetFCId;
+                if (DatabaseCache.GetFreeCompanies().ContainsKey(fcId))
+                {
+                    var status = Storage.CheckLeftovers(DatabaseCache.GetSubmarines().Where(s => s.FreeCompanyId == fcId));
+                    if (status is { Voyages: > -1, Repairs: > -1 })
+                    {
+                        if (status is { Voyages: 0, Repairs: 0 })
+                            ChatGui.Print(
+                                Utils.ErrorMessage(Loc.Localize("Storage - Both", "Not enough Tanks and Repair Kits!")));
+                        else if (status.Voyages == 0)
+                            ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - No Tanks", "Not enough Tanks!")));
+                        else if (status.Repairs == 0)
+                            ChatGui.Print(Utils.ErrorMessage(Loc.Localize("Storage - No Kits", "Not enough Repair Kits!")));
+                        else
+                            ChatGui.Print(Utils.SuccessMessage(Loc.Localize("Storage - All Okay", "Your fleet has enough for {0} voyages and {1} combined repairs.").Format(status.Voyages, status.Repairs)));
+                    }
+                }
+            }
         }
 
         public void Dispose()
@@ -161,6 +189,7 @@ namespace SubmarineTracker
             HookManager.Dispose();
             ServerBar.Dispose();
 
+            ClientState.Login -= StartupStorageMessage;
             Framework.Update -= FrameworkUpdate;
             Framework.Update -= Notify.NotifyLoop;
         }
@@ -343,7 +372,7 @@ namespace SubmarineTracker
             }
 
             foreach (var sub in submarineData.Where(data => data.RankId != 0 && data.ReturnTime != 0))
-                Notify.TriggerDispatch(sub.RegisterTime, sub.ReturnTime);
+                Notify.CheckForDispatch(sub.RegisterTime, sub.ReturnTime);
 
             LoadFCOrder();
             IsUpserting = true;

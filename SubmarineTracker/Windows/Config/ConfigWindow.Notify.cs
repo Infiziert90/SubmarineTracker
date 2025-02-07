@@ -34,6 +34,12 @@ public partial class ConfigWindow
         }
         changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Show Storage Message", "Show Storage Message"), ref Plugin.Configuration.ShowStorageMessage);
         ImGuiComponents.HelpMarker(Loc.Localize("Config Tab Tooltip - Show Storage Message", "Show a message whenever you enter the workshop, informing you about your tank and repair kit status"));
+        if (Plugin.Configuration.ShowStorageMessage)
+        {
+            ImGuiHelpers.ScaledIndent(10.0f);
+            changed |= ImGui.Checkbox("Also Show At Startup", ref Plugin.Configuration.ShowStorageAtStartup);
+            ImGuiHelpers.ScaledIndent(-10.0f);
+        }
         ImGuiHelpers.ScaledIndent(-10.0f);
 
         ImGuiHelpers.ScaledDummy(5.0f);

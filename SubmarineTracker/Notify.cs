@@ -79,11 +79,8 @@ public class Notify
         }
     }
 
-    public void TriggerDispatch(uint key, uint returnTime)
+    public void CheckForDispatch(uint key, uint returnTime)
     {
-        if (!Plugin.Configuration.WebhookDispatch)
-            return;
-
         var fcId = Plugin.GetFCId;
         if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(fcId, out var currentFC))
             return;
@@ -103,7 +100,8 @@ public class Notify
         if (!Plugin.Configuration.NotifyForAll && !(found && ok))
             return;
 
-        SendDispatchWebhook(sub, currentFC, returnTime);
+        if (Plugin.Configuration.WebhookDispatch)
+            SendDispatchWebhook(sub, currentFC, returnTime);
 
         if (Plugin.Configuration.WebhookOfflineMode)
             SendOfflineModeData(sub, currentFC, returnTime);
