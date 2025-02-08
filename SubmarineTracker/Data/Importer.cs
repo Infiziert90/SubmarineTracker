@@ -75,9 +75,9 @@ public static class Importer
             using var itemStream = File.OpenRead(Path.Combine(Plugin.PluginDir, FilenameItem));
             ItemDetailed = MessagePackSerializer.Deserialize<ItemDetailed>(itemStream);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e, "Failed loading message pack data.");
+            Plugin.Log.Error(ex, "Failed loading message pack data.");
 
             ItemDetailed = new ItemDetailed();
             CalculatedData = new CalculatedData();
@@ -104,9 +104,9 @@ public static class Importer
             File.WriteAllBytes(path, MessagePackSerializer.Serialize(CalculatedData));
             Plugin.Log.Information("Finished route build");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e, "Can't build routes.");
+            Plugin.Log.Error(ex, "Can't build routes.");
         }
     }
 
@@ -140,12 +140,12 @@ public static class Importer
     private const string ItemPath = "Items (detailed).csv";
     private const string SectorPath = "Sectors (detailed).csv";
 
-    public static void ExportDetailed()
+    public static void ExportDetailed(string itemPath)
     {
         Plugin.Log.Information("Start item build");
         ItemDetailed.Items.Clear();
 
-        using var reader = new FileInfo(Path.Combine(Plugin.PluginDir, "Resources", ItemPath)).OpenText();
+        using var reader = new FileInfo(itemPath).OpenText();
         using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true });
         foreach (var itemDetailed in csv.GetRecords<ItemCSV>())
         {

@@ -1,4 +1,6 @@
-﻿namespace SubmarineTracker.Data;
+﻿using SubmarineTracker.Resources;
+
+namespace SubmarineTracker.Data;
 
 public enum NameOptions
 {
@@ -57,7 +59,7 @@ public class NameConverter
             NameOptions.Initials => $"{fc.CharacterName.Split(" ")[0][0]}. {fc.CharacterName.Split(" ")[1][0]}.@{fc.World}",
             NameOptions.OnlyInitials => $"{fc.CharacterName.Split(" ")[0][0]}. {fc.CharacterName.Split(" ")[1][0]}.",
             NameOptions.Anon => Utils.GenerateHashedName($"{fc.CharacterName}{fc.Tag}@{fc.World}"),
-            _ => "Unknown"
+            _ => Language.TermUnknown
         };
     }
 }
@@ -68,14 +70,14 @@ public static class NameUtil
     {
         return n switch
         {
-            NameOptions.Default => Loc.Localize("Name Option - Default", "Default"),
-            NameOptions.FullName => Loc.Localize("Name Option - Full Name", "Full Name"),
-            NameOptions.OnlyTag => Loc.Localize("Name Option - Tag", "Only Tag"),
-            NameOptions.OnlyName => Loc.Localize("Name Option - Name", "Only Name"),
-            NameOptions.Initials => Loc.Localize("Name Option - Initials", "Initials"),
-            NameOptions.OnlyInitials => Loc.Localize("Name Option - Only Initials", "Only Initials"),
-            NameOptions.Anon => Loc.Localize("Name Option - Anon", "Anonymized"),
-            _ => "Unknown"
+            NameOptions.Default => Language.NameOptionDefault,
+            NameOptions.FullName => Language.NameOptionFullName,
+            NameOptions.OnlyTag => Language.NameOptionTag,
+            NameOptions.OnlyName => Language.NameOptionName,
+            NameOptions.Initials => Language.NameOptionInitials,
+            NameOptions.OnlyInitials => Language.NameOptionOnlyInitials,
+            NameOptions.Anon => Language.NameOptionAnon,
+            _ => Language.TermUnknown
         };
     }
 
@@ -90,7 +92,7 @@ public static class NameUtil
             NameOptions.Initials => "E. R.@Phoenix",
             NameOptions.OnlyInitials => "R. P.",
             NameOptions.Anon => "FE44BFE5AE",
-            _ => "Unknown"
+            _ => Language.TermUnknown
         };
     }
 }

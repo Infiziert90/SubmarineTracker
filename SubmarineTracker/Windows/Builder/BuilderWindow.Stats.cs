@@ -1,5 +1,6 @@
 using Dalamud.Utility;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Builder;
@@ -8,57 +9,63 @@ public partial class BuilderWindow
 {
     private void BuildStats(ref Submarine sub)
     {
-        if (ImGui.BeginChild("SubStats", new Vector2(0, 0)))
+        using var child = ImRaii.Child("SubStats", Vector2.Zero);
+        if (!child.Success)
+            return;
+
+        var build = CurrentBuild.GetSubmarineBuild;
+
+        // Reset to custom build if not equal anymore
+        if (sub.IsValid() && !build.EqualsSubmarine(sub))
+            CurrentBuild.OriginalSub = 0;
+
+        var optimizedDuration = Voyage.CalculateDuration(CurrentBuild.OptimizedRoute, build.Speed);
+        var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
+        var expPerMinute = 0.0;
+        var totalExp = 0u;
+        var repairAfter = 0;
+        if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
         {
-            var build = CurrentBuild.GetSubmarineBuild;
+            totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild, AvgBonus);
+            expPerMinute = totalExp / (optimizedDuration / 60.0);
+            repairAfter = CurrentBuild.CalculateUntilRepair();
+        }
 
-            // Reset to custom build if not equal anymore
-            if (sub.IsValid() && !build.EqualsSubmarine(sub))
-                CurrentBuild.OriginalSub = 0;
+        var tanks = 0u;
+        if (Plugin.AllaganToolsConsumer.IsAvailable)
+        {
+            // build cache if needed
+            Storage.BuildStorageCache();
+            if (Storage.StorageCache.TryGetValue(Plugin.ClientState.LocalContentId, out var cachedItems) && cachedItems.TryGetValue((uint)Items.Tanks, out var temp))
+                tanks = temp.Count;
+        }
 
-            var optimizedDuration = Voyage.CalculateDuration(CurrentBuild.OptimizedRoute, build.Speed);
-            var breakpoints = Sectors.CalculateBreakpoint(CurrentBuild.Sectors);
-            var expPerMinute = 0.0;
-            var totalExp = 0u;
-            var repairAfter = 0;
-            if (optimizedDuration != 0 && CurrentBuild.OptimizedDistance != 0)
-            {
-                totalExp = Sectors.CalculateExpForSectors(CurrentBuild.OptimizedRoute, CurrentBuild.GetSubmarineBuild, AvgBonus);
-                expPerMinute = totalExp / (optimizedDuration / 60.0);
-                repairAfter = CurrentBuild.CalculateUntilRepair();
-            }
-
-            var tanks = 0u;
-            if (Plugin.AllaganToolsConsumer.IsAvailable)
-            {
-                // build cache if needed
-                Storage.BuildStorageCache();
-                if (Storage.StorageCache.TryGetValue(Plugin.ClientState.LocalContentId, out var cachedItems) &&
-                    cachedItems.TryGetValue((uint)Items.Tanks, out var temp))
-                    tanks = temp.Count;
-            }
-
-            if (ImGui.BeginTable("##buildColumn", 2, ImGuiTableFlags.SizingFixedFit))
+        using (var table = ImRaii.Table("##buildColumn", 2, ImGuiTableFlags.SizingFixedFit))
+        {
+            if (table.Success)
             {
                 ImGui.TableSetupColumn("##title");
                 ImGui.TableSetupColumn("##content");
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted(Loc.Localize("Builder Stats Category - Build", "Selected Build:"));
-                ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild} (Rank {CurrentBuild.Rank})");
+                ImGui.TextUnformatted(Language.BuilderStatsCategoryBuild);
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted(Loc.Localize("Builder Stats Category - Route", "Optimized Route:"));
+                Helper.TextColored(ImGuiColors.DalamudOrange, $"{CurrentBuild} (Rank {CurrentBuild.Rank})");
+
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted(Language.BuilderStatsCategoryRoute);
+
                 ImGui.TableNextColumn();
                 SelectedRoute();
-
-                ImGui.EndTable();
             }
+        }
 
-            ImGui.TextUnformatted("Calculated Stats:");
+        ImGui.TextUnformatted("Calculated Stats:");
 
-            if (ImGui.BeginTable("##statsColumn", 6))
+        using (var table = ImRaii.Table("##statsColumn", 6))
+        {
+            if (table.Success)
             {
                 ImGui.TableSetupColumn("##stat1", 0, 0.55f);
                 ImGui.TableSetupColumn("##count1", 0, 0.72f);
@@ -68,65 +75,72 @@ public partial class BuilderWindow
                 ImGui.TableSetupColumn("##count3", 0, 0.5f);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Surveillance", "Surveillance"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsSurveillance);
+
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.T2, build.Surveillance, breakpoints.T3);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Retrieval", "Retrieval"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsRetrieval);
+
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.Normal, build.Retrieval, breakpoints.Optimal);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Favor", "Favor"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsFavor);
+
                 ImGui.TableNextColumn();
                 SelectRequiredColor(breakpoints.Favor, build.Favor);
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Speed", "Speed"));
-                ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{build.Speed}");
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsSpeed);
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Range", "Range"));
-                ImGui.TableNextColumn();
-                SelectRequiredColor((int) CurrentBuild.OptimizedDistance, build.Range);
+                Helper.TextColored(ImGuiColors.HealerGreen, $"{build.Speed}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Fuel", "Fuel"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsRange);
+
+                ImGui.TableNextColumn();
+                SelectRequiredColor((int)CurrentBuild.OptimizedDistance, build.Range);
+
+                ImGui.TableNextColumn();
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsFuel);
+
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{CurrentBuild.FuelCost}{(tanks > 0 ? $" / {tanks}" : "")}");
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Duration", "Duration"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsDuration);
+
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{ToTime(TimeSpan.FromSeconds(optimizedDuration))}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Exp", "Exp"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsExp);
+
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{totalExp:N0}{(AvgBonus ? '*' : string.Empty)}");
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - ExpEachMin", "Exp/Min"));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsExpEachMin);
+
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"{expPerMinute:F}");
 
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Terms - Repair", "Repair"));
-                ImGui.TableNextColumn();
-                ImGui.TextUnformatted(Loc.Localize("Builder Stats Text - RepairAfter", "{0} after {1} voyages").Format(build.RepairCosts, repairAfter));
+                Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsRepair);
 
-                ImGui.EndTable();
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted(Language.BuilderStatsTextRepairAfter.Format(build.RepairCosts, repairAfter));
             }
         }
-        ImGui.EndChild();
     }
 
     public static void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
@@ -137,36 +151,31 @@ public partial class BuilderWindow
         }
         else if (minRequired > current)
         {
-            ImGui.TextColored(ImGuiColors.DalamudRed, $"{current} ({minRequired})");
+            Helper.TextColored(ImGuiColors.DalamudRed, $"{current} ({minRequired})");
         }
         else if (maxRequired == -1)
         {
             if (minRequired == current)
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
+                Helper.TextColored(ImGuiColors.HealerGreen, $"{current}");
             else
-                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({minRequired})");
+                Helper.TextColored(ImGuiColors.ParsedGold, $"{current} ({minRequired})");
         }
         else
         {
             if (maxRequired == current)
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{current}");
+                Helper.TextColored(ImGuiColors.HealerGreen, $"{current}");
             else if (current >= minRequired && current < maxRequired)
-                ImGui.TextColored(ImGuiColors.ParsedPink, $"{current} ({maxRequired})");
+                Helper.TextColored(ImGuiColors.ParsedPink, $"{current} ({maxRequired})");
             else
-                ImGui.TextColored(ImGuiColors.ParsedGold, $"{current} ({maxRequired})");
+                Helper.TextColored(ImGuiColors.ParsedGold, $"{current} ({maxRequired})");
         }
     }
 
     public void SelectedRoute()
     {
-        if (CurrentBuild.OptimizedRoute.Any())
-        {
-            var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == CurrentBuild.Map + 1);
-            ImGui.TextColored(ImGuiColors.DalamudOrange, string.Join(" -> ", CurrentBuild.OptimizedRoute.Where(p => p.RowId > startPoint.RowId).Select(p => NumToLetter(p.RowId - startPoint.RowId))));
-        }
+        if (CurrentBuild.OptimizedRoute.Length != 0)
+            Helper.TextColored(ImGuiColors.DalamudOrange, SectorsToPath(" -> ", CurrentBuild.OptimizedRoute.Select(s => s.RowId).ToList()));
         else
-        {
-            ImGui.TextColored(ImGuiColors.DalamudOrange, Loc.Localize("Builder Stats Route - No Selection", "No Selection"));
-        }
+            Helper.TextColored(ImGuiColors.DalamudOrange, Language.BuilderStatsRouteNoSelection);
     }
 }

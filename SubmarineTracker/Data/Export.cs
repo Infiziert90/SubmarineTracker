@@ -10,7 +10,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
-using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Data;
 
@@ -85,44 +84,6 @@ public static class Export
 
         [JsonProperty("hash")]
         public string Hash { get; set; } = "";
-
-        public Loot() : base("Loot") {}
-
-        public Loot(DetailedLoot loot) : base("Loot")
-        {
-            Sector = loot.Sector;
-            Unlocked = loot.Unlocked;
-
-            Primary = loot.Primary;
-            PrimaryCount = loot.PrimaryCount;
-            Additional = loot.Additional;
-            AdditionalCount = loot.AdditionalCount;
-
-            Rank = loot.Rank;
-            Surv = loot.Surv;
-            Ret = loot.Ret;
-            Fav = loot.Fav;
-
-            PrimarySurvProc = loot.PrimarySurvProc;
-            AdditionalSurvProc = loot.AdditionalSurvProc;
-            PrimaryRetProc = loot.PrimaryRetProc;
-            FavProc = loot.FavProc;
-            Date = loot.Date;
-
-            using var stream = new MemoryStream();
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(Date.Ticks);
-                writer.Write(Sector);
-            }
-            stream.Position = 0;
-
-            using (var hash = SHA256.Create())
-            {
-                var result = hash.ComputeHash(stream);
-                Hash = string.Join("", result.Select(b => $"{b:X2}"));
-            }
-        }
 
         public Loot(SubmarineTracker.Loot loot) : base("Loot")
         {
@@ -247,9 +208,9 @@ public static class Export
 
             return writer.ToString();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e, "Error while exporting to string");
+            Plugin.Log.Error(ex, "Error while exporting to string");
             return string.Empty;
         }
     }
@@ -273,9 +234,9 @@ public static class Export
 
             return dict;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Error(e, "Error while importing");
+            Plugin.Log.Error(ex, "Error while importing");
             return new Dictionary<string, Loot>();
         }
     }

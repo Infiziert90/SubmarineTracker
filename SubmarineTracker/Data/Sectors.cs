@@ -115,28 +115,28 @@ public static class Sectors
         { 100, new Breakpoint(225, 238, 280, 325, 230) },
         { 101, new Breakpoint(225, 240, 280, 325, 230) },
 
-        { 102, new Breakpoint(226,241,281,326,231) },
-        { 103, new Breakpoint(227,242,282,327,232) },
-        { 104, new Breakpoint(228,243,283,328,233) },
-        { 105, new Breakpoint(229,244,284,329,234) },
-        { 106, new Breakpoint(230,245,285,330,235) },
-        { 107, new Breakpoint(230,245,285,330,235) },
+        { 102, new Breakpoint(226, 241, 281, 326, 231) },
+        { 103, new Breakpoint(227, 242, 282, 327, 232) },
+        { 104, new Breakpoint(228, 243, 283, 328, 233) },
+        { 105, new Breakpoint(229, 244, 284, 329, 234) },
+        { 106, new Breakpoint(230, 245, 285, 330, 235) },
+        { 107, new Breakpoint(230, 245, 285, 330, 235) },
 
-        { 108, new Breakpoint(231,246,286,331,236) },
-        { 109, new Breakpoint(232,247,287,332,237) },
-        { 110, new Breakpoint(233,248,288,333,238) },
-        { 111, new Breakpoint(234,249,289,334,239) },
-        { 112, new Breakpoint(234,249,289,334,239) },
-        { 113, new Breakpoint(235,250,290,335,240) },
-        { 114, new Breakpoint(235,250,290,335,240) },
+        { 108, new Breakpoint(231, 246, 286, 331, 236) },
+        { 109, new Breakpoint(232, 247, 287, 332, 237) },
+        { 110, new Breakpoint(233, 248, 288, 333, 238) },
+        { 111, new Breakpoint(234, 249, 289, 334, 239) },
+        { 112, new Breakpoint(234, 249, 289, 334, 239) },
+        { 113, new Breakpoint(235, 250, 290, 335, 240) },
+        { 114, new Breakpoint(235, 250, 290, 335, 240) },
 
-        { 116, new Breakpoint(235,250,290,335,240) },
-        { 117, new Breakpoint(235,250,290,335,240) },
-        { 118, new Breakpoint(235,250,290,335,240) },
-        { 119, new Breakpoint(236,251,291,336,241) },
-        { 120, new Breakpoint(237,252,292,337,242) },
-        { 121, new Breakpoint(238,253,293,338,243) },
-        { 122, new Breakpoint(240,255,295,340,245) },
+        { 116, new Breakpoint(235, 250, 290, 335, 240) },
+        { 117, new Breakpoint(235, 250, 290, 335, 240) },
+        { 118, new Breakpoint(235, 250, 290, 335, 240) },
+        { 119, new Breakpoint(236, 251, 291, 336, 241) },
+        { 120, new Breakpoint(237, 252, 292, 337, 242) },
+        { 121, new Breakpoint(238, 253, 293, 338, 243) },
+        { 122, new Breakpoint(240, 255, 295, 340, 245) },
     };
 
     public static Breakpoint CalculateBreakpoint(List<uint> points)
@@ -150,6 +150,7 @@ public static class Sectors
         {
             if (!MapBreakpoints.TryGetValue(point, out var br))
                 return Breakpoint.Empty;
+
             breakpoints.Add(br);
         }
 
@@ -199,7 +200,7 @@ public static class Sectors
     public static uint CalculateExpForSectors(SubmarineExploration[] sectors, Build.SubmarineBuild build, bool avgExpBonus = false)
     {
         var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
-        if (!bonusEachSector.Any())
+        if (bonusEachSector.Count == 0)
             return 0u;
 
         var expGain = 0u;
@@ -211,7 +212,7 @@ public static class Sectors
 
     public static uint CalculateBonusExp(int bonus, uint exp)
     {
-        return (bonus) switch
+        return bonus switch
         {
             0 => exp,
             1 => (uint) (exp * 1.25),

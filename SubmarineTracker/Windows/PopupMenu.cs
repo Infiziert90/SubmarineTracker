@@ -47,7 +47,7 @@ public class PopupMenu
 
             if (Tooltip != "")
                 if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip(Tooltip);
+                    Helper.Tooltip(Tooltip);
         }
     }
 
@@ -79,7 +79,7 @@ public class PopupMenu
             ImGui.OpenPopup($"RightClick{Id}");
 
         using var popup = ImRaii.Popup($"RightClick{Id}");
-        if (popup)
+        if (popup.Success)
         {
             foreach (var item in Items)
                 item.DrawPopup();

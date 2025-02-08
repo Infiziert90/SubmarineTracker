@@ -1,4 +1,5 @@
-﻿using Lumina.Excel;
+﻿using System.Runtime.CompilerServices;
+using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
 namespace SubmarineTracker;
@@ -13,7 +14,6 @@ public static class Sheets
     public static readonly ExcelSheet<SubmarineExploration> ExplorationSheet;
 
     public static readonly uint LastRank;
-    public static readonly SubmarineExploration[] PossiblePoints;
 
     static Sheets()
     {
@@ -25,11 +25,14 @@ public static class Sheets
         ExplorationSheet = Plugin.Data.GetExcelSheet<SubmarineExploration>();
 
         LastRank = RankSheet.Last(t => t.Capacity != 0).RowId;
-        PossiblePoints = ExplorationSheet.Where(r => r.ExpReward > 0).ToArray();
     }
 
-    public static SubmarineExploration[] ToExplorationArray(IEnumerable<uint> sectors)
-    {
-        return sectors.Select(s => ExplorationSheet.GetRow(s)).ToArray();
-    }
+    /// <summary>
+    /// Grabs an item from the sheet.
+    /// </summary>
+    /// <param name="itemId">Specific item to get</param>
+    /// <returns>Item from the sheet</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Item GetItem(uint itemId) =>
+        ItemSheet.GetRow(itemId);
 }

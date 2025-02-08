@@ -1,4 +1,5 @@
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Helpy;
 
@@ -8,14 +9,14 @@ public partial class HelpyWindow
 
     private void StorageTab()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Helpy Tab - Storage", "Storage")}##Storage");
+        using var tabItem = ImRaii.TabItem($"{Language.HelpyTabStorage}##Storage");
         if (!tabItem.Success)
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
         if (!Plugin.AllaganToolsConsumer.IsAvailable)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Helpy Tab Warning - AllaganTools", "AllaganTools not available."));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.HelpyTabWarningAllaganTools);
             return;
         }
 
@@ -24,7 +25,7 @@ public partial class HelpyWindow
 
         foreach (var (key, fc) in Plugin.DatabaseCache.GetFreeCompanies())
         {
-            ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
+            Helper.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
 
             using var indent = ImRaii.PushIndent(10.0f);
             using var table = ImRaii.Table($"##SubmarineOverview{key}", 3);
@@ -40,18 +41,17 @@ public partial class HelpyWindow
                 ImGui.TableNextColumn();
                 Helper.DrawScaledIcon(cached.Item.Icon, IconSize);
 
-                ImGui.TableNextColumn();
                 var count = $"{cached.Count}x";
-                var width = ImGui.CalcTextSize(count).X;
-                var space = ImGui.GetContentRegionAvail().X;
-                ImGui.SameLine(space-width);
-                ImGui.TextUnformatted($"{cached.Count}x");
+                ImGui.TableNextColumn();
+                ImGui.SameLine(ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(count).X);
+                ImGui.TextUnformatted(count);
 
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted(Utils.ToStr(cached.Item.Name));
+                ImGui.TextUnformatted(cached.Item.Name.ExtractText());
 
                 ImGui.TableNextRow();
             }
+
             ImGuiHelpers.ScaledDummy(10.0f);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Config;
 
@@ -6,7 +7,7 @@ public partial class ConfigWindow
 {
     private void General()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Config Tab - General", "General")}##General");
+        using var tabItem = ImRaii.TabItem($"{Language.ConfigTabGeneral}##General");
         if (!tabItem.Success)
             return;
 
@@ -14,21 +15,21 @@ public partial class ConfigWindow
         ImGuiHelpers.ScaledDummy(5.0f);
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - DtrBar", "Server Bar:"));
-        changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - ServerBar Enabled", "Show Returning Sub"), ref Plugin.Configuration.ShowDtrEntry);
+        Helper.TextColored(ImGuiColors.DalamudViolet, Language.ConfigTabServerBar);
+        changed |= ImGui.Checkbox(Language.ConfigTabCheckboxServerBarEnabled, ref Plugin.Configuration.ShowDtrEntry);
         if (Plugin.Configuration.ShowDtrEntry)
         {
             using var indent = ImRaii.PushIndent(10.0f);
-            changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - No Sub Name", "Show Submarine Name"), ref Plugin.Configuration.DtrShowSubmarineName);
+            changed |= ImGui.Checkbox(Language.ConfigTabCheckboxNoSubName, ref Plugin.Configuration.DtrShowSubmarineName);
         }
-        changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - ServerBar Numbers", "Show On Route And Done Numbers"), ref Plugin.Configuration.DtrShowOverlayNumbers);
+        changed |= ImGui.Checkbox(Language.ConfigTabCheckboxServerBarNumbers, ref Plugin.Configuration.DtrShowOverlayNumbers);
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Naming", "Naming Convention:"));
+        Helper.TextColored(ImGuiColors.DalamudViolet, Language.ConfigTabEntryNaming);
 
-        Helper.WrappedTextWithColor(ImGuiColors.HealerGreen, Loc.Localize("Config Tab Naming - Example", "Example: "));
+        Helper.WrappedTextWithColor(ImGuiColors.HealerGreen, Language.ConfigTabNamingExample);
         ImGui.SameLine();
         ImGui.TextUnformatted($"{Plugin.Configuration.NameOption.GetExample()}");
 
@@ -37,7 +38,7 @@ public partial class ConfigWindow
         {
             if (combo.Success)
             {
-                foreach (var nameOption in (NameOptions[]) Enum.GetValues(typeof(NameOptions)))
+                foreach (var nameOption in Enum.GetValues<NameOptions>())
                 {
                     if (ImGui.Selectable($"{nameOption.GetName()} ({nameOption.GetExample()})", Plugin.Configuration.NameOption == nameOption))
                     {
@@ -50,19 +51,20 @@ public partial class ConfigWindow
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Entry - Uploads", "Uploads:"));
+        Helper.TextColored(ImGuiColors.DalamudViolet, Language.ConfigTabEntryUploads);
 
-        changed |= ImGui.Checkbox(Loc.Localize("Config Tab Checkbox - Upload Permission", "Upload Permission"), ref Plugin.Configuration.UploadPermission);
+        changed |= ImGui.Checkbox(Language.ConfigTabCheckboxUploadPermission, ref Plugin.Configuration.UploadPermission);
 
-        Helper.WrappedTextWithColor(ImGuiColors.HealerGreen, Loc.Localize("Config Tab Upload - Information 1", "Anonymously provide data about submarines.\nThis data can't be tied to you in any way and everyone benefits!"));
-        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - What", "What data?"));
+        Helper.WrappedTextWithColor(ImGuiColors.HealerGreen, Language.ConfigTabUploadInformation1);
+        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Language.ConfigTabUploadWhat);
 
-        ImGuiHelpers.ScaledIndent(10.0f);
-        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 1", "Loot received"));
-        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 2", "Sector unlocks"));
-        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 3", "Exploration procs"));
-        Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Loc.Localize("Config Tab Upload - Point 4", "Submarine stats"));
-        ImGuiHelpers.ScaledIndent(-10.0f);
+        using (ImRaii.PushIndent(10.0f))
+        {
+            Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Language.ConfigTabUploadPoint1);
+            Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Language.ConfigTabUploadPoint2);
+            Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Language.ConfigTabUploadPoint3);
+            Helper.WrappedTextWithColor(ImGuiColors.DalamudViolet, Language.ConfigTabUploadPoint4);
+        }
 
         if (changed)
             Plugin.Configuration.Save();

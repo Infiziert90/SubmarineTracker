@@ -6,27 +6,25 @@ namespace SubmarineTracker.Data;
 public static class Storage
 {
     public static bool Refresh = true;
-    public static Dictionary<ulong, Dictionary<uint, CachedItem>> StorageCache = new();
+    public static readonly Dictionary<ulong, Dictionary<uint, CachedItem>> StorageCache = new();
 
     public record CachedItem(Item Item, uint Count);
 
     public static void BuildStorageCache()
     {
-        if (Refresh)
-            Refresh = false;
-        else
+        if (!Refresh)
             return;
 
+        Refresh = false;
         StorageCache.Clear();
 
-        var possibleItems = (Items[]) Enum.GetValues(typeof(Items));
+        var possibleItems = Enum.GetValues<Items>();
         foreach (var key in  Plugin.DatabaseCache.GetFreeCompanies().Keys)
         {
             StorageCache.Add(key, new Dictionary<uint, CachedItem>());
             foreach (var item in possibleItems.Select(e => e.GetItem()))
             {
                 var count = Plugin.AllaganToolsConsumer.GetCount(item.RowId, key);
-
                 if (count != 0 && count != uint.MaxValue)
                     StorageCache[key].Add(item.RowId, new CachedItem(item, count));
             }
@@ -50,12 +48,12 @@ public static class Storage
             return (-1, -1);
         }
 
-        var requiredTanks = 0;
         var requiredKits = 0;
+        var requiredTanks = 0;
         foreach (var sub in subs)
         {
-            requiredTanks += sub.Points.Sum(p => Sheets.ExplorationSheet.GetRow(p)!.CeruleumTankReq);
             requiredKits += sub.Build.RepairCosts;
+            requiredTanks += Voyage.ToExplorationArray(sub.Points).Sum(p => p.CeruleumTankReq);
         }
 
         if (requiredTanks == 0 || requiredKits == 0)

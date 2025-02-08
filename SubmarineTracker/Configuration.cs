@@ -114,10 +114,9 @@ namespace SubmarineTracker
                 File.WriteAllText(str, text);
                 File.Move(str, path, true);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Plugin.Log.Error(e.Message);
-                Plugin.Log.Error(e.StackTrace ?? "Unknown");
+                Plugin.Log.Error(ex, "Unable to write config file");
             }
         }
     }

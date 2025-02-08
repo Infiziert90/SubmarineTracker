@@ -1,13 +1,12 @@
-namespace SubmarineTracker.Attributes
-{
-    [AttributeUsage(AttributeTargets.Method)]
-    public class HelpMessageAttribute : Attribute
-    {
-        public string HelpMessage { get; }
+namespace SubmarineTracker.Attributes;
 
-        public HelpMessageAttribute(string helpMessage)
-        {
-            HelpMessage = helpMessage;
-        }
+[AttributeUsage(AttributeTargets.Method)]
+public class HelpMessageAttribute : Attribute
+{
+    public string HelpMessage { get; }
+
+    public HelpMessageAttribute(string helpMessage)
+    {
+        HelpMessage = helpMessage;
     }
 }

@@ -1,4 +1,6 @@
-﻿using SubmarineTracker.Data;
+﻿using System.Collections;
+using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -6,14 +8,14 @@ public partial class LootWindow
 {
     private void RouteTab()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Loot Tab - Routes", "Routes")}##RouteHistory");
+        using var tabItem = ImRaii.TabItem($"{Language.LootTabRoutes}##RouteHistory");
         if (!tabItem.Success)
             return;
 
         Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
         foreach (var (id, knownFC) in Plugin.DatabaseCache.GetFreeCompanies())
             foreach (var s in Plugin.DatabaseCache.GetSubmarines(id))
-                existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", id));
+                existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)}{s.Name} ({s.Build.FullIdentifier()})", id));
 
         if (existingSubs.Count == 0)
         {
@@ -52,16 +54,16 @@ public partial class LootWindow
         var submarineLoot = Plugin.DatabaseCache.GetLoot().Where(l => l.FreeCompanyId == fc.FreeCompanyId).Where(l => l.Register == sub.Register).ToArray();
         if (submarineLoot.Length == 0)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Wrong", "Something went wrong."));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.LootTabHistoryWrong);
             return;
         }
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
         using var table = ImRaii.Table("RouteTable", 3);
-        ImGui.TableSetupColumn(Loc.Localize("Term - Date", "Date"), ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn(Loc.Localize("Terms - Route", "Route"));
-        ImGui.TableSetupColumn(Loc.Localize("Term - Unlocked", "Unlocked"), ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn(Language.TermsDate, ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn(Language.TermsRoute);
+        ImGui.TableSetupColumn(Language.TermsUnlocked, ImGuiTableColumnFlags.WidthFixed);
 
         ImGui.TableHeadersRow();
 
@@ -75,7 +77,7 @@ public partial class LootWindow
             ImGui.TextUnformatted($"{detailedLoot[0].Date}");
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"({Voyage.SectorToMapThreeLetter(detailedLoot[0].Sector)}) {string.Join(" -> ", detailedLoot.Select(p => Utils.NumToLetter(p.Sector, true)))}");
+            ImGui.TextUnformatted($"({Voyage.SectorToMapThreeLetter(detailedLoot[0].Sector)}) {Utils.SectorsToPath(" -> ", detailedLoot.Select(s => s.Sector).ToList())}");
 
             var unlocks = detailedLoot.Where(l => l.Unlocked != 0).Select(l => l.Unlocked);
             ImGui.TableNextColumn();

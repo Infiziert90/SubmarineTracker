@@ -1,5 +1,6 @@
 using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Builder;
@@ -10,105 +11,94 @@ public partial class BuilderWindow
 
     private void RouteTab()
     {
-        if (ImGui.BeginTabItem($"{Loc.Localize("Builder Tab - Route", "Route")}##Route"))
+        using var tabItem = ImRaii.TabItem($"{Language.BuilderTabRoute}##Route");
+        if (!tabItem.Success)
+            return;
+
+        using var child = ImRaii.Child("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale)));
+        if (!child.Success)
+            return;
+
+        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
         {
-            if (ImGui.BeginChild("SubSelector", new Vector2(0, -(170 * ImGuiHelpers.GlobalScale))))
+            Helper.NoData();
+            return;
+        }
+
+        var maps = Voyage.MapNames;
+        var selectedMap = CurrentBuild.Map;
+        ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
+        if (selectedMap != CurrentBuild.Map)
+            CurrentBuild.ChangeMap(selectedMap);
+
+        var explorations = Sheets.ExplorationSheet
+                                 .Where(r => r.Map.RowId == CurrentBuild.MapRowId && !r.StartingPoint)
+                                 .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
+                                 .ToList();
+
+        Helper.TextColored(ImGuiColors.HealerGreen, $"{Language.TermsSectors} {CurrentBuild.Sectors.Count} / 5");
+        var startPoint = Voyage.FindStartFromMap((uint) CurrentBuild.MapRowId).RowId;
+
+        var height = ImGui.GetTextLineHeight() * 6.5f; // 5 items max, we give padding space for 6.5
+        using (var listBox = ImRaii.ListBox("##selectedPoints", new Vector2(-1, height)))
+        {
+            if (listBox.Success)
             {
-                if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
+                foreach (var location in Voyage.ToExplorationArray(CurrentBuild.Sectors))
+                    if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                        CurrentBuild.Sectors.Remove(location.RowId);
+            }
+        }
+
+        Helper.TextColored(ImGuiColors.ParsedOrange, Language.BuilderTabRouteSelection);
+        using (var listBox = ImRaii.ListBox("##sectorToSelect", new Vector2(-1, height * 2.30f)))
+        {
+            if (listBox.Success)
+            {
+                foreach (var location in explorations)
                 {
-                    Helper.NoData();
+                    fcSub.UnlockedSectors.TryGetValue(location.RowId, out var unlocked);
+                    fcSub.ExploredSectors.TryGetValue(location.RowId, out var explored);
 
-                    ImGui.EndChild();
-                    ImGui.EndTabItem();
-                    return;
-                }
-
-                var maps = Sheets.MapSheet.Where(r => r.RowId != 0).Select(r => ToStr(r.Name)).ToArray();
-                var selectedMap = CurrentBuild.Map;
-                ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
-                if (selectedMap != CurrentBuild.Map)
-                {
-                    CurrentBuild.ChangeMap(selectedMap);
-                }
-
-                var explorations = Sheets.ExplorationSheet
-                                         .Where(r => r.Map.RowId == CurrentBuild.Map + 1)
-                                         .Where(r => !r.StartingPoint)
-                                         .Where(r => !CurrentBuild.Sectors.Contains(r.RowId))
-                                         .ToList();
-
-                ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Sectors", "Sectors")} {CurrentBuild.Sectors.Count} / 5");
-                var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == CurrentBuild.Map + 1).RowId;
-
-                var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
-                if (ImGui.BeginListBox("##selectedPoints", new Vector2(-1, height)))
-                {
-                    foreach (var location in CurrentBuild.Sectors.ToArray())
+                    var unlockTooltip = false;
+                    if (CurrentBuild.Sectors.Count < 5)
                     {
-                        var p = Sheets.ExplorationSheet.GetRow(location)!;
-                        if (ImGui.Selectable($"{NumToLetter(location - startPoint)}. {UpperCaseStr(p.Destination)}"))
-                            CurrentBuild.Sectors.Remove(location);
-                    }
-
-                    ImGui.EndListBox();
-                }
-
-                ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Tab Route - Selection", "Select sector by clicking"));
-                if (ImGui.BeginListBox("##pointsToSelect", new Vector2(-1, height * 2.30f)))
-                {
-                    foreach (var location in explorations)
-                    {
-                        fcSub.UnlockedSectors.TryGetValue(location.RowId, out var unlocked);
-                        fcSub.ExploredSectors.TryGetValue(location.RowId, out var explored);
-
-                        var unlockTooltip = false;
-                        if (CurrentBuild.Sectors.Count < 5)
+                        if (unlocked && explored)
                         {
-                            if (unlocked && explored)
-                            {
+                            if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                                CurrentBuild.Sectors.Add(location.RowId);
+                        }
+                        else if (unlocked)
+                        {
+                            using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudViolet))
                                 if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
                                     CurrentBuild.Sectors.Add(location.RowId);
-                            }
-                            else if (unlocked)
-                            {
-                                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudViolet);
-                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                    CurrentBuild.Sectors.Add(location.RowId);
-                                ImGui.PopStyleColor();
-                            }
-                            else
-                            {
-                                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
-                                    CurrentBuild.Sectors.Add(location.RowId);
-                                ImGui.PopStyleColor();
-
-                                unlockTooltip = true;
-                            }
                         }
                         else
                         {
-                            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, ImGuiColors.DPSRed);
-                            ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
-                            ImGui.PopStyleColor();
-                        }
+                            using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed))
+                                if (ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}"))
+                                    CurrentBuild.Sectors.Add(location.RowId);
 
-                        if (ImGui.IsItemHovered())
-                            UnlockedTooltip(location, fcSub, unlockTooltip);
+                            unlockTooltip = true;
+                        }
+                    }
+                    else
+                    {
+                        using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DPSRed))
+                            ImGui.Selectable($"{NumToLetter(location.RowId - startPoint)}. {UpperCaseStr(location.Destination)}");
                     }
 
-                    ImGui.EndListBox();
+                    if (ImGui.IsItemHovered())
+                        UnlockedTooltip(location, fcSub, unlockTooltip);
                 }
-
-                if (CurrentBuild.Sectors.Count != 0)
-                    CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
-
-                CommonRoutes();
             }
-            ImGui.EndChild();
-
-            ImGui.EndTabItem();
         }
+
+        if (CurrentBuild.Sectors.Count != 0)
+            CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
+
+        CommonRoutes();
     }
 
     private void UnlockedTooltip(SubmarineExploration location, FreeCompany fcSub, bool unlockTooltip)
@@ -118,43 +108,39 @@ public partial class BuilderWindow
 
         fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out var otherUnlocked);
 
-        ImGui.BeginTooltip();
-        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
-        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Loc.Localize("Terms - Rank", "Rank")}: ");
+        using var tooltip = ImRaii.Tooltip();
+        using var textWrapPos = ImRaii.TextWrapPos(ImGui.GetFontSize() * 35.0f);
+
+        Helper.TextColored(ImGuiColors.HealerGreen, $"{Language.TermsRank}: ");
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.HealerGreen, $"{location.RankReq}");
+        Helper.TextColored(ImGuiColors.HealerGreen, $"{location.RankReq}");
 
-        if (unlockTooltip)
+        if (!unlockTooltip)
+            return;
+
+        Helper.TextColored(ImGuiColors.DalamudViolet, $"{Language.TermsUnlockedBy}: ");
+        ImGui.SameLine();
+
+        if (unlockedFrom.Sector != 9876)
         {
-            ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Unlocked By", "Unlocked By")}: ");
-            ImGui.SameLine();
-            if (unlockedFrom.Sector != 9876)
+            if (unlockedFrom.Sector != 9000)
             {
-                if (unlockedFrom.Sector != 9000)
-                {
-                    var unlockPoint = Sheets.ExplorationSheet.GetRow(unlockedFrom.Sector)!;
-                    var mapPoint = Voyage.FindVoyageStart(unlockPoint.RowId);
-                    ImGui.TextColored(otherUnlocked
-                                          ? ImGuiColors.HealerGreen
-                                          : ImGuiColors.DalamudRed,
-                                      $"{NumToLetter(unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+                var unlockPoint = Sheets.ExplorationSheet.GetRow(unlockedFrom.Sector);
+                var mapPoint = Voyage.FindVoyageStart(unlockPoint.RowId);
+                Helper.TextColored(otherUnlocked ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed, $"{NumToLetter(unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
 
-                    if (unlockedFrom.Sub)
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Builder Window Tooltip - Unlocks Slot", "#Extra Sub Slot")}");
-                }
-                else
-                {
-                    ImGui.TextColored(ImGuiColors.TankBlue, Loc.Localize("Builder Window Tooltip - Always Unlocked", "Always Unlocked"));
-                }
+                if (unlockedFrom.Sub)
+                    Helper.TextColored(ImGuiColors.TankBlue, Language.BuilderWindowTooltipUnlocksSlot);
             }
             else
             {
-                ImGui.TextColored(ImGuiColors.DalamudRed, Loc.Localize("Terms - Unknown", "Unknown"));
+                Helper.TextColored(ImGuiColors.TankBlue, Language.BuilderWindowTooltipAlwaysUnlocked);
             }
         }
-
-        ImGui.PopTextWrapPos();
-        ImGui.EndTooltip();
+        else
+        {
+            Helper.TextColored(ImGuiColors.DalamudRed, Language.TermsUnknown);
+        }
     }
 
     private void CommonRoutes()
@@ -162,29 +148,28 @@ public partial class BuilderWindow
         var names = Voyage.Common.Keys.Prepend("None").ToArray();
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Builder Tab Route - Common", "Common Routes"));
+        Helper.TextColored(ImGuiColors.HealerGreen, Language.BuilderTabRouteCommon);
         ImGui.SameLine(0, 20.0f * ImGuiHelpers.GlobalScale);
         ImGui.SetNextItemWidth(200.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginCombo($"##CommonRouteSelection", names[CommonSelection]))
+        using var combo = ImRaii.Combo("##CommonRouteSelection", names[CommonSelection]);
+        if (!combo.Success)
+            return;
+
+        if (ImGui.Selectable("None"))
         {
-            if (ImGui.Selectable("None"))
+            CommonSelection = 0;
+            CurrentBuild.NotOptimized();
+        }
+
+        foreach (var ((name, route), idx) in Voyage.Common.Select((val, i) => (val, i)))
+        {
+            if (ImGui.Selectable(name))
             {
-                CommonSelection = 0;
-                CurrentBuild.NotOptimized();
+                CurrentBuild.ChangeMap(route.Map);
+                CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(route.Route));
+
+                CommonSelection = idx + 1; // + 1 as we manually add None
             }
-
-            foreach (var ((name, route), idx) in Voyage.Common.Select((val, i) => (val, i)))
-            {
-                if (ImGui.Selectable(name))
-                {
-                    CurrentBuild.ChangeMap(route.Map);
-                    CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(route.Route));
-
-                    CommonSelection = idx + 1; // + 1 as we manually add None
-                }
-            }
-
-            ImGui.EndCombo();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using Dalamud.Interface.Utility.Raii;
-using Dalamud.Utility;
+﻿using Dalamud.Utility;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Main;
 
@@ -19,21 +19,21 @@ public partial class MainWindow
         ImGui.TableSetupColumn("##value");
 
         ImGui.TableNextColumn();
-        ImGui.TextUnformatted(Loc.Localize("Terms - Rank", "Rank"));
+        ImGui.TextUnformatted(Language.TermsRank);
         ImGui.TableNextColumn();
         ImGui.TextUnformatted($"{sub.Rank}");
 
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
-        ImGui.TextUnformatted(Loc.Localize("Terms - Build", "Build"));
+        ImGui.TextUnformatted(Language.TermsBuild);
         ImGui.TableNextColumn();
         ImGui.TextUnformatted($"{sub.Build.FullIdentifier()}");
 
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
-        ImGui.TextUnformatted(Loc.Localize("Terms - Repair", "Repair"));
+        ImGui.TextUnformatted(Language.TermsRepair);
         ImGui.TableNextColumn();
         ImGui.TextUnformatted($"{sub.Build.RepairCosts}");
         ImGui.TableNextColumn();
@@ -41,54 +41,54 @@ public partial class MainWindow
         ImGui.TextUnformatted($"{sub.HullCondition:F}% | {sub.SternCondition:F}% | {sub.BowCondition:F}% | {sub.BridgeCondition:F}%");
         ImGui.TableNextColumn();
         ImGui.TableNextColumn();
-        ImGui.TextUnformatted(Loc.Localize("Main Window Overview - Breaks After", "Breaks after {0} voyages").Format(sub.CalculateUntilRepair()));
+        ImGui.TextUnformatted(Language.MainWindowOverviewBreaksAfter.Format(sub.CalculateUntilRepair()));
 
         ImGui.TableNextRow();
 
         if (sub.ValidExpRange())
         {
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Exp", "Exp"));
+            ImGui.TextUnformatted(Language.TermsExp);
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.CExp} / {sub.NExp}");
             ImGui.SameLine();
-            ImGui.TextUnformatted($"{(double)sub.CExp / sub.NExp * 100.0:##0.00}%");
+            ImGui.TextUnformatted($"{(double) sub.CExp / sub.NExp * 100.0:##0.00}%");
 
             var predictedExp = sub.PredictExpGrowth();
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Predicted", "Predicted"));
+            ImGui.TextUnformatted(Language.TermsPredicted);
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"{Loc.Localize("Terms - Rank", "Rank")} {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)");
+            ImGui.TextUnformatted($"{Language.TermsRank} {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)");
         }
 
         if (sub.IsOnVoyage())
         {
             AddTableSpacing();
 
-            var time = Loc.Localize("Terms - Done", "Done");
+            var time = Language.TermsDone;
             var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
             if (returnTime.TotalSeconds > 0)
-                time = $"{(int)returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} {Loc.Localize("Terms - hours", "hours")}";
+                time = $"{(int)returnTime.TotalHours:#00}:{returnTime:mm}:{returnTime:ss} {Language.Termshours}";
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Time", "Time"));
+            ImGui.TextUnformatted(Language.TermsTime);
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(time);
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Date", "Date"));
+            ImGui.TextUnformatted(Language.TermsDate);
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{sub.ReturnTime.ToLocalTime()}");
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Map", "Map"));
+            ImGui.TextUnformatted(Language.TermsMap);
             ImGui.TableNextColumn();
             ImGui.TextUnformatted(Voyage.SectorToMapName(sub.Points[0]));
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(Loc.Localize("Terms - Route", "Route"));
+            ImGui.TextUnformatted(Language.TermsRoute);
             ImGui.TableNextColumn();
-            ImGui.TextWrapped($"{string.Join(" -> ", sub.Points.Select(p => Utils.NumToLetter(p, true)))}");
+            ImGui.TextWrapped($"{Utils.SectorsToPath(" -> ", sub.Points)}");
         }
         AddTableSpacing();
 
@@ -100,33 +100,35 @@ public partial class MainWindow
         ImGui.TableNextColumn();
         Helper.DrawScaledIcon(sub.HullIconId, IconSize);
         ImGui.TableNextColumn();
-        ImGui.TextColored(ImGuiColors.ParsedGold, sub.HullName);
+        Helper.TextColored(ImGuiColors.ParsedGold, sub.HullName);
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
         Helper.DrawScaledIcon(sub.SternIconId, IconSize);
         ImGui.TableNextColumn();
-        ImGui.TextColored(ImGuiColors.ParsedGold, sub.SternName);
+        Helper.TextColored(ImGuiColors.ParsedGold, sub.SternName);
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
         Helper.DrawScaledIcon(sub.BowIconId, IconSize);
         ImGui.TableNextColumn();
-        ImGui.TextColored(ImGuiColors.ParsedGold, sub.BowName);
+        Helper.TextColored(ImGuiColors.ParsedGold, sub.BowName);
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
         Helper.DrawScaledIcon(sub.BridgeIconId, IconSize);
         ImGui.TableNextColumn();
-        ImGui.TextColored(ImGuiColors.ParsedGold, sub.BridgeName);
+        Helper.TextColored(ImGuiColors.ParsedGold, sub.BridgeName);
         ImGui.TableNextRow();
     }
 
     private static void AddTableSpacing()
     {
         ImGui.TableNextRow();
+
         ImGui.TableNextColumn();
         ImGuiHelpers.ScaledDummy(10.0f);
+
         ImGui.TableNextRow();
     }
 }

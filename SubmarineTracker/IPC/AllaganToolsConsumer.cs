@@ -1,5 +1,4 @@
-﻿using Dalamud.Logging;
-using Dalamud.Plugin.Ipc;
+﻿using Dalamud.Plugin.Ipc;
 
 namespace SubmarineTracker.IPC;
 
@@ -15,9 +14,7 @@ public class AllaganToolsConsumer
         get
         {
             if (TimeSinceLastCheck + 5000 > Environment.TickCount64)
-            {
                 return Available;
-            }
 
             try
             {
@@ -45,9 +42,9 @@ public class AllaganToolsConsumer
             IsInitialized = Plugin.PluginInterface.GetIpcSubscriber<bool>("AllaganTools.IsInitialized");
             ItemCount = Plugin.PluginInterface.GetIpcSubscriber<uint, ulong, int, uint>("AllaganTools.ItemCount");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.Log.Debug($"Failed to subscribe to AllaganTools\nReason: {e}");
+            Plugin.Log.Debug(ex, "Failed to subscribe to AllaganTools");
         }
     }
 

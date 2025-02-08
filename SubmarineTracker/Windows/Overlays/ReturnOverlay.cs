@@ -1,5 +1,6 @@
 using System.IO;
 using Dalamud.Interface.Windowing;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Overlays;
 
@@ -11,6 +12,8 @@ public class ReturnOverlay : Window, IDisposable
     private long LastRefresh;
     private Submarine NextSub = new();
     private (int OnRoute, int Done) VoyageStats = (0, 0);
+
+    private ImRaii.Color PushedColor = null!;
 
     public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0###submarineOverlay")
     {
@@ -42,6 +45,7 @@ public class ReturnOverlay : Window, IDisposable
         // Only calculate it once a second
         if (Environment.TickCount64 < LastRefresh)
             return;
+
         LastRefresh = Environment.TickCount64 + 1000; // 1s
 
         VoyageStats = (0, 0);
@@ -92,9 +96,9 @@ public class ReturnOverlay : Window, IDisposable
             }
         }
 
-        WindowName = $"{Loc.Localize("Terms - Submarines", "Submarines")}: {OverlayNumbers()}{returnText}###submarineOverlay";
+        WindowName = $"{Language.TermsSubmarines}: {OverlayNumbers()}{returnText}###submarineOverlay";
 
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
+        PushedColor = ImRaii.PushColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
 
     public override void Draw()
@@ -116,18 +120,15 @@ public class ReturnOverlay : Window, IDisposable
         if (timerSub == null)
             return;
 
-        var scrollbarSpacing = ImGui.GetScrollMaxY() > 0.0f ? ImGui.GetStyle().ScrollbarSize : 0;
-        var windowWidth = ImGui.GetWindowWidth() - (20.0f * ImGuiHelpers.GlobalScale) - scrollbarSpacing;
         var y = ImGui.GetCursorPosY();
+        var windowWidth = ImGui.GetContentRegionAvail().X - (20.0f * ImGuiHelpers.GlobalScale);
 
         var color = VoyageStats is { Done: > 0, OnRoute: > 0 }
                         ? Plugin.Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
                             ? Plugin.Configuration.OverlayAllDone : Plugin.Configuration.OverlayNoneDone;
         bool mainHeader;
         using (ImRaii.PushColor(ImGuiCol.Header, color))
-        {
             mainHeader = ImGui.CollapsingHeader("All###overlayAll", ImGuiTreeNodeFlags.DefaultOpen);
-        }
 
         SetHeaderText(timerSub, windowWidth, y);
 
@@ -149,7 +150,7 @@ public class ReturnOverlay : Window, IDisposable
         if (sortedFcList.Length == 0)
         {
             using var indent = ImRaii.PushIndent(10.0f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange,Loc.Localize("Return Overlay Info - No Return", "No sub has returned."));
+            Helper.TextColored(ImGuiColors.DalamudOrange, Language.ReturnOverlayInfoNoReturn);
             return;
         }
 
@@ -165,9 +166,7 @@ public class ReturnOverlay : Window, IDisposable
 
             bool header;
             using (ImRaii.PushColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone))
-            {
                 header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.FreeCompanyId}");
-            }
 
             SetHeaderText(longestSub, windowWidth, y);
 
@@ -178,11 +177,11 @@ public class ReturnOverlay : Window, IDisposable
             foreach (var sub in subs)
             {
                 var needsRepair = sub.PredictDurability() <= 0;
-                var subText = $"{(Plugin.Configuration.OverlayShowRank ? $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Plugin.Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
-                ImGui.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
+                var subText = $"{(Plugin.Configuration.OverlayShowRank ? $"{Language.TermsRank} {sub.Rank}. " : "")}{Plugin.NameConverter.GetJustSub(sub)}{(Plugin.Configuration.OverlayShowBuild ? $" ({sub.Build.FullIdentifier()})" : "")}";
+                Helper.TextColored(!needsRepair ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow, subText);
 
                 if (needsRepair && ImGui.IsItemHovered())
-                    ImGui.SetTooltip(Loc.Localize("Return Overlay Tooltip - Repair Needed", "This submarine needs repair on return."));
+                    Helper.Tooltip(Language.ReturnOverlayTooltipRepairNeeded);
 
                 var timeText = Helper.GenerateVoyageText(sub, !Plugin.Configuration.OverlayShowDate);
                 var timeWidth = ImGui.CalcTextSize(timeText).X;
@@ -222,7 +221,7 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void PostDraw()
     {
-        ImGui.PopStyleColor();
+        PushedColor.Dispose();
     }
 
     public static void SetHeaderText(Submarine sub, float windowWidth, float lastY)
@@ -232,7 +231,7 @@ public class ReturnOverlay : Window, IDisposable
         var longestWidth = ImGui.CalcTextSize(longestText).X;
         ImGui.SetCursorPos(new Vector2(windowWidth - longestWidth, lastY));
         ImGui.AlignTextToFramePadding();
-        ImGui.Text(longestText);
+        ImGui.TextUnformatted(longestText);
         ImGui.SetCursorPos(cursorPos);
     }
 

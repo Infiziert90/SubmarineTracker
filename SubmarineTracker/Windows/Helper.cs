@@ -1,11 +1,15 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows;
 
 public static class Helper
 {
+    public const float SeparatorPadding = 1.0f;
+    public static float GetSeparatorPaddingHeight => SeparatorPadding * ImGuiHelpers.GlobalScale;
+
     private static PopupMenu SettingsMenu = null!;
 
     public static readonly Vector4 TransparentBackground = new(0.0f, 0.0f, 0.0f, 0.8f);
@@ -15,50 +19,26 @@ public static class Helper
 
     public static void Initialize(Plugin plugin)
     {
-        SettingsMenu = new PopupMenu("configMenu", PopupMenu.PopupMenuButtons.LeftRight,
+        SettingsMenu = new PopupMenu("##configMenu", PopupMenu.PopupMenuButtons.LeftRight,
                                      [
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Tracker", "Tracker"), plugin.OpenTracker,
-                                             Loc.Localize("Menu Tooltip - Tracker", "Open the tracker window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Builder", "Builder"), plugin.OpenBuilder,
-                                             Loc.Localize("Menu Tooltip - Builder", "Open the builder window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Loot", "Loot"), plugin.OpenLoot,
-                                             Loc.Localize("Menu Tooltip - Loot", "Open the loot window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Helpy", "Helpy"), plugin.OpenHelpy,
-                                             Loc.Localize("Menu Tooltip - Helpy", "Open the helper window.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Overlay", "Overlay"), plugin.OpenOverlay,
-                                             Loc.Localize("Menu Tooltip - Overlay", "Open the return overlay.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Window Name - Config", "Config"), plugin.OpenConfig,
-                                             Loc.Localize("Menu Tooltip - Config", "Open the config window.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameTracker, plugin.OpenTracker, Language.MenuTooltipTracker),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameBuilder, plugin.OpenBuilder, Language.MenuTooltipBuilder),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameLoot, plugin.OpenLoot, Language.MenuTooltipLoot),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameHelpy, plugin.OpenHelpy, Language.MenuTooltipHelpy),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameOverlay, plugin.OpenOverlay, Language.MenuTooltipOverlay),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.WindowNameConfig, plugin.OpenConfig, Language.MenuTooltipConfig),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Menu Entry - Discord Thread", "Discord Thread"),
-                                             Plugin.DiscordSupport,
-                                             Loc.Localize("Menu Tooltip - Discord Thread", "Open the discord support thread.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Menu Entry - Localization", "Localization"),
-                                             Plugin.DiscordSupport,
-                                             Loc.Localize("Menu Tooltip - Localization", "Open the crowdin page in your browser")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Menu Entry - Issues", "Issues"), Plugin.IssuePage,
-                                             Loc.Localize("Menu Tooltip - Issues", "Open the issue page in your browser.")),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Menu Entry - KoFi", "Ko-Fi Tip"), Plugin.Kofi,
-                                             Loc.Localize("Menu Tooltip - KoFi", "Open the kofi page in your browser.")),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryDiscordThread, Plugin.DiscordSupport, Language.MenuTooltipDiscordThread),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryLocalization, Plugin.DiscordSupport, Language.MenuTooltipLocalization),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryIssues, Plugin.IssuePage, Language.MenuTooltipIssues),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryKoFi, Plugin.Kofi, Language.MenuTooltipKoFi),
                                          new PopupMenu.PopupMenuItemSeparator(),
-                                         new PopupMenu.PopupMenuItemSelectable(
-                                             Loc.Localize("Menu Entry - Sync", "Sync"), plugin.Sync,
-                                             Loc.Localize("Menu Tooltip - Sync", "Reload all stored data from hard drive and refresh the cache."))
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntrySync, plugin.Sync, Language.MenuTooltipSync)
                                      ]);
     }
 
     /// <summary>
-    /// An unformatted version for ImGui.TextColored
+    /// An unformatted version for Helper.TextColored
     /// </summary>
     /// <param name="color">color to be used</param>
     /// <param name="text">text to display</param>
@@ -69,7 +49,7 @@ public static class Helper
     }
 
     /// <summary>
-    /// An unformatted version for ImGui.SetTooltip
+    /// An unformatted version for Helper.Tooltip
     /// </summary>
     /// <param name="tooltip">tooltip to display</param>
     public static void Tooltip(string tooltip)
@@ -114,7 +94,7 @@ public static class Helper
     public static void NoData()
     {
         ImGuiHelpers.ScaledDummy(10.0f);
-        WrappedError(Loc.Localize("Error - No Data", "No data found for this character's FC\nPlease visit your Company Workshop and access Submersible Management at the Voyage Control Panel."));
+        WrappedError(Language.ErrorNoData);
     }
 
     public static void WrappedError(string text)
@@ -124,10 +104,10 @@ public static class Helper
 
     public static string GenerateVoyageText(Submarine sub, bool useTime = false)
     {
-        var time = Loc.Localize("Terms - No Voyage", "No Voyage");
+        var time = Language.TermsNoVoyage;
         if (sub.IsOnVoyage())
         {
-            time = Loc.Localize("Terms - Done", "Done");
+            time = Language.TermsDone;
 
             var returnTime = sub.LeftoverTime();
             if (returnTime.TotalSeconds > 0)
@@ -159,16 +139,16 @@ public static class Helper
     {
         var clicked = ImGuiComponents.IconButton(icon);
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip(tooltip);
+            Tooltip(tooltip);
 
         return clicked;
     }
 
     public static void DrawComboWithArrows(string label, ref int selected, ref string[] comboArray, int id = 0)
     {
-        ImGui.PushItemWidth((ImGui.GetWindowWidth() / 2) - (5.0f * ImGuiHelpers.GlobalScale));
-        ImGui.Combo(label, ref selected, comboArray, comboArray.Length);
-        ImGui.PopItemWidth();
+        using (ImRaii.ItemWidth((ImGui.GetWindowWidth() / 2) - ImGui.GetStyle().ItemSpacing.X))
+            ImGui.Combo(label, ref selected, comboArray, comboArray.Length);
+
         DrawArrows(ref selected, comboArray.Length, id);
     }
 
@@ -179,21 +159,35 @@ public static class Helper
         selected = keys[idx];
     }
 
-    public static void DrawArrows(ref int selected, int length, int id = 0)
+    public static bool DrawArrows(ref int selected, int length, int id = 0)
     {
+        var changed = false;
+
         // Prevents changing values from triggering EndDisable
         var isMin = selected == 0;
         var isMax = selected + 1 == length;
 
         ImGui.SameLine();
-        if (isMin) ImGui.BeginDisabled();
-        if (ImGuiComponents.IconButton(id, FontAwesomeIcon.ArrowLeft)) selected--;
-        if (isMin) ImGui.EndDisabled();
+        using (ImRaii.Disabled(isMin))
+        {
+            if (ImGuiComponents.IconButton(id, FontAwesomeIcon.ArrowLeft))
+            {
+                selected--;
+                changed = true;
+            }
+        }
 
         ImGui.SameLine();
-        if (isMax) ImGui.BeginDisabled();
-        if (ImGuiComponents.IconButton(id+1, FontAwesomeIcon.ArrowRight)) selected++;
-        if (isMax) ImGui.EndDisabled();
+        using (ImRaii.Disabled(isMax))
+        {
+            if (ImGuiComponents.IconButton(id + 1, FontAwesomeIcon.ArrowRight))
+            {
+                selected++;
+                changed = true;
+            }
+        }
+
+        return changed;
     }
 
     public static void DrawScaledIcon(uint iconId, Vector2 iconSize)
@@ -202,7 +196,7 @@ public static class Helper
         var texture = Plugin.Texture.GetFromGameIcon(iconId).GetWrapOrDefault();
         if (texture == null)
         {
-            ImGui.Text($"Unknown icon {iconId}");
+            ImGui.TextUnformatted($"Unknown icon {iconId}");
             return;
         }
 
@@ -214,17 +208,14 @@ public static class Helper
         using (ImRaii.PushId(id))
         using (ImRaii.Disabled(disabled))
         using (Plugin.PluginInterface.UiBuilder.IconFontFixedWidthHandle.Push())
-        {
             return ImGui.Button(icon.ToIconString());
-        }
     }
 
     public static bool Button(FontAwesomeIcon icon, Vector2? size = null)
     {
         size ??= Vector2.Zero;
-
-        using var _ = ImRaii.PushFont(UiBuilder.IconFont);
-        return ImGui.Button(icon.ToIconString(), size.Value);
+        using (ImRaii.PushFont(UiBuilder.IconFont))
+            return ImGui.Button(icon.ToIconString(), size.Value);
     }
 
     public static void UrlButton(string id, FontAwesomeIcon icon, string url, string tooltip)
@@ -233,8 +224,7 @@ public static class Helper
             Dalamud.Utility.Util.OpenLink(url);
 
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip(tooltip);
-
+            Tooltip(tooltip);
     }
 
     public static bool ColorPickerWithReset(string name, ref Vector4 current, Vector4 reset, float spacing)
@@ -261,7 +251,7 @@ public static class Helper
         var textY = ImGui.CalcTextSize(text).Y;
         var cursorY = ImGui.GetCursorPosY();
         ImGui.SetCursorPosY(cursorY + iconSize.Y - textY);
-        ImGui.TextColored(textColor, text);
+        TextColored(textColor, text);
 
         ImGui.Separator();
         ImGuiHelpers.ScaledDummy(5.0f);

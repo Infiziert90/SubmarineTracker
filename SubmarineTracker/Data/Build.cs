@@ -1,5 +1,6 @@
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Data;
 
@@ -48,16 +49,16 @@ public static class Build
         public int RepairCosts => Hull.RepairMaterials + Stern.RepairMaterials + Bow.RepairMaterials + Bridge.RepairMaterials;
         public int BuildCost => Hull.Components + Stern.Components + Bow.Components + Bridge.Components;
 
-        public int HighestRankPart() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank }.Max();
-        public byte[] GetPartRanks() => new[] { Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank };
+        public int HighestRankPart() => GetPartRanks().Max();
+        public byte[] GetPartRanks() => [Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank];
 
-        private SubmarineRank GetRank(int rank) => Sheets.RankSheet.GetRow((uint)rank)!;
-        private SubmarinePart GetPart(int partId) => Sheets.PartSheet.GetRow((uint)partId)!;
+        private SubmarineRank GetRank(int rank) => Sheets.RankSheet.GetRow((uint)rank);
+        private SubmarinePart GetPart(int partId) => Sheets.PartSheet.GetRow((uint)partId);
 
-        public string HullIdentifier => ToIdentifier((ushort)Hull.RowId);
-        public string SternIdentifier => ToIdentifier((ushort)Stern.RowId);
-        public string BowIdentifier => ToIdentifier((ushort)Bow.RowId);
-        public string BridgeIdentifier => ToIdentifier((ushort)Bridge.RowId);
+        public string HullIdentifier => ToIdentifier((ushort) Hull.RowId);
+        public string SternIdentifier => ToIdentifier((ushort) Stern.RowId);
+        public string BowIdentifier => ToIdentifier((ushort) Bow.RowId);
+        public string BridgeIdentifier => ToIdentifier((ushort) Bridge.RowId);
 
         public string FullIdentifier()
         {
@@ -86,7 +87,7 @@ public static class Build
         public int Bridge = 2;
 
         public int Map = 0;
-        public List<uint> Sectors = new();
+        public List<uint> Sectors = [];
 
         public RouteBuild() { }
 
@@ -117,15 +118,6 @@ public static class Build
             Bridge = prevBuild.Bridge;
         }
 
-        public RouteBuild(Items hull, Items stern, Items bow, Items bridge)
-        {
-            Rank = 1;
-            Hull = hull.GetPartId();
-            Stern = stern.GetPartId();
-            Bow = bow.GetPartId();
-            Bridge = bridge.GetPartId();
-        }
-
         public RouteBuild(Submarine sub)
         {
             Rank = sub.Rank;
@@ -137,6 +129,8 @@ public static class Build
 
         [JsonIgnore] public int OriginalSub = 0;
 
+        [JsonIgnore] public uint MapRowId => (uint) Map + 1;
+
         [JsonIgnore] public uint OptimizedDistance = 0;
         [JsonIgnore] public SubmarineExploration[] OptimizedRoute = [];
         [JsonIgnore] public SubmarineBuild GetSubmarineBuild => new(this);
@@ -144,10 +138,10 @@ public static class Build
 
         [JsonIgnore] public int FuelCost => OptimizedRoute.Length != 0 ? OptimizedRoute.Select(p => (int) p.CeruleumTankReq).Sum() : 0;
 
-        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort)Hull);
-        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort)Stern);
-        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort)Bow);
-        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort)Bridge);
+        [JsonIgnore] public string HullIdentifier => ToIdentifier((ushort) Hull);
+        [JsonIgnore] public string SternIdentifier => ToIdentifier((ushort) Stern);
+        [JsonIgnore] public string BowIdentifier => ToIdentifier((ushort) Bow);
+        [JsonIgnore] public string BridgeIdentifier => ToIdentifier((ushort) Bridge);
 
         [JsonIgnore] private int[] PartArray => [Bow, Bridge, Hull, Stern];
 
@@ -163,10 +157,10 @@ public static class Build
         public void UpdateBuild(SubmarineBuild build, int currentRank)
         {
             Rank = currentRank;
-            Hull = (int)build.Hull.RowId;
-            Stern = (int)build.Stern.RowId;
-            Bow = (int)build.Bow.RowId;
-            Bridge = (int)build.Bridge.RowId;
+            Hull = (int) build.Hull.RowId;
+            Stern = (int) build.Stern.RowId;
+            Bow = (int) build.Bow.RowId;
+            Bridge = (int) build.Bridge.RowId;
         }
 
         public void ChangeMap(int newMap)
@@ -218,7 +212,7 @@ public static class Build
             {
                 var damaged = 0;
                 foreach (var sector in OptimizedRoute)
-                    damaged += (335 + sector.RankReq - Sheets.PartSheet.GetRow((uint) part)!.Rank) * 7;
+                    damaged += (335 + sector.RankReq - Sheets.PartSheet.GetRow((uint) part).Rank) * 7;
 
                 if (highestDamage < damaged)
                     highestDamage = damaged;
@@ -275,6 +269,7 @@ public static class Build
         {
             if (obj is RouteBuild other)
                 return other.SameBuildWithoutRank(this);
+
             return false;
         }
 
@@ -307,20 +302,6 @@ public static class Build
         public static bool operator !=(RouteBuild left, RouteBuild right)
         {
             return !(left == right);
-        }
-
-        public bool IsSubComponent(RouteBuild other)
-        {
-            var curParts = ToString().Replace("+", "").ToCharArray();
-            var otherParts = other.ToString().Replace("+", "").ToCharArray();
-
-            for (var i = 0; i < curParts.Length; i++)
-            {
-                if (curParts[i] != otherParts[i] && curParts[i] != 'S')
-                    return false;
-            }
-
-            return true;
         }
 
         public bool IsValidSubBuild(RouteBuild original, bool ignoreShark, bool ignoreUnmodded)
@@ -364,7 +345,7 @@ public static class Build
             7 => $"{ToIdentifier((ushort)(partId - 20))}+",
             8 => $"{ToIdentifier((ushort)(partId - 20))}+",
             9 => $"{ToIdentifier((ushort)(partId - 20))}+",
-            _ => "Unknown"
+            _ => Language.TermUnknown
         };
     }
 

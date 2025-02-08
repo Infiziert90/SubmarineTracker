@@ -1,0 +1,1104 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="WebhookOnDispatch" xml:space="preserve">
+        <value>返回时间 &lt;t:{0}:R&gt;</value>
+    </data>
+    <data name="WebhookOnReturn" xml:space="preserve">
+        <value>返回时间 &lt;t:{0}:R&gt;</value>
+    </data>
+    <data name="NotificationChatReturn" xml:space="preserve">
+        <value>{0} 已返回。</value>
+    </data>
+    <data name="NotificationChatRepair" xml:space="preserve">
+        <value>{0} 已返回，并需要维修配件才能再次出发。</value>
+    </data>
+    <data name="NotificationToastRepair" xml:space="preserve">
+        <value>需要维修配件才能再次出发</value>
+    </data>
+    <data name="TermsImportant" xml:space="preserve">
+        <value>重要</value>
+    </data>
+    <data name="NotificationsUploadOptOut" xml:space="preserve">
+        <value>此插件将收集匿名的潜水艇特定数据。 有关收集的确切数据的更多信息，请参阅插件设置菜单中的上传选项卡。 你可以选择不接受任意或所有形式的数据收集。</value>
+    </data>
+    <data name="WarningsIgnoredCharacter" xml:space="preserve">
+        <value>已忽略角色</value>
+    </data>
+    <data name="WindowNameTracker" xml:space="preserve">
+        <value>追踪器</value>
+    </data>
+    <data name="MenuTooltipTracker" xml:space="preserve">
+        <value>打开追踪器窗口。</value>
+    </data>
+    <data name="WindowNameBuilder" xml:space="preserve">
+        <value>配置器</value>
+    </data>
+    <data name="MenuTooltipBuilder" xml:space="preserve">
+        <value>打开配置器窗口。</value>
+    </data>
+    <data name="WindowNameLoot" xml:space="preserve">
+        <value>战利品</value>
+    </data>
+    <data name="MenuTooltipLoot" xml:space="preserve">
+        <value>打开战利品窗口。</value>
+    </data>
+    <data name="WindowNameHelpy" xml:space="preserve">
+        <value>助手</value>
+    </data>
+    <data name="MenuTooltipHelpy" xml:space="preserve">
+        <value>打开助手窗口。</value>
+    </data>
+    <data name="WindowNameOverlay" xml:space="preserve">
+        <value>悬浮窗</value>
+    </data>
+    <data name="MenuTooltipOverlay" xml:space="preserve">
+        <value>打开返回悬浮窗。</value>
+    </data>
+    <data name="WindowNameConfig" xml:space="preserve">
+        <value>设置</value>
+    </data>
+    <data name="MenuTooltipConfig" xml:space="preserve">
+        <value>打开设置窗口。</value>
+    </data>
+    <data name="MenuEntryDiscordThread" xml:space="preserve">
+        <value>Discord 频道</value>
+    </data>
+    <data name="MenuTooltipDiscordThread" xml:space="preserve">
+        <value>打开 Discord 支持频道。</value>
+    </data>
+    <data name="MenuEntryLocalization" xml:space="preserve">
+        <value>本地化</value>
+    </data>
+    <data name="MenuTooltipLocalization" xml:space="preserve">
+        <value>在浏览器中打开 crowdin 页面</value>
+    </data>
+    <data name="MenuEntryIssues" xml:space="preserve">
+        <value>议题</value>
+    </data>
+    <data name="MenuTooltipIssues" xml:space="preserve">
+        <value>在浏览器中打开议题页面。</value>
+    </data>
+    <data name="MenuEntryKoFi" xml:space="preserve">
+        <value>Ko-Fi 赞助</value>
+    </data>
+    <data name="MenuTooltipKoFi" xml:space="preserve">
+        <value>在浏览器中打开 kofi 页面。</value>
+    </data>
+    <data name="MenuEntrySync" xml:space="preserve">
+        <value>同步</value>
+    </data>
+    <data name="MenuTooltipSync" xml:space="preserve">
+        <value>从硬盘重新加载所有存储数据并刷新缓存。</value>
+    </data>
+    <data name="ErrorNoData" xml:space="preserve">
+        <value>没有找到此角色的部队
+请进入你的部队工坊并查看航行管制面板中的管理潜水艇页面。</value>
+    </data>
+    <data name="TermsNoVoyage" xml:space="preserve">
+        <value>无航次</value>
+    </data>
+    <data name="TermsDone" xml:space="preserve">
+        <value>完成</value>
+    </data>
+    <data name="TermsAll" xml:space="preserve">
+        <value>全部</value>
+    </data>
+    <data name="TermsRank" xml:space="preserve">
+        <value>等级</value>
+    </data>
+    <data name="ReturnOverlayTooltipRepairNeeded" xml:space="preserve">
+        <value>此潜艇返回后需要维修配件。</value>
+    </data>
+    <data name="TermsRoute" xml:space="preserve">
+        <value>航线</value>
+    </data>
+    <data name="TermsEXPAfter" xml:space="preserve">
+        <value>之后</value>
+    </data>
+    <data name="TermsRepair" xml:space="preserve">
+        <value>维修</value>
+    </data>
+    <data name="MainWindowTooltipRepair" xml:space="preserve">
+        <value>{1} 航次后需要 {0} 修理材料</value>
+    </data>
+    <data name="MainWindowTabOverview" xml:space="preserve">
+        <value>总览</value>
+    </data>
+    <data name="MainWindowEntryResources" xml:space="preserve">
+        <value>资源: </value>
+    </data>
+    <data name="TermsTanks" xml:space="preserve">
+        <value>青磷水</value>
+    </data>
+    <data name="TermsKits" xml:space="preserve">
+        <value>修理材料</value>
+    </data>
+    <data name="TermsNoVoyageData" xml:space="preserve">
+        <value>无航次数据</value>
+    </data>
+    <data name="MainWindowTabLoot" xml:space="preserve">
+        <value>战利品</value>
+    </data>
+    <data name="TermsBuild" xml:space="preserve">
+        <value>配置</value>
+    </data>
+    <data name="MainWindowOverviewBreaksAfter" xml:space="preserve">
+        <value>{0} 航次后损坏</value>
+    </data>
+    <data name="TermsExp" xml:space="preserve">
+        <value>经验</value>
+    </data>
+    <data name="TermsPredicted" xml:space="preserve">
+        <value>预计</value>
+    </data>
+    <data name="Termshours" xml:space="preserve">
+        <value>小时</value>
+    </data>
+    <data name="TermsTime" xml:space="preserve">
+        <value>时间</value>
+    </data>
+    <data name="TermsDate" xml:space="preserve">
+        <value>日期</value>
+    </data>
+    <data name="TermsMap" xml:space="preserve">
+        <value>地图</value>
+    </data>
+    <data name="NextOverlayTooltipLowRank" xml:space="preserve">
+        <value>你的潜水艇低于探索该航路点所需的最低级别。</value>
+    </data>
+    <data name="NextOverlayTextNextSector" xml:space="preserve">
+        <value>下一航路点: </value>
+    </data>
+    <data name="NextOverlayTextVisit" xml:space="preserve">
+        <value>访问: </value>
+    </data>
+    <data name="NextOverlayTextNextMap" xml:space="preserve">
+        <value>下张地图: </value>
+    </data>
+    <data name="TermsSubmarines" xml:space="preserve">
+        <value>潜水艇</value>
+    </data>
+    <data name="ReturnOverlayInfoNoReturn" xml:space="preserve">
+        <value>没有潜水艇已返回。</value>
+    </data>
+    <data name="RouteOverlayTooltipHighRank" xml:space="preserve">
+        <value>潜水艇等级超过阈值且必须包含航路点为空
+请调整设置以获取更高级别的航线建议。</value>
+    </data>
+    <data name="TermsLoading" xml:space="preserve">
+        <value>加载中</value>
+    </data>
+    <data name="BestEXPCalculationNothingFound" xml:space="preserve">
+        <value>未找到航线，请检查速度和范围...</value>
+    </data>
+    <data name="TermsMustInclude" xml:space="preserve">
+        <value>必须包含</value>
+    </data>
+    <data name="BestEXPEntryDurationLimit" xml:space="preserve">
+        <value>时间限制</value>
+    </data>
+    <data name="BestEXPCheckboxMaximizeDuration" xml:space="preserve">
+        <value>最大时长</value>
+    </data>
+    <data name="BestEXPEntryHoursandMinutes" xml:space="preserve">
+        <value>小时与分钟</value>
+    </data>
+    <data name="BestEXPCheckboxAutoInclude" xml:space="preserve">
+        <value>自动包含</value>
+    </data>
+    <data name="BestEXPTooltipAutoInclude" xml:space="preserve">
+        <value>如果可行，自动包含下一个主要航路点</value>
+    </data>
+    <data name="LootTabAnalyse" xml:space="preserve">
+        <value>分析</value>
+    </data>
+    <data name="TermsWiP" xml:space="preserve">
+        <value>- 正在进行中 -</value>
+    </data>
+    <data name="LootTabButtonRebuild" xml:space="preserve">
+        <value>重建缓存</value>
+    </data>
+    <data name="LootTabTextSearched" xml:space="preserve">
+        <value>已检索</value>
+    </data>
+    <data name="LootTabWarningNothingFound" xml:space="preserve">
+        <value>未在此航路点找到任何内容。</value>
+    </data>
+    <data name="LootTabEntryPercentages" xml:space="preserve">
+        <value>百分比: </value>
+    </data>
+    <data name="TermsItem" xml:space="preserve">
+        <value>道具</value>
+    </data>
+    <data name="TermsPercentage" xml:space="preserve">
+        <value>百分比</value>
+    </data>
+    <data name="LootTabCustom" xml:space="preserve">
+        <value>自定义</value>
+    </data>
+    <data name="LootTabCustomProfileEmpty" xml:space="preserve">
+        <value>此配置文件没有任何跟踪项目</value>
+    </data>
+    <data name="LootTabCustomProfileTip" xml:space="preserve">
+        <value>你可以在设置中的战利品选项卡下添加物品</value>
+    </data>
+    <data name="LootTabCustomNone1" xml:space="preserve">
+        <value>所有选中道具均未获得</value>
+    </data>
+    <data name="LootTabCustomNone2Yet" xml:space="preserve">
+        <value>从未</value>
+    </data>
+    <data name="LootTabCustomNone2Timeframe" xml:space="preserve">
+        <value>时限内</value>
+    </data>
+    <data name="LootTabCustomRewardAmount" xml:space="preserve">
+        <value>以上奖励已从总共 {1} 次航行 ({2} 艘潜水艇) 中获得 {0}。</value>
+    </data>
+    <data name="LootTabCustomMoneyMade" xml:space="preserve">
+        <value>为你共赚取到 {0:N0} 金币。</value>
+    </data>
+    <data name="TermsOptions" xml:space="preserve">
+        <value>选项</value>
+    </data>
+    <data name="LootTabEntryFixed" xml:space="preserve">
+        <value>筛选: </value>
+    </data>
+    <data name="LootTabTooltipFixed" xml:space="preserve">
+        <value>不做选择时可选择特定时间范围。</value>
+    </data>
+    <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
+        <value>时间范围: </value>
+    </data>
+    <data name="LootTabExport" xml:space="preserve">
+        <value>导出</value>
+    </data>
+    <data name="LootTabCheckboxExportAll" xml:space="preserve">
+        <value>导出全部部队</value>
+    </data>
+    <data name="LootTabCheckboxExcludeDate" xml:space="preserve">
+        <value>排除日期</value>
+    </data>
+    <data name="LootTabCheckboxExcludeHash" xml:space="preserve">
+        <value>排除哈希值</value>
+    </data>
+    <data name="LootTabEntryOutputFolder" xml:space="preserve">
+        <value>输出文件夹: </value>
+    </data>
+    <data name="LootTabTitlePickFolder" xml:space="preserve">
+        <value>选择一个文件夹</value>
+    </data>
+    <data name="LootTabEntryExport" xml:space="preserve">
+        <value>导出: </value>
+    </data>
+    <data name="LootTabButtonFile" xml:space="preserve">
+        <value>文件</value>
+    </data>
+    <data name="LootTabButtonClipboard" xml:space="preserve">
+        <value>剪贴板</value>
+    </data>
+    <data name="LootExportErrorNothingFound" xml:space="preserve">
+        <value>在选定的时间范围内没有要导出的内容。</value>
+    </data>
+    <data name="LootExportSuccessClipboard" xml:space="preserve">
+        <value>已成功导出到剪贴板。</value>
+    </data>
+    <data name="LootExportSuccessFile" xml:space="preserve">
+        <value>导出完成。</value>
+    </data>
+    <data name="LootExportSuccessOutputPath" xml:space="preserve">
+        <value>输出路径: {0}</value>
+    </data>
+    <data name="LootExportErrorInvalidPath" xml:space="preserve">
+        <value>无效路径。</value>
+    </data>
+    <data name="LootTabHistory" xml:space="preserve">
+        <value>历史</value>
+    </data>
+    <data name="LootTabHistoryWrong" xml:space="preserve">
+        <value>出错了。</value>
+    </data>
+    <data name="LootTabHistoryNotTracked" xml:space="preserve">
+        <value>当潜水艇再次出发时开始追踪。</value>
+    </data>
+    <data name="LootTabHistoryLegacyData" xml:space="preserve">
+        <value>-旧数据-</value>
+    </data>
+    <data name="HelpyTabProgression" xml:space="preserve">
+        <value>进展</value>
+    </data>
+    <data name="ProgressionTabSubmarinePath" xml:space="preserve">
+        <value>4艘潜水艇</value>
+    </data>
+    <data name="ProgressionTabLastSector" xml:space="preserve">
+        <value>最终航路点</value>
+    </data>
+    <data name="HelpyTabInfo" xml:space="preserve">
+        <value>信息</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlock" xml:space="preserve">
+        <value>如何解锁新航路点？</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlockText" xml:space="preserve">
+        <value>解锁新航路点是完全随机的。
+通过提高巡航速度和出航频率，将有更多机会发现新航路点。</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlock" xml:space="preserve">
+        <value>如何解锁新海底图/栏位？</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlockText" xml:space="preserve">
+        <value>你必须访问当前海底图的最后一个航路点至少一次。
+注: 你必须在已解锁的栏位中建造潜水艇才能解锁下一个栏位。
+例如: 如果栏位2是空的，你将无法解锁栏位3。</value>
+    </data>
+    <data name="HelpyTabInfoColors" xml:space="preserve">
+        <value>颜色: </value>
+    </data>
+    <data name="ColorsGreen" xml:space="preserve">
+        <value>绿色</value>
+    </data>
+    <data name="HelpyTabInfoGreenText" xml:space="preserve">
+        <value>已解锁并探索</value>
+    </data>
+    <data name="ColorsViolet" xml:space="preserve">
+        <value>紫色</value>
+    </data>
+    <data name="HelpyTabInfoVioletText" xml:space="preserve">
+        <value>已解锁但未探索</value>
+    </data>
+    <data name="ColorsRed" xml:space="preserve">
+        <value>红色</value>
+    </data>
+    <data name="HelpyTabInfoRedText" xml:space="preserve">
+        <value>未解锁</value>
+    </data>
+    <data name="HelpyTabStorage" xml:space="preserve">
+        <value>仓库</value>
+    </data>
+    <data name="HelpyTabWarningAllaganTools" xml:space="preserve">
+        <value>AllaganTools 不可用。</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksMap" xml:space="preserve">
+        <value>解锁海底图</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksSlot" xml:space="preserve">
+        <value>解锁栏位</value>
+    </data>
+    <data name="ConfigTabAbout" xml:space="preserve">
+        <value>关于</value>
+    </data>
+    <data name="ConfigTabEntryAuthor" xml:space="preserve">
+        <value>作者: </value>
+    </data>
+    <data name="ConfigTabEntryDiscord" xml:space="preserve">
+        <value>Discord: </value>
+    </data>
+    <data name="ConfigTabEntryVersion" xml:space="preserve">
+        <value>版本: </value>
+    </data>
+    <data name="ConfigTabEntryLocalization" xml:space="preserve">
+        <value>本地化: </value>
+    </data>
+    <data name="ConfigAboutTranslationCommunity" xml:space="preserve">
+        <value>社区</value>
+    </data>
+    <data name="ConfigAboutTranslationTooltip" xml:space="preserve">
+        <value>所有本地化均由社区完成。
+如果你想帮助改善它们，请访问 Crowdin</value>
+    </data>
+    <data name="BuilderTabBuilder" xml:space="preserve">
+        <value>配置器</value>
+    </data>
+    <data name="ConfigTabEntryOptions" xml:space="preserve">
+        <value>选项: </value>
+    </data>
+    <data name="ConfigTabCheckboxCurrentFC" xml:space="preserve">
+        <value>仅显示当前部队</value>
+    </data>
+    <data name="ConfigTabCheckboxAutoSelection" xml:space="preserve">
+        <value>自动选择当前潜水艇</value>
+    </data>
+    <data name="ConfigTabTooltipAutoSelection" xml:space="preserve">
+        <value>自动选择在游戏航海界面中已选中的潜水艇。</value>
+    </data>
+    <data name="ConfigTabCheckboxNextOverlay" xml:space="preserve">
+        <value>显示 下一个 悬浮窗</value>
+    </data>
+    <data name="ConfigTabTooltipNextOverlay" xml:space="preserve">
+        <value>附加到航程选择界面的悬浮窗
+
+建议下一个需要解锁或探索的航路点
+满足以下条件可见: 
+  a) 海底图还有未解锁的航路点，或者
+  b) 必须探索某个航路点才能解锁下张海底图</value>
+    </data>
+    <data name="ConfigTabCheckboxUnlockOverlay" xml:space="preserve">
+        <value>显示 解锁 悬浮窗</value>
+    </data>
+    <data name="ConfigTabTooltipUnlockOverlay" xml:space="preserve">
+        <value>附加到航程选择界面的悬浮窗
+
+显示所有待解锁的航路点
+满足以下条件可见: 
+  a) 海底图还有未解锁的航路点</value>
+    </data>
+    <data name="ConfigTabCheckboxRouteOverlay" xml:space="preserve">
+        <value>显示 航线 悬浮窗</value>
+    </data>
+    <data name="ConfigTabTooltipRouteOverlay" xml:space="preserve">
+        <value>附加到航程选择界面的悬浮窗
+
+建议最好的航线
+满足以下条件隐藏: 
+  a) 超过最高等级阈值
+  b) 未指定必须包含</value>
+    </data>
+    <data name="ConfigTabSliderRank" xml:space="preserve">
+        <value>最高等级</value>
+    </data>
+    <data name="ConfigTabTooltipRank" xml:space="preserve">
+        <value>此等级以上没有航线建议。</value>
+    </data>
+    <data name="ConfigTabCheckboxIncludeMain" xml:space="preserve">
+        <value>自动包含主要航路点</value>
+    </data>
+    <data name="ConfigTabTooltipIncludeMain" xml:space="preserve">
+        <value>如果可行，自动包含下一个主要航线航路点.</value>
+    </data>
+    <data name="ConfigTabEntrySavedBuilds" xml:space="preserve">
+        <value>已保存配置: </value>
+    </data>
+    <data name="MenuDiscordThread" xml:space="preserve">
+        <value>Discord 频道</value>
+    </data>
+    <data name="MenuLocalization" xml:space="preserve">
+        <value>本地化</value>
+    </data>
+    <data name="MenuIssues" xml:space="preserve">
+        <value>议题</value>
+    </data>
+    <data name="MenuKoFi" xml:space="preserve">
+        <value>Ko-Fi 赞助</value>
+    </data>
+    <data name="ConfigTabCheckboxUploadPermission" xml:space="preserve">
+        <value>上传权限</value>
+    </data>
+    <data name="ConfigTabUploadInformation1" xml:space="preserve">
+        <value>匿名上传潜水艇相关数据。
+这些数据不会包含你的任何个人信息，但每个人都能从中受益！</value>
+    </data>
+    <data name="ConfigTabUploadWhat" xml:space="preserve">
+        <value>什么数据？</value>
+    </data>
+    <data name="ConfigTabUploadPoint1" xml:space="preserve">
+        <value>获得战利品</value>
+    </data>
+    <data name="ConfigTabUploadPoint2" xml:space="preserve">
+        <value>航路点解锁</value>
+    </data>
+    <data name="ConfigTabUploadPoint3" xml:space="preserve">
+        <value>探索过程</value>
+    </data>
+    <data name="ConfigTabLoot" xml:space="preserve">
+        <value>战利品</value>
+    </data>
+    <data name="ConfigTabCheckboxLegacy" xml:space="preserve">
+        <value>排除旧版战利品</value>
+    </data>
+    <data name="ConfigTooltipDefaultCollection" xml:space="preserve">
+        <value>无法删除默认集合</value>
+    </data>
+    <data name="ConfigTextInputCollectionName" xml:space="preserve">
+        <value>新集合名称</value>
+    </data>
+    <data name="ErrorCollectionExists" xml:space="preserve">
+        <value>已经存在同名集合</value>
+    </data>
+    <data name="TermsPrice" xml:space="preserve">
+        <value>价格</value>
+    </data>
+    <data name="TermsDelete" xml:space="preserve">
+        <value>删除</value>
+    </data>
+    <data name="ConfigTabManage" xml:space="preserve">
+        <value>管理</value>
+    </data>
+    <data name="TermsSavedFCs" xml:space="preserve">
+        <value>保存的部队</value>
+    </data>
+    <data name="ConfigTabTooltipSavedFCsDeletion" xml:space="preserve">
+        <value>删除部队条目还将删除其所有战利品历史记录。
+按住 Ctrl 键删除</value>
+    </data>
+    <data name="TermsIgnoredCharacters" xml:space="preserve">
+        <value>已忽略角色</value>
+    </data>
+    <data name="TermsAddCurrentCharacter" xml:space="preserve">
+        <value>添加当前角色</value>
+    </data>
+    <data name="ConfigTabNotify" xml:space="preserve">
+        <value>通知</value>
+    </data>
+    <data name="ConfigTabEntryNotifications" xml:space="preserve">
+        <value>通知: </value>
+    </data>
+    <data name="ConfigTabCheckboxReturningSub" xml:space="preserve">
+        <value>潜水艇返回</value>
+    </data>
+    <data name="ConfigTabCheckboxNeededRepair" xml:space="preserve">
+        <value>需要维修</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairToast" xml:space="preserve">
+        <value>显示维修提示</value>
+    </data>
+    <data name="ConfigTabCheckboxSendDispatch" xml:space="preserve">
+        <value>发送出发</value>
+    </data>
+    <data name="ConfigTabTooltipSendDispatch" xml:space="preserve">
+        <value>出发时发送包含此潜水艇返回时间戳的 webhook 消息。</value>
+    </data>
+    <data name="ConfigTabCheckboxSendReturn" xml:space="preserve">
+        <value>发送返回</value>
+    </data>
+    <data name="ConfigTabTooltipSendReturn" xml:space="preserve">
+        <value>返回时发送 webhook 消息。</value>
+    </data>
+    <data name="ConfigTabTooltipWebhook" xml:space="preserve">
+        <value>点击此处在浏览器中打开 Discord webhook 指南。</value>
+    </data>
+    <data name="ConfigTabEntrySubmarines" xml:space="preserve">
+        <value>潜水艇:</value>
+    </data>
+    <data name="ConfigTabCheckboxAllReturning" xml:space="preserve">
+        <value>全部潜水艇已返回</value>
+    </data>
+    <data name="ConfigTabEntrySpecificSubmarines" xml:space="preserve">
+        <value>指定潜艇: </value>
+    </data>
+    <data name="ConfigTabOverlay" xml:space="preserve">
+        <value>悬浮窗</value>
+    </data>
+    <data name="ConfigTabCheckboxOnReturn" xml:space="preserve">
+        <value>返回时</value>
+    </data>
+    <data name="ConfigTabTooltipOnReturn" xml:space="preserve">
+        <value>当某一艘潜水艇返回时总是打开叠加层</value>
+    </data>
+    <data name="ConfigTabCheckboxAutomaticallyClose" xml:space="preserve">
+        <value>自动关闭</value>
+    </data>
+    <data name="ConfigTabTooltipAutomaticallyClose" xml:space="preserve">
+        <value>假如所有潜水艇都已出航，则自动设置并保持悬浮窗关闭状态</value>
+    </data>
+    <data name="ConfigTabEntryGeneral" xml:space="preserve">
+        <value>通用: </value>
+    </data>
+    <data name="ConfigTabCheckboxShowRank" xml:space="preserve">
+        <value>显示等级</value>
+    </data>
+    <data name="ConfigTabCheckboxShowBuild" xml:space="preserve">
+        <value>显示配置</value>
+    </data>
+    <data name="ConfigTabCheckboxAsDate" xml:space="preserve">
+        <value>显示为日期</value>
+    </data>
+    <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
+        <value>显示首次返回时间</value>
+    </data>
+    <data name="ConfigTabTooltipFirstReturnTime" xml:space="preserve">
+        <value>在悬浮窗内每个部队的标题中显示第一个返回的潜水艇。</value>
+    </data>
+    <data name="ConfigTabCheckboxSortTimeLowest" xml:space="preserve">
+        <value>按最短时间排序</value>
+    </data>
+    <data name="ConfigTabTooltipSortTimeLowest" xml:space="preserve">
+        <value>按返回时间对悬浮窗标题排序，将覆盖部队顺序。</value>
+    </data>
+    <data name="ConfigTabCheckboxReverseSort" xml:space="preserve">
+        <value>反向排序</value>
+    </data>
+    <data name="ConfigTabCheckboxOnlyReturned" xml:space="preserve">
+        <value>仅显示已返回</value>
+    </data>
+    <data name="ConfigTabEntryColors" xml:space="preserve">
+        <value>颜色: </value>
+    </data>
+    <data name="ConfigTabColorsAllDone" xml:space="preserve">
+        <value>全部完成</value>
+    </data>
+    <data name="ConfigTabColorsPartlyDone" xml:space="preserve">
+        <value>部分完成</value>
+    </data>
+    <data name="ConfigTabColorsNoneDone" xml:space="preserve">
+        <value>尚未完成</value>
+    </data>
+    <data name="ConfigTabEntryWindow" xml:space="preserve">
+        <value>窗口: </value>
+    </data>
+    <data name="ConfigTabCheckboxLockSize" xml:space="preserve">
+        <value>锁定大小</value>
+    </data>
+    <data name="ConfigTabCheckboxLockPosition" xml:space="preserve">
+        <value>锁定位置</value>
+    </data>
+    <data name="ConfigTabEntryFCButtons" xml:space="preserve">
+        <value>部队按钮: </value>
+    </data>
+    <data name="ConfigTabCheckboxShowAll" xml:space="preserve">
+        <value>显示"全部"按钮</value>
+    </data>
+    <data name="ConfigTabTooltipShowAll" xml:space="preserve">
+        <value>添加一个"全部"按钮以方便地查看所有部队。
+注意: 太多部队时会十分混乱。</value>
+    </data>
+    <data name="ConfigTabCheckboxLetMeResize" xml:space="preserve">
+        <value>调整大小</value>
+    </data>
+    <data name="ConfigTabTooltipLetMeResize" xml:space="preserve">
+        <value>调整部队按钮的大小, 
+但将无法自动调整大小。</value>
+    </data>
+    <data name="ConfigTabEntryAllSection" xml:space="preserve">
+        <value>所有部分:</value>
+    </data>
+    <data name="ConfigTabCheckboxShowRoute" xml:space="preserve">
+        <value>显示航线</value>
+    </data>
+    <data name="ConfigTabTooltipShowRoute" xml:space="preserve">
+        <value>如果窗口太小，此选项将恢复到每列一个部队。</value>
+    </data>
+    <data name="ConfigTabCheckboxShowDate" xml:space="preserve">
+        <value>显示日期</value>
+    </data>
+    <data name="ConfigTabEntryOverview" xml:space="preserve">
+        <value>总览: </value>
+    </data>
+    <data name="ConfigTabCheckboxRepairStatus" xml:space="preserve">
+        <value>显示维修状态</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairAfterVoyage" xml:space="preserve">
+        <value>返回后显示维修状态</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnTime" xml:space="preserve">
+        <value>显示返回时间</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnDate" xml:space="preserve">
+        <value>显示返回日期</value>
+    </data>
+    <data name="ConfigTabCheckboxTimeDateShowBoth" xml:space="preserve">
+        <value>全部显示</value>
+    </data>
+    <data name="ConfigTabEntryDetailedView" xml:space="preserve">
+        <value>详情: </value>
+    </data>
+    <data name="ConfigTabCheckboxExtendedParts" xml:space="preserve">
+        <value>显示扩展部件列表</value>
+    </data>
+    <data name="BuilderTabBuild" xml:space="preserve">
+        <value>配置</value>
+    </data>
+    <data name="TermsCustom" xml:space="preserve">
+        <value>自定义</value>
+    </data>
+    <data name="BuilderBuildTabAutomaticSelection" xml:space="preserve">
+        <value>自动选择: {0} - 等级 {1}</value>
+    </data>
+    <data name="BuilderBuildTooltipAutomaticSelection" xml:space="preserve">
+        <value>可在设置、配置器选项卡中取消勾选"自动选择"选项禁用此行为</value>
+    </data>
+    <data name="BuilderWindowButtonReset" xml:space="preserve">
+        <value>重置</value>
+    </data>
+    <data name="BuilderWindowButtonSave" xml:space="preserve">
+        <value>保存</value>
+    </data>
+    <data name="BuilderWindowButtonLoad" xml:space="preserve">
+        <value>加载</value>
+    </data>
+    <data name="TermsName" xml:space="preserve">
+        <value>名称</value>
+    </data>
+    <data name="BuilderWindowButtonSaveBuild" xml:space="preserve">
+        <value>保存配置: </value>
+    </data>
+    <data name="BuilderWindowErrorSameName" xml:space="preserve">
+        <value>已存在同名配置。</value>
+    </data>
+    <data name="BuilderWindowTooltipOverwrite" xml:space="preserve">
+        <value>按住 Ctrl 键以覆盖</value>
+    </data>
+    <data name="BuilderWindowTipLoading" xml:space="preserve">
+        <value>点击加载</value>
+    </data>
+    <data name="BuilderTabBestExp" xml:space="preserve">
+        <value>最佳经验</value>
+    </data>
+    <data name="BestEXPCalculationManualCalculation" xml:space="preserve">
+        <value>尚未计算...</value>
+    </data>
+    <data name="BestEXPCalculationCalculate" xml:space="preserve">
+        <value>计算</value>
+    </data>
+    <data name="BestEXPCheckboxNoAutomatic" xml:space="preserve">
+        <value>禁用自动计算</value>
+    </data>
+    <data name="BestEXPCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>忽略解锁</value>
+    </data>
+    <data name="BestEXPCheckboxAvgBonus" xml:space="preserve">
+        <value>使用平均经验加成</value>
+    </data>
+    <data name="BestEXPTooltipAvgBonus" xml:space="preserve">
+        <value>此计算方法只考虑必然的经验加成。
+使用此选项将会使用可能的经验加成平均值。</value>
+    </data>
+    <data name="BuilderTabInfo" xml:space="preserve">
+        <value>信息</value>
+    </data>
+    <data name="BuilderTabInfoHowCalculated" xml:space="preserve">
+        <value>这些断点是如何计算的？</value>
+    </data>
+    <data name="BuilderTabTextHowCalculated" xml:space="preserve">
+        <value>距离和时长是固定的数值，但所有其他断点都是根据社区提供的数据计算得出的。
+特别感谢 Mystic Spirit 所做的工作。</value>
+    </data>
+    <data name="BuilderTabInfoBestExp" xml:space="preserve">
+        <value>最佳经验?</value>
+    </data>
+    <data name="BuilderTabTextBestExp" xml:space="preserve">
+        <value>此工具可协助你计算当前配置的最佳升级航线。这些计算基于每分钟获得的经验和已解锁的航路点。</value>
+    </data>
+    <data name="BuilderTabInfoBreakpoints" xml:space="preserve">
+        <value>断点: </value>
+    </data>
+    <data name="BuilderTabTextT2" xml:space="preserve">
+        <value>有机会获得 2 级战利品的所需探索性能</value>
+    </data>
+    <data name="BuilderTabTextT3" xml:space="preserve">
+        <value>有机会获得 3 级战利品的所需探索性能</value>
+    </data>
+    <data name="TermsNormal" xml:space="preserve">
+        <value>普通</value>
+    </data>
+    <data name="BuilderTabTextNormal" xml:space="preserve">
+        <value>正常收集水平所需收集性能</value>
+    </data>
+    <data name="TermsOptimal" xml:space="preserve">
+        <value>最佳</value>
+    </data>
+    <data name="BuilderTabTextOptimal" xml:space="preserve">
+        <value>最佳收集水平所需收集性能</value>
+    </data>
+    <data name="TermsFavor" xml:space="preserve">
+        <value>恩惠</value>
+    </data>
+    <data name="BuilderTabTextFavor" xml:space="preserve">
+        <value>从一个航路点获得两个道具所需恩惠</value>
+    </data>
+    <data name="ColorsWhite" xml:space="preserve">
+        <value>白色</value>
+    </data>
+    <data name="BuilderTabInfoWhiteText" xml:space="preserve">
+        <value>没有选择或没有可用数据</value>
+    </data>
+    <data name="ColorsGold" xml:space="preserve">
+        <value>金色</value>
+    </data>
+    <data name="BuilderTabInfoGoldText" xml:space="preserve">
+        <value>已超过要求</value>
+    </data>
+    <data name="BuilderTabInfoGreenText" xml:space="preserve">
+        <value>已达到 T3/最佳/恩惠 要求</value>
+    </data>
+    <data name="ColorsPink" xml:space="preserve">
+        <value>粉色</value>
+    </data>
+    <data name="BuilderTabInfoPinkText" xml:space="preserve">
+        <value>已达到 T2/普通 要求，后附 T3/最佳 要求</value>
+    </data>
+    <data name="BuilderTabInfoRedText" xml:space="preserve">
+        <value>要求均未达标，后附要求数值</value>
+    </data>
+    <data name="BuilderTabLeveling" xml:space="preserve">
+        <value>升级</value>
+    </data>
+    <data name="BuilderLevelingButtonStopCalculate" xml:space="preserve">
+        <value>停止计算</value>
+    </data>
+    <data name="TermsTargetRank" xml:space="preserve">
+        <value>目标等级</value>
+    </data>
+    <data name="BuilderLevelingTooltipTarget" xml:space="preserve">
+        <value>计算必须达到的等级，但可以超过。</value>
+    </data>
+    <data name="BuilderLevelingButtonCalculate" xml:space="preserve">
+        <value>计算</value>
+    </data>
+    <data name="TermsSwapAfter" xml:space="preserve">
+        <value>后切换</value>
+    </data>
+    <data name="BuilderLevelingTooltipSwap" xml:space="preserve">
+        <value>最佳时在 X 次航程后切换部件。</value>
+    </data>
+    <data name="TermsProgress" xml:space="preserve">
+        <value>进度</value>
+    </data>
+    <data name="BuilderLevelingWarningSlow" xml:space="preserve">
+        <value>警告: 需要很长时间，并且游戏可能会卡顿</value>
+    </data>
+    <data name="BuilderLevelingInfoAtRank" xml:space="preserve">
+        <value>等级</value>
+    </data>
+    <data name="BuilderLevelingInfoProgressFor" xml:space="preserve">
+        <value>当前进度</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedTotal" xml:space="preserve">
+        <value>用时</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedCurrent" xml:space="preserve">
+        <value>当前计算用时</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreBuild" xml:space="preserve">
+        <value>忽略配置</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreBuild" xml:space="preserve">
+        <value>将计算每一个可能的配置
+警告: 需要很长时间，并且游戏可能会卡顿</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>忽略解锁</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreShark" xml:space="preserve">
+        <value>忽略鲨鱼级部件</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreShark" xml:space="preserve">
+        <value>升级时预计已拥有鲨鱼级部件，因此会优先考虑鲨鱼级部件，而不是性能更差的部件
+此选项将禁用此行为
+注意：你的潜水艇必须达到最高级别部件的等级，否则会无限循环。
+例如：SSUW 必须等于或高于25级
+重要：可能会导致错误</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnmodified" xml:space="preserve">
+        <value>忽略非改级部件</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreUnmodified" xml:space="preserve">
+        <value>升级时预计已拥有非改级部件，因此如果性能更好的话，会优先考虑非改级部件，而不是改级部件
+此选项将禁用此行为
+重要：可能会导致错误</value>
+    </data>
+    <data name="BuilderLevelingCheckboxAvgExp" xml:space="preserve">
+        <value>使用平均经验加成</value>
+    </data>
+    <data name="BuilderLevelingTooltipAvgExp" xml:space="preserve">
+        <value>此计算通常只考虑必然的收集性能加成。
+使用此选项将会使用可能的加成平均值。</value>
+    </data>
+    <data name="TermsAllowedSectors" xml:space="preserve">
+        <value>允许的航路点</value>
+    </data>
+    <data name="BuilderLevelingResultLast" xml:space="preserve">
+        <value>最近计算: </value>
+    </data>
+    <data name="BuilderTabRoute" xml:space="preserve">
+        <value>航线</value>
+    </data>
+    <data name="TermsSectors" xml:space="preserve">
+        <value>航路点</value>
+    </data>
+    <data name="BuilderTabRouteSelection" xml:space="preserve">
+        <value>单击选择航路点</value>
+    </data>
+    <data name="TermsUnlockedBy" xml:space="preserve">
+        <value>解锁点</value>
+    </data>
+    <data name="BuilderWindowTooltipUnlocksSlot" xml:space="preserve">
+        <value>#额外潜水艇栏位</value>
+    </data>
+    <data name="BuilderWindowTooltipAlwaysUnlocked" xml:space="preserve">
+        <value>始终解锁</value>
+    </data>
+    <data name="TermsUnknown" xml:space="preserve">
+        <value>未知</value>
+    </data>
+    <data name="BuilderTabShip" xml:space="preserve">
+        <value>潜水艇</value>
+    </data>
+    <data name="BuilderShipCheckboxIgnoreBreakpoints" xml:space="preserve">
+        <value>忽略断点</value>
+    </data>
+    <data name="BuilderShipHeaderRoute" xml:space="preserve">
+        <value>选定航线: </value>
+    </data>
+    <data name="TermsStats" xml:space="preserve">
+        <value>统计</value>
+    </data>
+    <data name="TermsSurveillance" xml:space="preserve">
+        <value>探索性能</value>
+    </data>
+    <data name="TermsRetrieval" xml:space="preserve">
+        <value>收集性能</value>
+    </data>
+    <data name="TermsSpeed" xml:space="preserve">
+        <value>巡航速度</value>
+    </data>
+    <data name="TermsBreakpoints" xml:space="preserve">
+        <value>断点</value>
+    </data>
+    <data name="BuilderShipCheckboxT2" xml:space="preserve">
+        <value>使用 T2</value>
+    </data>
+    <data name="BuilderShipCheckboxNormal" xml:space="preserve">
+        <value>使用普通</value>
+    </data>
+    <data name="BuilderShipCheckboxFavor" xml:space="preserve">
+        <value>忽略恩惠</value>
+    </data>
+    <data name="BuilderShipCheckboxModded" xml:space="preserve">
+        <value>不使用改级部件</value>
+    </data>
+    <data name="BuilderShipCalculationNothingFound" xml:space="preserve">
+        <value>找不到配置。</value>
+    </data>
+    <data name="TermsCost" xml:space="preserve">
+        <value>成本</value>
+    </data>
+    <data name="TermsHull" xml:space="preserve">
+        <value>船体</value>
+    </data>
+    <data name="TermsStern" xml:space="preserve">
+        <value>船尾</value>
+    </data>
+    <data name="TermsBow" xml:space="preserve">
+        <value>船首</value>
+    </data>
+    <data name="TermsBridge" xml:space="preserve">
+        <value>舰桥</value>
+    </data>
+    <data name="TermsRange" xml:space="preserve">
+        <value>航行距离</value>
+    </data>
+    <data name="TermsDuration" xml:space="preserve">
+        <value>时长</value>
+    </data>
+    <data name="BuilderShipTableSelect" xml:space="preserve">
+        <value>选择此配置</value>
+    </data>
+    <data name="BuilderStatsCategoryBuild" xml:space="preserve">
+        <value>选定配置: </value>
+    </data>
+    <data name="BuilderStatsCategoryRoute" xml:space="preserve">
+        <value>最佳航线: </value>
+    </data>
+    <data name="TermsFuel" xml:space="preserve">
+        <value>青磷水</value>
+    </data>
+    <data name="TermsExpEachMin" xml:space="preserve">
+        <value>经验/分钟</value>
+    </data>
+    <data name="BuilderStatsTextRepairAfter" xml:space="preserve">
+        <value>{1} 航次后 {0} 个</value>
+    </data>
+    <data name="BuilderStatsRouteNoSelection" xml:space="preserve">
+        <value>未选择</value>
+    </data>
+    <data name="BuilderLevelingResultLimit" xml:space="preserve">
+        <value>限制: </value>
+    </data>
+    <data name="BuilderLevelingResultMaximize" xml:space="preserve">
+        <value>最大化上限: </value>
+    </data>
+    <data name="BuilderLevelingResultAvg" xml:space="preserve">
+        <value>平均加成: </value>
+    </data>
+    <data name="BuilderLevelingResultUnlocks" xml:space="preserve">
+        <value>忽略解锁: </value>
+    </data>
+    <data name="BuilderLevelingStepBuild" xml:space="preserve">
+        <value>配置: </value>
+    </data>
+    <data name="BuilderLevelingStepVoyage" xml:space="preserve">
+        <value>航次 {0}: </value>
+    </data>
+    <data name="BuilderLevelingStepGained" xml:space="preserve">
+        <value>获得经验: </value>
+    </data>
+    <data name="BuilderLevelingStepReached" xml:space="preserve">
+        <value>达到等级: </value>
+    </data>
+    <data name="BuilderLevelingResultStart" xml:space="preserve">
+        <value>开始等级: </value>
+    </data>
+    <data name="BuilderLevelingResultFinal" xml:space="preserve">
+        <value>最终等级: </value>
+    </data>
+    <data name="BuilderLevelingResultVoyages" xml:space="preserve">
+        <value>航次: </value>
+    </data>
+    <data name="BuilderLevelingResultTotal" xml:space="preserve">
+        <value>经验总计: </value>
+    </data>
+    <data name="BuilderLevelingResultLeftover" xml:space="preserve">
+        <value>剩余经验: </value>
+    </data>
+    <data name="DurationLimitNoLimit" xml:space="preserve">
+        <value>无限制</value>
+    </data>
+    <data name="DurationLimit24Hours" xml:space="preserve">
+        <value>24 小时</value>
+    </data>
+    <data name="DurationLimit36Hours" xml:space="preserve">
+        <value>36 小时</value>
+    </data>
+    <data name="DurationLimit48Hours" xml:space="preserve">
+        <value>48 小时</value>
+    </data>
+    <data name="DurationLimitCustom" xml:space="preserve">
+        <value>自定义</value>
+    </data>
+    <data name="DateLimit1Day" xml:space="preserve">
+        <value>1 天</value>
+    </data>
+    <data name="DateLimit3Days" xml:space="preserve">
+        <value>3 天</value>
+    </data>
+    <data name="DateLimit5Days" xml:space="preserve">
+        <value>5 天</value>
+    </data>
+    <data name="DateLimit1Week" xml:space="preserve">
+        <value>1 周</value>
+    </data>
+    <data name="DateLimit2Weeks" xml:space="preserve">
+        <value>2 周</value>
+    </data>
+    <data name="DateLimit3Weeks" xml:space="preserve">
+        <value>3 周</value>
+    </data>
+    <data name="DateLimit4Weeks" xml:space="preserve">
+        <value>4 周</value>
+    </data>
+    <data name="DateLimit1Month" xml:space="preserve">
+        <value>1 月</value>
+    </data>
+    <data name="DateLimit3Months" xml:space="preserve">
+        <value>3 月</value>
+    </data>
+    <data name="DateLimit6Months" xml:space="preserve">
+        <value>6 月</value>
+    </data>
+    <data name="DateLimit9Months" xml:space="preserve">
+        <value>9 月</value>
+    </data>
+    <data name="DateLimit1Year" xml:space="preserve">
+        <value>1 年</value>
+    </data>
+</root>

@@ -1,6 +1,8 @@
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -11,6 +13,8 @@ public class NextOverlay : Window, IDisposable
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> UnlockPath;
     private (uint Sector, Unlocks.UnlockedFrom UnlockedFrom)? NextSector;
+
+    private ImRaii.Color PushedColor = null!;
 
     public NextOverlay(Plugin plugin) : base("Next Overlay##SubmarineTracker")
     {
@@ -39,6 +43,10 @@ public class NextOverlay : Window, IDisposable
         Plugin.BuilderWindow.RefreshCache();
         try
         {
+            var agent = AgentSubmersibleExploration.Instance();
+            if (agent == null || agent->MapId == 0)
+                return;
+
             var addonPtr = Plugin.GameGui.GetAddonByName("AirShipExploration");
             if (addonPtr == nint.Zero)
                 return;
@@ -47,15 +55,8 @@ public class NextOverlay : Window, IDisposable
             Position = new Vector2(explorationBaseNode->X + 5, explorationBaseNode->Y - (Size!.Value.Y * ImGuiHelpers.GlobalScale));
             PositionCondition = ImGuiCond.Always;
 
-            // Check if submarine voyage log is open and not Airship
-            var map = (int) explorationBaseNode->AtkValues[2].UInt;
-            if (map < 63191)
-                return;
-
-            var selectedMap = map - 63191; // 63191 = Deep-sea Site
-            var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
-
             NextSector = null;
+            var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
             foreach (var (sector, unlockedFrom) in UnlockPath)
             {
                 fcSub.UnlockedSectors.TryGetValue(sector, out var hasUnlocked);
@@ -66,7 +67,7 @@ public class NextOverlay : Window, IDisposable
                 break;
             }
 
-            if (!NextSector.HasValue || Voyage.FindMapFromSector(NextSector.Value.UnlockedFrom.Sector) != selectedMap + 1)
+            if (!NextSector.HasValue || Voyage.FindMapFromSector(NextSector.Value.UnlockedFrom.Sector) != agent->MapId)
                 return;
 
             IsOpen = true;
@@ -79,7 +80,7 @@ public class NextOverlay : Window, IDisposable
 
     public override void PreDraw()
     {
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
+        PushedColor = ImRaii.PushColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
 
     public override void Draw()
@@ -94,21 +95,21 @@ public class NextOverlay : Window, IDisposable
         if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip(Loc.Localize("Next Overlay Tooltip - Low Rank", "Your submarine is below the required level to visit the sector."));
+                Helper.Tooltip(Language.NextOverlayTooltipLowRank);
 
             return;
         }
 
         var isMap = false;
         if (Unlocks.SectorToUnlock.TryGetValue(nextSector.UnlockedFrom.Sector, out var previousSector))
-            isMap |= previousSector.Map;
+            isMap = previousSector.Map;
 
-        var unlockText = $"{Loc.Localize("Next Overlay Text - Next Sector", "Next Sector:")} {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";
-        var visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+        var unlockText = $"{Language.NextOverlayTextNextSector} {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";
+        var visitText = $"{Language.NextOverlayTextVisit} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
         if (isMap)
         {
-            unlockText = $"{Loc.Localize("Next Overlay Text - Next Map", "Next Map:")} {MapToShort(nextUnlock.RowId, true)}";
-            visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+            unlockText = $"{Language.NextOverlayTextNextMap} {MapToShort(nextUnlock.RowId, true)}";
+            visitText = $"{Language.NextOverlayTextVisit} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
         }
 
         var avail = ImGui.GetWindowSize().X;
@@ -116,10 +117,10 @@ public class NextOverlay : Window, IDisposable
         var textWidth2 = ImGui.CalcTextSize(visitText).X;
 
         ImGui.SetCursorPosX((avail - textWidth1) * 0.5f);
-        ImGui.TextColored(ImGuiColors.DalamudOrange, unlockText);
+        Helper.TextColored(ImGuiColors.DalamudOrange, unlockText);
 
         ImGui.SetCursorPosX((avail - textWidth2) * 0.5f);
-        ImGui.TextColored(ImGuiColors.HealerGreen, visitText);
+        Helper.TextColored(ImGuiColors.HealerGreen, visitText);
 
         if (Plugin.Configuration.MainRouteAutoInclude && Plugin.RouteOverlay.MustInclude.Add(unlockedFrom))
             Plugin.RouteOverlay.Calculate = true;
@@ -127,6 +128,6 @@ public class NextOverlay : Window, IDisposable
 
     public override void PostDraw()
     {
-        ImGui.PopStyleColor();
+        PushedColor.Dispose();
     }
 }

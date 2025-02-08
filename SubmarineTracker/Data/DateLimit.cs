@@ -1,3 +1,5 @@
+using SubmarineTracker.Resources;
+
 namespace SubmarineTracker.Data;
 
 public enum DurationLimit
@@ -32,12 +34,12 @@ public static class DateUtil
     {
         return n switch
         {
-            DurationLimit.None => Loc.Localize("Duration Limit - No Limit", "No Limit"),
-            DurationLimit.H24 => Loc.Localize("Duration Limit - 24 Hours", "24 Hours"),
-            DurationLimit.H36 => Loc.Localize("Duration Limit - 36 Hours", "36 Hours"),
-            DurationLimit.H48 => Loc.Localize("Duration Limit - 48 Hours", "48 Hours"),
-            DurationLimit.Custom => Loc.Localize("Duration Limit - Custom", "Custom"),
-            _ => "Unknown"
+            DurationLimit.None => Language.DurationLimitNoLimit,
+            DurationLimit.H24 => Language.DurationLimit24Hours,
+            DurationLimit.H36 => Language.DurationLimit36Hours,
+            DurationLimit.H48 => Language.DurationLimit48Hours,
+            DurationLimit.Custom => Language.DurationLimitCustom,
+            _ => Language.TermUnknown
         };
     }
 
@@ -57,20 +59,20 @@ public static class DateUtil
     {
         return n switch
         {
-            DateLimit.None => Loc.Localize("Duration Limit - No Limit", "No Limit"),
-            DateLimit.D1 => Loc.Localize("Date Limit - 1 Day", "1 Day"),
-            DateLimit.D3 => Loc.Localize("Date Limit - 3 Days", "3 Days"),
-            DateLimit.D5 => Loc.Localize("Date Limit - 5 Days", "5 Days"),
-            DateLimit.W1 => Loc.Localize("Date Limit - 1 Week", "1 Week"),
-            DateLimit.W2 => Loc.Localize("Date Limit - 2 Weeks", "2 Weeks"),
-            DateLimit.W3 => Loc.Localize("Date Limit - 3 Weeks", "3 Weeks"),
-            DateLimit.W4 => Loc.Localize("Date Limit - 4 Weeks", "4 Weeks"),
-            DateLimit.M1 => Loc.Localize("Date Limit - 1 Month", "1 Month"),
-            DateLimit.M3 => Loc.Localize("Date Limit - 3 Months", "3 Months"),
-            DateLimit.M6 => Loc.Localize("Date Limit - 6 Months", "6 Months"),
-            DateLimit.M9 => Loc.Localize("Date Limit - 9 Months", "9 Months"),
-            DateLimit.Year => Loc.Localize("Date Limit - 1 Year", "1 Year"),
-            _ => "Unknown"
+            DateLimit.None => Language.DurationLimitNoLimit,
+            DateLimit.D1 => Language.DateLimit1Day,
+            DateLimit.D3 => Language.DateLimit3Days,
+            DateLimit.D5 => Language.DateLimit5Days,
+            DateLimit.W1 => Language.DateLimit1Week,
+            DateLimit.W2 => Language.DateLimit2Weeks,
+            DateLimit.W3 => Language.DateLimit3Weeks,
+            DateLimit.W4 => Language.DateLimit4Weeks,
+            DateLimit.M1 => Language.DateLimit1Month,
+            DateLimit.M3 => Language.DateLimit3Months,
+            DateLimit.M6 => Language.DateLimit6Months,
+            DateLimit.M9 => Language.DateLimit9Months,
+            DateLimit.Year => Language.DateLimit1Year,
+            _ => Language.TermUnknown
         };
     }
 

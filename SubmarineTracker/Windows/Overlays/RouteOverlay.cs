@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
-
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -16,12 +17,14 @@ public class RouteOverlay : Window, IDisposable
 
     private int Map = -1;
 
-    private Voyage.BestRoute BestRoute = Voyage.BestRoute.Empty();
+    private Voyage.BestRoute BestRoute = Voyage.BestRoute.Empty;
     private bool ComputingPath;
     private DateTime ComputeStart = DateTime.Now;
 
     public bool Calculate;
     public readonly HashSet<SubmarineExploration> MustInclude = [];
+
+    private ImRaii.Color PushedColor = null!;
 
     public RouteOverlay(Plugin plugin) : base("Route Overlay##SubmarineTracker")
     {
@@ -47,6 +50,13 @@ public class RouteOverlay : Window, IDisposable
         Plugin.BuilderWindow.RefreshCache();
         try
         {
+            var agent = AgentSubmersibleExploration.Instance();
+            if (agent == null || agent->MapId == 0)
+            {
+                Map = -1;
+                return;
+            }
+
             var addonPtr = Plugin.GameGui.GetAddonByName("AirShipExploration");
             if (addonPtr == nint.Zero)
             {
@@ -58,21 +68,15 @@ public class RouteOverlay : Window, IDisposable
             Position = new Vector2(explorationBaseNode->X - (Size!.Value.X * ImGuiHelpers.GlobalScale), explorationBaseNode->Y + 5);
             PositionCondition = ImGuiCond.Always;
 
-            // Check if submarine voyage log is open and not Airship
-            var map = (int) explorationBaseNode->AtkValues[2].UInt;
-            if (map < 63191)
-                return;
-
-            var selectedMap = map - 63191; // 63191 = Deep-sea Site
-            if (selectedMap != Map)
+            if (agent->MapId != Map)
             {
                 Calculate = true;
-                BestRoute = Voyage.BestRoute.Empty();
+                BestRoute = Voyage.BestRoute.Empty;
                 MustInclude.Clear();
                 Plugin.BuilderWindow.ExplorationPopupOptions = null;
 
-                Map = selectedMap;
-                Plugin.BuilderWindow.CurrentBuild.ChangeMap(selectedMap);
+                Map = agent->MapId;
+                Plugin.BuilderWindow.CurrentBuild.ChangeMap(agent->MapId - 1);
             }
 
             Size = Plugin.Configuration.DurationLimit != DurationLimit.Custom ? new Vector2(300, 330) : new Vector2(300, 350);
@@ -87,15 +91,15 @@ public class RouteOverlay : Window, IDisposable
 
     public override void PreDraw()
     {
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
+        PushedColor = ImRaii.PushColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
 
     public override void Draw()
     {
-        if (Plugin.Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && !MustInclude.Any())
+        if (Plugin.Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && MustInclude.Count == 0)
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip(Loc.Localize("Route Overlay Tooltip - High Rank", "Submarine above threshold and MustInclude is empty\nCheck your config for higher level suggestions."));
+                Helper.Tooltip(Language.RouteOverlayTooltipHighRank);
 
             Calculate = false;
             return;
@@ -105,7 +109,7 @@ public class RouteOverlay : Window, IDisposable
         if (Calculate && !ComputingPath)
         {
             Calculate = false;
-            BestRoute = Voyage.BestRoute.Empty();
+            BestRoute = Voyage.BestRoute.Empty;
 
             ComputeStart = DateTime.Now;
             ComputingPath = true;
@@ -123,20 +127,20 @@ public class RouteOverlay : Window, IDisposable
             });
         }
 
-        var startPoint = Sheets.ExplorationSheet.First(r => r.Map.RowId == Plugin.BuilderWindow.CurrentBuild.Map + 1).RowId;
+        var startPoint = Voyage.FindStartFromMap(Plugin.BuilderWindow.CurrentBuild.MapRowId).RowId;
 
-        var height = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
+        var height = ImGui.GetTextLineHeight() * 6.5f; // 5 items max, we give padding space for 6.5
         using (var listBox = ImRaii.ListBox("##BestPoints", new Vector2(-1, height)))
         {
             if (listBox.Success)
             {
                 if (ComputingPath)
                 {
-                    ImGui.TextUnformatted($"{Loc.Localize("Terms - Loading", "Loading")} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
+                    ImGui.TextUnformatted($"{Language.TermsLoading} {new string('.', (int)((DateTime.Now - ComputeStart).TotalMilliseconds / 500) % 5)}");
                 }
                 else if (BestRoute.Path.Length == 0)
                 {
-                    ImGui.TextUnformatted(Loc.Localize("Best EXP Calculation - Nothing Found", "No route found, check speed and range ..."));
+                    ImGui.TextUnformatted(Language.BestEXPCalculationNothingFound);
                 }
 
                 if (BestRoute.Path.Length != 0)
@@ -150,11 +154,11 @@ public class RouteOverlay : Window, IDisposable
         }
 
         var changed = false;
-        var length = ImGui.CalcTextSize($"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5").X + 25.0f;
+        var length = ImGui.CalcTextSize($"{Language.TermsMustInclude} {MustInclude.Count} / 5").X + 25.0f;
         var width = ImGui.GetContentRegionAvail().X / 3;
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Duration Limit", "Duration Limit"));
+        Helper.TextColored(ImGuiColors.DalamudViolet, Language.BestEXPEntryDurationLimit);
         ImGui.SetNextItemWidth(width);
         using (var combo = ImRaii.Combo("##DurationLimitCombo", Plugin.Configuration.DurationLimit.GetName()))
         {
@@ -174,13 +178,13 @@ public class RouteOverlay : Window, IDisposable
         if (Plugin.Configuration.DurationLimit != DurationLimit.None)
         {
             ImGui.SameLine(length);
-            changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Maximize Duration", "Maximize Duration"), ref Plugin.Configuration.MaximizeDuration);
+            changed |= ImGui.Checkbox(Language.BestEXPCheckboxMaximizeDuration, ref Plugin.Configuration.MaximizeDuration);
         }
 
         if (Plugin.Configuration.DurationLimit == DurationLimit.Custom)
         {
             ImGui.AlignTextToFramePadding();
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Best EXP Entry - Hours and Minutes", "Hours & Minutes"));
+            Helper.TextColored(ImGuiColors.DalamudViolet, Language.BestEXPEntryHoursandMinutes);
             ImGui.SameLine(length);
             ImGui.SetNextItemWidth(width / 2.5f);
             changed |= ImGui.InputInt("##CustomHourInput", ref Plugin.Configuration.CustomHour, 0);
@@ -194,10 +198,10 @@ public class RouteOverlay : Window, IDisposable
         }
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.DalamudViolet, $"{Loc.Localize("Terms - Must Include", "Must Include")} {MustInclude.Count} / 5");
+        Helper.TextColored(ImGuiColors.DalamudViolet, $"{Language.TermsMustInclude} {MustInclude.Count} / 5");
         ImGui.SameLine(length);
-        changed |= ImGui.Checkbox(Loc.Localize("Best EXP Checkbox - Auto Include", "Auto Include"), ref Plugin.Configuration.MainRouteAutoInclude);
-        ImGuiComponents.HelpMarker(Loc.Localize("Best EXP Tooltip - Auto Include", "Auto include the next main sector, if there is one"));
+        changed |= ImGui.Checkbox(Language.BestEXPCheckboxAutoInclude, ref Plugin.Configuration.MainRouteAutoInclude);
+        ImGuiComponents.HelpMarker(Language.BestEXPTooltipAutoInclude);
 
         var listHeight = ImGui.CalcTextSize("X").Y * 6.5f; // 5 items max, we give padding space for 6.5
         using (ImRaii.Disabled(MustInclude.Count >= 5))
@@ -211,13 +215,13 @@ public class RouteOverlay : Window, IDisposable
             ExcelSheetSelector<SubmarineExploration>.FilteredSearchSheet = null!;
             Plugin.BuilderWindow.ExplorationPopupOptions = new()
             {
-                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Loc.Localize("Terms - Rank", "Rank")} {e.RankReq})",
-                FilteredSheet = Sheets.ExplorationSheet.Where(r => r.Map.RowId == Plugin.BuilderWindow.CurrentBuild.Map + 1 && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
+                FormatRow = e => $"{NumToLetter(e.RowId - startPoint)}. {UpperCaseStr(e.Destination)} ({Language.TermsRank} {e.RankReq})",
+                FilteredSheet = Sheets.ExplorationSheet.Where(r => r.Map.RowId == Plugin.BuilderWindow.CurrentBuild.MapRowId && fcSub.UnlockedSectors[r.RowId] && r.RankReq <= Plugin.BuilderWindow.CurrentBuild.Rank)
             };
         }
 
         if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("ExplorationAddPopup", out var row, Plugin.BuilderWindow.ExplorationPopupOptions, MustInclude.Count >= 5))
-            changed |= MustInclude.Add(Sheets.ExplorationSheet.GetRow(row)!);
+            changed |= MustInclude.Add(Sheets.ExplorationSheet.GetRow(row));
 
         ImGui.SameLine();
 
@@ -243,6 +247,6 @@ public class RouteOverlay : Window, IDisposable
 
     public override void PostDraw()
     {
-        ImGui.PopStyleColor();
+        PushedColor.Dispose();
     }
 }

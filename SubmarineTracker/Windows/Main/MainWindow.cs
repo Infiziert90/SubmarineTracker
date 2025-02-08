@@ -1,5 +1,5 @@
 using Dalamud.Interface.Windowing;
-using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Main;
 
@@ -34,26 +34,36 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
-        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        using (var subContent = ImRaii.Child("##subContent", new Vector2(0, -buttonHeight)))
+        var bottomContentHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + Helper.GetSeparatorPaddingHeight;
+        using (var subContent = ImRaii.Child("##subContent", new Vector2(0, -bottomContentHeight)))
         {
-            if (subContent)
+            if (subContent.Success)
             {
-                var buttonWidth = Plugin.Configuration.NameOption != NameOptions.FullName
-                                      ? ImGui.CalcTextSize("XXXXX@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale)
-                                      : ImGui.CalcTextSize("Character Name@Halicarnassus").X + (10 * ImGuiHelpers.GlobalScale);
+                Plugin.EnsureFCOrderSafety();
+                var style = ImGui.GetStyle();
+
+                var width = 0.0f;
+                var lastCheckedLength = 0;
+                foreach (var fc in Plugin.DatabaseCache.GetFreeCompanies().Values)
+                {
+                    var text = Plugin.NameConverter.GetName(fc);
+                    if (text.Length <= lastCheckedLength)
+                        continue;
+
+                    lastCheckedLength = text.Length;
+                    width = ImGui.CalcTextSize(text).X + (style.ItemSpacing.X * 2);
+                }
 
                 ImGui.Columns(2, "columns", true);
                 if (!Plugin.Configuration.UserResize)
-                    ImGui.SetColumnWidth(0, buttonWidth + (20 * ImGuiHelpers.GlobalScale));
+                    ImGui.SetColumnWidth(0, width + (20 * ImGuiHelpers.GlobalScale));
                 else
-                    buttonWidth = ImGui.GetContentRegionAvail().X;
+                    width = ImGui.GetContentRegionAvail().X;
 
                 using (var fcList = ImRaii.Child("##fcList"))
                 {
-                    if (fcList)
+                    if (fcList.Success)
                     {
-                        Plugin.EnsureFCOrderSafety();
                         if (!(Plugin.Configuration.ShowAll && CurrentSelection == 1))
                             if (!Plugin.DatabaseCache.GetFreeCompanies().ContainsKey(CurrentSelection))
                                 CurrentSelection = Plugin.GetFCOrderWithoutHidden().First();
@@ -62,20 +72,19 @@ public partial class MainWindow : Window, IDisposable
                         if (Plugin.Configuration.ShowAll)
                         {
                             using var buttonColor = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedPink, current == 1);
-                            if (ImGui.Button(Loc.Localize("Terms - All", "All"), new Vector2(buttonWidth, 0)))
+                            if (ImGui.Button(Language.TermsAll, new Vector2(width, 0)))
                                 CurrentSelection = 1;
                         }
 
+                        var fcs = Plugin.DatabaseCache.GetFreeCompanies();
                         foreach (var key in Plugin.GetFCOrderWithoutHidden())
                         {
-                            var fc = Plugin.DatabaseCache.GetFreeCompanies()[key];
-                            var fcSubs = Plugin.DatabaseCache.GetSubmarines(fc.FreeCompanyId);
+                            var fcSubs = Plugin.DatabaseCache.GetSubmarines(fcs[key].FreeCompanyId);
                             if (fcSubs.Length == 0)
                                 continue;
 
-                            var text = Plugin.NameConverter.GetName(fc);
                             using var buttonColor = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedPink, current == key);
-                            if (ImGui.Button($"{text}##{key}", new Vector2(buttonWidth, 0)))
+                            if (ImGui.Button($"{Plugin.NameConverter.GetName(fcs[key])}##{key}", new Vector2(width, 0)))
                                 CurrentSelection = key;
                         }
                     }
@@ -90,10 +99,10 @@ public partial class MainWindow : Window, IDisposable
         }
 
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(1.0f);
+        ImGuiHelpers.ScaledDummy(Helper.SeparatorPadding);
 
-        using var bottomBar = ImRaii.Child("BottomBar", new Vector2(0, 0), false, 0);
-        if (bottomBar)
+        using var bottomBar = ImRaii.Child("BottomBar", Vector2.Zero, false, 0);
+        if (bottomBar.Success)
             Helper.MainMenuIcon();
     }
 }

@@ -12,7 +12,7 @@ public static class Webhook
     public struct WebhookContent
     {
         [JsonProperty("username")] public string Username = "[Submarine Tracker]";
-        [JsonProperty("avatar_url")] public string AvatarUrl ="https://raw.githubusercontent.com/Infiziert90/SubmarineTracker/master/SubmarineTracker/images/icon.png";
+        [JsonProperty("avatar_url")] public string AvatarUrl = "https://raw.githubusercontent.com/Infiziert90/SubmarineTracker/master/SubmarineTracker/images/icon.png";
         [JsonProperty("embeds")] public List<object> Embeds = [];
 
         public WebhookContent() { }
@@ -31,10 +31,9 @@ public static class Webhook
                     Plugin.Log.Warning(response.Content.ReadAsStringAsync().Result);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Plugin.Log.Warning("Webhook post failed");
-                Plugin.Log.Warning(e.Message);
+                Plugin.Log.Warning(ex, "Webhook post failed");
             }
         });
     }

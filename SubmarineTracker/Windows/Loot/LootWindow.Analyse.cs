@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Utility.Raii;
 using Lumina.Excel.Sheets;
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Loot;
@@ -15,7 +15,7 @@ public partial class LootWindow
 
     private void InitializeAnalyse()
     {
-        SelectedSector = Sheets.ExplorationSheet.GetRow(1)!;
+        SelectedSector = Sheets.ExplorationSheet.GetRow(1);
         Options = new ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopupOptions
         {
             FormatRow = e => $"{MapToThreeLetter(e.RowId, true)} - {NumToLetter(e.RowId, true)}. {UpperCaseStr(e.Destination)} (Rank {e.RankReq})",
@@ -25,46 +25,44 @@ public partial class LootWindow
 
     private void AnalyseTab()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Loot Tab - Analyse", "Analyse")}##Analyse");
+        using var tabItem = ImRaii.TabItem($"{Language.LootTabAnalyse}##Analyse");
         if (!tabItem.Success)
             return;
 
         ImGuiHelpers.ScaledDummy(10.0f);
 
-        var wip = Loc.Localize("Terms - WiP", "- Work in Progress -");
+        var wip = Language.TermsWiP;
         var width = ImGui.GetWindowWidth();
         var textWidth = ImGui.CalcTextSize(wip).X;
 
         ImGui.SetCursorPosX((width - textWidth) * 0.5f);
-        ImGui.TextColored(ImGuiColors.DalamudOrange, wip);
+        Helper.TextColored(ImGuiColors.DalamudOrange, wip);
         ImGuiHelpers.ScaledDummy(10.0f);
         ImGui.Separator();
         ImGuiHelpers.ScaledDummy(5.0f);
 
         if (LootCache.Count == 0)
         {
-            var submarineLoot = Plugin.DatabaseCache.GetLoot().Where(loot  => !Plugin.Configuration.ExcludeLegacy || loot.Valid).Where(detailed => detailed.Primary > 0);
-
-            foreach (var loot in submarineLoot)
+            foreach (var loot in Plugin.DatabaseCache.GetLoot().Where(loot  => !Plugin.Configuration.ExcludeLegacy || loot.Valid).Where(detailed => detailed.Primary > 0))
                 LootCache.GetOrCreate(loot.Sector).Add(loot);
         }
 
         ImGuiComponents.IconButton(FontAwesomeIcon.Search);
         if (ExcelSheetSelector<SubmarineExploration>.ExcelSheetPopup("LootSectorAnalyseAddPopup", out var row, Options))
-            SelectedSector = Sheets.ExplorationSheet.GetRow(row)!;
+            SelectedSector = Sheets.ExplorationSheet.GetRow(row);
 
         ImGui.SameLine();
 
-        if (Helper.DrawButtonWithTooltip(FontAwesomeIcon.ArrowCircleUp, Loc.Localize("Loot Tab Button - Rebuild", "Rebuild Cache")))
+        if (Helper.DrawButtonWithTooltip(FontAwesomeIcon.ArrowCircleUp, Language.LootTabButtonRebuild))
         {
             LootCache.Clear();
             return;
         }
 
-        ImGui.TextColored(ImGuiColors.ParsedOrange, $"{Loc.Localize("Loot Tab Text - Searched", "Searched for")} {MapToThreeLetter(SelectedSector.RowId, true)} - {NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
+        Helper.TextColored(ImGuiColors.ParsedOrange, $"{Language.LootTabTextSearched} {MapToThreeLetter(SelectedSector.RowId, true)}{NumToLetter(SelectedSector.RowId, true)}. {UpperCaseStr(SelectedSector.Destination)}");
         if (!LootCache.TryGetValue(SelectedSector.RowId, out var history))
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab Warning - Nothing Found", "Nothing found for this sector."));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.LootTabWarningNothingFound);
             return;
         }
 
@@ -94,10 +92,9 @@ public partial class LootWindow
 
         var sectorHits = history.Count;
         var doubleDips = history.Sum(ll => ll.ValidAdditional ? 1 : 0);
-        ImGui.TextColored(ImGuiColors.HealerGreen, $"Hit {sectorHits:N0} time{(sectorHits > 1 ? "s" : "")}");
-        ImGui.TextColored(ImGuiColors.HealerGreen, $"DD {doubleDips:N0} time{(doubleDips > 1 ? "s" : "")} ({(double) doubleDips / sectorHits * 100.0:F2}%%)");
-
-        using (var table = ImRaii.Table("##AnalyseStats", 4, 0, new Vector2(300, 0)))
+        Helper.TextColored(ImGuiColors.HealerGreen, $"Hit {sectorHits:N0} time{(sectorHits > 1 ? "s" : "")}");
+        Helper.TextColored(ImGuiColors.HealerGreen, $"DD {doubleDips:N0} time{(doubleDips > 1 ? "s" : "")} ({(double) doubleDips / sectorHits * 100.0:F2}%%)");
+        using (var table = ImRaii.Table("##AnalyseStats", 4, 0, new Vector2(300 * ImGuiHelpers.GlobalScale, 0)))
         {
             if (table.Success)
             {
@@ -108,7 +105,7 @@ public partial class LootWindow
 
                 foreach (var statPair in statDict.OrderByDescending(pair => pair.Key))
                 {
-                    var name = ToStr(Sheets.ItemSheet.GetRow(statPair.Key)!.Name);
+                    var name = Sheets.GetItem(statPair.Key).Name.ExtractText();
                     ImGui.TableNextColumn();
                     if (ImGui.Selectable($"{name}"))
                         ImGui.SetClipboardText(name);
@@ -141,21 +138,21 @@ public partial class LootWindow
 
         var sortedList = percentageDict.Where(pair => pair.Value > 0).Select(pair =>
         {
-            var item = Sheets.ItemSheet.GetRow(pair.Key)!;
+            var item = Sheets.GetItem(pair.Key);
             var count = pair.Value;
             var percentage = (double) count / (sectorHits + doubleDips) * 100.0;
-            return new SortedEntry(item.Icon, ToStr(item.Name), count, percentage);
+            return new SortedEntry(item.Icon, item.Name.ExtractText(), count, percentage);
         }).OrderByDescending(x => x.Percentage);
 
-        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Loot Tab Entry - Percentages", "Percentages:"));
+        Helper.TextColored(ImGuiColors.HealerGreen, Language.LootTabEntryPercentages);
 
         using var percentageTable = ImRaii.Table("##PercentageSourceTable", 3);
         if (!percentageTable.Success)
             return;
 
         ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed, IconSize.X + 10.0f);
-        ImGui.TableSetupColumn($"{Loc.Localize("Terms - Item", "Item")}##item");
-        ImGui.TableSetupColumn($"{Loc.Localize("Terms - Percentage", "Pct")}##percentage", 0, 0.25f);
+        ImGui.TableSetupColumn($"{Language.TermsItem}##item");
+        ImGui.TableSetupColumn($"{Language.TermsPercentage}##percentage", 0, 0.25f);
 
         using var indent = ImRaii.PushIndent(10.0f);
         foreach (var sortedEntry in sortedList)

@@ -8,7 +8,7 @@ public static class BoxList
     {
         var items = list.ToArray();
         var hash = items.GetSequenceHashCode();
-        var boxSizes = FBoxSizes.TryGetValue(hash, out var sizes) ? sizes : new List<Vector2>();
+        var boxSizes = FBoxSizes.TryGetValue(hash, out var sizes) ? sizes : [];
         var wSize = ImGui.GetWindowSize();
 
         // Don't show the first pass due to sizing gathering
@@ -16,14 +16,10 @@ public static class BoxList
             ImGui.SetCursorScreenPos(wSize + new Vector2(10, 10));
 
         var lastWrapped = -1;
-
         for (var i = 0; i < items.Length; i++)
         {
             var i1 = i;
-            var size = Box.SimpleBox(modifier, () =>
-            {
-                boxRenderContent(items[i1]);
-            });
+            var size = Box.SimpleBox(modifier, () => { boxRenderContent(items[i1]); });
 
             var height = (int)(size.Y / (3 / arrowScale));
             var offset = (int)(height / 2f);
@@ -53,7 +49,9 @@ public static class BoxList
                 var nextCursorPos = p with { X = p.X + nextDrawEnd } - p;
 
                 if (wSize.X > nextCursorPos.X)
+                {
                     ImGui.SameLine();
+                }
                 else
                 {
                     ImGuiHelpers.ScaledDummy(0, 20);
@@ -63,9 +61,7 @@ public static class BoxList
         }
 
         if (!FBoxSizes.TryAdd(hash, boxSizes))
-        {
             FBoxSizes[hash] = boxSizes;
-        }
     }
 
     private static int GetSequenceHashCode<T>(this IEnumerable<T> sequence) where T : notnull
@@ -75,8 +71,7 @@ public static class BoxList
 
         unchecked
         {
-            return sequence.Aggregate(seed, (current, item) =>
-                                          (current * modifier) + item.GetHashCode());
+            return sequence.Aggregate(seed, (current, item) => (current * modifier) + item.GetHashCode());
         }
     }
 }

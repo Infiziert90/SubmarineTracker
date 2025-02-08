@@ -3,7 +3,6 @@ namespace SubmarineTracker.Windows;
 // From https://github.com/ocornut/imgui/issues/5944
 public static class Box
 {
-
     public struct Modifier
     {
         public Vector4 FPadding = new();
@@ -34,6 +33,7 @@ public static class Box
             FBackgroundColor = iColor;
             return this;
         }
+
         public Modifier BorderColor(uint iColor)
         {
             FBorderColor = iColor;
@@ -73,15 +73,11 @@ public static class Box
         // account for padding left/top
         ImGui.SetCursorScreenPos(min + new Vector2(iModifier.FPadding.W, iModifier.FPadding.X));
 
-        ImGui.BeginGroup();
-        {
+        using (ImRaii.Group())
             iBoxContent();
-            ImGui.EndGroup();
-        }
 
         // account for padding right/bottom
         var max = ImGui.GetItemRectMax() + new Vector2(iModifier.FPadding.Y, iModifier.FPadding.Z);
-
         if(drawList._Data != nint.Zero)
         {
             // second we draw the rectangle and border in channel 0 (will be below)

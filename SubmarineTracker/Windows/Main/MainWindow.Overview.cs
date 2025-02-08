@@ -1,5 +1,5 @@
-﻿using Dalamud.Interface.Utility.Raii;
-using SubmarineTracker.Data;
+﻿using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Main;
 
@@ -12,9 +12,9 @@ public partial class MainWindow
         if (!tabBar.Success)
             return;
 
-        using (var mainTab = ImRaii.TabItem($"{Loc.Localize("Main Window Tab - Overview", "Overview")}##Overview"))
+        using (var mainTab = ImRaii.TabItem($"{Language.MainWindowTabOverview}##Overview"))
         {
-            if (mainTab)
+            if (mainTab.Success)
             {
                 var secondRow = ImGui.GetContentRegionMax().X / 8;
                 var thirdRow = ImGui.GetContentRegionMax().X / 4.2f;
@@ -35,27 +35,27 @@ public partial class MainWindow
                         if (cachedItems.TryGetValue((uint)Items.Kits, out temp))
                             kits = temp.Count;
 
-                        ImGui.TextColored(ImGuiColors.HealerGreen, Loc.Localize("Main Window Entry - Resources", "Resources:"));
+                        Helper.TextColored(ImGuiColors.HealerGreen, Language.MainWindowEntryResources);
                         ImGui.SameLine();
-                        ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Tanks", "Tanks")} x{tanks} & {Loc.Localize("Terms - Kits", "Kits")} x{kits}");
+                        Helper.TextColored(ImGuiColors.TankBlue, $"{Language.TermsTanks} x{tanks} & {Language.TermsKits} x{kits}");
                     }
                 }
 
                 foreach (var sub in Plugin.DatabaseCache.GetSubmarines(selectedFc.FreeCompanyId))
                 {
-                    ImGuiHelpers.ScaledDummy(10.0f);
                     using var indent = ImRaii.PushIndent(10.0f);
 
-                    ImGui.TextColored(ImGuiColors.HealerGreen, Plugin.NameConverter.GetJustSub(sub));
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")} {sub.Rank}");
+                    ImGuiHelpers.ScaledDummy(10.0f);
+                    Helper.TextColored(ImGuiColors.HealerGreen, Plugin.NameConverter.GetJustSub(sub));
+                    Helper.TextColored(ImGuiColors.TankBlue, $"{Language.TermsRank} {sub.Rank}");
                     ImGui.SameLine(secondRow);
-                    ImGui.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
+                    Helper.TextColored(ImGuiColors.TankBlue, $"({sub.Build.FullIdentifier()})");
 
 
                     if (Plugin.Configuration.ShowOnlyLowest)
                     {
                         ImGui.SameLine(thirdRow);
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, $"{sub.LowestCondition():F}%%");
+                        Helper.TextColored(ImGuiColors.ParsedOrange, $"{sub.LowestCondition():F}%%");
                     }
 
                     if (sub.IsOnVoyage())
@@ -67,26 +67,28 @@ public partial class MainWindow
 
                             var returnTime = sub.ReturnTime - DateTime.Now.ToUniversalTime();
                             if (returnTime.TotalSeconds > 0)
+                            {
                                 if (Plugin.Configuration.ShowBothOptions)
                                     time = $" {sub.ReturnTime.ToLocalTime()} ({Utils.ToTime(returnTime)}) ";
                                 else if (!Plugin.Configuration.UseDateTimeInstead)
                                     time = $" {Utils.ToTime(returnTime)} ";
                                 else
                                     time = $" {sub.ReturnTime.ToLocalTime()}";
+                            }
                         }
 
                         if (Plugin.Configuration.ShowRouteInOverview)
-                            time += $" {string.Join(" -> ", sub.Points.Select(p => Utils.NumToLetter(p, true)))} ";
+                            time += $" {Utils.SectorsToPath(" -> ", sub.Points)} ";
 
                         ImGui.SameLine(Plugin.Configuration.ShowOnlyLowest ? lastRow : thirdRow);
-                        ImGui.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
+                        Helper.TextColored(ImGuiColors.ParsedOrange, time.Length != 0 ? $"[{time}]" : "");
                     }
                     else
                     {
                         if (Plugin.Configuration.ShowTimeInOverview || Plugin.Configuration.ShowRouteInOverview)
                         {
                             ImGui.SameLine(Plugin.Configuration.ShowOnlyLowest ? lastRow : thirdRow);
-                            ImGui.TextColored(ImGuiColors.ParsedOrange, $"[{Loc.Localize("Terms - No Voyage Data", "No Voyage Data")}]");
+                            Helper.TextColored(ImGuiColors.ParsedOrange, $"[{Language.TermsNoVoyageData}]");
                         }
                     }
                 }
@@ -96,11 +98,11 @@ public partial class MainWindow
         foreach (var (sub, idx) in Plugin.DatabaseCache.GetSubmarines(selectedFc.FreeCompanyId).WithIndex())
         {
             using var subTab = ImRaii.TabItem($"{Plugin.NameConverter.GetJustSub(sub)}##{idx}");
-            if (subTab)
+            if (subTab.Success)
                 DetailedSub(sub);
         }
 
-        using var lootTab = ImRaii.TabItem($"{Loc.Localize("Main Window Tab - Loot", "Loot")}##Loot");
+        using var lootTab = ImRaii.TabItem($"{Language.MainWindowTabLoot}##Loot");
         if (!lootTab.Success)
             return;
 
@@ -127,7 +129,7 @@ public partial class MainWindow
         {
             var text = Utils.MapToShort(map.RowId);
             if (text == "")
-                text = Utils.ToStr(map.Name);
+                text = map.Name.ExtractText();
 
             using var mapTab = ImRaii.TabItem(text);
             if (!mapTab.Success)
@@ -138,8 +140,7 @@ public partial class MainWindow
             var endCursorPositionRight = ImGui.GetCursorPos();
             var cursorPosition = ImGui.GetCursorPos();
 
-            var mapLoot = fcLoot.Where(pair => Voyage.SectorToPretty[pair.Key].Map.RowId == map.RowId).WithIndex();
-            foreach (var ((sector, loot), idx) in mapLoot)
+            foreach (var ((sector, loot), idx) in fcLoot.Where(pair => Voyage.SectorToSheet[pair.Key].Map.RowId == map.RowId).WithIndex())
             {
                 if (idx % 2 == 0)
                 {
@@ -156,6 +157,7 @@ public partial class MainWindow
 
                 ImGui.TextUnformatted(Voyage.SectorToName(sector));
                 ImGuiHelpers.ScaledDummy(5.0f);
+
                 foreach (var (item, count) in loot)
                 {
                     using var innerIndent = ImRaii.PushIndent(10.0f);
@@ -163,20 +165,15 @@ public partial class MainWindow
                     if (idx % 2 == 1)
                         ImGui.SetCursorPosX(cursorPosition.X + 10.0f);
 
-                    var name = Utils.ToStr(item.Name);
-                    if (MaxLength < name.Length)
-                        name = name.Truncate(MaxLength);
-
+                    var name = item.Name.ExtractText();
                     Helper.DrawScaledIcon(item.Icon, IconSize);
                     ImGui.SameLine();
-                    ImGui.TextUnformatted(name);
+                    ImGui.TextUnformatted(name.Truncate(MaxLength));
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip(Utils.ToStr(item.Name));
+                        Helper.Tooltip(name);
 
                     var length = ImGui.CalcTextSize($"{count}").X;
-                    ImGui.SameLine(idx % 2 == 0
-                                       ? halfWindowWidth - 30.0f - length
-                                       : fullWindowWidth - 30.0f - length);
+                    ImGui.SameLine(idx % 2 == 0 ? halfWindowWidth - 30.0f - length : fullWindowWidth - 30.0f - length);
                     ImGui.TextUnformatted($"{count}");
                 }
 

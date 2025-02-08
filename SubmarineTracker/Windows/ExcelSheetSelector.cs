@@ -50,28 +50,28 @@ public static class ExcelSheetSelector<T> where T : struct, IExcelRow<T>
         if (ImGui.InputTextWithHint("##ExcelSheetSearch", "Search", ref SheetSearchText, 128, ImGuiInputTextFlags.AutoSelectAll))
             FilteredSearchSheet = null;
 
-        FilteredSearchSheet ??= filteredSheet.Where(s => searchPredicate(s, SheetSearchText)).Cast<T>().ToArray();
+        FilteredSearchSheet ??= filteredSheet.Where(s => searchPredicate(s, SheetSearchText)).ToArray();
     }
 
     public static bool ExcelSheetPopup(string id, out uint selectedRow, ExcelSheetPopupOptions? options = null, bool close = false)
     {
-
         options ??= new ExcelSheetPopupOptions();
         var sheet = options.FilteredSheet ?? Plugin.Data.GetExcelSheet<T>();
         selectedRow = 0;
-        if (sheet == null)
-            return false;
 
         if (close)
             return false;
 
         ImGui.SetNextWindowSize(options.Size ?? new Vector2(0, 250 * ImGuiHelpers.GlobalScale));
-        if (!ImGui.BeginPopupContextItem(id, options.PopupFlags))
+        using var popup = ImRaii.ContextPopupItem(id, options.PopupFlags);
+        if (!popup.Success)
             return false;
 
         ExcelSheetSearchInput(id, sheet, options.SearchPredicate ?? ((row, s) => options.FormatRow(row).Contains(s, StringComparison.CurrentCultureIgnoreCase)));
 
-        ImGui.BeginChild("ExcelSheetSearchList", Vector2.Zero, true);
+        using var child = ImRaii.Child("ExcelSheetSearchList", Vector2.Zero, true);
+        if (!child.Success)
+            return false;
 
         var ret = false;
         var drawSelectable = options.DrawSelectable ?? ((row, selected) => ImGui.Selectable(options.FormatRow(row), selected));
@@ -79,12 +79,13 @@ public static class ExcelSheetSelector<T> where T : struct, IExcelRow<T>
         {
             foreach (var i in clipper.Rows)
             {
-                var row = (T) FilteredSearchSheet[i];
-                ImGui.PushID(id);
-                if (!drawSelectable(row, options.IsRowSelected(row))) continue;
+                var row = FilteredSearchSheet[i];
+                using var pushedId = ImRaii.PushId(id);
+                if (!drawSelectable(row, options.IsRowSelected(row)))
+                    continue;
+
                 selectedRow = row.RowId;
                 ret = true;
-                ImGui.PopID();
             }
         }
 
@@ -92,8 +93,6 @@ public static class ExcelSheetSelector<T> where T : struct, IExcelRow<T>
         if (ret && options.CloseOnSelection)
             ImGui.CloseCurrentPopup();
 
-        ImGui.EndChild();
-        ImGui.EndPopup();
         return ret;
     }
 }
@@ -132,7 +131,7 @@ public unsafe class ListClipper : IEnumerable<(int, int)>, IDisposable
         get
         {
             var cols = (ItemRemainder == 0 || CurrentRows != DisplayEnd || CurrentRow != DisplayEnd - 1) ? CurrentColumns : ItemRemainder;
-            for (int j = 0; j < cols; j++)
+            for (var j = 0; j < cols; j++)
                 yield return j;
         }
     }

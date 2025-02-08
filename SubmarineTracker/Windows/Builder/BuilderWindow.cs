@@ -1,11 +1,13 @@
 using Dalamud.Interface.Windowing;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow : Window, IDisposable
 {
     private readonly Plugin Plugin;
+
     public Build.RouteBuild CurrentBuild = new();
 
     private string CurrentInput = "";
@@ -31,98 +33,97 @@ public partial class BuilderWindow : Window, IDisposable
         var infoTabOpen = false;
         var shipTabOpen = false;
 
-        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("SubContent", new Vector2(0, -buttonHeight)))
+        var buttonHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + Helper.GetSeparatorPaddingHeight;
+        using (var child = ImRaii.Child("SubContent", new Vector2(0, -buttonHeight)))
         {
-            var sub = new Submarine();
-
-            if (ImGui.BeginTabBar("SubBuilderTab"))
+            if (child.Success)
             {
-                BuildTab(ref sub);
+                var sub = new Submarine();
+                using var tabBar = ImRaii.TabBar("SubBuilderTab");
+                if (tabBar.Success)
+                {
+                    BuildTab(ref sub);
 
-                RouteTab();
+                    RouteTab();
 
-                ExpTab();
+                    ExpTab();
 
-                shipTabOpen |= ShipTab();
+                    shipTabOpen |= ShipTab();
 
-                shipTabOpen |= LevelingTab();
+                    shipTabOpen |= LevelingTab();
 
-                shipTabOpen |= LootTab();
+                    shipTabOpen |= LootTab();
 
-                infoTabOpen |= InfoTab();
+                    infoTabOpen |= InfoTab();
+                }
 
-                ImGui.EndTabBar();
-            }
-
-            if (!infoTabOpen && !shipTabOpen)
-            {
-                BuildStats(ref sub);
+                if (!infoTabOpen && !shipTabOpen)
+                    BuildStats(ref sub);
             }
         }
-        ImGui.EndChild();
 
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(1.0f);
+        ImGuiHelpers.ScaledDummy(Helper.SeparatorPadding);
 
-        if (ImGui.BeginChild("BottomBar", new Vector2(0, 0), false, 0))
+        using (var child = ImRaii.Child("BottomBar", Vector2.Zero, false))
         {
-            if (!infoTabOpen)
+            if (child.Success)
             {
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button(Loc.Localize("Builder Window Button - Reset","Reset")))
-                    Reset();
-                ImGui.PopStyleColor();
+                if (!infoTabOpen)
+                {
+                    using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedBlue))
+                        if (ImGui.Button(Language.BuilderWindowButtonReset))
+                            Reset();
 
-                ImGui.SameLine();
+                    ImGui.SameLine();
 
-                ImGui.Button(Loc.Localize("Builder Window Button - Save","Save"));
-                SaveBuild();
+                    ImGui.Button(Language.BuilderWindowButtonSave);
+                    SaveBuild();
 
-                ImGui.SameLine();
+                    ImGui.SameLine();
 
-                ImGui.Button(Loc.Localize("Builder Window Button - Load","Load"));
-                LoadBuild();
+                    ImGui.Button(Language.BuilderWindowButtonLoad);
+                    LoadBuild();
+                }
+                else
+                {
+                    using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedBlue))
+                        if (ImGui.Button(Language.TermJoinDiscord))
+                            Dalamud.Utility.Util.OpenLink("https://discord.gg/overseascasuals");
+
+                    if (ImGui.IsItemHovered())
+                        Helper.Tooltip(Language.OverseasDiscordTooltip);
+
+                    ImGui.SameLine();
+
+                    using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGrey))
+                        if (ImGui.Button(Language.TermSpreadsheet))
+                            Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1eiuGRrQTjJ5n4ogybKOBxJRT7EiJLlX93fge-Z8MmD4");
+                }
+
+                Helper.MainMenuIcon();
             }
-            else
-            {
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
-                if (ImGui.Button("Join Discord"))
-                    Dalamud.Utility.Util.OpenLink("https://discord.gg/overseascasuals");
-                ImGui.PopStyleColor();
-
-                if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip("Discord: Overseas Casuals\nRecommended discord for submarines\nJust select the 'Subs' channel and\njoin us in '#you-dont-pay-my-sub'");
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedGrey);
-                if (ImGui.Button("Spreadsheet"))
-                    Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1eiuGRrQTjJ5n4ogybKOBxJRT7EiJLlX93fge-Z8MmD4");
-                ImGui.PopStyleColor();
-            }
-
-            Helper.MainMenuIcon();
         }
-        ImGui.EndChild();
     }
 
     private bool SaveBuild()
     {
         ImGui.SetNextWindowSize(new Vector2(200 * ImGuiHelpers.GlobalScale, 90 * ImGuiHelpers.GlobalScale));
-        if (!ImGui.BeginPopupContextItem("##savePopup", ImGuiPopupFlags.None))
+        using var context = ImRaii.ContextPopupItem("##savePopup", ImGuiPopupFlags.None);
+        if (!context.Success)
             return false;
 
-        ImGui.BeginChild("SavePopupChild", Vector2.Zero, false);
+        using var child = ImRaii.Child("SavePopupChild", Vector2.Zero, false);
+        if (!child.Success)
+            return false;
 
         var ret = false;
-
         ImGuiHelpers.ScaledDummy(3.0f);
         ImGui.SetNextItemWidth(180 * ImGuiHelpers.GlobalScale);
-        ImGui.InputTextWithHint("##SavePopupName", Loc.Localize("Terms - Name", "Name"), ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
+        ImGui.InputTextWithHint("##SavePopupName", Language.TermsName, ref CurrentInput, 128, ImGuiInputTextFlags.AutoSelectAll);
         ImGuiHelpers.ScaledDummy(3.0f);
 
-        if (ImGui.Button(Loc.Localize("Builder Window Button - Save Build", "Save Build")))
+        if (ImGui.Button(Language.BuilderWindowButtonSaveBuild))
         {
             // make sure that original sub hasn't changed in the future
             CurrentBuild.OriginalSub = 0;
@@ -142,19 +143,16 @@ public partial class BuilderWindow : Window, IDisposable
             }
 
             if (!ret)
-                Plugin.ChatGui.PrintError(Utils.ErrorMessage(Loc.Localize("Builder Window Error - Same Name", "Build with same name exists already.")));
+                Plugin.ChatGui.PrintError(Utils.ErrorMessage(Language.BuilderWindowErrorSameName));
         }
 
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip(Loc.Localize("Builder Window Tooltip - Overwrite", "Hold Control to overwrite"));
+            Helper.Tooltip(Language.BuilderWindowTooltipOverwrite);
 
 
         // ImGui issue #273849, children keep popups from closing automatically
         if (ret)
             ImGui.CloseCurrentPopup();
-
-        ImGui.EndChild();
-        ImGui.EndPopup();
 
         return ret;
     }
@@ -162,7 +160,8 @@ public partial class BuilderWindow : Window, IDisposable
     private bool LoadBuild()
     {
         ImGui.SetNextWindowSize(new Vector2(0, 250 * ImGuiHelpers.GlobalScale));
-        if (!ImGui.BeginPopupContextItem("##LoadPopup", ImGuiPopupFlags.None))
+        using var context = ImRaii.ContextPopupItem("##LoadPopup", ImGuiPopupFlags.None);
+        if (!context.Success)
             return false;
 
         var longest = 0.0f;
@@ -177,12 +176,14 @@ public partial class BuilderWindow : Window, IDisposable
         ImGui.Dummy(new Vector2(longest + (30.0f * ImGuiHelpers.GlobalScale), 0));
 
         ImGuiHelpers.ScaledDummy(3.0f);
-        ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Builder Window Tip - Loading", "Load by clicking"));
-        ImGuiHelpers.ScaledIndent(5.0f);
-        ImGui.BeginChild("LoadPopupChild", Vector2.Zero, false);
+        Helper.TextColored(ImGuiColors.ParsedOrange, Language.BuilderWindowTipLoading);
+
+        using var indent = ImRaii.PushIndent(5.0f);
+        using var child = ImRaii.Child("LoadPopupChild", Vector2.Zero, false);
+        if (!child.Success)
+            return false;
 
         var ret = false;
-
         foreach (var (key, value) in Plugin.Configuration.SavedBuilds)
         {
             if (ImGui.Selectable(Utils.FormattedRouteBuild(key, value)))
@@ -192,18 +193,14 @@ public partial class BuilderWindow : Window, IDisposable
                     CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
                 else
                     CurrentBuild.NotOptimized();
+                
                 ret = true;
             }
         }
 
-        ImGuiHelpers.ScaledIndent(-5.0f);
-
         // ImGui issue #273849, children keep popups from closing automatically
         if (ret)
             ImGui.CloseCurrentPopup();
-
-        ImGui.EndChild();
-        ImGui.EndPopup();
 
         return ret;
     }

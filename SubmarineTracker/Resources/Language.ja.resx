@@ -1,0 +1,990 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="WebhookOnDispatch" xml:space="preserve">
+        <value>&lt;t:{0}:R&gt; に帰還します。</value>
+    </data>
+    <data name="WebhookOnReturn" xml:space="preserve">
+        <value>&lt;t:{0}:f&gt; に帰還しました。</value>
+    </data>
+    <data name="NotificationChatReturn" xml:space="preserve">
+        <value>{0} が帰還しました。</value>
+    </data>
+    <data name="NotificationChatRepair" xml:space="preserve">
+        <value>{0} が帰還しました。修理が必要です。</value>
+    </data>
+    <data name="NotificationToastRepair" xml:space="preserve">
+        <value>再出港には修理が必要です。</value>
+    </data>
+    <data name="TermsImportant" xml:space="preserve">
+        <value>重要</value>
+    </data>
+    <data name="NotificationsUploadOptOut" xml:space="preserve">
+        <value>このプラグインは匿名化された潜水艦固有のデータを収集します。 収集されるデータの詳細については、プラグイン設定メニューのアップロードタブを参照してください。 データ収集はすべてオプトアウトすることができます。</value>
+    </data>
+    <data name="WindowNameTracker" xml:space="preserve">
+        <value>トラッカー</value>
+    </data>
+    <data name="MenuTooltipTracker" xml:space="preserve">
+        <value>トラッカーウィンドウを開きます。</value>
+    </data>
+    <data name="WindowNameBuilder" xml:space="preserve">
+        <value>ビルダー</value>
+    </data>
+    <data name="MenuTooltipBuilder" xml:space="preserve">
+        <value>ビルダーウィンドウを開きます。</value>
+    </data>
+    <data name="MenuTooltipLoot" xml:space="preserve">
+        <value>戦利品ウィンドウを開きます。</value>
+    </data>
+    <data name="MenuTooltipHelpy" xml:space="preserve">
+        <value>ヘルパーウィンドウを開きます。</value>
+    </data>
+    <data name="MenuTooltipOverlay" xml:space="preserve">
+        <value>リターンオーバーレイを開きます。</value>
+    </data>
+    <data name="WindowNameConfig" xml:space="preserve">
+        <value>設定</value>
+    </data>
+    <data name="MenuTooltipConfig" xml:space="preserve">
+        <value>設定ウィンドウを開きます。</value>
+    </data>
+    <data name="MenuEntryDiscordThread" xml:space="preserve">
+        <value>Discord スレッド</value>
+    </data>
+    <data name="MenuTooltipDiscordThread" xml:space="preserve">
+        <value>Discord サポートスレッドを開く</value>
+    </data>
+    <data name="MenuEntryLocalization" xml:space="preserve">
+        <value>翻訳</value>
+    </data>
+    <data name="MenuTooltipLocalization" xml:space="preserve">
+        <value>ブラウザで Crowdin を開く</value>
+    </data>
+    <data name="MenuTooltipIssues" xml:space="preserve">
+        <value>ブラウザで Issues ページを開く</value>
+    </data>
+    <data name="MenuTooltipKoFi" xml:space="preserve">
+        <value>ブラウザで Ko-Fi ページを開く</value>
+    </data>
+    <data name="MenuEntrySync" xml:space="preserve">
+        <value>同期</value>
+    </data>
+    <data name="MenuTooltipSync" xml:space="preserve">
+        <value>ハードドライブから保存されているすべてのデータを再読み込みし、キャッシュを更新します。</value>
+    </data>
+    <data name="ErrorNoData" xml:space="preserve">
+        <value>このキャラクターのフリー・カンパニーに関するデータは見つかりませんでした
+会社のワークショップにアクセスし、Voyage Control PanelからSubmersible Managementにアクセスしてください。</value>
+    </data>
+    <data name="TermsDone" xml:space="preserve">
+        <value>完了</value>
+    </data>
+    <data name="TermsAll" xml:space="preserve">
+        <value>すべて</value>
+    </data>
+    <data name="TermsRank" xml:space="preserve">
+        <value>ランク</value>
+    </data>
+    <data name="ReturnOverlayTooltipRepairNeeded" xml:space="preserve">
+        <value>この潜水艦は戻って修理が必要だ。</value>
+    </data>
+    <data name="TermsRoute" xml:space="preserve">
+        <value>ルート</value>
+    </data>
+    <data name="TermsEXPAfter" xml:space="preserve">
+        <value>後</value>
+    </data>
+    <data name="TermsRepair" xml:space="preserve">
+        <value>修復</value>
+    </data>
+    <data name="MainWindowTooltipRepair" xml:space="preserve">
+        <value>{0} 航海後の {1} キット</value>
+    </data>
+    <data name="MainWindowTabOverview" xml:space="preserve">
+        <value>概要</value>
+    </data>
+    <data name="MainWindowEntryResources" xml:space="preserve">
+        <value>リソース:</value>
+    </data>
+    <data name="TermsTanks" xml:space="preserve">
+        <value>タンク</value>
+    </data>
+    <data name="TermsKits" xml:space="preserve">
+        <value>キット</value>
+    </data>
+    <data name="TermsNoVoyageData" xml:space="preserve">
+        <value>航海データがありません</value>
+    </data>
+    <data name="TermsBuild" xml:space="preserve">
+        <value>ビルド</value>
+    </data>
+    <data name="MainWindowOverviewBreaksAfter" xml:space="preserve">
+        <value>{0} 航海後に破壊</value>
+    </data>
+    <data name="TermsPredicted" xml:space="preserve">
+        <value>予測</value>
+    </data>
+    <data name="Termshours" xml:space="preserve">
+        <value>時間</value>
+    </data>
+    <data name="TermsTime" xml:space="preserve">
+        <value>帰還まで</value>
+    </data>
+    <data name="TermsDate" xml:space="preserve">
+        <value>帰還予定日時</value>
+    </data>
+    <data name="TermsMap" xml:space="preserve">
+        <value>地図</value>
+    </data>
+    <data name="NextOverlayTooltipLowRank" xml:space="preserve">
+        <value>この潜水艦は該当区域を探索するために必要なレベルに達していません。</value>
+    </data>
+    <data name="NextOverlayTextNextSector" xml:space="preserve">
+        <value>次の区域:</value>
+    </data>
+    <data name="NextOverlayTextVisit" xml:space="preserve">
+        <value>探索先:</value>
+    </data>
+    <data name="NextOverlayTextNextMap" xml:space="preserve">
+        <value>次のマップ:</value>
+    </data>
+    <data name="TermsSubmarines" xml:space="preserve">
+        <value>潜水艦</value>
+    </data>
+    <data name="ReturnOverlayInfoNoReturn" xml:space="preserve">
+        <value>潜水艦が帰還していません。</value>
+    </data>
+    <data name="RouteOverlayTooltipHighRank" xml:space="preserve">
+        <value>潜水艦のレベルが閾値を超えている、または必須項目が空です。
+より高レベルでサジェストを表示するには、設定を確認してください。</value>
+    </data>
+    <data name="TermsLoading" xml:space="preserve">
+        <value>読み込み中</value>
+    </data>
+    <data name="BestEXPCalculationNothingFound" xml:space="preserve">
+        <value>ルートが見つかりません。速度と範囲を確認してください...</value>
+    </data>
+    <data name="TermsMustInclude" xml:space="preserve">
+        <value>必須項目</value>
+    </data>
+    <data name="BestEXPEntryDurationLimit" xml:space="preserve">
+        <value>時間制限</value>
+    </data>
+    <data name="BestEXPCheckboxMaximizeDuration" xml:space="preserve">
+        <value>最大化時間</value>
+    </data>
+    <data name="BestEXPEntryHoursandMinutes" xml:space="preserve">
+        <value>時間と分</value>
+    </data>
+    <data name="BestEXPCheckboxAutoInclude" xml:space="preserve">
+        <value>自動含める</value>
+    </data>
+    <data name="BestEXPTooltipAutoInclude" xml:space="preserve">
+        <value>次のメインセクターがある場合は、自動的に含めます。</value>
+    </data>
+    <data name="LootTabAnalyse" xml:space="preserve">
+        <value>分析</value>
+    </data>
+    <data name="TermsWiP" xml:space="preserve">
+        <value>- 作業中 -</value>
+    </data>
+    <data name="LootTabButtonRebuild" xml:space="preserve">
+        <value>キャッシュの再構築</value>
+    </data>
+    <data name="LootTabTextSearched" xml:space="preserve">
+        <value>検索対象:</value>
+    </data>
+    <data name="LootTabWarningNothingFound" xml:space="preserve">
+        <value>このセクターは見つかりませんでした。</value>
+    </data>
+    <data name="LootTabEntryPercentages" xml:space="preserve">
+        <value>パーセンテージ:</value>
+    </data>
+    <data name="TermsItem" xml:space="preserve">
+        <value>項目</value>
+    </data>
+    <data name="TermsPercentage" xml:space="preserve">
+        <value>パーセント</value>
+    </data>
+    <data name="LootTabCustom" xml:space="preserve">
+        <value>カスタム</value>
+    </data>
+    <data name="LootTabCustomProfileEmpty" xml:space="preserve">
+        <value>このプロファイルには追跡されたアイテムがありません。</value>
+    </data>
+    <data name="LootTabCustomProfileTip" xml:space="preserve">
+        <value>下にある設定の戦利品タブからアイテムを追加することができます。</value>
+    </data>
+    <data name="LootTabCustomNone1" xml:space="preserve">
+        <value>選択されたアイテムのどれも略奪されていません</value>
+    </data>
+    <data name="LootTabCustomNone2Yet" xml:space="preserve">
+        <value>まだ</value>
+    </data>
+    <data name="LootTabCustomNone2Timeframe" xml:space="preserve">
+        <value>時間枠内で</value>
+    </data>
+    <data name="LootTabCustomRewardAmount" xml:space="preserve">
+        <value>合計 {1} 航海で上記の報酬 {0} を獲得しました (潜水艦{2})。</value>
+    </data>
+    <data name="LootTabCustomMoneyMade" xml:space="preserve">
+        <value>これで合計 {0:N0} ギルが手に入りました。</value>
+    </data>
+    <data name="TermsOptions" xml:space="preserve">
+        <value>設定</value>
+    </data>
+    <data name="LootTabEntryFixed" xml:space="preserve">
+        <value>修正済み:</value>
+    </data>
+    <data name="LootTabTooltipFixed" xml:space="preserve">
+        <value>未選択の場合、特定の期間で絞り込むことが可能です。</value>
+    </data>
+    <data name="LootTabExport" xml:space="preserve">
+        <value>エクスポート</value>
+    </data>
+    <data name="LootTabCheckboxExportAll" xml:space="preserve">
+        <value>すべてのFCをエクスポート</value>
+    </data>
+    <data name="LootTabCheckboxExcludeDate" xml:space="preserve">
+        <value>除外する日付</value>
+    </data>
+    <data name="LootTabCheckboxExcludeHash" xml:space="preserve">
+        <value>ハッシュを除外</value>
+    </data>
+    <data name="LootTabEntryOutputFolder" xml:space="preserve">
+        <value>出力フォルダ:</value>
+    </data>
+    <data name="LootTabTitlePickFolder" xml:space="preserve">
+        <value>フォルダを選択</value>
+    </data>
+    <data name="LootTabEntryExport" xml:space="preserve">
+        <value>エクスポート:</value>
+    </data>
+    <data name="LootTabButtonFile" xml:space="preserve">
+        <value>ファイル</value>
+    </data>
+    <data name="LootExportErrorNothingFound" xml:space="preserve">
+        <value>選択した時間帯にエクスポートするものはありません。</value>
+    </data>
+    <data name="LootExportSuccessClipboard" xml:space="preserve">
+        <value>クリップボードに正常にエクスポートされました。</value>
+    </data>
+    <data name="LootExportSuccessFile" xml:space="preserve">
+        <value>エクスポート完了。</value>
+    </data>
+    <data name="LootExportSuccessOutputPath" xml:space="preserve">
+        <value>出力パス: {0}</value>
+    </data>
+    <data name="LootExportErrorInvalidPath" xml:space="preserve">
+        <value>無効なパスです。</value>
+    </data>
+    <data name="LootTabHistory" xml:space="preserve">
+        <value>履歴</value>
+    </data>
+    <data name="LootTabHistoryWrong" xml:space="preserve">
+        <value>問題が発生しました。</value>
+    </data>
+    <data name="LootTabHistoryNotTracked" xml:space="preserve">
+        <value>潜水艦を再出港させると追跡が始まります。</value>
+    </data>
+    <data name="LootTabHistoryLegacyData" xml:space="preserve">
+        <value>-レガシーデータ</value>
+    </data>
+    <data name="HelpyTabProgression" xml:space="preserve">
+        <value>進行状況</value>
+    </data>
+    <data name="ProgressionTabSubmarinePath" xml:space="preserve">
+        <value>潜水艦4台</value>
+    </data>
+    <data name="ProgressionTabLastSector" xml:space="preserve">
+        <value>最終区域</value>
+    </data>
+    <data name="HelpyTabInfo" xml:space="preserve">
+        <value>情報</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlock" xml:space="preserve">
+        <value>新しい区域のロックを解除するには？</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlockText" xml:space="preserve">
+        <value>新しい区域が解放されるかどうかはランダムに決まっています。
+航海の速度と頻度を上げることで、新しい区域を発見する機会が増えます。</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlock" xml:space="preserve">
+        <value>新しいマップ/スロットのロックを解除する方法は?</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlockText" xml:space="preserve">
+        <value>少なくとも一度はアンロックされた区域を探索しなければなりません。
+注：前のスロットが埋まっていない場合には次のスロットは表示されません。
+例：スロット2が空の場合、スロット3は表示されません</value>
+    </data>
+    <data name="HelpyTabInfoColors" xml:space="preserve">
+        <value>色:</value>
+    </data>
+    <data name="ColorsGreen" xml:space="preserve">
+        <value>緑</value>
+    </data>
+    <data name="HelpyTabInfoGreenText" xml:space="preserve">
+        <value>開放されていて探索済み</value>
+    </data>
+    <data name="ColorsViolet" xml:space="preserve">
+        <value>バイオレット</value>
+    </data>
+    <data name="HelpyTabInfoVioletText" xml:space="preserve">
+        <value>開放されているが未探索</value>
+    </data>
+    <data name="ColorsRed" xml:space="preserve">
+        <value>赤</value>
+    </data>
+    <data name="HelpyTabInfoRedText" xml:space="preserve">
+        <value>未開放</value>
+    </data>
+    <data name="HelpyTabStorage" xml:space="preserve">
+        <value>ストレージ</value>
+    </data>
+    <data name="HelpyTabWarningAllaganTools" xml:space="preserve">
+        <value>AllaganToolsは利用できません。</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksMap" xml:space="preserve">
+        <value>地図のロックを解除</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksSlot" xml:space="preserve">
+        <value>スロットをアンロックする</value>
+    </data>
+    <data name="ConfigTabEntryAuthor" xml:space="preserve">
+        <value>作成者:</value>
+    </data>
+    <data name="ConfigTabEntryVersion" xml:space="preserve">
+        <value>バージョン:</value>
+    </data>
+    <data name="ConfigTabEntryLocalization" xml:space="preserve">
+        <value>翻訳者:</value>
+    </data>
+    <data name="ConfigAboutTranslationCommunity" xml:space="preserve">
+        <value>コミュニティ</value>
+    </data>
+    <data name="ConfigAboutTranslationTooltip" xml:space="preserve">
+        <value>すべての翻訳はコミュニティによって行われています。
+改善・支援したい場合は、Crowdin をご覧ください。</value>
+    </data>
+    <data name="BuilderTabBuilder" xml:space="preserve">
+        <value>ビルダー</value>
+    </data>
+    <data name="ConfigTabEntryOptions" xml:space="preserve">
+        <value>オプション:</value>
+    </data>
+    <data name="ConfigTabCheckboxCurrentFC" xml:space="preserve">
+        <value>現在のFCのみ表示</value>
+    </data>
+    <data name="ConfigTabCheckboxAutoSelection" xml:space="preserve">
+        <value>現在の潜水艦を自動選択</value>
+    </data>
+    <data name="ConfigTabTooltipAutoSelection" xml:space="preserve">
+        <value>ゲームの航海インターフェースで選択した現在の潜水艦を自動的に選択します。</value>
+    </data>
+    <data name="ConfigTabCheckboxNextOverlay" xml:space="preserve">
+        <value>次のオーバーレイを表示</value>
+    </data>
+    <data name="ConfigTabTooltipNextOverlay" xml:space="preserve">
+        <value>航海選択インターフェースに付属するオーバーレイ
+
+次に開放・探索すべき区域を提案します
+次のどちらかの条件を満たした際に表示されます：
+  a) マップに未開放の区域が存在する
+  b) 次のマップのロックを解除する為に、その区域を探索しなければならない</value>
+    </data>
+    <data name="ConfigTabCheckboxUnlockOverlay" xml:space="preserve">
+        <value>ロック解除のオーバーレイを表示</value>
+    </data>
+    <data name="ConfigTabTooltipUnlockOverlay" xml:space="preserve">
+        <value>航海選択インターフェースに付属するオーバーレイ
+
+未開放の区域をすべて表示します
+次の条件を満たした際に表示されます：
+  a) マップに未開放の区域が存在する</value>
+    </data>
+    <data name="ConfigTabCheckboxRouteOverlay" xml:space="preserve">
+        <value>ルートのオーバーレイを表示</value>
+    </data>
+    <data name="ConfigTabTooltipRouteOverlay" xml:space="preserve">
+        <value>航海選択インターフェースに付属するオーバーレイ
+
+最善のルートを提案します
+何も表示されていない場合は次の条件を確認してください：
+  a) 最高ランクのしきい値を超えた
+  b) 必須項目が空</value>
+    </data>
+    <data name="ConfigTabSliderRank" xml:space="preserve">
+        <value>最高ランク</value>
+    </data>
+    <data name="ConfigTabTooltipRank" xml:space="preserve">
+        <value>このランクを超えるとルート提案はされません。</value>
+    </data>
+    <data name="ConfigTabCheckboxIncludeMain" xml:space="preserve">
+        <value>メインセクターを自動的に含める</value>
+    </data>
+    <data name="ConfigTabTooltipIncludeMain" xml:space="preserve">
+        <value>オートインクルードには、次のメインルートセクターが含まれます。</value>
+    </data>
+    <data name="ConfigTabEntrySavedBuilds" xml:space="preserve">
+        <value>保存されたビルド:</value>
+    </data>
+    <data name="MenuDiscordThread" xml:space="preserve">
+        <value>Discord スレッド</value>
+    </data>
+    <data name="MenuLocalization" xml:space="preserve">
+        <value>翻訳</value>
+    </data>
+    <data name="MenuIssues" xml:space="preserve">
+        <value>課題</value>
+    </data>
+    <data name="ConfigTabCheckboxUploadPermission" xml:space="preserve">
+        <value>アップロード権限</value>
+    </data>
+    <data name="ConfigTabUploadInformation1" xml:space="preserve">
+        <value>匿名で潜水艦に関するデータを提供します。
+このデータはいかなる方法でもあなたと結び付くことはありません。また、誰もが恩恵を受けることができます！</value>
+    </data>
+    <data name="ConfigTabUploadWhat" xml:space="preserve">
+        <value>どんなデータですか？</value>
+    </data>
+    <data name="ConfigTabUploadPoint2" xml:space="preserve">
+        <value>セクターのロックを解除</value>
+    </data>
+    <data name="ConfigTabCheckboxLegacy" xml:space="preserve">
+        <value>レガシー戦利品を除外</value>
+    </data>
+    <data name="TermsPrice" xml:space="preserve">
+        <value>価格</value>
+    </data>
+    <data name="ConfigTabManage" xml:space="preserve">
+        <value>管理</value>
+    </data>
+    <data name="TermsSavedFCs" xml:space="preserve">
+        <value>保存された FC</value>
+    </data>
+    <data name="ConfigTabTooltipSavedFCsDeletion" xml:space="preserve">
+        <value>FCエントリーを削除すると、戦利品の履歴がすべて削除されます。
+ホールドコントロールで削除します</value>
+    </data>
+    <data name="ConfigTabNotify" xml:space="preserve">
+        <value>通知する</value>
+    </data>
+    <data name="ConfigTabEntryNotifications" xml:space="preserve">
+        <value>通知:</value>
+    </data>
+    <data name="ConfigTabCheckboxNeededRepair" xml:space="preserve">
+        <value>修理が必要</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairToast" xml:space="preserve">
+        <value>修理トーストを表示</value>
+    </data>
+    <data name="ConfigTabCheckboxSendDispatch" xml:space="preserve">
+        <value>送信する</value>
+    </data>
+    <data name="ConfigTabTooltipSendDispatch" xml:space="preserve">
+        <value>この潜水艦が返されるタイムスタンプを含む、派遣時にWebフックメッセージを送信します。</value>
+    </data>
+    <data name="ConfigTabCheckboxSendReturn" xml:space="preserve">
+        <value>返品を送信</value>
+    </data>
+    <data name="ConfigTabTooltipSendReturn" xml:space="preserve">
+        <value>返却時にWebhookメッセージを送信します。</value>
+    </data>
+    <data name="ConfigTabTooltipWebhook" xml:space="preserve">
+        <value>クリックしてブラウザでdiscordのWebフックガイドを開きます。</value>
+    </data>
+    <data name="ConfigTabEntrySubmarines" xml:space="preserve">
+        <value>サブマリーヌ:</value>
+    </data>
+    <data name="ConfigTabCheckboxAllReturning" xml:space="preserve">
+        <value>すべての返却されたSubs</value>
+    </data>
+    <data name="ConfigTabEntrySpecificSubmarines" xml:space="preserve">
+        <value>特定のサブマリー:</value>
+    </data>
+    <data name="ConfigTabCheckboxOnReturn" xml:space="preserve">
+        <value>返品時</value>
+    </data>
+    <data name="ConfigTabTooltipOnReturn" xml:space="preserve">
+        <value>1つの潜水艦が戻った場合は常にオーバーレイを開く</value>
+    </data>
+    <data name="ConfigTabCheckboxAutomaticallyClose" xml:space="preserve">
+        <value>自動で閉じる</value>
+    </data>
+    <data name="ConfigTabTooltipAutomaticallyClose" xml:space="preserve">
+        <value>すべての潜水艦が航海中の場合に自動でオーバーレイを閉じます。</value>
+    </data>
+    <data name="ConfigTabEntryGeneral" xml:space="preserve">
+        <value>全般:</value>
+    </data>
+    <data name="ConfigTabCheckboxShowRank" xml:space="preserve">
+        <value>ランクを表示</value>
+    </data>
+    <data name="ConfigTabCheckboxShowBuild" xml:space="preserve">
+        <value>ビルドを表示</value>
+    </data>
+    <data name="ConfigTabCheckboxAsDate" xml:space="preserve">
+        <value>日付を表示</value>
+    </data>
+    <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
+        <value>最初の返品時刻を表示</value>
+    </data>
+    <data name="ConfigTabTooltipFirstReturnTime" xml:space="preserve">
+        <value>各FCのオーバーレイヘッダーに最初の戻り値のサブを表示します。</value>
+    </data>
+    <data name="ConfigTabCheckboxSortTimeLowest" xml:space="preserve">
+        <value>最低時間でソート</value>
+    </data>
+    <data name="ConfigTabTooltipSortTimeLowest" xml:space="preserve">
+        <value>返却時間でオーバーレイヘッダーを並べ替えます。FCオーダーは上書きされます。</value>
+    </data>
+    <data name="ConfigTabCheckboxReverseSort" xml:space="preserve">
+        <value>逆順</value>
+    </data>
+    <data name="ConfigTabCheckboxOnlyReturned" xml:space="preserve">
+        <value>返されたもののみ表示</value>
+    </data>
+    <data name="ConfigTabEntryWindow" xml:space="preserve">
+        <value>ウィンドウ:</value>
+    </data>
+    <data name="ConfigTabCheckboxLockSize" xml:space="preserve">
+        <value>ロックサイズ</value>
+    </data>
+    <data name="ConfigTabCheckboxLockPosition" xml:space="preserve">
+        <value>位置をロック</value>
+    </data>
+    <data name="ConfigTabEntryFCButtons" xml:space="preserve">
+        <value>FCボタン:</value>
+    </data>
+    <data name="ConfigTabCheckboxShowAll" xml:space="preserve">
+        <value>「すべて」ボタンを表示</value>
+    </data>
+    <data name="ConfigTabTooltipShowAll" xml:space="preserve">
+        <value>すべてのFCを簡単に見るための「すべて」ボタンを追加します。
+注意: FCが多すぎるとメッシー。</value>
+    </data>
+    <data name="ConfigTabCheckboxLetMeResize" xml:space="preserve">
+        <value>サイズを変更する</value>
+    </data>
+    <data name="ConfigTabTooltipLetMeResize" xml:space="preserve">
+        <value>FCボタン
+のサイズを変更することができますが、サイズを自動的に調整することはできません。</value>
+    </data>
+    <data name="ConfigTabCheckboxShowRoute" xml:space="preserve">
+        <value>ルートを表示</value>
+    </data>
+    <data name="ConfigTabTooltipShowRoute" xml:space="preserve">
+        <value>このオプションは、ウィンドウが小さすぎる場合、各列の 1 FC に戻ります。</value>
+    </data>
+    <data name="ConfigTabCheckboxShowDate" xml:space="preserve">
+        <value>日付を表示</value>
+    </data>
+    <data name="ConfigTabEntryOverview" xml:space="preserve">
+        <value>概要:</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairStatus" xml:space="preserve">
+        <value>修理ステータスを表示</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairAfterVoyage" xml:space="preserve">
+        <value>航海後の修理ステータスを表示</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnTime" xml:space="preserve">
+        <value>返品時刻を表示</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnDate" xml:space="preserve">
+        <value>返品日時を表示</value>
+    </data>
+    <data name="ConfigTabCheckboxTimeDateShowBoth" xml:space="preserve">
+        <value>両方のオプションを表示</value>
+    </data>
+    <data name="ConfigTabEntryDetailedView" xml:space="preserve">
+        <value>詳細表示:</value>
+    </data>
+    <data name="ConfigTabCheckboxExtendedParts" xml:space="preserve">
+        <value>拡張部品リストを表示</value>
+    </data>
+    <data name="BuilderTabBuild" xml:space="preserve">
+        <value>ビルド</value>
+    </data>
+    <data name="TermsCustom" xml:space="preserve">
+        <value>カスタム</value>
+    </data>
+    <data name="BuilderBuildTabAutomaticSelection" xml:space="preserve">
+        <value>自動選択： {0} - ランク {1}</value>
+    </data>
+    <data name="BuilderBuildTooltipAutomaticSelection" xml:space="preserve">
+        <value>この挙動を無効にするには、構成、ビルダータブ、「自動選択」のチェックを外します。</value>
+    </data>
+    <data name="BuilderWindowButtonSave" xml:space="preserve">
+        <value>保存</value>
+    </data>
+    <data name="BuilderWindowButtonLoad" xml:space="preserve">
+        <value>読み込み</value>
+    </data>
+    <data name="TermsName" xml:space="preserve">
+        <value>名前</value>
+    </data>
+    <data name="BuilderWindowButtonSaveBuild" xml:space="preserve">
+        <value>ビルドを保存</value>
+    </data>
+    <data name="BuilderWindowErrorSameName" xml:space="preserve">
+        <value>同じ名前のビルドは既に存在します。</value>
+    </data>
+    <data name="BuilderWindowTooltipOverwrite" xml:space="preserve">
+        <value>上書きするにはコントロールを長押ししてください</value>
+    </data>
+    <data name="BuilderWindowTipLoading" xml:space="preserve">
+        <value>クリックして読み込む</value>
+    </data>
+    <data name="BestEXPCalculationManualCalculation" xml:space="preserve">
+        <value>未計算...</value>
+    </data>
+    <data name="BestEXPCalculationCalculate" xml:space="preserve">
+        <value>計算</value>
+    </data>
+    <data name="BestEXPCheckboxNoAutomatic" xml:space="preserve">
+        <value>自動計算を無効にする</value>
+    </data>
+    <data name="BestEXPCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>ロック解除を無視</value>
+    </data>
+    <data name="BestEXPCheckboxAvgBonus" xml:space="preserve">
+        <value>平均経験値ボーナスを使用する</value>
+    </data>
+    <data name="BestEXPTooltipAvgBonus" xml:space="preserve">
+        <value>この計算は保証されたボーナス経験値のみを考慮します。
+このオプションを使用すると、代わりに可能な経験値ボーナスのavgが取られます。</value>
+    </data>
+    <data name="BuilderTabInfo" xml:space="preserve">
+        <value>情報</value>
+    </data>
+    <data name="BuilderTabInfoHowCalculated" xml:space="preserve">
+        <value>これらのブレークポイントはどのように計算されますか？</value>
+    </data>
+    <data name="BuilderTabTextHowCalculated" xml:space="preserve">
+        <value>距離と期間は固定計算値ですが、その他のブレークポイントはすべてコミュニティから計算されます。
+Mystic Spirit for all there work.</value>
+    </data>
+    <data name="BuilderTabInfoBestExp" xml:space="preserve">
+        <value>最高の支出?</value>
+    </data>
+    <data name="BuilderTabTextBestExp" xml:space="preserve">
+        <value>このツールは、現在のビルドをレベルするために取ることができる最適なルートを計算するのに役立ちます。 これらの計算は、1分間に得られた経験と解放されたセクターに基づいています。</value>
+    </data>
+    <data name="BuilderTabInfoBreakpoints" xml:space="preserve">
+        <value>ブレークポイント:</value>
+    </data>
+    <data name="BuilderTabTextT2" xml:space="preserve">
+        <value>レベル2から戦利品を獲得するには監視が必要です</value>
+    </data>
+    <data name="BuilderTabTextT3" xml:space="preserve">
+        <value>監視はレベル3から戦利品を獲得するために必要です</value>
+    </data>
+    <data name="TermsNormal" xml:space="preserve">
+        <value>標準</value>
+    </data>
+    <data name="BuilderTabTextNormal" xml:space="preserve">
+        <value>正常な検索レベルには取得が必要です</value>
+    </data>
+    <data name="TermsOptimal" xml:space="preserve">
+        <value>最適な</value>
+    </data>
+    <data name="BuilderTabTextOptimal" xml:space="preserve">
+        <value>最適な検索レベルには取得が必要です</value>
+    </data>
+    <data name="TermsFavor" xml:space="preserve">
+        <value>お気に入り</value>
+    </data>
+    <data name="BuilderTabTextFavor" xml:space="preserve">
+        <value>セクターから2つのアイテムを獲得するには、好感度が必要です</value>
+    </data>
+    <data name="ColorsWhite" xml:space="preserve">
+        <value>白</value>
+    </data>
+    <data name="BuilderTabInfoWhiteText" xml:space="preserve">
+        <value>何も選択されていないか、利用可能なデータがありません</value>
+    </data>
+    <data name="ColorsGold" xml:space="preserve">
+        <value>ゴールド</value>
+    </data>
+    <data name="BuilderTabInfoGoldText" xml:space="preserve">
+        <value>条件を超えました</value>
+    </data>
+    <data name="BuilderTabInfoGreenText" xml:space="preserve">
+        <value>T3/Optimal/Favor に達しました</value>
+    </data>
+    <data name="ColorsPink" xml:space="preserve">
+        <value>ピンク</value>
+    </data>
+    <data name="BuilderTabInfoPinkText" xml:space="preserve">
+        <value>T2/Normal に達し、T3/Optimal</value>
+    </data>
+    <data name="BuilderTabInfoRedText" xml:space="preserve">
+        <value>条件が満たされていない、要件が続く</value>
+    </data>
+    <data name="BuilderTabLeveling" xml:space="preserve">
+        <value>レベル</value>
+    </data>
+    <data name="BuilderLevelingButtonStopCalculate" xml:space="preserve">
+        <value>計算停止</value>
+    </data>
+    <data name="BuilderLevelingTooltipTarget" xml:space="preserve">
+        <value>この計算に達する必要がありますが、オーバーショットすることができますランク。</value>
+    </data>
+    <data name="BuilderLevelingButtonCalculate" xml:space="preserve">
+        <value>計算</value>
+    </data>
+    <data name="TermsSwapAfter" xml:space="preserve">
+        <value>後に入れ替え</value>
+    </data>
+    <data name="BuilderLevelingTooltipSwap" xml:space="preserve">
+        <value>X航海後に部品を交換します。</value>
+    </data>
+    <data name="TermsProgress" xml:space="preserve">
+        <value>進捗状況</value>
+    </data>
+    <data name="BuilderLevelingWarningSlow" xml:space="preserve">
+        <value>警告：時間がかかり、ゲームのスローダウンが発生します。</value>
+    </data>
+    <data name="BuilderLevelingInfoAtRank" xml:space="preserve">
+        <value>ランク時</value>
+    </data>
+    <data name="BuilderLevelingInfoProgressFor" xml:space="preserve">
+        <value>現在の進捗状況</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedTotal" xml:space="preserve">
+        <value>経過時間</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedCurrent" xml:space="preserve">
+        <value>経過時間電流計算</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreBuild" xml:space="preserve">
+        <value>ビルドを無視</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreBuild" xml:space="preserve">
+        <value>これは、すべての可能なビルドを計算します。
+警告 時間がかかり、ゲームの進行が遅くなります。</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>ロック解除を無視</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreShark" xml:space="preserve">
+        <value>サメの部位を無視</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreShark" xml:space="preserve">
+        <value>レベリングは、サメのパーツが存在することを想定している。
+このオプションは
+注意：あなたの潜水艦は最高ランクのパーツのランクでなければなりません。
+例：SSUWはランクが25以上でなければならない
+重要：これはエラーにつながる可能性があります</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnmodified" xml:space="preserve">
+        <value>変更されていない部分を無視</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreUnmodified" xml:space="preserve">
+        <value>レベリングは未改造のパーツが存在することを想定しているので、改造されたパーツよりもそちらを優先します。
+このオプションは
+重要：これはエラーにつながる可能性があります</value>
+    </data>
+    <data name="BuilderLevelingCheckboxAvgExp" xml:space="preserve">
+        <value>平均経験値ボーナスを使用する</value>
+    </data>
+    <data name="BuilderLevelingTooltipAvgExp" xml:space="preserve">
+        <value>この計算は通常、保証された検索ボーナスのみを考慮します。
+このオプションを使用すると、可能な平均ボーナスがかかります</value>
+    </data>
+    <data name="TermsAllowedSectors" xml:space="preserve">
+        <value>許可されたセクター</value>
+    </data>
+    <data name="BuilderLevelingResultLast" xml:space="preserve">
+        <value>前回の計算:</value>
+    </data>
+    <data name="BuilderTabRoute" xml:space="preserve">
+        <value>ルート</value>
+    </data>
+    <data name="TermsSectors" xml:space="preserve">
+        <value>セクター</value>
+    </data>
+    <data name="BuilderTabRouteSelection" xml:space="preserve">
+        <value>クリックしてセクターを選択</value>
+    </data>
+    <data name="TermsUnlockedBy" xml:space="preserve">
+        <value>ロック解除者</value>
+    </data>
+    <data name="BuilderWindowTooltipAlwaysUnlocked" xml:space="preserve">
+        <value>常にロック解除</value>
+    </data>
+    <data name="TermsUnknown" xml:space="preserve">
+        <value>不明</value>
+    </data>
+    <data name="BuilderTabShip" xml:space="preserve">
+        <value>配送</value>
+    </data>
+    <data name="BuilderShipCheckboxIgnoreBreakpoints" xml:space="preserve">
+        <value>ブレークポイントを無視</value>
+    </data>
+    <data name="BuilderShipHeaderRoute" xml:space="preserve">
+        <value>選択したルート:</value>
+    </data>
+    <data name="TermsStats" xml:space="preserve">
+        <value>統計</value>
+    </data>
+    <data name="TermsSurveillance" xml:space="preserve">
+        <value>監視</value>
+    </data>
+    <data name="TermsRetrieval" xml:space="preserve">
+        <value>取得</value>
+    </data>
+    <data name="TermsSpeed" xml:space="preserve">
+        <value>速度</value>
+    </data>
+    <data name="TermsBreakpoints" xml:space="preserve">
+        <value>ブレークポイント</value>
+    </data>
+    <data name="BuilderShipCheckboxT2" xml:space="preserve">
+        <value>T2 を使用</value>
+    </data>
+    <data name="BuilderShipCheckboxNormal" xml:space="preserve">
+        <value>ノーマルを使用</value>
+    </data>
+    <data name="BuilderShipCheckboxFavor" xml:space="preserve">
+        <value>お気に入りを無視</value>
+    </data>
+    <data name="BuilderShipCheckboxModded" xml:space="preserve">
+        <value>修正されたパーツはありません</value>
+    </data>
+    <data name="BuilderShipCalculationNothingFound" xml:space="preserve">
+        <value>ビルドが見つかりません。</value>
+    </data>
+    <data name="TermsCost" xml:space="preserve">
+        <value>コスト</value>
+    </data>
+    <data name="TermsHull" xml:space="preserve">
+        <value>船体</value>
+    </data>
+    <data name="TermsBow" xml:space="preserve">
+        <value>弓</value>
+    </data>
+    <data name="TermsBridge" xml:space="preserve">
+        <value>ブリッジ</value>
+    </data>
+    <data name="TermsDuration" xml:space="preserve">
+        <value>期間</value>
+    </data>
+    <data name="BuilderShipTableSelect" xml:space="preserve">
+        <value>このビルドを選択</value>
+    </data>
+    <data name="BuilderStatsCategoryBuild" xml:space="preserve">
+        <value>選択したビルド:</value>
+    </data>
+    <data name="BuilderStatsCategoryRoute" xml:space="preserve">
+        <value>最適化されたルート:</value>
+    </data>
+    <data name="TermsFuel" xml:space="preserve">
+        <value>燃料</value>
+    </data>
+    <data name="BuilderStatsTextRepairAfter" xml:space="preserve">
+        <value>{0} 航海後の {1}</value>
+    </data>
+    <data name="BuilderStatsRouteNoSelection" xml:space="preserve">
+        <value>選択なし</value>
+    </data>
+    <data name="BuilderLevelingResultLimit" xml:space="preserve">
+        <value>制限:</value>
+    </data>
+    <data name="BuilderLevelingResultMaximize" xml:space="preserve">
+        <value>上限を最大化:</value>
+    </data>
+    <data name="BuilderLevelingResultAvg" xml:space="preserve">
+        <value>平均ボーナス:</value>
+    </data>
+    <data name="BuilderLevelingResultUnlocks" xml:space="preserve">
+        <value>ロック解除を無視:</value>
+    </data>
+    <data name="BuilderLevelingStepBuild" xml:space="preserve">
+        <value>ビルド:</value>
+    </data>
+    <data name="BuilderLevelingStepGained" xml:space="preserve">
+        <value>獲得した経験値:</value>
+    </data>
+    <data name="BuilderLevelingStepReached" xml:space="preserve">
+        <value>Ranking reachado:</value>
+    </data>
+    <data name="BuilderLevelingResultStart" xml:space="preserve">
+        <value>開始ランク:</value>
+    </data>
+    <data name="BuilderLevelingResultFinal" xml:space="preserve">
+        <value>最終ランク：</value>
+    </data>
+    <data name="BuilderLevelingResultVoyages" xml:space="preserve">
+        <value>航海日程:</value>
+    </data>
+    <data name="BuilderLevelingResultTotal" xml:space="preserve">
+        <value>Exp 合計:</value>
+    </data>
+    <data name="BuilderLevelingResultLeftover" xml:space="preserve">
+        <value>残り時間:</value>
+    </data>
+    <data name="DurationLimitNoLimit" xml:space="preserve">
+        <value>無制限</value>
+    </data>
+    <data name="DurationLimit24Hours" xml:space="preserve">
+        <value>24時間</value>
+    </data>
+    <data name="DurationLimit36Hours" xml:space="preserve">
+        <value>36時間</value>
+    </data>
+    <data name="DurationLimit48Hours" xml:space="preserve">
+        <value>48時間</value>
+    </data>
+    <data name="DurationLimitCustom" xml:space="preserve">
+        <value>カスタム</value>
+    </data>
+    <data name="DateLimit1Day" xml:space="preserve">
+        <value>1日</value>
+    </data>
+    <data name="DateLimit3Days" xml:space="preserve">
+        <value>3日</value>
+    </data>
+    <data name="DateLimit5Days" xml:space="preserve">
+        <value>5日</value>
+    </data>
+    <data name="DateLimit1Week" xml:space="preserve">
+        <value>1週間</value>
+    </data>
+    <data name="DateLimit2Weeks" xml:space="preserve">
+        <value>2週間</value>
+    </data>
+    <data name="DateLimit3Weeks" xml:space="preserve">
+        <value>3週間</value>
+    </data>
+    <data name="DateLimit4Weeks" xml:space="preserve">
+        <value>4週間</value>
+    </data>
+    <data name="DateLimit1Month" xml:space="preserve">
+        <value>1ヶ月</value>
+    </data>
+    <data name="DateLimit3Months" xml:space="preserve">
+        <value>3ヶ月</value>
+    </data>
+    <data name="DateLimit6Months" xml:space="preserve">
+        <value>6ヶ月</value>
+    </data>
+    <data name="DateLimit9Months" xml:space="preserve">
+        <value>9ヶ月</value>
+    </data>
+    <data name="DateLimit1Year" xml:space="preserve">
+        <value>1年</value>
+    </data>
+</root>

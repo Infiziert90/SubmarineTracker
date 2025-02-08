@@ -1,4 +1,5 @@
-﻿using static SubmarineTracker.Data.Loot;
+﻿using SubmarineTracker.Resources;
+using static SubmarineTracker.Data.Loot;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -11,14 +12,14 @@ public partial class LootWindow
 
     private void VoyageTab()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Loot Tab - History", "History")}##VoyageHistory");
+        using var tabItem = ImRaii.TabItem($"{Language.LootTabHistory}##VoyageHistory");
         if (!tabItem.Success)
             return;
 
         Dictionary<uint, (string Title, ulong LocalId)> existingSubs = new();
         foreach (var (id, knownFC) in Plugin.DatabaseCache.GetFreeCompanies())
             foreach (var s in Plugin.DatabaseCache.GetSubmarines(id))
-                existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)} - {s.Name} ({s.Build.FullIdentifier()})", id));
+                existingSubs.Add(s.Register, ($"{Plugin.NameConverter.GetName(knownFC)}{s.Name} ({s.Build.FullIdentifier()})", id));
 
         if (existingSubs.Count == 0)
         {
@@ -57,7 +58,7 @@ public partial class LootWindow
         var submarineLoot = Plugin.DatabaseCache.GetLoot().Where(l => l.FreeCompanyId == fc.FreeCompanyId).Where(l => l.Register == sub.Register).ToArray();
         if (submarineLoot.Length == 0)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Wrong", "Something went wrong."));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.LootTabHistoryWrong);
             return;
         }
 
@@ -69,7 +70,7 @@ public partial class LootWindow
         var lootHistory = dict.OrderByDescending(pair => pair.Key).Select(pair => pair.Value).ToArray();
         if (lootHistory.Length == 0)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Not Tracked", "Tracking starts when you send your subs on voyage again."));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.LootTabHistoryNotTracked);
             return;
         }
 
@@ -81,18 +82,18 @@ public partial class LootWindow
         var loot = lootHistory[SelectedVoyage];
         var stats = loot[0];
         if (stats.Valid)
-            ImGui.TextColored(ImGuiColors.TankBlue, $"{Loc.Localize("Terms - Rank", "Rank")}: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
+            Helper.TextColored(ImGuiColors.TankBlue, $"{Language.TermsRank}: {stats.Rank} SRF: {stats.Surv}, {stats.Ret}, {stats.Fav}");
         else
-            ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Loot Tab History - Legacy Data", "-Legacy Data-"));
+            Helper.TextColored(ImGuiColors.ParsedOrange, Language.LootTabHistoryLegacyData);
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
         foreach (var detailedLoot in loot)
         {
-            var primaryItem = Sheets.ItemSheet.GetRow(detailedLoot.Primary)!;
-            var additionalItem = Sheets.ItemSheet.GetRow(detailedLoot.Additional)!;
+            var primaryItem = Sheets.GetItem(detailedLoot.Primary);
+            var additionalItem = Sheets.GetItem(detailedLoot.Additional);
 
-            ImGui.TextColored(ImGuiColors.HealerGreen, Sheets.ExplorationSheet.GetRow(detailedLoot.Sector)!.ToName());
+            Helper.TextColored(ImGuiColors.HealerGreen, Sheets.ExplorationSheet.GetRow(detailedLoot.Sector).ToName());
             using var indent = ImRaii.PushIndent(10.0f);
             if (stats.Valid)
                 ImGui.TextUnformatted($"DD: {ProcToText(detailedLoot.FavProc)} --- Ret: {ProcToText(detailedLoot.PrimaryRetProc)}");
@@ -109,13 +110,11 @@ public partial class LootWindow
             ImGui.TableNextColumn();
             Helper.DrawScaledIcon(primaryItem.Icon, IconSize);
 
-            var name = Utils.ToStr(primaryItem.Name);
-            if (MaxLength < name.Length)
-                name = name.Truncate(MaxLength);
+            var name = primaryItem.Name.ExtractText();
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted(name);
+            ImGui.TextUnformatted(name.Truncate(MaxLength));
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip(Utils.ToStr(primaryItem.Name));
+                Helper.Tooltip(name);
 
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"x{detailedLoot.PrimaryCount}");
@@ -130,13 +129,11 @@ public partial class LootWindow
                 ImGui.TableNextColumn();
                 Helper.DrawScaledIcon(additionalItem.Icon, IconSize);
 
-                name = Utils.ToStr(additionalItem.Name);
-                if (MaxLength < name.Length)
-                    name = name.Truncate(MaxLength);
+                name = additionalItem.Name.ExtractText();
                 ImGui.TableNextColumn();
-                ImGui.TextUnformatted(name);
+                ImGui.TextUnformatted(name.Truncate(MaxLength));
                 if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip(Utils.ToStr(additionalItem.Name));
+                    Helper.Tooltip(name);
 
                 ImGui.TableNextColumn();
                 ImGui.TextUnformatted($"x{detailedLoot.AdditionalCount}");

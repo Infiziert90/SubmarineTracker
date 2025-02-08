@@ -1,5 +1,6 @@
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker;
 
@@ -60,10 +61,10 @@ public class ServerBar
                 return;
 
             var name = Plugin.NameConverter.GetSub(sub, fc, Plugin.Configuration.DtrShowSubmarineName);
-            var time = Loc.Localize("Terms - No Voyage", "No Voyage");
+            var time = Language.TermsNoVoyage;
             if (sub.IsOnVoyage())
             {
-                time = Loc.Localize("Terms - Done", "Done");
+                time = Language.TermsDone;
 
                 var returnTime = sub.LeftoverTime();
                 if (returnTime.TotalSeconds > 0)
@@ -84,8 +85,5 @@ public class ServerBar
 
     private void UpdateVisibility(bool shown) => DtrEntry!.Shown = shown;
 
-    private void OnClick()
-    {
-        Plugin.OpenTracker();
-    }
+    private void OnClick() => Plugin.OpenTracker();
 }

@@ -1,6 +1,8 @@
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Overlays;
@@ -11,6 +13,8 @@ public class UnlockOverlay : Window, IDisposable
     private readonly Vector2 OriginalSize = new(300, 60);
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = [];
+
+    private ImRaii.Color PushedColor = null!;
 
     public UnlockOverlay(Plugin plugin) : base("Unlock Overlay##SubmarineTracker")
     {
@@ -36,6 +40,10 @@ public class UnlockOverlay : Window, IDisposable
         Plugin.BuilderWindow.RefreshCache();
         try
         {
+            var agent = AgentSubmersibleExploration.Instance();
+            if (agent == null || agent->MapId == 0)
+                return;
+
             var addonPtr = Plugin.GameGui.GetAddonByName("AirShipExploration");
             if (addonPtr == nint.Zero)
                 return;
@@ -45,16 +53,10 @@ public class UnlockOverlay : Window, IDisposable
             Position = new Vector2(explorationBaseNode->X - (Size!.Value.X * ImGuiHelpers.GlobalScale), explorationBaseNode->Y + y);
             PositionCondition = ImGuiCond.Always;
 
-            // Check if submarine voyage log is open and not Airship
-            var map = (int) explorationBaseNode->AtkValues[2].UInt;
-            if (map < 63191)
-                return;
-
-            var selectedMap = map - 63191; // 63191 = Deep-sea Site
             var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];
 
             PossibleUnlocks.Clear();
-            foreach (var sector in Sheets.ExplorationSheet.Where(s => s.Map.RowId == selectedMap + 1))
+            foreach (var sector in Sheets.ExplorationSheet.Where(s => s.Map.RowId == agent->MapId))
             {
                 if (!Unlocks.SectorToUnlock.TryGetValue(sector.RowId, out var unlockedFrom))
                     continue;
@@ -85,7 +87,7 @@ public class UnlockOverlay : Window, IDisposable
 
     public override void PreDraw()
     {
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
+        PushedColor = ImRaii.PushColor(ImGuiCol.WindowBg, Helper.TransparentBackground);
     }
 
     public override void Draw()
@@ -96,8 +98,8 @@ public class UnlockOverlay : Window, IDisposable
         foreach (var (sector, from) in PossibleUnlocks.ToArray())
         {
 
-            var unlocked = Sheets.ExplorationSheet.GetRow(sector)!;
-            var unlockedFrom = Sheets.ExplorationSheet.GetRow(from.Sector)!;
+            var unlocked = Sheets.ExplorationSheet.GetRow(sector);
+            var unlockedFrom = Sheets.ExplorationSheet.GetRow(from.Sector);
             if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
             {
                 PossibleUnlocks.Remove((sector, from));
@@ -105,17 +107,17 @@ public class UnlockOverlay : Window, IDisposable
             }
 
             var unlockText = $"{NumToLetter(unlocked.RowId, true)}. {UpperCaseStr(unlocked.Destination)}";
-            var visitText = $"{Loc.Localize("Next Overlay Text - Visit", "Visit:")} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
+            var visitText = $"{Language.NextOverlayTextVisit} {NumToLetter(unlockedFrom.RowId, true)}. {UpperCaseStr(unlockedFrom.Destination)}";
 
             var avail = ImGui.GetWindowSize().X;
             var textWidth1 = ImGui.CalcTextSize(unlockText).X;
             var textWidth2 = ImGui.CalcTextSize(visitText).X;
 
             ImGui.SetCursorPosX((avail - textWidth1) * 0.5f);
-            ImGui.TextColored(ImGuiColors.DalamudOrange, unlockText);
+            Helper.TextColored(ImGuiColors.DalamudOrange, unlockText);
 
             ImGui.SetCursorPosX((avail - textWidth2) * 0.5f);
-            ImGui.TextColored(ImGuiColors.HealerGreen, visitText);
+            Helper.TextColored(ImGuiColors.HealerGreen, visitText);
 
             ImGuiHelpers.ScaledDummy(5.0f);
             ImGui.Separator();
@@ -125,20 +127,20 @@ public class UnlockOverlay : Window, IDisposable
         if (PossibleUnlocks.Count == 0)
         {
             if (ImGui.IsWindowHovered())
-                ImGui.SetTooltip(Loc.Localize("Next Overlay Tooltip - Low Rank", "Your submarine is below the required level to visit the sector."));
+                Helper.Tooltip(Language.NextOverlayTooltipLowRank);
             return;
         }
 
-        if (ImGui.Button(Loc.Localize("Terms - Must Include", "Must Include")))
+        if (ImGui.Button(Language.TermsMustInclude))
         {
             foreach (var (_, from) in PossibleUnlocks)
-                if (Plugin.RouteOverlay.MustInclude.Add(Sheets.ExplorationSheet.GetRow(from.Sector)!))
+                if (Plugin.RouteOverlay.MustInclude.Add(Sheets.ExplorationSheet.GetRow(from.Sector)))
                     Plugin.RouteOverlay.Calculate = true;
         }
     }
 
     public override void PostDraw()
     {
-        ImGui.PopStyleColor();
+        PushedColor.Dispose();
     }
 }

@@ -3,6 +3,7 @@ using Dalamud.Interface.Components;
 using Dalamud.Utility;
 using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Loot;
 
@@ -18,7 +19,7 @@ public partial class LootWindow
     private string CustomMinString = "";
     private string CustomMaxString = "";
 
-    private bool HeaderOpen;
+    private float ContentHeight;
 
     private int NumSubs;
     private int NumVoyages;
@@ -27,7 +28,7 @@ public partial class LootWindow
 
     private void CustomLootTab()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Loot Tab - Custom", "Custom")}##Custom");
+        using var tabItem = ImRaii.TabItem($"{Language.LootTabCustom}##Custom");
         if (!tabItem.Success)
             return;
 
@@ -42,21 +43,20 @@ public partial class LootWindow
         Plugin.EnsureFCOrderSafety();
         var existingFCs = Plugin.Configuration.ManagedFCs
                                         .Select(status => $"{Plugin.NameConverter.GetName(Plugin.DatabaseCache.GetFreeCompanies()[status.Id])}##{status.Id}")
-                                        .Prepend(Loc.Localize("Terms - Not Hidden", "Not Hidden"))
-                                        .Prepend(Loc.Localize("Terms - All", "All"))
+                                        .Prepend(Language.TermsNotHidden)
+                                        .Prepend(Language.TermsAll)
                                         .ToArray();
 
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.ParsedOrange, "FC:");
+        Helper.TextColored(ImGuiColors.ParsedOrange, Language.TermsFC);
         ImGui.SameLine(length);
         Helper.DrawComboWithArrows("##lootSubSelection", ref FcSelection, ref existingFCs, 3);
 
         var combo = Plugin.Configuration.CustomLootProfiles.Keys.ToArray();
         ImGui.AlignTextToFramePadding();
-        ImGui.TextColored(ImGuiColors.ParsedOrange, longText);
+        Helper.TextColored(ImGuiColors.ParsedOrange, longText);
         ImGui.SameLine(length);
         Helper.DrawComboWithArrows("##ProfileSelector", ref CurrentProfileId, ref combo, 1);
-        var selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentProfileId]];
 
         ImGuiHelpers.ScaledDummy(5.0f);
         ImGui.Separator();
@@ -66,25 +66,24 @@ public partial class LootWindow
             LastRefreshTime = 0;
 
         // Rebuilds every 30s
+        var selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentProfileId]];
         BuildCache(selected);
 
         var moneyMade = 0L;
         var useLimit = (Plugin.Configuration.DateLimit != DateLimit.None || (CustomMinDate != CustomMinimalDate && CustomMaxDate != DateTime.Now));
 
-        var textHeight = ImGui.CalcTextSize("XXXX").Y * 6.0f; // giving space for 6.0 lines
-        var optionHeight = (HeaderOpen ? -65 : 0) * ImGuiHelpers.GlobalScale;
-        using (var lootChild = ImRaii.Child("##customLootTableChild", new Vector2(0, -textHeight + optionHeight)))
+        using (var lootChild = ImRaii.Child("##customLootTableChild", new Vector2(0, -ContentHeight)))
         {
             if (lootChild.Success)
             {
                 if (selected.Count == 0)
                 {
-                    Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Empty", "This profile has no tracked items."));
-                    Helper.WrappedError(Loc.Localize("Loot Tab Custom - Profile Tip", "You can add items via the loot tab under configuration."));
+                    Helper.WrappedError(Language.LootTabCustomProfileEmpty);
+                    Helper.WrappedError(Language.LootTabCustomProfileTip);
                 }
                 else if (CachedList.Count == 0)
                 {
-                    Helper.WrappedError($"{Loc.Localize("Loot Tab Custom - None 1", "None of the selected items have been looted")} {(useLimit ? Loc.Localize("Loot Tab Custom - None 2 Timeframe", "in the time frame") : Loc.Localize("Loot Tab Custom - None 2 Yet", "yet"))}.");
+                    Helper.WrappedError($"{Language.LootTabCustomNone1} {(useLimit ? Language.LootTabCustomNone2Timeframe : Language.LootTabCustomNone2Yet)}.");
                 }
                 else
                 {
@@ -104,7 +103,7 @@ public partial class LootWindow
                             Helper.DrawScaledIcon(item.Icon, IconSize);
 
                             ImGui.TableNextColumn();
-                            ImGui.TextUnformatted(Utils.ToStr(item.Name));
+                            ImGui.TextUnformatted(item.Name.ExtractText());
 
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted($"{count:N0}");
@@ -116,43 +115,49 @@ public partial class LootWindow
             }
         }
 
-        using var textChild = ImRaii.Child("##customLootTextChild", new Vector2(0, 0), false, 0);
+        // Ensure content height is set to a minimum
+        ContentHeight = ImGui.GetTextLineHeight() + (ImGui.GetStyle().ItemSpacing.Y * 2);
+
+        using var textChild = ImRaii.Child("##customLootTextChild", Vector2.Zero);
         if (!textChild.Success)
             return;
 
+        var pos = ImGui.GetCursorPos();
         var limit = useLimit ? Plugin.Configuration.DateLimit != DateLimit.None ? $"over {Plugin.Configuration.DateLimit.GetName()}" : $"from {CustomMinDate.ToLongDateWithoutWeekday()} to {CustomMaxDate.ToLongDateWithoutWeekday()}" : "";
-        ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Reward Amount", "The above rewards have been obtained {0} from a total of {1} voyages ({2} submarines).").Format(limit, NumVoyages, NumSubs));
-        ImGui.TextWrapped(Loc.Localize("Loot Tab Custom - Money Made", "This made you a total of {0:N0} gil.").Format(moneyMade));
+        ImGui.TextWrapped(Language.LootTabCustomRewardAmount.Format(limit, NumVoyages, NumSubs));
+        ImGui.TextWrapped(Language.LootTabCustomMoneyMade.Format(moneyMade));
 
         ImGuiHelpers.ScaledDummy(3.0f);
 
-        HeaderOpen = ImGui.CollapsingHeader(Loc.Localize("Terms - Options", "Options"));
-        if (HeaderOpen)
+        if (ImGui.CollapsingHeader(Language.TermsOptions))
         {
-            ImGui.AlignTextToFramePadding();
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - Fixed", "Fixed:"));
-            ImGui.SameLine();
-            if (ImGui.BeginCombo($"##lootOptionCombo", Plugin.Configuration.DateLimit.GetName()))
-            {
-                foreach (var dateLimit in (DateLimit[]) Enum.GetValues(typeof(DateLimit)))
-                {
-                    if (ImGui.Selectable(dateLimit.GetName()))
-                    {
-                        LastRefreshTime = 0;
+            using var indent = ImRaii.PushIndent(10.0f);
 
-                        Plugin.Configuration.DateLimit = dateLimit;
-                        Plugin.Configuration.Save();
+            ImGui.AlignTextToFramePadding();
+            Helper.TextColored(ImGuiColors.DalamudViolet, Language.LootTabEntryFixed);
+            ImGui.SameLine();
+            using (var lootCombo = ImRaii.Combo("##lootOptionCombo", Plugin.Configuration.DateLimit.GetName()))
+            {
+                if (lootCombo.Success)
+                {
+                    foreach (var dateLimit in Enum.GetValues<DateLimit>())
+                    {
+                        if (ImGui.Selectable(dateLimit.GetName()))
+                        {
+                            LastRefreshTime = 0;
+
+                            Plugin.Configuration.DateLimit = dateLimit;
+                            Plugin.Configuration.Save();
+                        }
                     }
                 }
-
-                ImGui.EndCombo();
             }
-            ImGuiComponents.HelpMarker(Loc.Localize("Loot Tab Tooltip - Fixed", "Selecting None will allow you to pick a specific time frame."));
+            ImGuiComponents.HelpMarker(Language.LootTabTooltipFixed);
 
             if (Plugin.Configuration.DateLimit == DateLimit.None)
             {
                 ImGui.AlignTextToFramePadding();
-                ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Loot Tab Entry - FromTo Date Selection", "FromTo:"));
+                Helper.TextColored(ImGuiColors.DalamudViolet, Language.LootTabEntryFromToDateSelection);
                 ImGui.SameLine();
 
                 var changed = false;
@@ -162,7 +167,7 @@ public partial class LootWindow
                 if (changed)
                     LastRefreshTime = 0;
 
-                ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+                ImGui.SameLine(0, ImGui.GetStyle().ItemSpacing.X);
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Recycle))
                     CustomReset();
 
@@ -170,6 +175,10 @@ public partial class LootWindow
                     CustomRefresh();
             }
         }
+
+        ImGuiHelpers.ScaledDummy(5.0f);
+
+        ContentHeight = ImGui.GetCursorPos().Y - pos.Y;
     }
 
     public bool DateCompare(DateTime date)
@@ -204,6 +213,7 @@ public partial class LootWindow
     {
         if (Environment.TickCount64 < LastRefreshTime)
             return;
+
         LastRefreshTime = Environment.TickCount64 + 30_000; // 30s
 
         NumSubs = 0;

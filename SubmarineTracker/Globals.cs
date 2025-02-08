@@ -5,5 +5,4 @@ global using System;
 global using System.Linq;
 global using System.Numerics;
 global using System.Collections.Generic;
-global using CheapLoc;
 global using Dalamud.Interface.Utility.Raii;

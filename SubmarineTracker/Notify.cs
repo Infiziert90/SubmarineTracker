@@ -5,6 +5,7 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 using SubmarineTracker.Windows.Config;
 
 namespace SubmarineTracker;
@@ -116,8 +117,8 @@ public class Notify
         content.Embeds.Add(new
         {
             title = Plugin.NameConverter.GetSub(sub, fc),
-            description=Loc.Localize("Webhook On Dispatch", "Returns <t:{0}:R>").Format(returnTime),
-            color=15124255
+            description = Language.WebhookOnDispatch.Format(returnTime),
+            color = 15124255
         });
 
         Webhook.PostMessage(content);
@@ -144,8 +145,8 @@ public class Notify
         content.Embeds.Add(new
         {
             title = Plugin.NameConverter.GetSub(sub, fc),
-            description=Loc.Localize("Webhook On Return", "Returned at <t:{0}:f>").Format(sub.Return),
-            color=8447519
+            description = Language.WebhookOnReturn.Format(sub.Return),
+            color = 8447519
         });
 
         Webhook.PostMessage(content);
@@ -162,7 +163,7 @@ public class Notify
 
         Plugin.UploadNotify(new Export.SubNotify(
                                 Plugin.Configuration.WebhookUrl,
-                                Loc.Localize("Webhook On Return", "Returned at <t:{0}:f>").Format(returnTime),
+                                Language.WebhookOnReturn.Format(returnTime),
                                 Plugin.NameConverter.GetSub(sub, fc),
                                 Plugin.Configuration.WebhookMention,
                                 Plugin.Configuration.WebhookRoleMention,
@@ -189,7 +190,7 @@ public class Notify
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
-               .AddUiForeground(Loc.Localize("Notification Chat Return", "{0} has returned.").Format(name), 566)
+               .AddUiForeground(Language.NotificationChatReturn.Format(name), 566)
                .BuiltString;
     }
 
@@ -197,15 +198,14 @@ public class Notify
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
-               .AddUiForeground(Loc.Localize("Notification Chat Repair", "{0} has returned and requires repair before being dispatched again.").Format(name), 43)
+               .AddUiForeground(Language.NotificationChatRepair.Format(name), 43)
                .BuiltString;
     }
 
     public static SeString ShortRepairMessage()
-
     {
         return new SeStringBuilder()
-               .AddUiForeground(Loc.Localize("Notification Toast Repair", $"Requires repair before being dispatched again"), 43)
+               .AddUiForeground(Language.NotificationToastRepair, 43)
                .BuiltString;
     }
 }

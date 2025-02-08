@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows;
 
@@ -12,9 +12,9 @@ public static class DateWidget
     private const int HeightInItems = 1 + 1 + 1 + 4;
     private static readonly DateTime Sample = DateTime.UnixEpoch;
 
-    private static readonly Vector4 Transparent = new(1,1,1,0);
-    private static readonly string[] DayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    private static readonly string[] MonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    private static readonly Vector4 Transparent = new(1, 1, 1, 0);
+    private static readonly string[] DayNames = [Language.TermDaySun, Language.TermDayMon, Language.TermDayTue, Language.TermDayWed, Language.TermDayThu, Language.TermDayFri, Language.TermDaySat];
+    private static readonly string[] MonthNames = [Language.TermMonthJan, Language.TermMonthFeb, Language.TermMonthMar, Language.TermMonthApr, Language.TermMonthMay, Language.TermMonthJun, Language.TermMonthJul, Language.TermMonthAug, Language.TermMonthSep, Language.TermMonthOct, Language.TermMonthNov, Language.TermMonthDec];
     private static readonly int[] NumDaysPerMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
 
     private static float LongestMonthWidth;
@@ -30,7 +30,7 @@ public static class DateWidget
             currentMin = minimal;
             Plugin.Notification.AddNotification(new Notification
             {
-                Content = Loc.Localize("Warnings - Minimal Date", "Date before {0} is not possible").Format(minimal.ToShortDateString()),
+                Content = Language.WarningInvalidDate.Format(minimal.ToShortDateString()),
                 Type = NotificationType.Warning,
                 Minimized = false,
             });
@@ -59,7 +59,7 @@ public static class DateWidget
 
         ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
 
-        Helper.Button(id.ToString(), FontAwesomeIcon.Calendar, false);
+        Helper.Button(id.ToString(), FontAwesomeIcon.Calendar);
         if (DatePicker(label, ref date, closeWhenMouseLeavesIt))
         {
             dateString = date.ToString(format);
@@ -164,7 +164,7 @@ public static class DateWidget
             }
 
             ImGui.SameLine();
-            ImGui.Text($"{dateOut.Year}");
+            ImGui.TextUnformatted($"{dateOut.Year}");
             ImGui.SameLine();
 
             if (ImGui.SmallButton(arrowRight))
@@ -200,7 +200,7 @@ public static class DateWidget
             {
                 using var textColor = ImRaii.PushColor(ImGuiCol.Text, CalculateTextColor(), dw == 0);
 
-                ImGui.Text($"{(dw == 0 ? "" : " ")}{DayNames[dw]}");
+                ImGui.TextUnformatted($"{(dw == 0 ? "" : " ")}{DayNames[dw]}");
                 if (dw == 0)
                     ImGui.Separator();
                 else

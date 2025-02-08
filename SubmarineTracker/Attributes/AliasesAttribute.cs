@@ -1,13 +1,12 @@
-namespace SubmarineTracker.Attributes
-{
-    [AttributeUsage(AttributeTargets.Method)]
-    public class AliasesAttribute : Attribute
-    {
-        public string[] Aliases { get; }
+namespace SubmarineTracker.Attributes;
 
-        public AliasesAttribute(params string[] aliases)
-        {
-            Aliases = aliases;
-        }
+[AttributeUsage(AttributeTargets.Method)]
+public class AliasesAttribute : Attribute
+{
+    public string[] Aliases { get; }
+
+    public AliasesAttribute(params string[] aliases)
+    {
+        Aliases = aliases;
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.Interop;
 using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
 using SubmarineTracker.Data;
 
 namespace SubmarineTracker;
@@ -121,7 +123,7 @@ public class DatabaseCache : IDisposable
             var result = Database.GetLoot().ToArray();
 
             var allDict = new Dictionary<ulong, Dictionary<uint, Dictionary<Item, int>>>();
-            foreach (var point in Sheets.PossiblePoints)
+            foreach (var point in Voyage.PossiblePoints)
             {
                 foreach (var loot in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)))
                 {
@@ -140,7 +142,7 @@ public class DatabaseCache : IDisposable
             }
 
             var timeDict = new Dictionary<ulong, Dictionary<DateTime, Dictionary<Item, int>>>();
-            foreach (var point in Sheets.PossiblePoints)
+            foreach (var point in Voyage.PossiblePoints)
             {
                 foreach (var (date, loot) in result.Where(loot => loot.Sector == point.RowId && (!Plugin.Configuration.ExcludeLegacy || loot.Valid)).Select(loot => new LootWithDate(loot.Date, loot)))
                 {
@@ -236,8 +238,6 @@ public record FreeCompany
 
     public Dictionary<uint, bool> UnlockedSectors = new();
     public Dictionary<uint, bool> ExploredSectors = new();
-
-    public FreeCompany() {}
 };
 
 public record Submarine
@@ -272,21 +272,9 @@ public record Submarine
         Return = returnTime;
     }
 
-    public Submarine(HousingWorkshopSubmersibleSubData data)
-    {
-        Rank = data.RankId;
-        Hull = data.HullId;
-        Stern = data.SternId;
-        Bow = data.BowId;
-        Bridge = data.BridgeId;
-
-        Register = data.RegisterTime;
-        Return = data.ReturnTime;
-    }
-
     public unsafe Submarine(HousingWorkshopSubmersibleSubData data, int idx)
     {
-        Name = Utils.NameToSeString(data.Name).ExtractText();
+        Name = new ReadOnlySeStringSpan(data.Name.GetPointer(0)).ExtractText();
         Rank = data.RankId;
         Hull = data.HullId;
         Stern = data.SternId;
@@ -343,7 +331,7 @@ public record Submarine
     public double BridgeCondition => BridgeDurability / 300.0;
 
     public bool NoRepairNeeded => HullDurability > 0 && SternDurability > 0 && BowDurability > 0 && BridgeDurability > 0;
-    public IEnumerable<(ushort Part, ushort Condition)> PartConditions => new[] { (Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability) };
+    public IEnumerable<(ushort Part, ushort Condition)> PartConditions => [(Hull, HullDurability), (Stern, SternDurability), (Bow, BowDurability), (Bridge, BridgeDurability)];
 
     public double LowestCondition()
     {
@@ -361,7 +349,7 @@ public record Submarine
         {
             int damaged = durability;
             foreach (var sector in Points)
-                damaged -= (335 + Sheets.ExplorationSheet.GetRow(sector)!.RankReq - Sheets.PartSheet.GetRow(part)!.Rank) * 7;
+                damaged -= (335 + Sheets.ExplorationSheet.GetRow(sector).RankReq - Sheets.PartSheet.GetRow(part).Rank) * 7;
 
             if (lowest > damaged)
                 lowest = damaged;
@@ -394,7 +382,7 @@ public record Submarine
         {
             var damaged = 0;
             foreach (var sector in Points)
-                damaged += (335 + Sheets.ExplorationSheet.GetRow(sector)!.RankReq - Sheets.PartSheet.GetRow(part)!.Rank) * 7;
+                damaged += (335 + Sheets.ExplorationSheet.GetRow(sector).RankReq - Sheets.PartSheet.GetRow(part).Rank) * 7;
 
             if (highestDamage < damaged)
                 highestDamage = damaged;
@@ -405,8 +393,8 @@ public record Submarine
 
     public (uint Rank, double Exp) PredictExpGrowth()
     {
-        var currentRank = Sheets.RankSheet.GetRow(Rank)!;
-        var leftover = CExp + Sectors.CalculateExpForSectors(Sheets.ToExplorationArray(Points), Build);
+        var currentRank = Sheets.RankSheet.GetRow(Rank);
+        var leftover = CExp + Sectors.CalculateExpForSectors(Voyage.ToExplorationArray(Points), Build);
 
         // This happens whenever the user has a new sub with no voyage
         if (leftover == 0)
@@ -420,7 +408,7 @@ public record Submarine
             if (leftover > currentRank.ExpToNext)
             {
                 leftover -= currentRank.ExpToNext;
-                currentRank = Sheets.RankSheet.GetRow(currentRank.RowId + 1)!;
+                currentRank = Sheets.RankSheet.GetRow(currentRank.RowId + 1);
             }
             else
             {

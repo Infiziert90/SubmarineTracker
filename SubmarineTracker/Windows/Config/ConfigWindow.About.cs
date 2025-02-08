@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows.Config;
 
@@ -11,6 +12,7 @@ public partial class ConfigWindow
     private static readonly Submarine TestSub = new() { Name = "Apollo 11", ReturnTime = new DateTime(1969, 7, 21, 3, 15, 16) };
     private static readonly FreeCompany TestFC = new() { CharacterName = "Buzz Aldrin", World = "Moon", Tag = "Apollo" };
 
+    private string InputPathItem = string.Empty;
     private string InputPath = string.Empty;
     private ulong Worth;
     private int Records;
@@ -18,35 +20,35 @@ public partial class ConfigWindow
 
     private bool About()
     {
-        using var tabItem = ImRaii.TabItem($"{Loc.Localize("Config Tab - About", "About")}##About");
+        using var tabItem = ImRaii.TabItem($"{Language.ConfigTabAbout}##About");
         if (!tabItem.Success)
             return false;
 
         ImGuiHelpers.ScaledDummy(5.0f);
 
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Author", "Author:"));
+        ImGui.TextUnformatted(Language.ConfigTabEntryAuthor);
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedGold, Plugin.PluginInterface.Manifest.Author);
+        Helper.TextColored(ImGuiColors.ParsedGold, Plugin.PluginInterface.Manifest.Author);
 
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Discord", "Discord:"));
+        ImGui.TextUnformatted(Language.ConfigTabEntryDiscord);
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedGold, "@infi");
+        Helper.TextColored(ImGuiColors.ParsedGold, "@infi");
 
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Version", "Version:"));
+        ImGui.TextUnformatted(Language.ConfigTabEntryVersion);
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.PluginInterface.Manifest.AssemblyVersion.ToString());
+        Helper.TextColored(ImGuiColors.ParsedOrange, Plugin.PluginInterface.Manifest.AssemblyVersion.ToString());
 
-        ImGui.TextUnformatted(Loc.Localize("Config Tab Entry - Localization", "Localization:"));
+        ImGui.TextUnformatted(Language.ConfigTabEntryLocalization);
         ImGui.SameLine();
-        ImGui.TextColored(ImGuiColors.ParsedOrange, Loc.Localize("Config About Translation - Community", "Community"));
+        Helper.TextColored(ImGuiColors.ParsedOrange, Language.ConfigAboutTranslationCommunity);
         ImGui.SameLine();
-        ImGuiComponents.HelpMarker(Loc.Localize("Config About Translation - Tooltip", "All localizations are done by the community.\nIf you want to help improve them, please visit Crowdin"));
+        ImGuiComponents.HelpMarker(Language.ConfigAboutTranslationTooltip);
 
         #if DEBUG
         ImGuiHelpers.ScaledDummy(10.0f);
 
         ImGui.TextUnformatted("Debug:");
-        ImGuiHelpers.ScaledIndent(10.0f);
+        using var indent = ImRaii.PushIndent(10.0f);
         if (ImGui.Button("Send Return"))
             Plugin.Notify.SendReturn(TestSub, TestFC);
 
@@ -62,14 +64,6 @@ public partial class ConfigWindow
         if (ImGui.Button("Test Entry Upload"))
             Task.Run(() => Export.UploadLoot(GenerateLootList().Last()));
 
-        if (ImGui.Button("Export Loc"))
-        {
-            var pwd = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
-            Plugin.Localization.ExportLocalizable();
-            Directory.SetCurrentDirectory(pwd);
-        }
-
         if (ImGui.Button("Calculate All Routes"))
         {
             var pwd = Directory.GetCurrentDirectory();
@@ -78,18 +72,27 @@ public partial class ConfigWindow
             Directory.SetCurrentDirectory(pwd);
         }
 
-        if (ImGui.Button("Calculate Item Detailed"))
+        Helper.TextColored(ImGuiColors.DalamudViolet, "Input Item File:");
+        ImGui.InputText("##InputPathItem", ref InputPathItem, 255);
+        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
+        if (ImGuiComponents.IconButton("##itemPicker", FontAwesomeIcon.FolderClosed))
+            ImGui.OpenPopup("InputPathDialogItem");
+
+        using (var popup = ImRaii.Popup("InputPathDialogItem"))
         {
-            var pwd = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(Plugin.PluginInterface.AssemblyLocation.DirectoryName!);
-            Importer.ExportDetailed();
-            Directory.SetCurrentDirectory(pwd);
+            if (popup.Success)
+                Plugin.FileDialogManager.OpenFileDialog("Pick the item file", ".csv", (b, s) => { if (b) InputPathItem = s[0]; }, 1);
         }
 
-        ImGui.TextColored(ImGuiColors.DalamudViolet, "Input Folder:");
+        if (ImGui.Button("Calculate Item Detailed"))
+        {
+            Importer.ExportDetailed(InputPathItem);
+        }
+
+        Helper.TextColored(ImGuiColors.DalamudViolet, "Input Folder:");
         ImGui.InputText("##InputPath", ref InputPath, 255);
         ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
-        if (ImGuiComponents.IconButton(FontAwesomeIcon.FolderClosed))
+        if (ImGuiComponents.IconButton("##folderPicker", FontAwesomeIcon.FolderClosed))
             ImGui.OpenPopup("InputPathDialog");
 
         using (var popup = ImRaii.Popup("InputPathDialog"))
@@ -128,10 +131,9 @@ public partial class ConfigWindow
 
         if (Worth != 0)
         {
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Voyages recorded: {Records:N0}");
-            ImGui.TextColored(ImGuiColors.ParsedOrange, $"Worth of all items: {Worth:N0} Gil");
+            Helper.TextColored(ImGuiColors.ParsedOrange, $"Voyages recorded: {Records:N0}");
+            Helper.TextColored(ImGuiColors.ParsedOrange, $"Worth of all items: {Worth:N0} Gil");
         }
-        ImGuiHelpers.ScaledIndent(-10.0f);
         #endif
 
         return true;

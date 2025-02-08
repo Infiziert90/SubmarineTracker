@@ -23,8 +23,8 @@ public partial class HelpyWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var buttonHeight = ImGui.CalcTextSize("RRRR").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        using (var contentChild = ImRaii.Child("HelpyContent", new Vector2(0, -buttonHeight)))
+        var bottomContentHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + Helper.GetSeparatorPaddingHeight;
+        using (var contentChild = ImRaii.Child("HelpyContent", new Vector2(0, -bottomContentHeight)))
         {
             if (contentChild.Success)
             {
@@ -39,9 +39,9 @@ public partial class HelpyWindow : Window, IDisposable
         }
 
         ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(1.0f);
+        ImGuiHelpers.ScaledDummy(Helper.SeparatorPadding);
 
-        using var bottomChild = ImRaii.Child("BottomBar", new Vector2(0, 0), false, 0);
+        using var bottomChild = ImRaii.Child("BottomBar", Vector2.Zero, false, 0);
         if (!bottomChild.Success)
             return;
 

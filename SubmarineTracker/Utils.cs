@@ -7,24 +7,24 @@ using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Utility;
 using Lumina.Text.ReadOnly;
 using SubmarineTracker.Data;
+using SubmarineTracker.Resources;
 
 namespace SubmarineTracker;
 
 public static class Utils
 {
-    public static unsafe ReadOnlySeStringSpan NameToSeString(Span<byte> name) => new((byte*)Unsafe.AsPointer(ref name[0]));
+    public static string ToTime(TimeSpan time) =>
+        $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
 
-    public static string ToStr(SeString content) => content.ToString();
-    public static string ToStr(ReadOnlySeString content) => content.ToDalamudString().ToString();
-    public static string ToTime(TimeSpan time) => $"{(int)time.TotalHours:#00}:{time:mm}:{time:ss}";
-    public static string GetStringFromTimespan(TimeSpan span) => $"{span.Days}d {span.Hours}h {span.Minutes}m {span.Seconds}s";
+    public static string GetStringFromTimespan(TimeSpan span) =>
+        $"{span.Days}d {span.Hours}h {span.Minutes}m {span.Seconds}s";
 
     public static string UpperCaseStr(ReadOnlySeString s, sbyte article = 0)
     {
         if (article == 1)
-            return s.ToDalamudString().ToString();
+            return s.ExtractText();
 
-        var sb = new StringBuilder(s.ToDalamudString().ToString());
+        var sb = new StringBuilder(s.ExtractText());
         var lastSpace = true;
         for (var i = 0; i < sb.Length; ++i)
         {
@@ -56,7 +56,7 @@ public static class Utils
             4 => "Sirensong",
             5 => "Lilac Sea",
             6 => "South Indigo",
-            _ => "Unknown"
+            _ => Language.TermUnknown
         };
     }
 
@@ -78,6 +78,7 @@ public static class Utils
         };
     }
 
+    private const string Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static string NumToLetter(uint num, bool findStart = false)
     {
         if (findStart)
@@ -85,21 +86,18 @@ public static class Utils
 
         var index = (int)(num - 1);  // 0 indexed
 
-        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
         var value = "";
+        if (index >= Letters.Length)
+            value += Letters[(index / Letters.Length) - 1];
 
-        if (index >= letters.Length)
-            value += letters[(index / letters.Length) - 1];
-
-        value += letters[index % letters.Length];
+        value += Letters[index % Letters.Length];
 
         return value;
     }
 
-    public static string PointsToVoyage(string separator, uint[] points)
+    public static string SectorsToPath(string separator, IReadOnlyList<uint> points)
     {
-        if (points.Length == 0)
+        if (points.Count == 0)
             return "No Voyage";
 
         var start = Voyage.FindVoyageStart(points[0]);
@@ -110,13 +108,9 @@ public static class Utils
     {
         var route = "No Route";
         if (build.Sectors.Count != 0)
-        {
-            var startPoint = Voyage.FindVoyageStart(build.Sectors.First());
-            route = $"{MapToThreeLetter(build.Map + 1)}: {string.Join(" -> ", build.Sectors.Select(p => NumToLetter(p - startPoint)))}";
-        }
+            route = $"{MapToThreeLetter(build.MapRowId)}: {SectorsToPath(" -> ", build.Sectors)}";
 
-        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.FullIdentifier()})" +
-               $"\n{route}";
+        return $"{name.Replace("%", "%%")} (R: {build.Rank} B: {build.GetSubmarineBuild.FullIdentifier()})\n{route}";
     }
 
     public static SeString SuccessMessage(string success)
@@ -217,9 +211,8 @@ public static class Utils
         public static List<T[]> GetAllPermutation<T>(T[] items)
         {
             var countOfItem = items.Length;
-
             if (countOfItem <= 1)
-                return new List<T[]> { Array.Empty<T>() };
+                return [Array.Empty<T>()];
 
             var indexes = new int[countOfItem];
             var permutations = new List<T[]> { items.ToArray() };
@@ -256,31 +249,43 @@ public static class Utils
 
 public static class Extensions
 {
+    /// <summary>
+    /// Truncate a string after its max length is reached.
+    /// </summary>
     public static string? Truncate(this string? value, int maxLength, string truncationSuffix = "...")
     {
-        return value?.Length > maxLength
-                   ? string.Concat(value.AsSpan(0, maxLength), truncationSuffix)
-                   : value;
+        return value?.Length > maxLength ? string.Concat(value.AsSpan(0, maxLength), truncationSuffix) : value;
     }
 
+    /// <summary>
+    /// Quick swap two list objects.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Swap<T>(this List<T> list, int i, int j)
     {
         (list[i], list[j]) = (list[j], list[i]);
     }
 
+    /// <summary>
+    /// Format a Datetime as just Date.
+    /// </summary>
     public static string ToLongDateWithoutWeekday(this DateTime d)
     {
         return d.ToString(CultureInfo.CurrentCulture.DateTimeFormat.GetAllDateTimePatterns('D')
                                      .FirstOrDefault(a => !a.Contains("ddd") && !a.Contains("dddd")) ?? "D");
     }
 
+    /// <summary>
+    /// Adds the index to a simple iteration.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<(T Val, int Idx)> WithIndex<T>(this IEnumerable<T> list)
     {
         return list.Select((val, idx) => (val, idx));
     }
 
     /// <summary>
-    /// Simple filter for Span like LINQs `Where()`
+    /// Simple filter for Span like LINQs `Where()`.
     /// </summary>
     public static List<T> Filter<T>(this Span<T> span, Func<T, bool> predicate)
     {

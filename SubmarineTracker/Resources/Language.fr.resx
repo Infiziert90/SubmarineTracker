@@ -1,0 +1,1044 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="WebhookOnDispatch" xml:space="preserve">
+        <value>Revient &lt;t:{0}:R&gt;</value>
+    </data>
+    <data name="WebhookOnReturn" xml:space="preserve">
+        <value>Revenu le &lt;t:{0}:f&gt;</value>
+    </data>
+    <data name="NotificationChatReturn" xml:space="preserve">
+        <value>{0} est revenu.</value>
+    </data>
+    <data name="NotificationChatRepair" xml:space="preserve">
+        <value>{0} est revenu et a besoin d'une réparation avant d'être expédié à nouveau.</value>
+    </data>
+    <data name="NotificationToastRepair" xml:space="preserve">
+        <value>Nécessite une réparation avant d'être expédié à nouveau</value>
+    </data>
+    <data name="NotificationsUploadOptOut" xml:space="preserve">
+        <value>Ce plugin collectera des données anonymes spécifiques aux sous-marins. Pour plus d'informations sur les données exactes collectées, veuillez consulter l'onglet téléchargement dans le menu de configuration du plugin.  Vous pouvez refuser toute forme de collecte de données.</value>
+    </data>
+    <data name="WarningsIgnoredCharacter" xml:space="preserve">
+        <value>Personnage ignoré</value>
+    </data>
+    <data name="MenuTooltipTracker" xml:space="preserve">
+        <value>Ouvrir la fenêtre du tracker.</value>
+    </data>
+    <data name="WindowNameBuilder" xml:space="preserve">
+        <value>Construction</value>
+    </data>
+    <data name="MenuTooltipBuilder" xml:space="preserve">
+        <value>Ouvrir la fenêtre de construction.</value>
+    </data>
+    <data name="WindowNameLoot" xml:space="preserve">
+        <value>Objets trouvés</value>
+    </data>
+    <data name="MenuTooltipLoot" xml:space="preserve">
+        <value>Ouvrir la fenêtre des objets trouvés.</value>
+    </data>
+    <data name="WindowNameHelpy" xml:space="preserve">
+        <value>Assistant</value>
+    </data>
+    <data name="MenuTooltipHelpy" xml:space="preserve">
+        <value>Ouvre la fenêtre de l'assistant.</value>
+    </data>
+    <data name="MenuTooltipOverlay" xml:space="preserve">
+        <value>Ouvrir l'overlay de retour.</value>
+    </data>
+    <data name="WindowNameConfig" xml:space="preserve">
+        <value>Configuration</value>
+    </data>
+    <data name="MenuTooltipConfig" xml:space="preserve">
+        <value>Ouvrir la fenêtre de configuration.</value>
+    </data>
+    <data name="MenuEntryDiscordThread" xml:space="preserve">
+        <value>Fil de discussion Discord</value>
+    </data>
+    <data name="MenuTooltipDiscordThread" xml:space="preserve">
+        <value>Ouvrir le fil de support Discord.</value>
+    </data>
+    <data name="MenuEntryLocalization" xml:space="preserve">
+        <value>Traduction</value>
+    </data>
+    <data name="MenuTooltipLocalization" xml:space="preserve">
+        <value>Ouvrir la page Crowdin dans votre navigateur</value>
+    </data>
+    <data name="MenuEntryIssues" xml:space="preserve">
+        <value>Problèmes</value>
+    </data>
+    <data name="MenuTooltipIssues" xml:space="preserve">
+        <value>Ouvrir la page des problèmes connus dans votre navigateur.</value>
+    </data>
+    <data name="MenuEntryKoFi" xml:space="preserve">
+        <value>Don Ko-Fi</value>
+    </data>
+    <data name="MenuTooltipKoFi" xml:space="preserve">
+        <value>Ouvrir la page Ko-Fi dans votre navigateur.</value>
+    </data>
+    <data name="MenuEntrySync" xml:space="preserve">
+        <value>Synchroniser</value>
+    </data>
+    <data name="MenuTooltipSync" xml:space="preserve">
+        <value>Recharge toutes les données stockées sur le disque dur et actualise le cache.</value>
+    </data>
+    <data name="ErrorNoData" xml:space="preserve">
+        <value>Aucune donnée trouvée pour la CL de ce personnage
+Veuillez visiter l'atelier de votre compagnie libre et interagissez avec le panneau de contrôle d'appareils.</value>
+    </data>
+    <data name="TermsNoVoyage" xml:space="preserve">
+        <value>Pas en expédition</value>
+    </data>
+    <data name="TermsDone" xml:space="preserve">
+        <value>Terminé</value>
+    </data>
+    <data name="TermsAll" xml:space="preserve">
+        <value>Tous</value>
+    </data>
+    <data name="TermsRank" xml:space="preserve">
+        <value>Rang</value>
+    </data>
+    <data name="ReturnOverlayTooltipRepairNeeded" xml:space="preserve">
+        <value>Ce sous-marin aura besoin d'être réparé à son retour.</value>
+    </data>
+    <data name="TermsRoute" xml:space="preserve">
+        <value>Itinéraire</value>
+    </data>
+    <data name="TermsEXPAfter" xml:space="preserve">
+        <value>Après</value>
+    </data>
+    <data name="TermsRepair" xml:space="preserve">
+        <value>Réparation</value>
+    </data>
+    <data name="MainWindowTooltipRepair" xml:space="preserve">
+        <value>{0} kits après {1} voyages</value>
+    </data>
+    <data name="MainWindowTabOverview" xml:space="preserve">
+        <value>Résumé</value>
+    </data>
+    <data name="MainWindowEntryResources" xml:space="preserve">
+        <value>Ressources :</value>
+    </data>
+    <data name="TermsTanks" xml:space="preserve">
+        <value>Barils</value>
+    </data>
+    <data name="TermsNoVoyageData" xml:space="preserve">
+        <value>Aucune donnée de voyage</value>
+    </data>
+    <data name="MainWindowTabLoot" xml:space="preserve">
+        <value>Objets trouvés</value>
+    </data>
+    <data name="MainWindowOverviewBreaksAfter" xml:space="preserve">
+        <value>Se casse après {0} voyages</value>
+    </data>
+    <data name="TermsPredicted" xml:space="preserve">
+        <value>Prévu</value>
+    </data>
+    <data name="Termshours" xml:space="preserve">
+        <value>heures</value>
+    </data>
+    <data name="TermsTime" xml:space="preserve">
+        <value>Temps</value>
+    </data>
+    <data name="TermsMap" xml:space="preserve">
+        <value>Carte</value>
+    </data>
+    <data name="NextOverlayTooltipLowRank" xml:space="preserve">
+        <value>Votre sous-marin est en dessous du rang requis pour visiter le secteur.</value>
+    </data>
+    <data name="NextOverlayTextNextSector" xml:space="preserve">
+        <value>Secteur suivant :</value>
+    </data>
+    <data name="NextOverlayTextVisit" xml:space="preserve">
+        <value>Visiter :</value>
+    </data>
+    <data name="NextOverlayTextNextMap" xml:space="preserve">
+        <value>Carte suivante :</value>
+    </data>
+    <data name="TermsSubmarines" xml:space="preserve">
+        <value>Sous-marins</value>
+    </data>
+    <data name="ReturnOverlayInfoNoReturn" xml:space="preserve">
+        <value>Aucun sous-marin n'est revenu.</value>
+    </data>
+    <data name="RouteOverlayTooltipHighRank" xml:space="preserve">
+        <value>Sous-marin au-dessus du seuil et Doit inclure est vide
+Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
+    </data>
+    <data name="TermsLoading" xml:space="preserve">
+        <value>Chargement</value>
+    </data>
+    <data name="BestEXPCalculationNothingFound" xml:space="preserve">
+        <value>Aucun itinéraire trouvé, vérifiez la vitesse et la distance...</value>
+    </data>
+    <data name="TermsMustInclude" xml:space="preserve">
+        <value>Doit inclure</value>
+    </data>
+    <data name="BestEXPEntryDurationLimit" xml:space="preserve">
+        <value>Durée limite</value>
+    </data>
+    <data name="BestEXPCheckboxMaximizeDuration" xml:space="preserve">
+        <value>Maximiser la durée</value>
+    </data>
+    <data name="BestEXPEntryHoursandMinutes" xml:space="preserve">
+        <value>Heures &amp; Minutes</value>
+    </data>
+    <data name="BestEXPCheckboxAutoInclude" xml:space="preserve">
+        <value>Inclus. Auto</value>
+    </data>
+    <data name="BestEXPTooltipAutoInclude" xml:space="preserve">
+        <value>Inclut automatiquement le secteur principal suivant, s'il y en a un</value>
+    </data>
+    <data name="TermsWiP" xml:space="preserve">
+        <value>- En cours de développement ! -</value>
+    </data>
+    <data name="LootTabButtonRebuild" xml:space="preserve">
+        <value>Reconstuire le cache</value>
+    </data>
+    <data name="LootTabTextSearched" xml:space="preserve">
+        <value>Recherche de</value>
+    </data>
+    <data name="LootTabWarningNothingFound" xml:space="preserve">
+        <value>Aucun résulat pour cette destination.</value>
+    </data>
+    <data name="LootTabEntryPercentages" xml:space="preserve">
+        <value>Pourcentages :</value>
+    </data>
+    <data name="TermsItem" xml:space="preserve">
+        <value>Objet</value>
+    </data>
+    <data name="TermsPercentage" xml:space="preserve">
+        <value>Pctge</value>
+    </data>
+    <data name="LootTabCustom" xml:space="preserve">
+        <value>Personnalisé</value>
+    </data>
+    <data name="LootTabCustomProfileEmpty" xml:space="preserve">
+        <value>Ce profil n'a aucun objet suivi.</value>
+    </data>
+    <data name="LootTabCustomProfileTip" xml:space="preserve">
+        <value>Vous pouvez ajouter des objets via l'onglet des objets trouvés dans la configuration du plugin.</value>
+    </data>
+    <data name="LootTabCustomNone1" xml:space="preserve">
+        <value>Aucun des objets sélectionnés n'a été trouvé</value>
+    </data>
+    <data name="LootTabCustomNone2Yet" xml:space="preserve">
+        <value>à ce jour</value>
+    </data>
+    <data name="LootTabCustomNone2Timeframe" xml:space="preserve">
+        <value>pendant la période</value>
+    </data>
+    <data name="LootTabCustomRewardAmount" xml:space="preserve">
+        <value>Les objets ci-dessus ont été obtenus {0} sur un total de {1} voyages ({2} sous-marins).</value>
+    </data>
+    <data name="LootTabCustomMoneyMade" xml:space="preserve">
+        <value>Ce qui vous a rapporté un total de {0:N0} gils.</value>
+    </data>
+    <data name="LootTabEntryFixed" xml:space="preserve">
+        <value>Fixer à :</value>
+    </data>
+    <data name="LootTabTooltipFixed" xml:space="preserve">
+        <value>En sélectionnant Aucune, vous pourrez choisir un intervalle de temps spécifique.</value>
+    </data>
+    <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
+        <value>Du-au :</value>
+    </data>
+    <data name="LootTabCheckboxExportAll" xml:space="preserve">
+        <value>Exporter toutes les CLs</value>
+    </data>
+    <data name="LootTabCheckboxExcludeDate" xml:space="preserve">
+        <value>Exclure la date</value>
+    </data>
+    <data name="LootTabCheckboxExcludeHash" xml:space="preserve">
+        <value>Exclure le hash</value>
+    </data>
+    <data name="LootTabEntryOutputFolder" xml:space="preserve">
+        <value>Dossier cible :</value>
+    </data>
+    <data name="LootTabTitlePickFolder" xml:space="preserve">
+        <value>Choisissez un dossier</value>
+    </data>
+    <data name="LootTabEntryExport" xml:space="preserve">
+        <value>Export :</value>
+    </data>
+    <data name="LootTabButtonFile" xml:space="preserve">
+        <value>Fichier</value>
+    </data>
+    <data name="LootTabButtonClipboard" xml:space="preserve">
+        <value>Presse-papier</value>
+    </data>
+    <data name="LootExportErrorNothingFound" xml:space="preserve">
+        <value>Rien à exporter dans la période sélectionnée.</value>
+    </data>
+    <data name="LootExportSuccessClipboard" xml:space="preserve">
+        <value>Copie réussie dans le presse-papiers.</value>
+    </data>
+    <data name="LootExportSuccessFile" xml:space="preserve">
+        <value>Export réussi.</value>
+    </data>
+    <data name="LootExportSuccessOutputPath" xml:space="preserve">
+        <value>Chemin du dossier cible : {0}</value>
+    </data>
+    <data name="LootExportErrorInvalidPath" xml:space="preserve">
+        <value>Chemin invalide.</value>
+    </data>
+    <data name="LootTabHistory" xml:space="preserve">
+        <value>Historique</value>
+    </data>
+    <data name="LootTabHistoryWrong" xml:space="preserve">
+        <value>Un problème est survenu.</value>
+    </data>
+    <data name="LootTabHistoryNotTracked" xml:space="preserve">
+        <value>Le suivi commence lorsque vous envoyez vos sous-marins en expédition.</value>
+    </data>
+    <data name="LootTabHistoryLegacyData" xml:space="preserve">
+        <value>-Anciennes données-</value>
+    </data>
+    <data name="ProgressionTabSubmarinePath" xml:space="preserve">
+        <value>4 sous-marins</value>
+    </data>
+    <data name="ProgressionTabLastSector" xml:space="preserve">
+        <value>Dernier secteur</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlock" xml:space="preserve">
+        <value>Comment débloquer de nouveaux secteurs ?</value>
+    </data>
+    <data name="HelpyTabInfoSectorUnlockText" xml:space="preserve">
+        <value>Les nouveaux secteurs sont débloqués aléatoirement.
+En augmentant la vitesse et la fréquence des voyages, vous aurez plus de chances d'en découvrir un nouveau.</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlock" xml:space="preserve">
+        <value>Comment débloquer de nouvelles cartes/emplacements ?</value>
+    </data>
+    <data name="HelpyTabInfoMapUnlockText" xml:space="preserve">
+        <value>Vous devez visiter le secteur déverrouillé au moins une fois.
+Note : Vous ne verrez plus de sous-marins tant que vous n'avez pas rempli l'emplacement précédent.
+Par exemple, vous ne verrez pas l'emplacement 3 si l'emplacement 2 est vide</value>
+    </data>
+    <data name="HelpyTabInfoColors" xml:space="preserve">
+        <value>Couleurs :</value>
+    </data>
+    <data name="ColorsGreen" xml:space="preserve">
+        <value>Vert</value>
+    </data>
+    <data name="HelpyTabInfoGreenText" xml:space="preserve">
+        <value>Débloqué et visité</value>
+    </data>
+    <data name="HelpyTabInfoVioletText" xml:space="preserve">
+        <value>Débloqué mais non visité</value>
+    </data>
+    <data name="ColorsRed" xml:space="preserve">
+        <value>Rouge</value>
+    </data>
+    <data name="HelpyTabInfoRedText" xml:space="preserve">
+        <value>Non débloqué</value>
+    </data>
+    <data name="HelpyTabStorage" xml:space="preserve">
+        <value>Stockage</value>
+    </data>
+    <data name="HelpyTabWarningAllaganTools" xml:space="preserve">
+        <value>AllaganTools n'est pas disponible.</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksMap" xml:space="preserve">
+        <value>Débloque la carte</value>
+    </data>
+    <data name="ProgressionTabTooltipUnlocksSlot" xml:space="preserve">
+        <value>Débloque l'emplacement</value>
+    </data>
+    <data name="ConfigTabAbout" xml:space="preserve">
+        <value>A propos</value>
+    </data>
+    <data name="ConfigTabEntryAuthor" xml:space="preserve">
+        <value>Auteur :</value>
+    </data>
+    <data name="ConfigTabEntryDiscord" xml:space="preserve">
+        <value>Discord :</value>
+    </data>
+    <data name="ConfigTabEntryVersion" xml:space="preserve">
+        <value>Version :</value>
+    </data>
+    <data name="ConfigTabEntryLocalization" xml:space="preserve">
+        <value>Traduction :</value>
+    </data>
+    <data name="ConfigAboutTranslationCommunity" xml:space="preserve">
+        <value>Communauté</value>
+    </data>
+    <data name="ConfigAboutTranslationTooltip" xml:space="preserve">
+        <value>Toutes les traductions sont faites par la communauté.
+Si vous voulez aider à les améliorer, veuillez visiter Crowdin</value>
+    </data>
+    <data name="BuilderTabBuilder" xml:space="preserve">
+        <value>Construction</value>
+    </data>
+    <data name="ConfigTabEntryOptions" xml:space="preserve">
+        <value>Options :</value>
+    </data>
+    <data name="ConfigTabCheckboxCurrentFC" xml:space="preserve">
+        <value>Afficher uniquement la CL actuelle</value>
+    </data>
+    <data name="ConfigTabCheckboxAutoSelection" xml:space="preserve">
+        <value>Sélectionner automatiquement le sous-marin actuel</value>
+    </data>
+    <data name="ConfigTabTooltipAutoSelection" xml:space="preserve">
+        <value>Sélectionne automatiquement le sous-marin sélectionné dans l'interface d'expédition du jeu.</value>
+    </data>
+    <data name="ConfigTabCheckboxNextOverlay" xml:space="preserve">
+        <value>Afficher l'overlay suivant</value>
+    </data>
+    <data name="ConfigTabTooltipNextOverlay" xml:space="preserve">
+        <value>Overlay attaché à l'interface de sélection d'expédition
+
+Propose le prochain secteur à débloquer ou explorer
+Visible si :
+  a) La carte a encore des secteurs à débloquer, ou
+  b) Un secteur doit être exploré pour déverrouiller la prochaine carte</value>
+    </data>
+    <data name="ConfigTabCheckboxUnlockOverlay" xml:space="preserve">
+        <value>Afficher l'overlay de déblocage</value>
+    </data>
+    <data name="ConfigTabTooltipUnlockOverlay" xml:space="preserve">
+        <value>Overlay attaché à l'interface de sélection d'expédition
+
+Montre tous les secteurs à visiter
+Visible si :
+  a) La carte a encore des secteurs à débloquer</value>
+    </data>
+    <data name="ConfigTabCheckboxRouteOverlay" xml:space="preserve">
+        <value>Afficher l'overlay d'itinéraire</value>
+    </data>
+    <data name="ConfigTabTooltipRouteOverlay" xml:space="preserve">
+        <value>Overlay attaché à l'interface de sélection d'expédition
+
+Suggère la meilleure route à prendre
+Vide si :
+  a) La carte a encore des secteurs à débloquer
+  b) Doit Inclure est vide</value>
+    </data>
+    <data name="ConfigTabSliderRank" xml:space="preserve">
+        <value>Plus haut rang</value>
+    </data>
+    <data name="ConfigTabTooltipRank" xml:space="preserve">
+        <value>Aucune suggestion d'itinéraire au-dessus de ce rang.</value>
+    </data>
+    <data name="ConfigTabCheckboxIncludeMain" xml:space="preserve">
+        <value>Inclure automatiquement le secteur principal</value>
+    </data>
+    <data name="ConfigTabTooltipIncludeMain" xml:space="preserve">
+        <value>Inclut automatiquement le secteur principal suivant, s'il y en a un.</value>
+    </data>
+    <data name="ConfigTabEntrySavedBuilds" xml:space="preserve">
+        <value>Builds sauvegardées :</value>
+    </data>
+    <data name="MenuDiscordThread" xml:space="preserve">
+        <value>Fil de discussion Discord</value>
+    </data>
+    <data name="MenuLocalization" xml:space="preserve">
+        <value>Traduction</value>
+    </data>
+    <data name="MenuIssues" xml:space="preserve">
+        <value>Problèmes</value>
+    </data>
+    <data name="MenuKoFi" xml:space="preserve">
+        <value>Don Ko-Fi</value>
+    </data>
+    <data name="ConfigTabCheckboxUploadPermission" xml:space="preserve">
+        <value>Permission de télécharger</value>
+    </data>
+    <data name="ConfigTabUploadInformation1" xml:space="preserve">
+        <value>Fournissez anonymement des données sur les sous-marins.
+Ces données ne peuvent être liées à vous d'aucune manière et tout le monde en bénéficiera !</value>
+    </data>
+    <data name="ConfigTabUploadWhat" xml:space="preserve">
+        <value>Quelles données ?</value>
+    </data>
+    <data name="ConfigTabUploadPoint1" xml:space="preserve">
+        <value>Objets trouvés reçus</value>
+    </data>
+    <data name="ConfigTabUploadPoint2" xml:space="preserve">
+        <value>Secteurs débloqués</value>
+    </data>
+    <data name="ConfigTabUploadPoint3" xml:space="preserve">
+        <value>Données de déverouillage</value>
+    </data>
+    <data name="ConfigTabLoot" xml:space="preserve">
+        <value>Objets trouvés</value>
+    </data>
+    <data name="ConfigTabCheckboxLegacy" xml:space="preserve">
+        <value>Exclure les anciens objets trouvés</value>
+    </data>
+    <data name="ConfigTooltipDefaultCollection" xml:space="preserve">
+        <value>La collection par défaut ne peut pas être supprimée</value>
+    </data>
+    <data name="ConfigTextInputCollectionName" xml:space="preserve">
+        <value>Nom de la nouvelle collection</value>
+    </data>
+    <data name="ErrorCollectionExists" xml:space="preserve">
+        <value>Une collection portant le même nom existe déjà</value>
+    </data>
+    <data name="TermsPrice" xml:space="preserve">
+        <value>Prix</value>
+    </data>
+    <data name="TermsDelete" xml:space="preserve">
+        <value>Suppr.</value>
+    </data>
+    <data name="ConfigTabManage" xml:space="preserve">
+        <value>Gestion</value>
+    </data>
+    <data name="TermsSavedFCs" xml:space="preserve">
+        <value>CLs sauvegardées</value>
+    </data>
+    <data name="ConfigTabTooltipSavedFCsDeletion" xml:space="preserve">
+        <value>Supprimer une entrée de CL supprimera également tout l'historique des objets trouvés.
+Maintenez CTRL pour supprimer</value>
+    </data>
+    <data name="TermsIgnoredCharacters" xml:space="preserve">
+        <value>Personnages ignorés</value>
+    </data>
+    <data name="TermsAddCurrentCharacter" xml:space="preserve">
+        <value>Ajouter le personnage actuel</value>
+    </data>
+    <data name="ConfigTabNotify" xml:space="preserve">
+        <value>Notifs</value>
+    </data>
+    <data name="ConfigTabEntryNotifications" xml:space="preserve">
+        <value>Notifications :</value>
+    </data>
+    <data name="ConfigTabCheckboxReturningSub" xml:space="preserve">
+        <value>Sous-marin de retour</value>
+    </data>
+    <data name="ConfigTabCheckboxNeededRepair" xml:space="preserve">
+        <value>Réparation nécessaire</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairToast" xml:space="preserve">
+        <value>Afficher le toast de réparation</value>
+    </data>
+    <data name="ConfigTabEntryWebhook" xml:space="preserve">
+        <value>Webhook :</value>
+    </data>
+    <data name="ConfigTabCheckboxSendDispatch" xml:space="preserve">
+        <value>Envoyer au départ</value>
+    </data>
+    <data name="ConfigTabTooltipSendDispatch" xml:space="preserve">
+        <value>Envoie un message via webhook lors du départ, contenant un horodatage lorsque ce sous-marin retourne.</value>
+    </data>
+    <data name="ConfigTabCheckboxSendReturn" xml:space="preserve">
+        <value>Envoyer au retour</value>
+    </data>
+    <data name="ConfigTabTooltipSendReturn" xml:space="preserve">
+        <value>Envoie un message via webhook lors du retour.</value>
+    </data>
+    <data name="ConfigTabTooltipWebhook" xml:space="preserve">
+        <value>Cliquez pour ouvrir le guide du webhook discord dans votre navigateur.</value>
+    </data>
+    <data name="ConfigTabEntrySubmarines" xml:space="preserve">
+        <value>Sous-marins :</value>
+    </data>
+    <data name="ConfigTabCheckboxAllReturning" xml:space="preserve">
+        <value>Tous les sous-marins qui reviennent</value>
+    </data>
+    <data name="ConfigTabEntrySpecificSubmarines" xml:space="preserve">
+        <value>Sous-marins spécifiques :</value>
+    </data>
+    <data name="ConfigTabCheckboxOnReturn" xml:space="preserve">
+        <value>Au retour</value>
+    </data>
+    <data name="ConfigTabTooltipOnReturn" xml:space="preserve">
+        <value>Toujours ouvrir l'overlay si un sous-marin est de retour</value>
+    </data>
+    <data name="ConfigTabCheckboxAutomaticallyClose" xml:space="preserve">
+        <value>Fermer automatiquement</value>
+    </data>
+    <data name="ConfigTabTooltipAutomaticallyClose" xml:space="preserve">
+        <value>Ferme automatiquement l'overlay si tous les sous-marins sont en expédition, et le maintient fermé</value>
+    </data>
+    <data name="ConfigTabEntryGeneral" xml:space="preserve">
+        <value>Général :</value>
+    </data>
+    <data name="ConfigTabCheckboxShowRank" xml:space="preserve">
+        <value>Afficher le rang</value>
+    </data>
+    <data name="ConfigTabCheckboxShowBuild" xml:space="preserve">
+        <value>Afficher les builds</value>
+    </data>
+    <data name="ConfigTabCheckboxAsDate" xml:space="preserve">
+        <value>Afficher en tant que date</value>
+    </data>
+    <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
+        <value>Afficher l'heure de retour la plus proche</value>
+    </data>
+    <data name="ConfigTabTooltipFirstReturnTime" xml:space="preserve">
+        <value>Affiche le premier sous-marin de retour dans les en-têtes de l'overlay pour chaque CL.</value>
+    </data>
+    <data name="ConfigTabCheckboxSortTimeLowest" xml:space="preserve">
+        <value>Trier par temps le plus court</value>
+    </data>
+    <data name="ConfigTabTooltipSortTimeLowest" xml:space="preserve">
+        <value>Trie les en-têtes de l'overlay par temps de retour, ce qui remplace l'ordre des CL.</value>
+    </data>
+    <data name="ConfigTabCheckboxReverseSort" xml:space="preserve">
+        <value>Tri inversé</value>
+    </data>
+    <data name="ConfigTabCheckboxOnlyReturned" xml:space="preserve">
+        <value>Montrer seulement les sous-maris de revenus</value>
+    </data>
+    <data name="ConfigTabEntryColors" xml:space="preserve">
+        <value>Couleurs :</value>
+    </data>
+    <data name="ConfigTabColorsAllDone" xml:space="preserve">
+        <value>Tout Fait</value>
+    </data>
+    <data name="ConfigTabColorsPartlyDone" xml:space="preserve">
+        <value>Partiellement Fait</value>
+    </data>
+    <data name="ConfigTabColorsNoneDone" xml:space="preserve">
+        <value>Aucun Fait</value>
+    </data>
+    <data name="ConfigTabEntryWindow" xml:space="preserve">
+        <value>Fenêtre :</value>
+    </data>
+    <data name="ConfigTabCheckboxLockSize" xml:space="preserve">
+        <value>Verrouiller les dimensions</value>
+    </data>
+    <data name="ConfigTabCheckboxLockPosition" xml:space="preserve">
+        <value>Verrouiller la position</value>
+    </data>
+    <data name="ConfigTabEntryFCButtons" xml:space="preserve">
+        <value>Boutons de CL :</value>
+    </data>
+    <data name="ConfigTabCheckboxShowAll" xml:space="preserve">
+        <value>Afficher le bouton 'Tout'</value>
+    </data>
+    <data name="ConfigTabTooltipShowAll" xml:space="preserve">
+        <value>Ajoute un bouton « Tout » pour une vue d'ensemble facile de tous les FC.
+Remarque : peu clair si vous avez trop de CLs.</value>
+    </data>
+    <data name="ConfigTabCheckboxLetMeResize" xml:space="preserve">
+        <value>Laissez-moi redimensionner</value>
+    </data>
+    <data name="ConfigTabTooltipLetMeResize" xml:space="preserve">
+        <value>Cela vous permet de redimensionner les boutons de CL,
+mais les empêche de se redimensionner automatiquement.</value>
+    </data>
+    <data name="ConfigTabEntryAllSection" xml:space="preserve">
+        <value>Toutes les sections:</value>
+    </data>
+    <data name="ConfigTabCheckboxShowRoute" xml:space="preserve">
+        <value>Afficher la route</value>
+    </data>
+    <data name="ConfigTabTooltipShowRoute" xml:space="preserve">
+        <value>Cette option retournera également à 1 CL dans chaque colonne, si la fenêtre est trop petite.</value>
+    </data>
+    <data name="ConfigTabCheckboxShowDate" xml:space="preserve">
+        <value>Afficher la date</value>
+    </data>
+    <data name="ConfigTabEntryOverview" xml:space="preserve">
+        <value>Résumé :</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairStatus" xml:space="preserve">
+        <value>Afficher l'état de réparation</value>
+    </data>
+    <data name="ConfigTabCheckboxRepairAfterVoyage" xml:space="preserve">
+        <value>Afficher l'état de réparation après le retour d'expédition</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnTime" xml:space="preserve">
+        <value>Afficher l'heure de retour</value>
+    </data>
+    <data name="ConfigTabCheckboxReturnDate" xml:space="preserve">
+        <value>Afficher la date de retour</value>
+    </data>
+    <data name="ConfigTabCheckboxTimeDateShowBoth" xml:space="preserve">
+        <value>Afficher les deux</value>
+    </data>
+    <data name="ConfigTabEntryDetailedView" xml:space="preserve">
+        <value>Vue détaillée :</value>
+    </data>
+    <data name="ConfigTabCheckboxExtendedParts" xml:space="preserve">
+        <value>Afficher la liste des pièces étendues</value>
+    </data>
+    <data name="TermsCustom" xml:space="preserve">
+        <value>Personnalisé</value>
+    </data>
+    <data name="BuilderBuildTabAutomaticSelection" xml:space="preserve">
+        <value>Sélection automatique : {0} - Rang {1}</value>
+    </data>
+    <data name="BuilderBuildTooltipAutomaticSelection" xml:space="preserve">
+        <value>Pour désactiver ce comportement, allez dans la configuration, dans l'onglet Build et décochez 'Sélectionner automatiquement...'</value>
+    </data>
+    <data name="BuilderWindowButtonReset" xml:space="preserve">
+        <value>Réinitialiser</value>
+    </data>
+    <data name="BuilderWindowButtonSave" xml:space="preserve">
+        <value>Sauvegarder</value>
+    </data>
+    <data name="BuilderWindowButtonLoad" xml:space="preserve">
+        <value>Charger</value>
+    </data>
+    <data name="TermsName" xml:space="preserve">
+        <value>Nom</value>
+    </data>
+    <data name="BuilderWindowButtonSaveBuild" xml:space="preserve">
+        <value>Enregistrer la build</value>
+    </data>
+    <data name="BuilderWindowErrorSameName" xml:space="preserve">
+        <value>Une build avec le même nom existe déjà.</value>
+    </data>
+    <data name="BuilderWindowTooltipOverwrite" xml:space="preserve">
+        <value>Maintenir Ctrl pour écraser</value>
+    </data>
+    <data name="BuilderWindowTipLoading" xml:space="preserve">
+        <value>Charger en cliquant</value>
+    </data>
+    <data name="BuilderTabBestExp" xml:space="preserve">
+        <value>Meilleure Exp</value>
+    </data>
+    <data name="BestEXPCalculationManualCalculation" xml:space="preserve">
+        <value>Non calculé...</value>
+    </data>
+    <data name="BestEXPCalculationCalculate" xml:space="preserve">
+        <value>Calculer</value>
+    </data>
+    <data name="BestEXPCheckboxNoAutomatic" xml:space="preserve">
+        <value>Désactiver le calcul automatique</value>
+    </data>
+    <data name="BestEXPCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>Ignorer les déverrouillages</value>
+    </data>
+    <data name="BestEXPCheckboxAvgBonus" xml:space="preserve">
+        <value>Utiliser le bonus d'Exp moyen</value>
+    </data>
+    <data name="BestEXPTooltipAvgBonus" xml:space="preserve">
+        <value>Ce calcul ne prend en compte que l'Exp bonus garantie.
+Avec cette option, il prendra à la place la moyenne du bonus d'Exp possible.</value>
+    </data>
+    <data name="BuilderTabInfoHowCalculated" xml:space="preserve">
+        <value>Comment les breakpoints sont-ils calculés ?</value>
+    </data>
+    <data name="BuilderTabTextHowCalculated" xml:space="preserve">
+        <value>La distance et la durée sont des valeurs calculées fixes. Cependant, tous les autres breakpoints sont calculés à partir des données fournies par la communauté.
+Un grand merci à Mystic Spirit pour son travail.</value>
+    </data>
+    <data name="BuilderTabInfoBestExp" xml:space="preserve">
+        <value>Meilleure Exp ?</value>
+    </data>
+    <data name="BuilderTabTextBestExp" xml:space="preserve">
+        <value>Cet outil vous aidera à calculer l'itinéraire optimal à suivre pour atteindre le prochain niveau de la build actuelle. Ces calculs sont basés sur l'expérience gagnée par minute et les secteurs débloqués.</value>
+    </data>
+    <data name="BuilderTabInfoBreakpoints" xml:space="preserve">
+        <value>Breakpoints :</value>
+    </data>
+    <data name="BuilderTabTextT2" xml:space="preserve">
+        <value>Exploration nécessaire pour avoir une chance d'obtenir un butin du Tier 2</value>
+    </data>
+    <data name="BuilderTabTextT3" xml:space="preserve">
+        <value>Exploration nécessaire pour avoir une chance d'obtenir un butin du Tier 3</value>
+    </data>
+    <data name="BuilderTabTextNormal" xml:space="preserve">
+        <value>Prélèvement requis pour le niveau de récupération normal</value>
+    </data>
+    <data name="BuilderTabTextOptimal" xml:space="preserve">
+        <value>Prélèvement requis pour le niveau de récupération optimal</value>
+    </data>
+    <data name="TermsFavor" xml:space="preserve">
+        <value>Faveur</value>
+    </data>
+    <data name="BuilderTabTextFavor" xml:space="preserve">
+        <value>Faveur requise pour avoir une chance d'obtenir deux articles d'un secteur</value>
+    </data>
+    <data name="ColorsWhite" xml:space="preserve">
+        <value>Blanc</value>
+    </data>
+    <data name="BuilderTabInfoWhiteText" xml:space="preserve">
+        <value>Aucune sélection ou aucune donnée disponible</value>
+    </data>
+    <data name="ColorsGold" xml:space="preserve">
+        <value>Or</value>
+    </data>
+    <data name="BuilderTabInfoGoldText" xml:space="preserve">
+        <value>Exigences dépassées</value>
+    </data>
+    <data name="BuilderTabInfoGreenText" xml:space="preserve">
+        <value>T3/Optimal/Faveur atteinte</value>
+    </data>
+    <data name="ColorsPink" xml:space="preserve">
+        <value>Rose</value>
+    </data>
+    <data name="BuilderTabInfoPinkText" xml:space="preserve">
+        <value>T2/Normal atteint, suivi par T3/Optimal</value>
+    </data>
+    <data name="BuilderTabInfoRedText" xml:space="preserve">
+        <value>Exigence non remplies, suivies de l'exigence</value>
+    </data>
+    <data name="BuilderTabLeveling" xml:space="preserve">
+        <value>Gain de niveau</value>
+    </data>
+    <data name="BuilderLevelingButtonStopCalculate" xml:space="preserve">
+        <value>Arrêter le calcul</value>
+    </data>
+    <data name="TermsTargetRank" xml:space="preserve">
+        <value>Rang visé</value>
+    </data>
+    <data name="BuilderLevelingTooltipTarget" xml:space="preserve">
+        <value>Le rang que ce calcul doit atteindre, mais peut dépasser.</value>
+    </data>
+    <data name="BuilderLevelingButtonCalculate" xml:space="preserve">
+        <value>Calculer</value>
+    </data>
+    <data name="TermsSwapAfter" xml:space="preserve">
+        <value>Changer après</value>
+    </data>
+    <data name="BuilderLevelingTooltipSwap" xml:space="preserve">
+        <value>Change les pièces après X voyages si optimal.</value>
+    </data>
+    <data name="TermsProgress" xml:space="preserve">
+        <value>Progrès</value>
+    </data>
+    <data name="BuilderLevelingWarningSlow" xml:space="preserve">
+        <value>Attention : cela prendra beaucoup de temps et le jeu sera ralenti</value>
+    </data>
+    <data name="BuilderLevelingInfoAtRank" xml:space="preserve">
+        <value>Au rang</value>
+    </data>
+    <data name="BuilderLevelingInfoProgressFor" xml:space="preserve">
+        <value>Progrès pour actuel</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedTotal" xml:space="preserve">
+        <value>Temps écoulé</value>
+    </data>
+    <data name="BuilderLevelingInfoElapsedCurrent" xml:space="preserve">
+        <value>Temps écoulé du calcul actuel</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreBuild" xml:space="preserve">
+        <value>Ignorer la build</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreBuild" xml:space="preserve">
+        <value>Ceci calculera chaque build possible
+Attention : cela prendra beaucoup de temps et le jeu sera ralenti</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnlocks" xml:space="preserve">
+        <value>Ignorer les déverrouillages</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreShark" xml:space="preserve">
+        <value>Ignorer les pièces Requin</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreShark" xml:space="preserve">
+        <value>Le gain de niveau s'attend à ce qu'une partie Requin existe, il la prend donc en priorité par rapport aux parties plus mauvaises.
+Cette option désactive ce comportement
+NOTE : Votre sous-marin doit avoir le rang de la pièce au rang le plus élevé, ou bien cela tournera à l'infini.
+Par exemple, SSUW doit avoir un rang supérieur ou égal à 25.
+Important : cela peut entraîner des erreurs</value>
+    </data>
+    <data name="BuilderLevelingCheckboxIgnoreUnmodified" xml:space="preserve">
+        <value>Ignorer les pièces non modifiées</value>
+    </data>
+    <data name="BuilderLevelingTooltipIgnoreUnmodified" xml:space="preserve">
+        <value>Le gain de niveau s'attend à ce qu'une pièce non modifiée existe, il la considère donc comme prioritaire par rapport à une pièce modifié.
+Cette option désactive ce comportement
+Important : cela peut entraîner des erreurs</value>
+    </data>
+    <data name="BuilderLevelingCheckboxAvgExp" xml:space="preserve">
+        <value>Utiliser le bonus d'Exp moyen</value>
+    </data>
+    <data name="BuilderLevelingTooltipAvgExp" xml:space="preserve">
+        <value>Ce calcul ne prend normalement en compte que le bonus de prélèvement garanti.
+Avec cette option, il prendra la moyenne du bonus possible</value>
+    </data>
+    <data name="TermsAllowedSectors" xml:space="preserve">
+        <value>Secteurs autorisés</value>
+    </data>
+    <data name="BuilderLevelingResultLast" xml:space="preserve">
+        <value>Dernier calcul :</value>
+    </data>
+    <data name="BuilderTabRoute" xml:space="preserve">
+        <value>Itinéraire</value>
+    </data>
+    <data name="TermsSectors" xml:space="preserve">
+        <value>Secteurs</value>
+    </data>
+    <data name="BuilderTabRouteSelection" xml:space="preserve">
+        <value>Sélectionner le secteur en cliquant</value>
+    </data>
+    <data name="TermsUnlockedBy" xml:space="preserve">
+        <value>Déverrouillé par</value>
+    </data>
+    <data name="BuilderWindowTooltipUnlocksSlot" xml:space="preserve">
+        <value>#Nouvel emplacement de sous-marin</value>
+    </data>
+    <data name="BuilderWindowTooltipAlwaysUnlocked" xml:space="preserve">
+        <value>Toujours déverrouillé</value>
+    </data>
+    <data name="TermsUnknown" xml:space="preserve">
+        <value>Inconnu</value>
+    </data>
+    <data name="BuilderTabShip" xml:space="preserve">
+        <value>Bâteau</value>
+    </data>
+    <data name="BuilderShipCheckboxIgnoreBreakpoints" xml:space="preserve">
+        <value>Ignorer les breakpoints</value>
+    </data>
+    <data name="BuilderShipHeaderRoute" xml:space="preserve">
+        <value>Itinéraire sélectionné :</value>
+    </data>
+    <data name="TermsSurveillance" xml:space="preserve">
+        <value>Exploration</value>
+    </data>
+    <data name="TermsRetrieval" xml:space="preserve">
+        <value>Prélèvement</value>
+    </data>
+    <data name="TermsSpeed" xml:space="preserve">
+        <value>Vitesse</value>
+    </data>
+    <data name="BuilderShipCheckboxT2" xml:space="preserve">
+        <value>Utiliser T2</value>
+    </data>
+    <data name="BuilderShipCheckboxNormal" xml:space="preserve">
+        <value>Utiliser Normal</value>
+    </data>
+    <data name="BuilderShipCheckboxFavor" xml:space="preserve">
+        <value>Ignorer la Faveur</value>
+    </data>
+    <data name="BuilderShipCheckboxModded" xml:space="preserve">
+        <value>Aucune pièce modifiée</value>
+    </data>
+    <data name="BuilderShipCalculationNothingFound" xml:space="preserve">
+        <value>Aucune build trouvée.</value>
+    </data>
+    <data name="TermsCost" xml:space="preserve">
+        <value>Coût</value>
+    </data>
+    <data name="TermsHull" xml:space="preserve">
+        <value>Coque</value>
+    </data>
+    <data name="TermsStern" xml:space="preserve">
+        <value>Poupe</value>
+    </data>
+    <data name="TermsBow" xml:space="preserve">
+        <value>Proue</value>
+    </data>
+    <data name="TermsBridge" xml:space="preserve">
+        <value>Pont</value>
+    </data>
+    <data name="TermsRange" xml:space="preserve">
+        <value>Distance</value>
+    </data>
+    <data name="TermsDuration" xml:space="preserve">
+        <value>Durée</value>
+    </data>
+    <data name="BuilderShipTableSelect" xml:space="preserve">
+        <value>Sélectionner cette build</value>
+    </data>
+    <data name="BuilderStatsCategoryBuild" xml:space="preserve">
+        <value>Build sélectionnée :</value>
+    </data>
+    <data name="BuilderStatsCategoryRoute" xml:space="preserve">
+        <value>Route optimisée :</value>
+    </data>
+    <data name="TermsFuel" xml:space="preserve">
+        <value>Carburant</value>
+    </data>
+    <data name="BuilderStatsTextRepairAfter" xml:space="preserve">
+        <value>{0} après {1} voyages</value>
+    </data>
+    <data name="BuilderStatsRouteNoSelection" xml:space="preserve">
+        <value>Aucune sélection</value>
+    </data>
+    <data name="BuilderLevelingResultLimit" xml:space="preserve">
+        <value>Limite :</value>
+    </data>
+    <data name="BuilderLevelingResultMaximize" xml:space="preserve">
+        <value>Maximiser la limite :</value>
+    </data>
+    <data name="BuilderLevelingResultAvg" xml:space="preserve">
+        <value>Bonus moyen :</value>
+    </data>
+    <data name="BuilderLevelingResultUnlocks" xml:space="preserve">
+        <value>Ignorer les déverrouillages :</value>
+    </data>
+    <data name="BuilderLevelingStepBuild" xml:space="preserve">
+        <value>Build :</value>
+    </data>
+    <data name="BuilderLevelingStepVoyage" xml:space="preserve">
+        <value>Voyage {0} :</value>
+    </data>
+    <data name="BuilderLevelingStepGained" xml:space="preserve">
+        <value>Exp gagnée :</value>
+    </data>
+    <data name="BuilderLevelingStepReached" xml:space="preserve">
+        <value>Rang atteint :</value>
+    </data>
+    <data name="BuilderLevelingResultStart" xml:space="preserve">
+        <value>Rang de départ :</value>
+    </data>
+    <data name="BuilderLevelingResultFinal" xml:space="preserve">
+        <value>Rang final :</value>
+    </data>
+    <data name="BuilderLevelingResultVoyages" xml:space="preserve">
+        <value>Expéditions :</value>
+    </data>
+    <data name="BuilderLevelingResultTotal" xml:space="preserve">
+        <value>Total d'Exp :</value>
+    </data>
+    <data name="BuilderLevelingResultLeftover" xml:space="preserve">
+        <value>Exp restante :</value>
+    </data>
+    <data name="DurationLimitNoLimit" xml:space="preserve">
+        <value>Illimitée</value>
+    </data>
+    <data name="DurationLimit24Hours" xml:space="preserve">
+        <value>24 heures</value>
+    </data>
+    <data name="DurationLimit36Hours" xml:space="preserve">
+        <value>36 heures</value>
+    </data>
+    <data name="DurationLimit48Hours" xml:space="preserve">
+        <value>48 heures</value>
+    </data>
+    <data name="DurationLimitCustom" xml:space="preserve">
+        <value>Personnalisée</value>
+    </data>
+    <data name="DateLimit1Day" xml:space="preserve">
+        <value>1 jour</value>
+    </data>
+    <data name="DateLimit3Days" xml:space="preserve">
+        <value>3 jours</value>
+    </data>
+    <data name="DateLimit5Days" xml:space="preserve">
+        <value>5 jours</value>
+    </data>
+    <data name="DateLimit1Week" xml:space="preserve">
+        <value>1 semaine</value>
+    </data>
+    <data name="DateLimit2Weeks" xml:space="preserve">
+        <value>2 semaines</value>
+    </data>
+    <data name="DateLimit3Weeks" xml:space="preserve">
+        <value>3 semaines</value>
+    </data>
+    <data name="DateLimit4Weeks" xml:space="preserve">
+        <value>4 semaines</value>
+    </data>
+    <data name="DateLimit1Month" xml:space="preserve">
+        <value>1 mois</value>
+    </data>
+    <data name="DateLimit3Months" xml:space="preserve">
+        <value>3 mois</value>
+    </data>
+    <data name="DateLimit6Months" xml:space="preserve">
+        <value>6 mois</value>
+    </data>
+    <data name="DateLimit9Months" xml:space="preserve">
+        <value>9 mois</value>
+    </data>
+    <data name="DateLimit1Year" xml:space="preserve">
+        <value>1 an</value>
+    </data>
+</root>
