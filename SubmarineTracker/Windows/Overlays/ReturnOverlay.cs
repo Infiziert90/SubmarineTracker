@@ -121,7 +121,7 @@ public class ReturnOverlay : Window, IDisposable
             return;
 
         var y = ImGui.GetCursorPosY();
-        var windowWidth = ImGui.GetContentRegionAvail().X - (20.0f * ImGuiHelpers.GlobalScale);
+        var windowWidth = ImGui.GetContentRegionAvail().X;
 
         var color = VoyageStats is { Done: > 0, OnRoute: > 0 }
                         ? Plugin.Configuration.OverlayPartlyDone : VoyageStats.OnRoute == 0
