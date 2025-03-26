@@ -85,6 +85,9 @@ public static class Export
         [JsonProperty("hash")]
         public string Hash { get; set; } = "";
 
+        // Used by CSV import
+        public Loot() : base("Loot") {}
+
         public Loot(SubmarineTracker.Loot loot) : base("Loot")
         {
             Sector = loot.Sector;
@@ -216,28 +219,17 @@ public static class Export
     }
 
     // For internal debug only
-    public static Dictionary<string, Loot> Import(string inputPath)
+    private static readonly HashSet<string> LootHashes = [];
+    public static IEnumerable<Loot> Import(FileInfo file)
     {
-        try
-        {
-            var dict = new Dictionary<string, Loot>();
-            foreach (var file in new DirectoryInfo(inputPath).EnumerateFiles())
-            {
-                Plugin.Log.Information(file.Name);
-                using var reader = file.OpenText();
-                using var csv = new CsvReader(reader, CsvReadConfig);
+        using var reader = file.OpenText();
+        using var csv = new CsvReader(reader, CsvReadConfig);
 
-                csv.Context.RegisterClassMap(new ExportLootMap(true));
-                foreach (var loot in csv.GetRecords<Loot>())
-                    dict.TryAdd(loot.Hash, loot);
-            }
-
-            return dict;
-        }
-        catch (Exception ex)
+        csv.Context.RegisterClassMap(new ExportLootMap(true));
+        foreach (var loot in csv.GetRecords<Loot>())
         {
-            Plugin.Log.Error(ex, "Error while importing");
-            return new Dictionary<string, Loot>();
+            if (LootHashes.Add(loot.Hash))
+                yield return loot;
         }
     }
 

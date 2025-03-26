@@ -16,6 +16,7 @@ public partial class ConfigWindow
     private string InputPath = string.Empty;
     private ulong Worth;
     private int Records;
+    private bool ImportDone;
 
 
     private bool About()
@@ -105,26 +106,29 @@ public partial class ConfigWindow
         {
             Task.Run(() =>
             {
-                var dict = Export.Import(InputPath);
-
                 var profile = Plugin.Configuration.CustomLootProfiles["Default"];
-                foreach (var loot in dict.Values)
+                foreach (var file in new DirectoryInfo(InputPath).EnumerateFiles())
                 {
-                    if (profile.TryGetValue(loot.Primary, out var value))
-                        Worth += (ulong) value * loot.PrimaryCount;
-                    else
-                        Worth += Sheets.ItemSheet.GetRow(loot.Primary)!.PriceLow * loot.PrimaryCount;
-
-                    if (loot.Additional > 0)
+                    foreach (var loot in Export.Import(file))
                     {
-                        if (profile.TryGetValue(loot.Additional, out value))
-                            Worth += (ulong) value * loot.AdditionalCount;
+                        Records += 1;
+
+                        if (profile.TryGetValue(loot.Primary, out var value))
+                            Worth += (ulong)value * loot.PrimaryCount;
                         else
-                            Worth += Sheets.ItemSheet.GetRow(loot.Additional)!.PriceLow * loot.AdditionalCount;
+                            Worth += Sheets.GetItem(loot.Primary).PriceLow * loot.PrimaryCount;
+
+                        if (loot.Additional > 0)
+                        {
+                            if (profile.TryGetValue(loot.Additional, out value))
+                                Worth += (ulong)value * loot.AdditionalCount;
+                            else
+                                Worth += Sheets.GetItem(loot.Additional).PriceLow * loot.AdditionalCount;
+                        }
                     }
                 }
 
-                Records = dict.Count;
+                ImportDone = true;
             });
 
         }
@@ -133,6 +137,7 @@ public partial class ConfigWindow
         {
             Helper.TextColored(ImGuiColors.ParsedOrange, $"Voyages recorded: {Records:N0}");
             Helper.TextColored(ImGuiColors.ParsedOrange, $"Worth of all items: {Worth:N0} Gil");
+            Helper.TextColored(ImGuiColors.ParsedOrange, $"Import Done?: {ImportDone}");
         }
         #endif
 
