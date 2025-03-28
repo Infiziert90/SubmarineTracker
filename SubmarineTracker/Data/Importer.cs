@@ -137,9 +137,6 @@ public static class Importer
         [Name("Optimal max")] public double OptimalMax { get; set; }
     }
 
-    private const string ItemPath = "Items (detailed).csv";
-    private const string SectorPath = "Sectors (detailed).csv";
-
     public static void ExportDetailed(string itemPath)
     {
         Plugin.Log.Information("Start item build");
