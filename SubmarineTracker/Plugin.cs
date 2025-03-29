@@ -118,6 +118,7 @@ public class Plugin : IDalamudPlugin
         ServerBar = new ServerBar(this);
 
         PluginInterface.UiBuilder.Draw += DrawUi;
+        PluginInterface.UiBuilder.OpenMainUi += OpenTracker;
         PluginInterface.UiBuilder.OpenConfigUi += OpenConfig;
         PluginInterface.LanguageChanged += LanguageChanged;
 

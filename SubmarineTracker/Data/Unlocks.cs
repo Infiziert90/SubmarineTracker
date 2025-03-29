@@ -139,7 +139,7 @@ public static class Unlocks
         { 125, new UnlockedFrom(122) },                         // J    South Indigo Deep 3           <-       South Indigo Deep 2
         { 126, new UnlockedFrom(123) },                         // K    the Talonspoint Depths        <-       The Talon
         { 127, new UnlockedFrom(124) },                         // L    Saltfarer's Eye               <-       Southern Central Blue
-        { 128, new UnlockedFrom(9876) },                        // M    Startail Shallows             <-       XXX
+        { 128, new UnlockedFrom(124) },                        // M    Startail Shallows             <-       Southern Central Blue
     };
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)

@@ -37,7 +37,7 @@ public partial class BuilderWindow
                                  .ToList();
 
         Helper.TextColored(ImGuiColors.HealerGreen, $"{Language.TermsSectors} {CurrentBuild.Sectors.Count} / 5");
-        var startPoint = Voyage.FindStartFromMap((uint) CurrentBuild.MapRowId).RowId;
+        var startPoint = Voyage.FindStartFromMap(CurrentBuild.MapRowId).RowId;
 
         var height = ImGui.GetTextLineHeight() * 6.5f; // 5 items max, we give padding space for 6.5
         using (var listBox = ImRaii.ListBox("##selectedPoints", new Vector2(-1, height)))
