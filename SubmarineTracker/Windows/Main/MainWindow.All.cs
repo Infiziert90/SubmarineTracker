@@ -61,7 +61,7 @@ public partial class MainWindow
 
                     var predictedExp = sub.PredictExpGrowth();
                     tooltip += $"{Language.TermsRoute}: {route}\n";
-                    tooltip += $"{Language.TermsEXPAfter}: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%%)\n";
+                    tooltip += $"{Language.TermsEXPAfter}: {predictedExp.Rank} ({predictedExp.Exp:##0.00}%)\n";
                     tooltip += $"{Language.TermsRepair}: {Language.MainWindowTooltipRepair.Format(sub.Build.RepairCosts, sub.CalculateUntilRepair())}";
 
                     Helper.Tooltip(tooltip);

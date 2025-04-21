@@ -93,7 +93,7 @@ public partial class LootWindow
         var sectorHits = history.Count;
         var doubleDips = history.Sum(ll => ll.ValidAdditional ? 1 : 0);
         Helper.TextColored(ImGuiColors.HealerGreen, $"Hit {sectorHits:N0} time{(sectorHits > 1 ? "s" : "")}");
-        Helper.TextColored(ImGuiColors.HealerGreen, $"DD {doubleDips:N0} time{(doubleDips > 1 ? "s" : "")} ({(double) doubleDips / sectorHits * 100.0:F2}%%)");
+        Helper.TextColored(ImGuiColors.HealerGreen, $"DD {doubleDips:N0} time{(doubleDips > 1 ? "s" : "")} ({(double) doubleDips / sectorHits * 100.0:F2}%)");
         using (var table = ImRaii.Table("##AnalyseStats", 4, 0, new Vector2(300 * ImGuiHelpers.GlobalScale, 0)))
         {
             if (table.Success)

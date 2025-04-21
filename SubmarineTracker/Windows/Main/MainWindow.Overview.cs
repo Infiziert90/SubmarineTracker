@@ -55,7 +55,7 @@ public partial class MainWindow
                     if (Plugin.Configuration.ShowOnlyLowest)
                     {
                         ImGui.SameLine(thirdRow);
-                        Helper.TextColored(ImGuiColors.ParsedOrange, $"{sub.LowestCondition():F}%%");
+                        Helper.TextColored(ImGuiColors.ParsedOrange, $"{sub.LowestCondition():F}%");
                     }
 
                     if (sub.IsOnVoyage())
