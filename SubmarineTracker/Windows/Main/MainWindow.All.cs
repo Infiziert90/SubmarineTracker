@@ -53,7 +53,7 @@ public partial class MainWindow
                 Helper.TextColored(ImGuiColors.ParsedOrange, fullText);
 
                 var textSize = ImGui.CalcTextSize(fullText);
-                var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + (ImGui.GetStyle().ItemSpacing.Y * 2));
+                var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + ImGui.GetStyle().ItemSpacing.Y);
                 if (ImGui.IsMouseHoveringRect(begin, end))
                 {
                     var tooltip = condition ? "" : $"{Language.ReturnOverlayTooltipRepairNeeded}\n";
