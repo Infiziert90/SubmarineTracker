@@ -1203,11 +1203,8 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
   <data name="FavorTermYes" xml:space="preserve">
         <value>Yes</value>
     </data>
-  <data name="FavorTermStatsEnoughButFailed" xml:space="preserve">
-        <value>CSCFIFFE</value>
-    </data>
   <data name="FavorTermLow" xml:space="preserve">
-        <value>Too Low</value>
+        <value>Trop Bas</value>
     </data>
   <data name="TermUnknown" xml:space="preserve">
         <value>Unknown</value>
@@ -1315,7 +1312,7 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Show Returning Sub</value>
     </data>
   <data name="ConfigTabCheckboxNoSubName" xml:space="preserve">
-        <value>Show Submarine Name</value>
+        <value>Afficher le nom du sous-marin</value>
     </data>
   <data name="ConfigTabCheckboxServerBarNumbers" xml:space="preserve">
         <value>Show On Route And Done Numbers</value>

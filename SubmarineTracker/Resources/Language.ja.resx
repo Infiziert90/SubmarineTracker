@@ -39,7 +39,7 @@
         <value>このプラグインは匿名化された潜水艦固有のデータを収集します。 収集されるデータの詳細については、プラグイン設定メニューのアップロードタブを参照してください。 データ収集はすべてオプトアウトすることができます。</value>
     </data>
   <data name="WarningsIgnoredCharacter" xml:space="preserve">
-        <value>Ignored Character</value>
+        <value>無視するキャラクター</value>
     </data>
   <data name="WindowNameTracker" xml:space="preserve">
         <value>トラッカー</value>
@@ -54,19 +54,19 @@
         <value>ビルダーウィンドウを開きます。</value>
     </data>
   <data name="WindowNameLoot" xml:space="preserve">
-        <value>Loot</value>
+        <value>戦利品</value>
     </data>
   <data name="MenuTooltipLoot" xml:space="preserve">
         <value>戦利品ウィンドウを開きます。</value>
     </data>
   <data name="WindowNameHelpy" xml:space="preserve">
-        <value>Helpy</value>
+        <value>ヘルパー</value>
     </data>
   <data name="MenuTooltipHelpy" xml:space="preserve">
         <value>ヘルパーウィンドウを開きます。</value>
     </data>
   <data name="WindowNameOverlay" xml:space="preserve">
-        <value>Overlay</value>
+        <value>オーバーレイ</value>
     </data>
   <data name="MenuTooltipOverlay" xml:space="preserve">
         <value>リターンオーバーレイを開きます。</value>
@@ -133,7 +133,7 @@
         <value>後</value>
     </data>
   <data name="TermsRepair" xml:space="preserve">
-        <value>修復</value>
+        <value>修理</value>
     </data>
   <data name="MainWindowTooltipRepair" xml:space="preserve">
         <value>{0} 航海後の {1} キット</value>
@@ -154,7 +154,7 @@
         <value>航海データがありません</value>
     </data>
   <data name="MainWindowTabLoot" xml:space="preserve">
-        <value>Loot</value>
+        <value>戦利品</value>
     </data>
   <data name="TermsBuild" xml:space="preserve">
         <value>ビルド</value>
@@ -284,7 +284,7 @@
         <value>未選択の場合、特定の期間で絞り込むことが可能です。</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
-        <value>FromTo:</value>
+        <value>期間:</value>
     </data>
   <data name="LootTabExport" xml:space="preserve">
         <value>エクスポート</value>
@@ -311,7 +311,7 @@
         <value>ファイル</value>
     </data>
   <data name="LootTabButtonClipboard" xml:space="preserve">
-        <value>Clipboard</value>
+        <value>クリップボード</value>
     </data>
   <data name="LootExportErrorNothingFound" xml:space="preserve">
         <value>選択した時間帯にエクスポートするものはありません。</value>
@@ -377,7 +377,7 @@
         <value>開放されていて探索済み</value>
     </data>
   <data name="ColorsViolet" xml:space="preserve">
-        <value>バイオレット</value>
+        <value>紫</value>
     </data>
   <data name="HelpyTabInfoVioletText" xml:space="preserve">
         <value>開放されているが未探索</value>
@@ -497,16 +497,16 @@
         <value>Ko-Fi Tip</value>
     </data>
   <data name="ConfigTabGeneral" xml:space="preserve">
-        <value>General</value>
+        <value>全般</value>
     </data>
   <data name="ConfigTabEntryNaming" xml:space="preserve">
         <value>Naming Convention:</value>
     </data>
   <data name="ConfigTabNamingExample" xml:space="preserve">
-        <value>Example: </value>
+        <value>例: </value>
     </data>
   <data name="ConfigTabEntryUploads" xml:space="preserve">
-        <value>Uploads:</value>
+        <value>アップロード:</value>
     </data>
   <data name="ConfigTabCheckboxUploadPermission" xml:space="preserve">
         <value>アップロード権限</value>
@@ -519,7 +519,7 @@
         <value>どんなデータですか？</value>
     </data>
   <data name="ConfigTabUploadPoint1" xml:space="preserve">
-        <value>Loot received</value>
+        <value>受け取った戦利品</value>
     </data>
   <data name="ConfigTabUploadPoint2" xml:space="preserve">
         <value>セクターのロックを解除</value>
@@ -528,10 +528,10 @@
         <value>Exploration procs</value>
     </data>
   <data name="ConfigTabUploadPoint4" xml:space="preserve">
-        <value>Submarine stats</value>
+        <value>潜水艦のステータス</value>
     </data>
   <data name="ConfigTabLoot" xml:space="preserve">
-        <value>Loot</value>
+        <value>戦利品</value>
     </data>
   <data name="ConfigTabCheckboxLegacy" xml:space="preserve">
         <value>レガシー戦利品を除外</value>
@@ -555,7 +555,7 @@
         <value>価格</value>
     </data>
   <data name="TermsDelete" xml:space="preserve">
-        <value>Del</value>
+        <value>削除</value>
     </data>
   <data name="ConfigTabManage" xml:space="preserve">
         <value>管理</value>
@@ -568,10 +568,10 @@
 ホールドコントロールで削除します</value>
     </data>
   <data name="TermsIgnoredCharacters" xml:space="preserve">
-        <value>Ignored Characters</value>
+        <value>無視するキャラクター</value>
     </data>
   <data name="TermsAddCurrentCharacter" xml:space="preserve">
-        <value>Add Current Character</value>
+        <value>現在のキャラクターを追加</value>
     </data>
   <data name="ConfigTabNotify" xml:space="preserve">
         <value>通知する</value>
@@ -580,7 +580,7 @@
         <value>通知:</value>
     </data>
   <data name="ConfigTabCheckboxReturningSub" xml:space="preserve">
-        <value>Returning Sub</value>
+        <value>潜水艦の帰還</value>
     </data>
   <data name="ConfigTabCheckboxNeededRepair" xml:space="preserve">
         <value>修理が必要</value>
@@ -598,7 +598,7 @@
         <value>この潜水艦が返されるタイムスタンプを含む、派遣時にWebフックメッセージを送信します。</value>
     </data>
   <data name="ConfigTabCheckboxSendReturn" xml:space="preserve">
-        <value>返品を送信</value>
+        <value>帰還を送信</value>
     </data>
   <data name="ConfigTabTooltipSendReturn" xml:space="preserve">
         <value>返却時にWebhookメッセージを送信します。</value>
@@ -610,28 +610,28 @@
         <value>クリックしてブラウザでdiscordのWebフックガイドを開きます。</value>
     </data>
   <data name="ConfigTabEntrySubmarines" xml:space="preserve">
-        <value>サブマリーヌ:</value>
+        <value>潜水艦:</value>
     </data>
   <data name="ConfigTabCheckboxAllReturning" xml:space="preserve">
         <value>すべての返却されたSubs</value>
     </data>
   <data name="ConfigTabEntrySpecificSubmarines" xml:space="preserve">
-        <value>特定のサブマリー:</value>
+        <value>特定の潜水艦:</value>
     </data>
   <data name="ConfigTabOverlay" xml:space="preserve">
-        <value>Overlay</value>
+        <value>オーバーレイ</value>
     </data>
   <data name="ConfigTabEntryBehavior" xml:space="preserve">
         <value>Behavior:</value>
     </data>
   <data name="ConfigTabCheckboxOpenOnStartup" xml:space="preserve">
-        <value>Open On Startup</value>
+        <value>起動時に開く</value>
     </data>
   <data name="ConfigTabTooltipOpenOnStartup" xml:space="preserve">
-        <value>Opens the overlay, if it was closed before shutting down the game, on the next startup</value>
+        <value>ゲームを終了する前にオーバーレイを閉じた場合、次回起動時に開きます</value>
     </data>
   <data name="ConfigTabCheckboxOnReturn" xml:space="preserve">
-        <value>返品時</value>
+        <value>帰還時に開く</value>
     </data>
   <data name="ConfigTabTooltipOnReturn" xml:space="preserve">
         <value>1つの潜水艦が戻った場合は常にオーバーレイを開く</value>
@@ -658,7 +658,7 @@
         <value>Show Time In Title</value>
     </data>
   <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
-        <value>最初の返品時刻を表示</value>
+        <value>最初の帰還時刻を表示</value>
     </data>
   <data name="ConfigTabTooltipFirstReturnTime" xml:space="preserve">
         <value>各FCのオーバーレイヘッダーに最初の戻り値のサブを表示します。</value>
@@ -676,7 +676,7 @@
         <value>返されたもののみ表示</value>
     </data>
   <data name="ConfigTabEntryColors" xml:space="preserve">
-        <value>Colors:</value>
+        <value>色:</value>
     </data>
   <data name="ConfigTabColorsAllDone" xml:space="preserve">
         <value>All Done</value>
@@ -732,13 +732,13 @@
         <value>修理ステータスを表示</value>
     </data>
   <data name="ConfigTabCheckboxRepairAfterVoyage" xml:space="preserve">
-        <value>航海後の修理ステータスを表示</value>
+        <value>帰還後の修理状況を表示</value>
     </data>
   <data name="ConfigTabCheckboxReturnTime" xml:space="preserve">
-        <value>返品時刻を表示</value>
+        <value>帰還タイマーを表示</value>
     </data>
   <data name="ConfigTabCheckboxReturnDate" xml:space="preserve">
-        <value>返品日時を表示</value>
+        <value>帰還日時を表示</value>
     </data>
   <data name="ConfigTabCheckboxTimeDateShowBoth" xml:space="preserve">
         <value>両方のオプションを表示</value>
@@ -786,7 +786,7 @@
         <value>クリックして読み込む</value>
     </data>
   <data name="BuilderTabBestExp" xml:space="preserve">
-        <value>Best Exp</value>
+        <value>ベストExp</value>
     </data>
   <data name="BestEXPCalculationManualCalculation" xml:space="preserve">
         <value>未計算...</value>
@@ -827,28 +827,28 @@ Mystic Spirit for all there work.</value>
         <value>ブレークポイント:</value>
     </data>
   <data name="BuilderTabTextT2" xml:space="preserve">
-        <value>レベル2から戦利品を獲得するには監視が必要です</value>
+        <value>Tier2の戦利品を獲得するために必要な探査性能</value>
     </data>
   <data name="BuilderTabTextT3" xml:space="preserve">
-        <value>監視はレベル3から戦利品を獲得するために必要です</value>
+        <value>Tier3の戦利品を獲得するために必要な探査性能</value>
     </data>
   <data name="TermsNormal" xml:space="preserve">
         <value>標準</value>
     </data>
   <data name="BuilderTabTextNormal" xml:space="preserve">
-        <value>正常な検索レベルには取得が必要です</value>
+        <value>普通の回収量に必要な収集性能</value>
     </data>
   <data name="TermsOptimal" xml:space="preserve">
         <value>最適な</value>
     </data>
   <data name="BuilderTabTextOptimal" xml:space="preserve">
-        <value>最適な検索レベルには取得が必要です</value>
+        <value>最高の回収量に必要な収集性能</value>
     </data>
   <data name="TermsFavor" xml:space="preserve">
-        <value>お気に入り</value>
+        <value>運</value>
     </data>
   <data name="BuilderTabTextFavor" xml:space="preserve">
-        <value>セクターから2つのアイテムを獲得するには、好感度が必要です</value>
+        <value>セクターから2つのアイテムを獲得するために必要な運</value>
     </data>
   <data name="ColorsWhite" xml:space="preserve">
         <value>白</value>
@@ -924,7 +924,7 @@ Mystic Spirit for all there work.</value>
         <value>ロック解除を無視</value>
     </data>
   <data name="BuilderLevelingCheckboxIgnoreShark" xml:space="preserve">
-        <value>サメの部位を無視</value>
+        <value>シャークの部位を無視</value>
     </data>
   <data name="BuilderLevelingTooltipIgnoreShark" xml:space="preserve">
         <value>レベリングは、サメのパーツが存在することを想定している。
@@ -991,13 +991,13 @@ Mystic Spirit for all there work.</value>
         <value>選択したルート:</value>
     </data>
   <data name="TermsStats" xml:space="preserve">
-        <value>統計</value>
+        <value>ステータス</value>
     </data>
   <data name="TermsSurveillance" xml:space="preserve">
-        <value>監視</value>
+        <value>探査</value>
     </data>
   <data name="TermsRetrieval" xml:space="preserve">
-        <value>取得</value>
+        <value>収集</value>
     </data>
   <data name="TermsSpeed" xml:space="preserve">
         <value>速度</value>
@@ -1012,10 +1012,10 @@ Mystic Spirit for all there work.</value>
         <value>ノーマルを使用</value>
     </data>
   <data name="BuilderShipCheckboxFavor" xml:space="preserve">
-        <value>お気に入りを無視</value>
+        <value>運を無視</value>
     </data>
   <data name="BuilderShipCheckboxModded" xml:space="preserve">
-        <value>修正されたパーツはありません</value>
+        <value>改級パーツなし</value>
     </data>
   <data name="BuilderShipCalculationNothingFound" xml:space="preserve">
         <value>ビルドが見つかりません。</value>
@@ -1024,19 +1024,19 @@ Mystic Spirit for all there work.</value>
         <value>コスト</value>
     </data>
   <data name="TermsHull" xml:space="preserve">
-        <value>船体</value>
+        <value>艦体</value>
     </data>
   <data name="TermsStern" xml:space="preserve">
-        <value>Stern</value>
+        <value>艦尾</value>
     </data>
   <data name="TermsBow" xml:space="preserve">
-        <value>弓</value>
+        <value>艦首</value>
     </data>
   <data name="TermsBridge" xml:space="preserve">
-        <value>ブリッジ</value>
+        <value>艦橋</value>
     </data>
   <data name="TermsRange" xml:space="preserve">
-        <value>Range</value>
+        <value>速度</value>
     </data>
   <data name="TermsDuration" xml:space="preserve">
         <value>期間</value>
@@ -1054,7 +1054,7 @@ Mystic Spirit for all there work.</value>
         <value>燃料</value>
     </data>
   <data name="TermsExpEachMin" xml:space="preserve">
-        <value>Exp/Min</value>
+        <value>Exp/分</value>
     </data>
   <data name="BuilderStatsTextRepairAfter" xml:space="preserve">
         <value>{0} 航海後の {1}</value>
@@ -1192,19 +1192,19 @@ Mystic Spirit for all there work.</value>
         <value>T1 Low</value>
     </data>
   <data name="RetTermOptimal" xml:space="preserve">
-        <value>Optimal</value>
+        <value>最高</value>
     </data>
   <data name="RetTermNormal" xml:space="preserve">
-        <value>Normal</value>
+        <value>普通</value>
     </data>
   <data name="RetTermPoor" xml:space="preserve">
-        <value>Poor</value>
+        <value>乏しい</value>
     </data>
   <data name="FavorTermYes" xml:space="preserve">
         <value>Yes</value>
     </data>
   <data name="FavorTermStatsEnoughButFailed" xml:space="preserve">
-        <value>CSCFIFFE</value>
+        <value>帰還を優先し引きあげることにしました</value>
     </data>
   <data name="FavorTermLow" xml:space="preserve">
         <value>Too Low</value>
@@ -1273,7 +1273,7 @@ Mystic Spirit for all there work.</value>
         <value>Date before {0} is not possible</value>
     </data>
   <data name="TermJoinDiscord" xml:space="preserve">
-        <value>Join Discord</value>
+        <value>Discordに参加</value>
     </data>
   <data name="OverseasDiscordTooltip" xml:space="preserve">
         <value>Discord: Overseas Casuals
@@ -1288,31 +1288,31 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Type</value>
     </data>
   <data name="SubPartHull" xml:space="preserve">
-        <value>Hull</value>
+        <value>艦体</value>
     </data>
   <data name="SubPartStern" xml:space="preserve">
-        <value>Stern</value>
+        <value>艦尾</value>
     </data>
   <data name="SubPartBow" xml:space="preserve">
-        <value>Bow</value>
+        <value>艦首</value>
     </data>
   <data name="SubPartBridge" xml:space="preserve">
-        <value>Bridge</value>
+        <value>艦橋</value>
     </data>
   <data name="LootTabLoot" xml:space="preserve">
-        <value>Loot</value>
+        <value>戦利品</value>
     </data>
   <data name="TermSearch" xml:space="preserve">
         <value>Search</value>
     </data>
   <data name="TabLootNoSearch" xml:space="preserve">
-        <value>No search target selected ...</value>
+        <value>検索対象が選択されていません...</value>
     </data>
   <data name="ConfigTabServerBar" xml:space="preserve">
-        <value>Server Bar:</value>
+        <value>サーバー情報バー:</value>
     </data>
   <data name="ConfigTabCheckboxServerBarEnabled" xml:space="preserve">
-        <value>Show Returning Sub</value>
+        <value>潜水艦の帰還タイマーを表示</value>
     </data>
   <data name="ConfigTabCheckboxNoSubName" xml:space="preserve">
         <value>Show Submarine Name</value>
@@ -1327,7 +1327,7 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Hold Control to delete</value>
     </data>
   <data name="ConfigTabTooltipShowStorageMessage" xml:space="preserve">
-        <value>Show a message whenever you enter the workshop, informing you about your tank and repair kit status</value>
+        <value>地下工房に入るたびに、バレルと修理材の状態を通知するメッセージを表示します</value>
     </data>
   <data name="ConfigTabCheckboxShowStorageMessage" xml:space="preserve">
         <value>Show Storage Message</value>
@@ -1336,10 +1336,10 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Also Show At Startup</value>
     </data>
   <data name="ConfigTabCheckboxOfflineMode" xml:space="preserve">
-        <value>Use Offline Mode</value>
+        <value>オフラインモードを使用</value>
     </data>
   <data name="ConfigTabHeaderOfflineLabel" xml:space="preserve">
-        <value>Offline Mode Explanation</value>
+        <value>オフラインモードについて</value>
     </data>
   <data name="ConfigTabOfflineModeText1" xml:space="preserve">
         <value>Offline mode allows you to receive return notifications while the game client is closed. For this feature to work, some data has to be uploaded to a server for processing.</value>
@@ -1426,16 +1426,16 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Unlocked</value>
     </data>
   <data name="LootTabRoutes" xml:space="preserve">
-        <value>Routes</value>
+        <value>ルート</value>
     </data>
   <data name="StorageBoth" xml:space="preserve">
-        <value>Not enough Tanks and Repair Kits!</value>
+        <value>バレルと修理材が不足しています！</value>
     </data>
   <data name="StorageNoTanks" xml:space="preserve">
-        <value>Not enough Tanks!</value>
+        <value>バレルが足りません！</value>
     </data>
   <data name="StorageNoKits" xml:space="preserve">
-        <value>Not enough Repair Kits!</value>
+        <value>魔導機械修理材が足りません！</value>
     </data>
   <data name="StorageAllOkay" xml:space="preserve">
         <value>Your fleet has enough for {0} voyages and {1} combined repairs.</value>
