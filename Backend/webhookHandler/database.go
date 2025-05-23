@@ -30,8 +30,14 @@ func Connect() {
 
 // GetTimers - Grabs all timers that are below 10 minutes of time leftover.
 // Collected entries are wiped from the database.
-// Webhook Url is checked to be a valid discord.com webhook address
+// Webhook Url is checked to be a valid discord.com webhook address.
+// If the connection has been closed by the data, this function will terminate the current runtime.
 func GetTimers() []ActiveReturn {
+	if Conn.IsClosed() {
+		fmt.Println("Connection is closed")
+		os.Exit(100)
+	}
+
 	var invalidTimers = make([]int64, 0)
 	var activeTimers = make([]ActiveReturn, 0)
 
