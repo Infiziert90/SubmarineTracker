@@ -282,7 +282,7 @@ Check your config for higher level suggestions.</value>
         <value>Fixed:</value>
     </data>
     <data name="LootTabTooltipFixed" xml:space="preserve">
-        <value>Selecting None will allow you to pick a specific time frame.</value>
+        <value>Selecting 'No Limit' will allow you to pick a specific time frame.</value>
     </data>
     <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>FromTo:</value>

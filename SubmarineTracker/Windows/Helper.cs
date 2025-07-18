@@ -38,7 +38,7 @@ public static class Helper
     }
 
     /// <summary>
-    /// An unformatted version for Helper.TextColored
+    /// An unformatted version for ImGui.TextColored
     /// </summary>
     /// <param name="color">color to be used</param>
     /// <param name="text">text to display</param>
@@ -49,7 +49,7 @@ public static class Helper
     }
 
     /// <summary>
-    /// An unformatted version for Helper.Tooltip
+    /// An unformatted version for ImGui.Tooltip
     /// </summary>
     /// <param name="tooltip">tooltip to display</param>
     public static void Tooltip(string tooltip)

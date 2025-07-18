@@ -7,9 +7,27 @@ public partial class MainWindow
 {
     private void All()
     {
-        var widthCheck = Plugin.Configuration.ShowRouteInAll && ImGui.GetWindowSize().X < SizeConstraints!.Value.MinimumSize.X + (300.0f * ImGuiHelpers.GlobalScale);
+        var numberText = "1. ";
+        var rankText = $"{Language.TermsRank} 999 ";
+        var identifierText = "(WWWW++)";
+        var extraText = "[";
+        if (Plugin.Configuration.ShowDateInAll)
+            extraText += " 24/12/2000 23:59:59 ";
+        else
+            extraText += " 123:59:59 ";
 
-        using var allTable = ImRaii.Table("##allTable", widthCheck ? 1 : 2);
+        if (Plugin.Configuration.ShowRouteInAll)
+            extraText += " AA->AB->AC->W->Z ";
+        extraText += "]";
+
+        var itemSpacing = ImGui.GetStyle().ItemSpacing.X;
+        var indentWidth = 10.0f * ImGuiHelpers.GlobalScale;
+        var secondRowWidth = ImGui.CalcTextSize(numberText).X + itemSpacing + ImGui.CalcTextSize(rankText).X + itemSpacing;
+        var thirdRowWidth = ImGui.CalcTextSize(identifierText).X + itemSpacing;
+        var extraTextWidth =  ImGui.CalcTextSize(extraText).X;
+
+        var numberOfRows = (int)(ImGui.GetContentRegionAvail().X / (indentWidth + secondRowWidth + thirdRowWidth + extraTextWidth + 20.0f * ImGuiHelpers.GlobalScale));
+        using var allTable = ImRaii.Table("##allTable", numberOfRows);
         if (!allTable.Success)
             return;
 
@@ -17,8 +35,6 @@ public partial class MainWindow
         {
             ImGui.TableNextColumn();
             var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
-            var secondRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 6.0f : Plugin.Configuration.ShowDateInAll ? 3.2f : 2.8f);
-            var thirdRow = ImGui.GetContentRegionAvail().X / (widthCheck ? 3.7f : Plugin.Configuration.ShowDateInAll ? 1.9f : 1.6f);
 
             Helper.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
             foreach (var (sub, idx) in Plugin.DatabaseCache.GetSubmarines(id).WithIndex())
@@ -32,10 +48,10 @@ public partial class MainWindow
                 var condition = sub.PredictDurability() > 0;
                 var color = condition ? ImGuiColors.TankBlue : ImGuiColors.DalamudYellow;
                 Helper.TextColored(color, $"{Language.TermsRank} {sub.Rank}");
-                ImGui.SameLine(secondRow);
+                ImGui.SameLine(indentWidth + secondRowWidth);
                 Helper.TextColored(color, $"({sub.Build.FullIdentifier()})");
 
-                ImGui.SameLine(thirdRow);
+                ImGui.SameLine(indentWidth + secondRowWidth + thirdRowWidth);
 
                 var route = "";
                 var time = $" {Language.TermsNoVoyage} ";
@@ -53,7 +69,7 @@ public partial class MainWindow
                 Helper.TextColored(ImGuiColors.ParsedOrange, fullText);
 
                 var textSize = ImGui.CalcTextSize(fullText);
-                var end = new Vector2(begin.X + textSize.X + thirdRow, begin.Y + textSize.Y + ImGui.GetStyle().ItemSpacing.Y);
+                var end = new Vector2(begin.X + textSize.X + indentWidth + secondRowWidth + thirdRowWidth, begin.Y + textSize.Y + ImGui.GetStyle().ItemSpacing.Y);
                 if (ImGui.IsMouseHoveringRect(begin, end))
                 {
                     var tooltip = condition ? "" : $"{Language.ReturnOverlayTooltipRepairNeeded}\n";

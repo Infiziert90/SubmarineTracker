@@ -2793,7 +2793,7 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selecting None will allow you to pick a specific time frame..
+        ///   Looks up a localized string similar to Selecting &apos;No Limit&apos; will allow you to pick a specific time frame..
         /// </summary>
         internal static string LootTabTooltipFixed {
             get {
