@@ -27,16 +27,21 @@ public partial class MainWindow
         var extraTextWidth =  ImGui.CalcTextSize(extraText).X;
 
         var numberOfRows = (int)(ImGui.GetContentRegionAvail().X / (indentWidth + secondRowWidth + thirdRowWidth + extraTextWidth + 20.0f * ImGuiHelpers.GlobalScale));
+
+        // Ensure that atleast 1 column is requested
+        numberOfRows = Math.Max(1, numberOfRows);
+
         using var allTable = ImRaii.Table("##allTable", numberOfRows);
         if (!allTable.Success)
             return;
 
         foreach (var id in Plugin.GetFCOrderWithoutHidden())
         {
-            ImGui.TableNextColumn();
             var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
 
+            ImGui.TableNextColumn();
             Helper.TextColored(ImGuiColors.DalamudViolet, $"{Plugin.NameConverter.GetName(fc)}:");
+
             foreach (var (sub, idx) in Plugin.DatabaseCache.GetSubmarines(id).WithIndex())
             {
                 using var indent = ImRaii.PushIndent(10.0f);
