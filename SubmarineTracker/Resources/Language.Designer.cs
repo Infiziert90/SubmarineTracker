@@ -1052,6 +1052,15 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Inventory Slot Count.
+        /// </summary>
+        internal static string ConfigTabCheckboxInventorySlotCount {
+            get {
+                return ResourceManager.GetString("ConfigTabCheckboxInventorySlotCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exclude Legacy Loot.
         /// </summary>
         internal static string ConfigTabCheckboxLegacy {

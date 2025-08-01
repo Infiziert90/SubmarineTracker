@@ -10,6 +10,8 @@ public static class Storage
 
     public record CachedItem(Item Item, uint Count);
 
+    public static int InventorySlotsFree = -1;
+
     public static void BuildStorageCache()
     {
         if (!Refresh)
@@ -29,6 +31,12 @@ public static class Storage
                     StorageCache[key].Add(item.RowId, new CachedItem(item, count));
             }
         }
+    }
+
+    public static unsafe void GetFreeSlotCount()
+    {
+        var manager = InventoryManager.Instance();
+        InventorySlotsFree = manager == null ? -1 : (int)manager->GetEmptySlotsInBag();
     }
 
     public static unsafe int InventoryCount(Items item)

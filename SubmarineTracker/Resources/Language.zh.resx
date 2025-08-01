@@ -281,7 +281,7 @@
         <value>筛选: </value>
     </data>
   <data name="LootTabTooltipFixed" xml:space="preserve">
-        <value>不做选择时可选择特定时间范围。</value>
+        <value>选择“"无限制"”时可选择特定时间范围。</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>时间范围: </value>
@@ -1439,5 +1439,8 @@
     </data>
   <data name="StorageAllOkay" xml:space="preserve">
         <value>你的舰队足以进行 {0} 次航行和 {1} 次合并维修。</value>
+    </data>
+  <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
+        <value>Show Inventory Slot Count</value>
     </data>
 </root>

@@ -241,9 +241,16 @@ public class Plugin : IDalamudPlugin
             LoadFCOrder();
         }
 
+        var local = ClientState.LocalPlayer;
+        if (local == null)
+            return;
+
         var fcId = GetFCId;
         if (fcId == 0)
             return;
+
+        // Refresh inventory slot count
+        Storage.GetFreeSlotCount();
 
         var instance = HousingManager.Instance();
         if (instance == null || instance->WorkshopTerritory == null)
@@ -252,10 +259,6 @@ public class Plugin : IDalamudPlugin
             ShowStorageMessage = true;
             return;
         }
-
-        var local = ClientState.LocalPlayer;
-        if (local == null)
-            return;
 
         // 6.4 triggers HousingManager + WorkshopTerritory in Island Sanctuary
         if (Sheets.TerritorySheet.GetRow(ClientState.TerritoryType).TerritoryIntendedUse.RowId == 49)

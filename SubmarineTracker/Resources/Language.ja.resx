@@ -90,7 +90,7 @@
         <value>ブラウザで Crowdin を開く</value>
     </data>
   <data name="MenuEntryIssues" xml:space="preserve">
-        <value>Issues</value>
+        <value>課題</value>
     </data>
   <data name="MenuTooltipIssues" xml:space="preserve">
         <value>ブラウザで Issues ページを開く</value>
@@ -206,7 +206,7 @@
         <value>読み込み中</value>
     </data>
   <data name="BestEXPCalculationNothingFound" xml:space="preserve">
-        <value>ルートが見つかりません。速度と範囲を確認してください...</value>
+        <value>ルートが見つかりません。速度と距離を確認してください...</value>
     </data>
   <data name="TermsMustInclude" xml:space="preserve">
         <value>必須項目</value>
@@ -281,7 +281,7 @@
         <value>修正済み:</value>
     </data>
   <data name="LootTabTooltipFixed" xml:space="preserve">
-        <value>未選択の場合、特定の期間で絞り込むことが可能です。</value>
+        <value>Selecting 'No Limit' will allow you to pick a specific time frame.</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>期間:</value>
@@ -401,7 +401,7 @@
         <value>スロットをアンロックする</value>
     </data>
   <data name="ConfigTabAbout" xml:space="preserve">
-        <value>About</value>
+        <value>概要</value>
     </data>
   <data name="ConfigTabEntryAuthor" xml:space="preserve">
         <value>作成者:</value>
@@ -500,7 +500,7 @@
         <value>全般</value>
     </data>
   <data name="ConfigTabEntryNaming" xml:space="preserve">
-        <value>Naming Convention:</value>
+        <value>命名規則:</value>
     </data>
   <data name="ConfigTabNamingExample" xml:space="preserve">
         <value>例: </value>
@@ -537,19 +537,19 @@
         <value>レガシー戦利品を除外</value>
     </data>
   <data name="ConfigTabEntryCollections" xml:space="preserve">
-        <value>Collections:</value>
+        <value>コレクション:</value>
     </data>
   <data name="ConfigTooltipDefaultCollection" xml:space="preserve">
-        <value>Default collection can't be deleted</value>
+        <value>デフォルトのコレクションは削除できません</value>
     </data>
   <data name="ConfigTextInputCollectionName" xml:space="preserve">
-        <value>New Collection Name</value>
+        <value>新規コレクション名</value>
     </data>
   <data name="ErrorCollectionExists" xml:space="preserve">
-        <value>Collection with this name already exists</value>
+        <value>この名前のコレクションはすでに存在します</value>
     </data>
   <data name="ConfigTabEntryCollectionItems" xml:space="preserve">
-        <value>Collection Items:</value>
+        <value>コレクションアイテム:</value>
     </data>
   <data name="TermsPrice" xml:space="preserve">
         <value>価格</value>
@@ -655,7 +655,7 @@
         <value>日付を表示</value>
     </data>
   <data name="ConfigTabCheckboxTitleTime" xml:space="preserve">
-        <value>Show Time In Title</value>
+        <value>タイトルに時間を表示</value>
     </data>
   <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
         <value>最初の帰還時刻を表示</value>
@@ -673,19 +673,19 @@
         <value>逆順</value>
     </data>
   <data name="ConfigTabCheckboxOnlyReturned" xml:space="preserve">
-        <value>返されたもののみ表示</value>
+        <value>帰還済みのみ表示</value>
     </data>
   <data name="ConfigTabEntryColors" xml:space="preserve">
         <value>色:</value>
     </data>
   <data name="ConfigTabColorsAllDone" xml:space="preserve">
-        <value>All Done</value>
+        <value>全て完了</value>
     </data>
   <data name="ConfigTabColorsPartlyDone" xml:space="preserve">
-        <value>Partly Done</value>
+        <value>一部完了</value>
     </data>
   <data name="ConfigTabColorsNoneDone" xml:space="preserve">
-        <value>None Done</value>
+        <value>完了なし</value>
     </data>
   <data name="ConfigTabEntryWindow" xml:space="preserve">
         <value>ウィンドウ:</value>
@@ -762,7 +762,7 @@
         <value>この挙動を無効にするには、構成、ビルダータブ、「自動選択」のチェックを外します。</value>
     </data>
   <data name="BuilderWindowButtonReset" xml:space="preserve">
-        <value>Reset</value>
+        <value>初期化</value>
     </data>
   <data name="BuilderWindowButtonSave" xml:space="preserve">
         <value>保存</value>
@@ -979,7 +979,7 @@ Mystic Spirit for all there work.</value>
         <value>不明</value>
     </data>
   <data name="BuilderTabRouteCommon" xml:space="preserve">
-        <value>Common Routes</value>
+        <value>よくあるルート</value>
     </data>
   <data name="BuilderTabShip" xml:space="preserve">
         <value>配送</value>
@@ -1036,7 +1036,7 @@ Mystic Spirit for all there work.</value>
         <value>艦橋</value>
     </data>
   <data name="TermsRange" xml:space="preserve">
-        <value>速度</value>
+        <value>距離</value>
     </data>
   <data name="TermsDuration" xml:space="preserve">
         <value>期間</value>
@@ -1153,25 +1153,25 @@ Mystic Spirit for all there work.</value>
         <value>1年</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
-        <value>Default</value>
+        <value>デフォルト</value>
     </data>
   <data name="NameOptionFullName" xml:space="preserve">
-        <value>Full Name</value>
+        <value>フルネーム</value>
     </data>
   <data name="NameOptionTag" xml:space="preserve">
-        <value>Only Tag</value>
+        <value>タグのみ</value>
     </data>
   <data name="NameOptionName" xml:space="preserve">
-        <value>Only Name</value>
+        <value>名前のみ</value>
     </data>
   <data name="NameOptionInitials" xml:space="preserve">
-        <value>Initials</value>
+        <value>イニシャル</value>
     </data>
   <data name="NameOptionOnlyInitials" xml:space="preserve">
-        <value>Only Initials</value>
+        <value>イニシャルのみ</value>
     </data>
   <data name="NameOptionAnon" xml:space="preserve">
-        <value>Anonymized</value>
+        <value>匿名化</value>
     </data>
   <data name="SurvTermT3High" xml:space="preserve">
         <value>T3 High</value>
@@ -1213,61 +1213,61 @@ Mystic Spirit for all there work.</value>
         <value>Unknown</value>
     </data>
   <data name="TermDaySun" xml:space="preserve">
-        <value>Sun</value>
+        <value>日</value>
     </data>
   <data name="TermDayMon" xml:space="preserve">
-        <value>Mon</value>
+        <value>月</value>
     </data>
   <data name="TermDayTue" xml:space="preserve">
-        <value>Tue</value>
+        <value>火</value>
     </data>
   <data name="TermDayWed" xml:space="preserve">
-        <value>Wed</value>
+        <value>水</value>
     </data>
   <data name="TermDayThu" xml:space="preserve">
-        <value>Thu</value>
+        <value>木</value>
     </data>
   <data name="TermDayFri" xml:space="preserve">
-        <value>Fri</value>
+        <value>金</value>
     </data>
   <data name="TermDaySat" xml:space="preserve">
-        <value>Sat</value>
+        <value>土</value>
     </data>
   <data name="TermMonthJan" xml:space="preserve">
-        <value>January</value>
+        <value>1月</value>
     </data>
   <data name="TermMonthFeb" xml:space="preserve">
-        <value>February</value>
+        <value>2月</value>
     </data>
   <data name="TermMonthMar" xml:space="preserve">
-        <value>March</value>
+        <value>3月</value>
     </data>
   <data name="TermMonthApr" xml:space="preserve">
-        <value>April</value>
+        <value>4月</value>
     </data>
   <data name="TermMonthMay" xml:space="preserve">
-        <value>May</value>
+        <value>5月</value>
     </data>
   <data name="TermMonthJun" xml:space="preserve">
-        <value>June</value>
+        <value>6月</value>
     </data>
   <data name="TermMonthJul" xml:space="preserve">
-        <value>July</value>
+        <value>7月</value>
     </data>
   <data name="TermMonthAug" xml:space="preserve">
-        <value>August</value>
+        <value>8月</value>
     </data>
   <data name="TermMonthSep" xml:space="preserve">
-        <value>September</value>
+        <value>9月</value>
     </data>
   <data name="TermMonthOct" xml:space="preserve">
-        <value>October</value>
+        <value>10月</value>
     </data>
   <data name="TermMonthNov" xml:space="preserve">
-        <value>November</value>
+        <value>11月</value>
     </data>
   <data name="TermMonthDec" xml:space="preserve">
-        <value>December</value>
+        <value>12月</value>
     </data>
   <data name="WarningInvalidDate" xml:space="preserve">
         <value>Date before {0} is not possible</value>
@@ -1277,12 +1277,12 @@ Mystic Spirit for all there work.</value>
     </data>
   <data name="OverseasDiscordTooltip" xml:space="preserve">
         <value>Discord: Overseas Casuals
-Recommended discord for submarines
-Just select the 'Subs' channel and
-join us in '#you-dont-pay-my-sub'</value>
+潜水艦におすすめのDiscord
+「Subs」チャンネルを選択して
+「#you-dont-pay-my-sub」に参加してください。</value>
     </data>
   <data name="TermSpreadsheet" xml:space="preserve">
-        <value>Spreadsheet</value>
+        <value>スプレッドシート</value>
     </data>
   <data name="TermType" xml:space="preserve">
         <value>Type</value>
@@ -1303,7 +1303,7 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>戦利品</value>
     </data>
   <data name="TermSearch" xml:space="preserve">
-        <value>Search</value>
+        <value>検索</value>
     </data>
   <data name="TabLootNoSearch" xml:space="preserve">
         <value>検索対象が選択されていません...</value>
@@ -1315,7 +1315,7 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>潜水艦の帰還タイマーを表示</value>
     </data>
   <data name="ConfigTabCheckboxNoSubName" xml:space="preserve">
-        <value>Show Submarine Name</value>
+        <value>潜水艦名を表示</value>
     </data>
   <data name="ConfigTabCheckboxServerBarNumbers" xml:space="preserve">
         <value>Show On Route And Done Numbers</value>
@@ -1324,16 +1324,16 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>Unable to delete this entry, report this error to the author</value>
     </data>
   <data name="ConfigTabTooltipIgnoredCharacterDelete" xml:space="preserve">
-        <value>Hold Control to delete</value>
+        <value>Ctrlキーを押しながら削除</value>
     </data>
   <data name="ConfigTabTooltipShowStorageMessage" xml:space="preserve">
         <value>地下工房に入るたびに、バレルと修理材の状態を通知するメッセージを表示します</value>
     </data>
   <data name="ConfigTabCheckboxShowStorageMessage" xml:space="preserve">
-        <value>Show Storage Message</value>
+        <value>ストレージメッセージを表示</value>
     </data>
   <data name="ConfigTabCheckboxShowStorageStartup" xml:space="preserve">
-        <value>Also Show At Startup</value>
+        <value>起動時にも表示</value>
     </data>
   <data name="ConfigTabCheckboxOfflineMode" xml:space="preserve">
         <value>オフラインモードを使用</value>
@@ -1342,79 +1342,79 @@ join us in '#you-dont-pay-my-sub'</value>
         <value>オフラインモードについて</value>
     </data>
   <data name="ConfigTabOfflineModeText1" xml:space="preserve">
-        <value>Offline mode allows you to receive return notifications while the game client is closed. For this feature to work, some data has to be uploaded to a server for processing.</value>
+        <value>オフラインモードを使うことで、ゲームクライアントを閉じていても帰還通知を受け取ることができます。この機能を動作させるためには、一部のデータをサーバーにアップロードして処理する必要があります。</value>
     </data>
   <data name="ConfigTabOfflineModeText2" xml:space="preserve">
-        <value>What Data?</value>
+        <value>どんなデータですか？</value>
     </data>
   <data name="ConfigTabOfflineModeText3" xml:space="preserve">
         <value>Discord Webhook Url</value>
     </data>
   <data name="ConfigTabOfflineModeText4" xml:space="preserve">
-        <value>Submarine + FC Name [Naming Convention]</value>
+        <value>潜水艦+FC名 [命名規則に準拠]</value>
     </data>
   <data name="ConfigTabOfflineModeText5" xml:space="preserve">
-        <value>Return Time</value>
+        <value>帰還時間</value>
     </data>
   <data name="ConfigTabOfflineModeText6" xml:space="preserve">
-        <value>Discord UserId [If set]</value>
+        <value>DiscordユーザーID [設定されている場合]</value>
     </data>
   <data name="ConfigTabOfflineModeText7" xml:space="preserve">
-        <value>Discord RoleId [If set]</value>
+        <value>DiscordロールID [設定されている場合]</value>
     </data>
   <data name="ConfigTabOfflineModeText8" xml:space="preserve">
-        <value>Data Lifetime</value>
+        <value>データの有効期限</value>
     </data>
   <data name="ConfigTabOfflineModeText9" xml:space="preserve">
-        <value>All uploaded data is removed from the database 10 minutes before the return time is reached. At this stage, all remaining memory data will automatically wiped after the return notification has been sent.</value>
+        <value>アップロードされたすべてのデータは、帰還予定時刻の10分前にデータベースから削除されます。その後、帰還通知の送信が完了すると、残っているメモリ上のデータも自動的に消去されます。</value>
     </data>
   <data name="ConfigTabOfflineModeText10" xml:space="preserve">
-        <value>Important Note</value>
+        <value>重要な注意事項</value>
     </data>
   <data name="ConfigTabOfflineModeText11" xml:space="preserve">
-        <value>For this feature to work, general upload permissions must have been granted.</value>
+        <value>この機能を動作させるには、一般的なアップロード権限が付与されている必要があります。</value>
     </data>
   <data name="ConfigTabHelpHeader" xml:space="preserve">
-        <value>Help</value>
+        <value>ヘルプ</value>
     </data>
   <data name="ConfigTabHelpText1" xml:space="preserve">
-        <value>Need help creating the webhook url?</value>
+        <value>Webhook urlを作成するのに助けが必要ですか？</value>
     </data>
   <data name="ConfigTabHelpClickButton" xml:space="preserve">
-        <value>Click the button:</value>
+        <value>ボタンをクリック:</value>
     </data>
   <data name="ConfigTabTooltipUserId" xml:space="preserve">
-        <value>Click to open discord user id guide in your browser.</value>
+        <value>クリックしてブラウザでdiscordのユーザーIDガイドを開きます。</value>
     </data>
   <data name="ConfigTabTooltipRoleId" xml:space="preserve">
-        <value>Click to open discord role id guide in your browser.</value>
+        <value>クリックしてブラウザでdiscordのロールIDガイドを開きます。</value>
     </data>
   <data name="ConfigTabHelpText2" xml:space="preserve">
-        <value>Need help finding your discord user id?</value>
+        <value>DiscordユーザーIDを見つけるのに助けが必要ですか？</value>
     </data>
   <data name="ConfigTabHelpText3" xml:space="preserve">
-        <value>Need help finding your discord role id?</value>
+        <value>DiscordロールIDを見つけるのに助けが必要ですか？</value>
     </data>
   <data name="ConfigTabHelpText4" xml:space="preserve">
-        <value>Note: Same works for user ids</value>
+        <value>注意：ユーザーIDでも同じ動作です</value>
     </data>
   <data name="ConfigTabHeaderWebhookUrl" xml:space="preserve">
         <value>Discord Webhook Url:</value>
     </data>
   <data name="ConfigTabHeaderUserId" xml:space="preserve">
-        <value>UserId For Ping:</value>
+        <value>メンション対象のユーザーID:</value>
     </data>
   <data name="ConfigTabHeaderRoleId" xml:space="preserve">
-        <value>RoleId For Ping:</value>
+        <value>メンション対象のロールID:</value>
     </data>
   <data name="ConfigTabErrorInvalidWebhook" xml:space="preserve">
-        <value>Url is not a valid discord webhook.</value>
+        <value>Urlは有効なDiscordWebhookではありません。</value>
     </data>
   <data name="ConfigTabCheckboxNoHidden" xml:space="preserve">
         <value>Remove Hidden From Numbers</value>
     </data>
   <data name="ConfigTabTracker" xml:space="preserve">
-        <value>Tracker</value>
+        <value>トラッカー</value>
     </data>
   <data name="TermsNotHidden" xml:space="preserve">
         <value>Not Hidden</value>
@@ -1439,5 +1439,8 @@ join us in '#you-dont-pay-my-sub'</value>
     </data>
   <data name="StorageAllOkay" xml:space="preserve">
         <value>Your fleet has enough for {0} voyages and {1} combined repairs.</value>
+    </data>
+  <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
+        <value>Show Inventory Slot Count</value>
     </data>
 </root>

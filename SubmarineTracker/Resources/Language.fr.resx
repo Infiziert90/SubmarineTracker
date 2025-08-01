@@ -18,7 +18,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="WebhookOnDispatch" xml:space="preserve">
-        <value>Revient &lt;t:{0}:R&gt;</value>
+        <value>Revient le &lt;t:{0}:R&gt;</value>
     </data>
   <data name="WebhookOnReturn" xml:space="preserve">
         <value>Revenu le &lt;t:{0}:f&gt;</value>
@@ -48,16 +48,16 @@
         <value>Ouvrir la fenêtre du tracker.</value>
     </data>
   <data name="WindowNameBuilder" xml:space="preserve">
-        <value>Construction</value>
+        <value>Builder</value>
     </data>
   <data name="MenuTooltipBuilder" xml:space="preserve">
-        <value>Ouvrir la fenêtre de construction.</value>
+        <value>Ouvrir la fenêtre de build.</value>
     </data>
   <data name="WindowNameLoot" xml:space="preserve">
-        <value>Objets trouvés</value>
+        <value>Butin</value>
     </data>
   <data name="MenuTooltipLoot" xml:space="preserve">
-        <value>Ouvrir la fenêtre des objets trouvés.</value>
+        <value>Ouvrir la fenêtre du butin.</value>
     </data>
   <data name="WindowNameHelpy" xml:space="preserve">
         <value>Assistant</value>
@@ -154,13 +154,13 @@ Veuillez visiter l'atelier de votre compagnie libre et interagissez avec le pann
         <value>Aucune donnée de voyage</value>
     </data>
   <data name="MainWindowTabLoot" xml:space="preserve">
-        <value>Objets trouvés</value>
+        <value>Butin</value>
     </data>
   <data name="TermsBuild" xml:space="preserve">
-        <value>Construire</value>
+        <value>Build</value>
     </data>
   <data name="MainWindowOverviewBreaksAfter" xml:space="preserve">
-        <value>Se casse après {0} voyages</value>
+        <value>Se cassera après {0} voyages</value>
     </data>
   <data name="TermsExp" xml:space="preserve">
         <value>Exp</value>
@@ -199,7 +199,7 @@ Veuillez visiter l'atelier de votre compagnie libre et interagissez avec le pann
         <value>Aucun sous-marin n'est revenu.</value>
     </data>
   <data name="RouteOverlayTooltipHighRank" xml:space="preserve">
-        <value>Sous-marin au-dessus du seuil et Doit inclure est vide
+        <value>Rang de Sous-marin au-dessus du seuil indiqué et "Doit inclure" est vide
 Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
     </data>
   <data name="TermsLoading" xml:space="preserve">
@@ -221,7 +221,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Heures &amp; Minutes</value>
     </data>
   <data name="BestEXPCheckboxAutoInclude" xml:space="preserve">
-        <value>Inclus. Auto</value>
+        <value>Inclus. auto</value>
     </data>
   <data name="BestEXPTooltipAutoInclude" xml:space="preserve">
         <value>Inclut automatiquement le secteur principal suivant, s'il y en a un</value>
@@ -233,13 +233,13 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>- En cours de développement ! -</value>
     </data>
   <data name="LootTabButtonRebuild" xml:space="preserve">
-        <value>Reconstuire le cache</value>
+        <value>Reconstruire le cache</value>
     </data>
   <data name="LootTabTextSearched" xml:space="preserve">
         <value>Recherche de</value>
     </data>
   <data name="LootTabWarningNothingFound" xml:space="preserve">
-        <value>Aucun résulat pour cette destination.</value>
+        <value>Aucun résultat pour cette destination.</value>
     </data>
   <data name="LootTabEntryPercentages" xml:space="preserve">
         <value>Pourcentages :</value>
@@ -257,7 +257,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Ce profil n'a aucun objet suivi.</value>
     </data>
   <data name="LootTabCustomProfileTip" xml:space="preserve">
-        <value>Vous pouvez ajouter des objets via l'onglet des objets trouvés dans la configuration du plugin.</value>
+        <value>Vous pouvez ajouter des objets via l'onglet Butin dans la configuration du plugin.</value>
     </data>
   <data name="LootTabCustomNone1" xml:space="preserve">
         <value>Aucun des objets sélectionnés n'a été trouvé</value>
@@ -281,13 +281,13 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Fixer à :</value>
     </data>
   <data name="LootTabTooltipFixed" xml:space="preserve">
-        <value>En sélectionnant Aucune, vous pourrez choisir un intervalle de temps spécifique.</value>
+        <value>Selecting 'No Limit' will allow you to pick a specific time frame.</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
-        <value>Du-au :</value>
+        <value>Du - au :</value>
     </data>
   <data name="LootTabExport" xml:space="preserve">
-        <value>Export</value>
+        <value>Exporter</value>
     </data>
   <data name="LootTabCheckboxExportAll" xml:space="preserve">
         <value>Exporter toutes les CLs</value>
@@ -296,7 +296,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Exclure la date</value>
     </data>
   <data name="LootTabCheckboxExcludeHash" xml:space="preserve">
-        <value>Exclure le hash</value>
+        <value>Exclure le dièse</value>
     </data>
   <data name="LootTabEntryOutputFolder" xml:space="preserve">
         <value>Dossier cible :</value>
@@ -305,7 +305,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Choisissez un dossier</value>
     </data>
   <data name="LootTabEntryExport" xml:space="preserve">
-        <value>Export :</value>
+        <value>Exporter :</value>
     </data>
   <data name="LootTabButtonFile" xml:space="preserve">
         <value>Fichier</value>
@@ -317,7 +317,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Rien à exporter dans la période sélectionnée.</value>
     </data>
   <data name="LootExportSuccessClipboard" xml:space="preserve">
-        <value>Copie réussie dans le presse-papiers.</value>
+        <value>Copie réussie dans le presse-papier.</value>
     </data>
   <data name="LootExportSuccessFile" xml:space="preserve">
         <value>Export réussi.</value>
@@ -350,7 +350,7 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Dernier secteur</value>
     </data>
   <data name="HelpyTabInfo" xml:space="preserve">
-        <value>Info</value>
+        <value>Information</value>
     </data>
   <data name="HelpyTabInfoSectorUnlock" xml:space="preserve">
         <value>Comment débloquer de nouveaux secteurs ?</value>
@@ -363,7 +363,7 @@ En augmentant la vitesse et la fréquence des voyages, vous aurez plus de chance
         <value>Comment débloquer de nouvelles cartes/emplacements ?</value>
     </data>
   <data name="HelpyTabInfoMapUnlockText" xml:space="preserve">
-        <value>Vous devez visiter le secteur déverrouillé au moins une fois.
+        <value>Vous devez visiter le secteur débloqué au moins une fois.
 Note : Vous ne verrez plus de sous-marins tant que vous n'avez pas rempli l'emplacement précédent.
 Par exemple, vous ne verrez pas l'emplacement 3 si l'emplacement 2 est vide</value>
     </data>
@@ -389,7 +389,7 @@ Par exemple, vous ne verrez pas l'emplacement 3 si l'emplacement 2 est vide</val
         <value>Non débloqué</value>
     </data>
   <data name="HelpyTabStorage" xml:space="preserve">
-        <value>Stockage</value>
+        <value>Inventaire</value>
     </data>
   <data name="HelpyTabWarningAllaganTools" xml:space="preserve">
         <value>AllaganTools n'est pas disponible.</value>
@@ -423,7 +423,7 @@ Par exemple, vous ne verrez pas l'emplacement 3 si l'emplacement 2 est vide</val
 Si vous voulez aider à les améliorer, veuillez visiter Crowdin</value>
     </data>
   <data name="BuilderTabBuilder" xml:space="preserve">
-        <value>Construction</value>
+        <value>Builder</value>
     </data>
   <data name="ConfigTabEntryOptions" xml:space="preserve">
         <value>Options :</value>
@@ -446,7 +446,7 @@ Si vous voulez aider à les améliorer, veuillez visiter Crowdin</value>
 Propose le prochain secteur à débloquer ou explorer
 Visible si :
   a) La carte a encore des secteurs à débloquer, ou
-  b) Un secteur doit être exploré pour déverrouiller la prochaine carte</value>
+  b) Un secteur doit être exploré pour débloquer la prochaine carte</value>
     </data>
   <data name="ConfigTabCheckboxUnlockOverlay" xml:space="preserve">
         <value>Afficher l'overlay de déblocage</value>
@@ -466,8 +466,8 @@ Visible si :
 
 Suggère la meilleure route à prendre
 Vide si :
-  a) La carte a encore des secteurs à débloquer
-  b) Doit Inclure est vide</value>
+  a) Le seuil du "Plus haut rang" indiqué est dépassé
+  b) "Doit Inclure" est vide</value>
     </data>
   <data name="ConfigTabSliderRank" xml:space="preserve">
         <value>Plus haut rang</value>
@@ -497,47 +497,47 @@ Vide si :
         <value>Don Ko-Fi</value>
     </data>
   <data name="ConfigTabGeneral" xml:space="preserve">
-        <value>General</value>
+        <value>Général</value>
     </data>
   <data name="ConfigTabEntryNaming" xml:space="preserve">
-        <value>Naming Convention:</value>
+        <value>Nomenclature :</value>
     </data>
   <data name="ConfigTabNamingExample" xml:space="preserve">
-        <value>Example: </value>
+        <value>Exemple : </value>
     </data>
   <data name="ConfigTabEntryUploads" xml:space="preserve">
-        <value>Uploads:</value>
+        <value>Export :</value>
     </data>
   <data name="ConfigTabCheckboxUploadPermission" xml:space="preserve">
-        <value>Permission de télécharger</value>
+        <value>Autoriser l'export des données</value>
     </data>
   <data name="ConfigTabUploadInformation1" xml:space="preserve">
-        <value>Fournissez anonymement des données sur les sous-marins.
-Ces données ne peuvent être liées à vous d'aucune manière et tout le monde en bénéficiera !</value>
+        <value>Exportez anonymement les données de vos sous-marins.
+Ces données ne peuvent être liées à vous d'aucune manière et profitera à tout le monde !</value>
     </data>
   <data name="ConfigTabUploadWhat" xml:space="preserve">
         <value>Quelles données ?</value>
     </data>
   <data name="ConfigTabUploadPoint1" xml:space="preserve">
-        <value>Objets trouvés reçus</value>
+        <value>Butin reçu</value>
     </data>
   <data name="ConfigTabUploadPoint2" xml:space="preserve">
         <value>Secteurs débloqués</value>
     </data>
   <data name="ConfigTabUploadPoint3" xml:space="preserve">
-        <value>Données de déverouillage</value>
+        <value>Données de l'aléatoire en expédition</value>
     </data>
   <data name="ConfigTabUploadPoint4" xml:space="preserve">
-        <value>Submarine stats</value>
+        <value>Statistiques des sous-marins</value>
     </data>
   <data name="ConfigTabLoot" xml:space="preserve">
-        <value>Objets trouvés</value>
+        <value>Butin</value>
     </data>
   <data name="ConfigTabCheckboxLegacy" xml:space="preserve">
-        <value>Exclure les anciens objets trouvés</value>
+        <value>Exclure les anciens butins</value>
     </data>
   <data name="ConfigTabEntryCollections" xml:space="preserve">
-        <value>Collections:</value>
+        <value>Collections :</value>
     </data>
   <data name="ConfigTooltipDefaultCollection" xml:space="preserve">
         <value>La collection par défaut ne peut pas être supprimée</value>
@@ -549,7 +549,7 @@ Ces données ne peuvent être liées à vous d'aucune manière et tout le monde 
         <value>Une collection portant le même nom existe déjà</value>
     </data>
   <data name="ConfigTabEntryCollectionItems" xml:space="preserve">
-        <value>Collection Items:</value>
+        <value>Objets de collections :</value>
     </data>
   <data name="TermsPrice" xml:space="preserve">
         <value>Prix</value>
@@ -564,7 +564,7 @@ Ces données ne peuvent être liées à vous d'aucune manière et tout le monde 
         <value>CLs sauvegardées</value>
     </data>
   <data name="ConfigTabTooltipSavedFCsDeletion" xml:space="preserve">
-        <value>Supprimer une entrée de CL supprimera également tout l'historique des objets trouvés.
+        <value>Supprimer une entrée de CL supprimera également tout l'historique des butins.
 Maintenez CTRL pour supprimer</value>
     </data>
   <data name="TermsIgnoredCharacters" xml:space="preserve">
@@ -595,7 +595,7 @@ Maintenez CTRL pour supprimer</value>
         <value>Envoyer au départ</value>
     </data>
   <data name="ConfigTabTooltipSendDispatch" xml:space="preserve">
-        <value>Envoie un message via webhook lors du départ, contenant un horodatage lorsque ce sous-marin retourne.</value>
+        <value>Envoie un message via webhook lors du départ, contenant un horodatage lorsque ce sous-marin revient.</value>
     </data>
   <data name="ConfigTabCheckboxSendReturn" xml:space="preserve">
         <value>Envoyer au retour</value>
@@ -613,7 +613,7 @@ Maintenez CTRL pour supprimer</value>
         <value>Sous-marins :</value>
     </data>
   <data name="ConfigTabCheckboxAllReturning" xml:space="preserve">
-        <value>Tous les sous-marins qui reviennent</value>
+        <value>Tous les sous-marins au retour</value>
     </data>
   <data name="ConfigTabEntrySpecificSubmarines" xml:space="preserve">
         <value>Sous-marins spécifiques :</value>
@@ -622,19 +622,19 @@ Maintenez CTRL pour supprimer</value>
         <value>Overlay</value>
     </data>
   <data name="ConfigTabEntryBehavior" xml:space="preserve">
-        <value>Behavior:</value>
+        <value>Comportement :</value>
     </data>
   <data name="ConfigTabCheckboxOpenOnStartup" xml:space="preserve">
-        <value>Open On Startup</value>
+        <value>Ouvrir au démarrage</value>
     </data>
   <data name="ConfigTabTooltipOpenOnStartup" xml:space="preserve">
-        <value>Opens the overlay, if it was closed before shutting down the game, on the next startup</value>
+        <value>Ouvre l'overlay au prochain démarrage s'il a été fermé avant l'arrêt du jeu</value>
     </data>
   <data name="ConfigTabCheckboxOnReturn" xml:space="preserve">
-        <value>Au retour</value>
+        <value>Ouvrir au retour</value>
     </data>
   <data name="ConfigTabTooltipOnReturn" xml:space="preserve">
-        <value>Toujours ouvrir l'overlay si un sous-marin est de retour</value>
+        <value>Toujours ouvrir l'overlay si un sous-marin est revenu</value>
     </data>
   <data name="ConfigTabCheckboxAutomaticallyClose" xml:space="preserve">
         <value>Fermer automatiquement</value>
@@ -652,13 +652,13 @@ Maintenez CTRL pour supprimer</value>
         <value>Afficher les builds</value>
     </data>
   <data name="ConfigTabCheckboxAsDate" xml:space="preserve">
-        <value>Afficher en tant que date</value>
+        <value>Afficher la date</value>
     </data>
   <data name="ConfigTabCheckboxTitleTime" xml:space="preserve">
-        <value>Show Time In Title</value>
+        <value>Afficher la date dans le titre</value>
     </data>
   <data name="ConfigTabCheckboxFirstReturnTime" xml:space="preserve">
-        <value>Afficher l'heure de retour la plus proche</value>
+        <value>Afficher la date de retour la plus proche</value>
     </data>
   <data name="ConfigTabTooltipFirstReturnTime" xml:space="preserve">
         <value>Affiche le premier sous-marin de retour dans les en-têtes de l'overlay pour chaque CL.</value>
@@ -667,25 +667,25 @@ Maintenez CTRL pour supprimer</value>
         <value>Trier par temps le plus court</value>
     </data>
   <data name="ConfigTabTooltipSortTimeLowest" xml:space="preserve">
-        <value>Trie les en-têtes de l'overlay par temps de retour, ce qui remplace l'ordre des CL.</value>
+        <value>Trie les en-têtes de l'overlay par date de retour, ce qui modifie l'ordre des CL.</value>
     </data>
   <data name="ConfigTabCheckboxReverseSort" xml:space="preserve">
         <value>Tri inversé</value>
     </data>
   <data name="ConfigTabCheckboxOnlyReturned" xml:space="preserve">
-        <value>Montrer seulement les sous-maris de revenus</value>
+        <value>Afficher seulement les sous-marins revenus</value>
     </data>
   <data name="ConfigTabEntryColors" xml:space="preserve">
         <value>Couleurs :</value>
     </data>
   <data name="ConfigTabColorsAllDone" xml:space="preserve">
-        <value>Tout Fait</value>
+        <value>Tous revenus</value>
     </data>
   <data name="ConfigTabColorsPartlyDone" xml:space="preserve">
-        <value>Partiellement Fait</value>
+        <value>Presque revenus</value>
     </data>
   <data name="ConfigTabColorsNoneDone" xml:space="preserve">
-        <value>Aucun Fait</value>
+        <value>Aucuns revenus</value>
     </data>
   <data name="ConfigTabEntryWindow" xml:space="preserve">
         <value>Fenêtre :</value>
@@ -703,24 +703,24 @@ Maintenez CTRL pour supprimer</value>
         <value>Afficher le bouton 'Tout'</value>
     </data>
   <data name="ConfigTabTooltipShowAll" xml:space="preserve">
-        <value>Ajoute un bouton « Tout » pour une vue d'ensemble facile de tous les FC.
-Remarque : peu clair si vous avez trop de CLs.</value>
+        <value>Ajoute un bouton « Tout » pour une vue d'ensemble simple de toutes les CL.
+Remarque : peut devenir confus si vous enregistrez trop de CLs.</value>
     </data>
   <data name="ConfigTabCheckboxLetMeResize" xml:space="preserve">
-        <value>Laissez-moi redimensionner</value>
+        <value>Choix des dimensions</value>
     </data>
   <data name="ConfigTabTooltipLetMeResize" xml:space="preserve">
         <value>Cela vous permet de redimensionner les boutons de CL,
-mais les empêche de se redimensionner automatiquement.</value>
+mais les empêche de changer automatiquement.</value>
     </data>
   <data name="ConfigTabEntryAllSection" xml:space="preserve">
-        <value>Toutes les sections:</value>
+        <value>Toutes les sections :</value>
     </data>
   <data name="ConfigTabCheckboxShowRoute" xml:space="preserve">
-        <value>Afficher la route</value>
+        <value>Afficher l'itinéraire</value>
     </data>
   <data name="ConfigTabTooltipShowRoute" xml:space="preserve">
-        <value>Cette option retournera également à 1 CL dans chaque colonne, si la fenêtre est trop petite.</value>
+        <value>Si la fenêtre est trop petite, cette option n'affichera qu'une CL par colonne.</value>
     </data>
   <data name="ConfigTabCheckboxShowDate" xml:space="preserve">
         <value>Afficher la date</value>
@@ -735,7 +735,7 @@ mais les empêche de se redimensionner automatiquement.</value>
         <value>Afficher l'état de réparation après le retour d'expédition</value>
     </data>
   <data name="ConfigTabCheckboxReturnTime" xml:space="preserve">
-        <value>Afficher l'heure de retour</value>
+        <value>Afficher la date de retour</value>
     </data>
   <data name="ConfigTabCheckboxReturnDate" xml:space="preserve">
         <value>Afficher la date de retour</value>
@@ -747,7 +747,7 @@ mais les empêche de se redimensionner automatiquement.</value>
         <value>Vue détaillée :</value>
     </data>
   <data name="ConfigTabCheckboxExtendedParts" xml:space="preserve">
-        <value>Afficher la liste des pièces étendues</value>
+        <value>Afficher la liste étendue des pièces</value>
     </data>
   <data name="BuilderTabBuild" xml:space="preserve">
         <value>Build</value>
@@ -798,7 +798,7 @@ mais les empêche de se redimensionner automatiquement.</value>
         <value>Désactiver le calcul automatique</value>
     </data>
   <data name="BestEXPCheckboxIgnoreUnlocks" xml:space="preserve">
-        <value>Ignorer les déverrouillages</value>
+        <value>Ignorer le déblocage</value>
     </data>
   <data name="BestEXPCheckboxAvgBonus" xml:space="preserve">
         <value>Utiliser le bonus d'Exp moyen</value>
@@ -814,7 +814,7 @@ Avec cette option, il prendra à la place la moyenne du bonus d'Exp possible.</v
         <value>Comment les breakpoints sont-ils calculés ?</value>
     </data>
   <data name="BuilderTabTextHowCalculated" xml:space="preserve">
-        <value>La distance et la durée sont des valeurs calculées fixes. Cependant, tous les autres breakpoints sont calculés à partir des données fournies par la communauté.
+        <value>La distance et la durée sont des valeurs fixes. Cependant, tous les autres breakpoints sont calculés à partir des données fournies par la communauté.
 Un grand merci à Mystic Spirit pour son travail.</value>
     </data>
   <data name="BuilderTabInfoBestExp" xml:space="preserve">
@@ -872,7 +872,7 @@ Un grand merci à Mystic Spirit pour son travail.</value>
         <value>T2/Normal atteint, suivi par T3/Optimal</value>
     </data>
   <data name="BuilderTabInfoRedText" xml:space="preserve">
-        <value>Exigence non remplies, suivies de l'exigence</value>
+        <value>Exigence non-atteinte, suivi par l'exigence</value>
     </data>
   <data name="BuilderTabLeveling" xml:space="preserve">
         <value>Gain de niveau</value>
@@ -884,7 +884,7 @@ Un grand merci à Mystic Spirit pour son travail.</value>
         <value>Rang visé</value>
     </data>
   <data name="BuilderLevelingTooltipTarget" xml:space="preserve">
-        <value>Le rang que ce calcul doit atteindre, mais peut dépasser.</value>
+        <value>Le rang que ce calcul doit atteindre, mais qu'il peut dépasser.</value>
     </data>
   <data name="BuilderLevelingButtonCalculate" xml:space="preserve">
         <value>Calculer</value>
@@ -899,13 +899,13 @@ Un grand merci à Mystic Spirit pour son travail.</value>
         <value>Progrès</value>
     </data>
   <data name="BuilderLevelingWarningSlow" xml:space="preserve">
-        <value>Attention : cela prendra beaucoup de temps et le jeu sera ralenti</value>
+        <value>Attention : cela peut prendre beaucoup de temps et le jeu sera ralenti</value>
     </data>
   <data name="BuilderLevelingInfoAtRank" xml:space="preserve">
         <value>Au rang</value>
     </data>
   <data name="BuilderLevelingInfoProgressFor" xml:space="preserve">
-        <value>Progrès pour actuel</value>
+        <value>Progression actuelle</value>
     </data>
   <data name="BuilderLevelingInfoElapsedTotal" xml:space="preserve">
         <value>Temps écoulé</value>
@@ -918,18 +918,18 @@ Un grand merci à Mystic Spirit pour son travail.</value>
     </data>
   <data name="BuilderLevelingTooltipIgnoreBuild" xml:space="preserve">
         <value>Ceci calculera chaque build possible
-Attention : cela prendra beaucoup de temps et le jeu sera ralenti</value>
+Attention : cela peut prendre beaucoup de temps et le jeu sera ralenti</value>
     </data>
   <data name="BuilderLevelingCheckboxIgnoreUnlocks" xml:space="preserve">
-        <value>Ignorer les déverrouillages</value>
+        <value>Ignorer le déblocage</value>
     </data>
   <data name="BuilderLevelingCheckboxIgnoreShark" xml:space="preserve">
-        <value>Ignorer les pièces Requin</value>
+        <value>Ignorer les pièces de classe Requin</value>
     </data>
   <data name="BuilderLevelingTooltipIgnoreShark" xml:space="preserve">
-        <value>Le gain de niveau s'attend à ce qu'une partie Requin existe, il la prend donc en priorité par rapport aux parties plus mauvaises.
+        <value>Le gain de niveau s'attend à ce qu'une pièce de classe Requin existe, il la prend donc en priorité par rapport aux pièces moins bonnes.
 Cette option désactive ce comportement
-NOTE : Votre sous-marin doit avoir le rang de la pièce au rang le plus élevé, ou bien cela tournera à l'infini.
+NOTE : Votre sous-marin doit avoir le rang de la pièce au rang le plus élevé, ou le calcul bouclera à l'infini.
 Par exemple, SSUW doit avoir un rang supérieur ou égal à 25.
 Important : cela peut entraîner des erreurs</value>
     </data>
@@ -945,7 +945,7 @@ Important : cela peut entraîner des erreurs</value>
         <value>Utiliser le bonus d'Exp moyen</value>
     </data>
   <data name="BuilderLevelingTooltipAvgExp" xml:space="preserve">
-        <value>Ce calcul ne prend normalement en compte que le bonus de prélèvement garanti.
+        <value>Ce calcul ne prend normalement en compte que le bonus de Prélèvement garanti.
 Avec cette option, il prendra la moyenne du bonus possible</value>
     </data>
   <data name="TermsAllowedSectors" xml:space="preserve">
@@ -955,7 +955,7 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Dernier calcul :</value>
     </data>
   <data name="BuilderLevelingResultVoyageList" xml:space="preserve">
-        <value>Voyage List:</value>
+        <value>Liste d'expéditions :</value>
     </data>
   <data name="BuilderTabRoute" xml:space="preserve">
         <value>Itinéraire</value>
@@ -967,22 +967,22 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Sélectionner le secteur en cliquant</value>
     </data>
   <data name="TermsUnlockedBy" xml:space="preserve">
-        <value>Déverrouillé par</value>
+        <value>Débloqué par</value>
     </data>
   <data name="BuilderWindowTooltipUnlocksSlot" xml:space="preserve">
         <value>#Nouvel emplacement de sous-marin</value>
     </data>
   <data name="BuilderWindowTooltipAlwaysUnlocked" xml:space="preserve">
-        <value>Toujours déverrouillé</value>
+        <value>Toujours débloqué</value>
     </data>
   <data name="TermsUnknown" xml:space="preserve">
         <value>Inconnu</value>
     </data>
   <data name="BuilderTabRouteCommon" xml:space="preserve">
-        <value>Common Routes</value>
+        <value>Itinéraires communs</value>
     </data>
   <data name="BuilderTabShip" xml:space="preserve">
-        <value>Bâteau</value>
+        <value>Sous-marin</value>
     </data>
   <data name="BuilderShipCheckboxIgnoreBreakpoints" xml:space="preserve">
         <value>Ignorer les breakpoints</value>
@@ -1072,7 +1072,7 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Bonus moyen :</value>
     </data>
   <data name="BuilderLevelingResultUnlocks" xml:space="preserve">
-        <value>Ignorer les déverrouillages :</value>
+        <value>Ignorer le déblocage :</value>
     </data>
   <data name="BuilderLevelingStepBuild" xml:space="preserve">
         <value>Build :</value>
@@ -1102,7 +1102,7 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Exp restante :</value>
     </data>
   <data name="DurationLimitNoLimit" xml:space="preserve">
-        <value>Illimitée</value>
+        <value>Aucune</value>
     </data>
   <data name="DurationLimit24Hours" xml:space="preserve">
         <value>24 heures</value>
@@ -1153,43 +1153,43 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>1 an</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
-        <value>Default</value>
+        <value>Défaut</value>
     </data>
   <data name="NameOptionFullName" xml:space="preserve">
-        <value>Full Name</value>
+        <value>Nom complet</value>
     </data>
   <data name="NameOptionTag" xml:space="preserve">
-        <value>Only Tag</value>
+        <value>Seulement le tag</value>
     </data>
   <data name="NameOptionName" xml:space="preserve">
-        <value>Only Name</value>
+        <value>Nom uniquement</value>
     </data>
   <data name="NameOptionInitials" xml:space="preserve">
-        <value>Initials</value>
+        <value>Initiales</value>
     </data>
   <data name="NameOptionOnlyInitials" xml:space="preserve">
-        <value>Only Initials</value>
+        <value>Seulement les Initiales</value>
     </data>
   <data name="NameOptionAnon" xml:space="preserve">
-        <value>Anonymized</value>
+        <value>Anonymisé</value>
     </data>
   <data name="SurvTermT3High" xml:space="preserve">
-        <value>T3 High</value>
+        <value>T3 Haut</value>
     </data>
   <data name="SurvTermT2High" xml:space="preserve">
-        <value>T2 High</value>
+        <value>T2 Haut</value>
     </data>
   <data name="SurvTermT1High" xml:space="preserve">
-        <value>T1 High</value>
+        <value>T1 Haut</value>
     </data>
   <data name="SurvTermT2Mid" xml:space="preserve">
-        <value>T2 Mid</value>
+        <value>T2 Moyen</value>
     </data>
   <data name="SurvTermT1Mid" xml:space="preserve">
-        <value>T1 Mid</value>
+        <value>T1 Moyen</value>
     </data>
   <data name="SurvTermT1Low" xml:space="preserve">
-        <value>T1 Low</value>
+        <value>T1 Bas</value>
     </data>
   <data name="RetTermOptimal" xml:space="preserve">
         <value>Optimal</value>
@@ -1198,243 +1198,249 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Normal</value>
     </data>
   <data name="RetTermPoor" xml:space="preserve">
-        <value>Poor</value>
+        <value>Faible</value>
     </data>
   <data name="FavorTermYes" xml:space="preserve">
-        <value>Yes</value>
+        <value>Oui</value>
+    </data>
+  <data name="FavorTermStatsEnoughButFailed" xml:space="preserve">
+        <value>CSCFIFFE</value>
     </data>
   <data name="FavorTermLow" xml:space="preserve">
         <value>Trop Bas</value>
     </data>
   <data name="TermUnknown" xml:space="preserve">
-        <value>Unknown</value>
+        <value>Inconnu</value>
     </data>
   <data name="TermDaySun" xml:space="preserve">
-        <value>Sun</value>
+        <value>Dim</value>
     </data>
   <data name="TermDayMon" xml:space="preserve">
-        <value>Mon</value>
+        <value>Lun</value>
     </data>
   <data name="TermDayTue" xml:space="preserve">
-        <value>Tue</value>
+        <value>Mar</value>
     </data>
   <data name="TermDayWed" xml:space="preserve">
-        <value>Wed</value>
+        <value>Mer</value>
     </data>
   <data name="TermDayThu" xml:space="preserve">
-        <value>Thu</value>
+        <value>Jeu</value>
     </data>
   <data name="TermDayFri" xml:space="preserve">
-        <value>Fri</value>
+        <value>Ven</value>
     </data>
   <data name="TermDaySat" xml:space="preserve">
-        <value>Sat</value>
+        <value>Sam</value>
     </data>
   <data name="TermMonthJan" xml:space="preserve">
-        <value>January</value>
+        <value>Janvier</value>
     </data>
   <data name="TermMonthFeb" xml:space="preserve">
-        <value>February</value>
+        <value>Février</value>
     </data>
   <data name="TermMonthMar" xml:space="preserve">
-        <value>March</value>
+        <value>Mars</value>
     </data>
   <data name="TermMonthApr" xml:space="preserve">
-        <value>April</value>
+        <value>Avril</value>
     </data>
   <data name="TermMonthMay" xml:space="preserve">
-        <value>May</value>
+        <value>Mai</value>
     </data>
   <data name="TermMonthJun" xml:space="preserve">
-        <value>June</value>
+        <value>Juin</value>
     </data>
   <data name="TermMonthJul" xml:space="preserve">
-        <value>July</value>
+        <value>Juillet</value>
     </data>
   <data name="TermMonthAug" xml:space="preserve">
-        <value>August</value>
+        <value>Août</value>
     </data>
   <data name="TermMonthSep" xml:space="preserve">
-        <value>September</value>
+        <value>Septembre</value>
     </data>
   <data name="TermMonthOct" xml:space="preserve">
-        <value>October</value>
+        <value>Octobre</value>
     </data>
   <data name="TermMonthNov" xml:space="preserve">
-        <value>November</value>
+        <value>Novembre</value>
     </data>
   <data name="TermMonthDec" xml:space="preserve">
-        <value>December</value>
+        <value>Décembre</value>
     </data>
   <data name="WarningInvalidDate" xml:space="preserve">
-        <value>Date before {0} is not possible</value>
+        <value>Choisir une date antérieure au {0} n'est pas possible</value>
     </data>
   <data name="TermJoinDiscord" xml:space="preserve">
-        <value>Join Discord</value>
+        <value>Rejoindre Discord</value>
     </data>
   <data name="OverseasDiscordTooltip" xml:space="preserve">
-        <value>Discord: Overseas Casuals
-Recommended discord for submarines
-Just select the 'Subs' channel and
-join us in '#you-dont-pay-my-sub'</value>
+        <value>Discord : Overseas Casuals
+Discord recommandé pour les sous-marins
+Selectionnez le canal 'Subs' et
+Rejoignez-nous dans '#you-dont-pay-my-sub'</value>
     </data>
   <data name="TermSpreadsheet" xml:space="preserve">
-        <value>Spreadsheet</value>
+        <value>Tableur</value>
     </data>
   <data name="TermType" xml:space="preserve">
         <value>Type</value>
     </data>
   <data name="SubPartHull" xml:space="preserve">
-        <value>Hull</value>
+        <value>Coque</value>
     </data>
   <data name="SubPartStern" xml:space="preserve">
-        <value>Stern</value>
+        <value>Poupe</value>
     </data>
   <data name="SubPartBow" xml:space="preserve">
-        <value>Bow</value>
+        <value>Proue</value>
     </data>
   <data name="SubPartBridge" xml:space="preserve">
-        <value>Bridge</value>
+        <value>Pont</value>
     </data>
   <data name="LootTabLoot" xml:space="preserve">
-        <value>Loot</value>
+        <value>Butin</value>
     </data>
   <data name="TermSearch" xml:space="preserve">
-        <value>Search</value>
+        <value>Recherche</value>
     </data>
   <data name="TabLootNoSearch" xml:space="preserve">
-        <value>No search target selected ...</value>
+        <value>Aucune cible de recherche sélectionnée...</value>
     </data>
   <data name="ConfigTabServerBar" xml:space="preserve">
-        <value>Server Bar:</value>
+        <value>Barre de serveur :</value>
     </data>
   <data name="ConfigTabCheckboxServerBarEnabled" xml:space="preserve">
-        <value>Show Returning Sub</value>
+        <value>Afficher les sous-marins sur le retour</value>
     </data>
   <data name="ConfigTabCheckboxNoSubName" xml:space="preserve">
         <value>Afficher le nom du sous-marin</value>
     </data>
   <data name="ConfigTabCheckboxServerBarNumbers" xml:space="preserve">
-        <value>Show On Route And Done Numbers</value>
+        <value>Afficher le nombre de sous-marins en route et revenus</value>
     </data>
   <data name="ErrorDeletionFailed" xml:space="preserve">
-        <value>Unable to delete this entry, report this error to the author</value>
+        <value>Impossible de supprimer cette entrée, signalez cette erreur au développeur</value>
     </data>
   <data name="ConfigTabTooltipIgnoredCharacterDelete" xml:space="preserve">
-        <value>Hold Control to delete</value>
+        <value>Maintenir Ctrl pour supprimer</value>
     </data>
   <data name="ConfigTabTooltipShowStorageMessage" xml:space="preserve">
-        <value>Show a message whenever you enter the workshop, informing you about your tank and repair kit status</value>
+        <value>Afficher un message chaque fois que vous entrez dans l'atelier, vous informant de l'état de vos barils et de vos kits de réparation</value>
     </data>
   <data name="ConfigTabCheckboxShowStorageMessage" xml:space="preserve">
-        <value>Show Storage Message</value>
+        <value>Afficher le message d'inventaire</value>
     </data>
   <data name="ConfigTabCheckboxShowStorageStartup" xml:space="preserve">
-        <value>Also Show At Startup</value>
+        <value>Afficher aussi au démarrage</value>
     </data>
   <data name="ConfigTabCheckboxOfflineMode" xml:space="preserve">
-        <value>Use Offline Mode</value>
+        <value>Utiliser le mode hors-ligne</value>
     </data>
   <data name="ConfigTabHeaderOfflineLabel" xml:space="preserve">
-        <value>Offline Mode Explanation</value>
+        <value>Explication du mode hors ligne</value>
     </data>
   <data name="ConfigTabOfflineModeText1" xml:space="preserve">
-        <value>Offline mode allows you to receive return notifications while the game client is closed. For this feature to work, some data has to be uploaded to a server for processing.</value>
+        <value>Le mode hors-ligne vous permet de recevoir des notifications de retour lorsque le client du jeu est fermé. Pour que cette fonctionnalité marche, certaines données doivent être envoyées sur un serveur pour être traitées.</value>
     </data>
   <data name="ConfigTabOfflineModeText2" xml:space="preserve">
-        <value>What Data?</value>
+        <value>Quelles données ?</value>
     </data>
   <data name="ConfigTabOfflineModeText3" xml:space="preserve">
-        <value>Discord Webhook Url</value>
+        <value>URL de Webhook Discord</value>
     </data>
   <data name="ConfigTabOfflineModeText4" xml:space="preserve">
-        <value>Submarine + FC Name [Naming Convention]</value>
+        <value>Sous-marin + Nom de CL [Nomenclature]</value>
     </data>
   <data name="ConfigTabOfflineModeText5" xml:space="preserve">
-        <value>Return Time</value>
+        <value>Heure de retour</value>
     </data>
   <data name="ConfigTabOfflineModeText6" xml:space="preserve">
-        <value>Discord UserId [If set]</value>
+        <value>Identifiant Discord [si renseigné]</value>
     </data>
   <data name="ConfigTabOfflineModeText7" xml:space="preserve">
-        <value>Discord RoleId [If set]</value>
+        <value>Rôle Discord [si renseigné]</value>
     </data>
   <data name="ConfigTabOfflineModeText8" xml:space="preserve">
-        <value>Data Lifetime</value>
+        <value>Durée de vie des données</value>
     </data>
   <data name="ConfigTabOfflineModeText9" xml:space="preserve">
-        <value>All uploaded data is removed from the database 10 minutes before the return time is reached. At this stage, all remaining memory data will automatically wiped after the return notification has been sent.</value>
+        <value>Les données enregistrées sont effacées de la base de données 10 minutes avant le retour des sous-marins. À ce stade, toutes les données restantes en mémoire seront automatiquement effacées après réception de la notification de retour.</value>
     </data>
   <data name="ConfigTabOfflineModeText10" xml:space="preserve">
-        <value>Important Note</value>
+        <value>Note importante</value>
     </data>
   <data name="ConfigTabOfflineModeText11" xml:space="preserve">
-        <value>For this feature to work, general upload permissions must have been granted.</value>
+        <value>Pour utiliser cette fonction, les autorisations générales d'export de données doivent avoir été accordées.</value>
     </data>
   <data name="ConfigTabHelpHeader" xml:space="preserve">
-        <value>Help</value>
+        <value>Aide</value>
     </data>
   <data name="ConfigTabHelpText1" xml:space="preserve">
-        <value>Need help creating the webhook url?</value>
+        <value>Besoin d'aide pour créer l'URL du Webhook ?</value>
     </data>
   <data name="ConfigTabHelpClickButton" xml:space="preserve">
-        <value>Click the button:</value>
+        <value>Cliquez sur le bouton :</value>
     </data>
   <data name="ConfigTabTooltipUserId" xml:space="preserve">
-        <value>Click to open discord user id guide in your browser.</value>
+        <value>Cliquez pour ouvrir le guide d'identifiant utilisateur Discord dans votre navigateur.</value>
     </data>
   <data name="ConfigTabTooltipRoleId" xml:space="preserve">
-        <value>Click to open discord role id guide in your browser.</value>
+        <value>Cliquez pour ouvrir le guide de rôles Discord dans votre navigateur.</value>
     </data>
   <data name="ConfigTabHelpText2" xml:space="preserve">
-        <value>Need help finding your discord user id?</value>
+        <value>Besoin d'aide pour trouver votre identifiant d'utilisateur Discord ?</value>
     </data>
   <data name="ConfigTabHelpText3" xml:space="preserve">
-        <value>Need help finding your discord role id?</value>
+        <value>Besoin d'aide pour trouver votre identifiant de rôle Discord ?</value>
     </data>
   <data name="ConfigTabHelpText4" xml:space="preserve">
-        <value>Note: Same works for user ids</value>
+        <value>Note : cela fonctionne également pour les identifiants d'utilisateur</value>
     </data>
   <data name="ConfigTabHeaderWebhookUrl" xml:space="preserve">
-        <value>Discord Webhook Url:</value>
+        <value>URL du Webhook Discord :</value>
     </data>
   <data name="ConfigTabHeaderUserId" xml:space="preserve">
-        <value>UserId For Ping:</value>
+        <value>Identifiant pour notification :</value>
     </data>
   <data name="ConfigTabHeaderRoleId" xml:space="preserve">
-        <value>RoleId For Ping:</value>
+        <value>Identifiant de rôle pour notification :</value>
     </data>
   <data name="ConfigTabErrorInvalidWebhook" xml:space="preserve">
-        <value>Url is not a valid discord webhook.</value>
+        <value>l'URL de Webhook Discord renseignée est invalide.</value>
     </data>
   <data name="ConfigTabCheckboxNoHidden" xml:space="preserve">
-        <value>Remove Hidden From Numbers</value>
+        <value>N'afficher que les sous-marins visibles</value>
     </data>
   <data name="ConfigTabTracker" xml:space="preserve">
         <value>Tracker</value>
     </data>
   <data name="TermsNotHidden" xml:space="preserve">
-        <value>Not Hidden</value>
+        <value>Visibles</value>
     </data>
   <data name="TermsFC" xml:space="preserve">
-        <value>FC:</value>
+        <value>CL :</value>
     </data>
   <data name="TermsUnlocked" xml:space="preserve">
-        <value>Unlocked</value>
+        <value>Débloqué</value>
     </data>
   <data name="LootTabRoutes" xml:space="preserve">
         <value>Routes</value>
     </data>
   <data name="StorageBoth" xml:space="preserve">
-        <value>Not enough Tanks and Repair Kits!</value>
+        <value>Barils de céruleum et kits de réparation insuffisants !</value>
     </data>
   <data name="StorageNoTanks" xml:space="preserve">
-        <value>Not enough Tanks!</value>
+        <value>Barils de céruleum insuffisants !</value>
     </data>
   <data name="StorageNoKits" xml:space="preserve">
-        <value>Not enough Repair Kits!</value>
+        <value>Kits de réparation insuffisants !</value>
     </data>
   <data name="StorageAllOkay" xml:space="preserve">
-        <value>Your fleet has enough for {0} voyages and {1} combined repairs.</value>
+        <value>Votre flotte a assez pour {0} voyages et {1} réparations combinées.</value>
+    </data>
+  <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
+        <value>Show Inventory Slot Count</value>
     </data>
 </root>

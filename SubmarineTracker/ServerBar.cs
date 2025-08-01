@@ -1,5 +1,6 @@
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
+using SubmarineTracker.Data;
 using SubmarineTracker.Resources;
 
 namespace SubmarineTracker;
@@ -80,7 +81,11 @@ public class ServerBar
         if (Plugin.Configuration.DtrShowOverlayNumbers)
             numbers = $"[{Plugin.ReturnOverlay.OverlayNumbers()}]";
 
-        DtrEntry!.Text = $"{returning}{separator}{numbers}";
+        var slots = "";
+        if (Plugin.Configuration.DtrShowInventorySlots && Storage.InventorySlotsFree > -1)
+            slots = $" - [{140 - Storage.InventorySlotsFree} / 140]";
+
+        DtrEntry!.Text = $"{returning}{separator}{numbers}{slots}";
     }
 
     private void UpdateVisibility(bool shown) => DtrEntry!.Shown = shown;

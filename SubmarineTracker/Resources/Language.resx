@@ -1441,4 +1441,7 @@ join us in '#you-dont-pay-my-sub'</value>
     <data name="StorageAllOkay" xml:space="preserve">
         <value>Your fleet has enough for {0} voyages and {1} combined repairs.</value>
     </data>
+    <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
+        <value>Show Inventory Slot Count</value>
+    </data>
 </root>

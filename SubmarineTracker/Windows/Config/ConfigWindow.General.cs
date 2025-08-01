@@ -23,6 +23,7 @@ public partial class ConfigWindow
             changed |= ImGui.Checkbox(Language.ConfigTabCheckboxNoSubName, ref Plugin.Configuration.DtrShowSubmarineName);
         }
         changed |= ImGui.Checkbox(Language.ConfigTabCheckboxServerBarNumbers, ref Plugin.Configuration.DtrShowOverlayNumbers);
+        changed |= ImGui.Checkbox(Language.ConfigTabCheckboxInventorySlotCount, ref Plugin.Configuration.DtrShowInventorySlots);
 
         ImGuiHelpers.ScaledDummy(5.0f);
 

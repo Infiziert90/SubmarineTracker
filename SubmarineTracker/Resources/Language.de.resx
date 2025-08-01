@@ -281,7 +281,7 @@ Bitte besuche die Werkstatt deiner FG und interagiere mit der Oberfläche für T
         <value>Zeitraum:</value>
     </data>
   <data name="LootTabTooltipFixed" xml:space="preserve">
-        <value>Wenn Sie 'None' auswählen, können sie einen eigenen Zeitraum spezifizieren.</value>
+        <value>Selecting 'No Limit' will allow you to pick a specific time frame.</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>Von-Bis:</value>
@@ -1436,5 +1436,8 @@ join us in '#you-dont-pay-my-sub'</value>
     </data>
   <data name="StorageAllOkay" xml:space="preserve">
         <value>Your fleet has enough for {0} voyages and {1} combined repairs.</value>
+    </data>
+  <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
+        <value>Show Inventory Slot Count</value>
     </data>
 </root>

@@ -28,6 +28,7 @@ public class Configuration : IPluginConfiguration
     public bool ShowDtrEntry = false;
     public bool DtrShowOverlayNumbers = true;
     public bool DtrShowSubmarineName = true;
+    public bool DtrShowInventorySlots = true;
 
     public bool ShowOnlyCurrentFC = false;
     public bool AutoSelectCurrent = true;
