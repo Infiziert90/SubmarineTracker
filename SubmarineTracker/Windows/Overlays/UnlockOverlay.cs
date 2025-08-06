@@ -48,9 +48,8 @@ public class UnlockOverlay : Window, IDisposable
             if (addonPtr == nint.Zero)
                 return;
 
-            var explorationBaseNode = (AtkUnitBase*) addonPtr;
             var y = (Plugin.RouteOverlay.Size!.Value.Y * ImGuiHelpers.GlobalScale) + 10.0f;
-            Position = new Vector2(explorationBaseNode->X - (Size!.Value.X * ImGuiHelpers.GlobalScale), explorationBaseNode->Y + y);
+            Position = new Vector2(addonPtr.X - (Size!.Value.X * ImGuiHelpers.GlobalScale), addonPtr.Y + y);
             PositionCondition = ImGuiCond.Always;
 
             var fcSub = Plugin.DatabaseCache.GetFreeCompanies()[Plugin.GetFCId];

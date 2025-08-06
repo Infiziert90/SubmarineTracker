@@ -89,7 +89,7 @@ public class Plugin : IDalamudPlugin
         NameConverter = new NameConverter();
         Notify = new Notify(this);
 
-        HookManager = new HookManager(this);
+        HookManager = new HookManager();
         AllaganToolsConsumer = new AllaganToolsConsumer();
 
         ConfigWindow = new ConfigWindow(this);

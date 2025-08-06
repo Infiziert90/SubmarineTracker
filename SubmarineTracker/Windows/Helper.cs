@@ -200,7 +200,7 @@ public static class Helper
             return;
         }
 
-        ImGui.Image(texture.ImGuiHandle, iconSize);
+        ImGui.Image(texture.Handle, iconSize);
     }
 
     public static bool Button(string id, FontAwesomeIcon icon, bool disabled = false)

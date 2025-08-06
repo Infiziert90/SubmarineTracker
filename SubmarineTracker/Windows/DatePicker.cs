@@ -91,7 +91,7 @@ public static class DateWidget
         var arrowLeftWidth = ImGui.CalcTextSize(arrowLeft).X;
         var arrowRightWidth = ImGui.CalcTextSize(arrowRight).X;
 
-        var labelSize = ImGui.CalcTextSize(label, 0, true);
+        var labelSize = ImGui.CalcTextSize(label, true, 0);
 
         var widthRequiredByCalendar = (2.0f * arrowLeftWidth) + (2.0f * arrowRightWidth) + LongestMonthWidth + ImGui.CalcTextSize("9999").X + (120.0f * ImGuiHelpers.GlobalScale);
         var popupHeight = ((labelSize.Y + (2 * style.ItemSpacing.Y)) * HeightInItems) + (style.FramePadding.Y * 3);

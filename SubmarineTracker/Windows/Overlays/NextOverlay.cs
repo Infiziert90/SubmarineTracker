@@ -51,8 +51,7 @@ public class NextOverlay : Window, IDisposable
             if (addonPtr == nint.Zero)
                 return;
 
-            var explorationBaseNode = (AtkUnitBase*) addonPtr;
-            Position = new Vector2(explorationBaseNode->X + 5, explorationBaseNode->Y - (Size!.Value.Y * ImGuiHelpers.GlobalScale));
+            Position = new Vector2(addonPtr.X + 5, addonPtr.Y - (Size!.Value.Y * ImGuiHelpers.GlobalScale));
             PositionCondition = ImGuiCond.Always;
 
             NextSector = null;

@@ -5,19 +5,16 @@ using SubmarineTracker.Data;
 
 namespace SubmarineTracker.Manager;
 
-public class HookManager
+public unsafe class HookManager
 {
-    private readonly Plugin Plugin;
-
-    private const string PacketReceiverSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ?? 4C 8D 4E 17";
-    private const string PacketReceiverSigCN = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ?? 4C 8D 4E 17"; // same sig at this time
-    private delegate void PacketDelegate(uint param1, ushort param2, sbyte param3, nint param4, char param5);
+    // Dalamud CustomTalkEventResponsePacketHandler <https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Network/Internal/NetworkHandlersAddressResolver.cs#L17>
+    private const string PacketReceiverSig = "48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 49 8B D9 41 0F B6 F8 0F B7 F2 8B E9 E8 ?? ?? ?? ?? 44 0F B6 54 24 ?? 44 0F B6 CF 44 88 54 24 ?? 44 0F B7 C6 8B D5";
+    private const string PacketReceiverSigCN = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ?? 4C 8D 4E 17";
+    private delegate void PacketDelegate(nuint a1, ushort eventId, byte responseId, uint* args, byte argCount);
     private readonly Hook<PacketDelegate> PacketHandlerHook;
 
-    public HookManager(Plugin plugin)
+    public HookManager()
     {
-        Plugin = plugin;
-
         // Try to resolve the CN sig if normal one fails ...
         // Doing this because CN people use an outdated version that still uploads data
         // so trying to get them at least somewhat up to date
@@ -41,12 +38,12 @@ public class HookManager
         PacketHandlerHook.Dispose();
     }
 
-    private unsafe void PacketReceiver(uint param1, ushort param2, sbyte param3, nint param4, char param5)
+    private void PacketReceiver(nuint a1, ushort eventId, byte responseId, uint* args, byte argCount)
     {
-        PacketHandlerHook.Original(param1, param2, param3, param4, param5);
+        PacketHandlerHook.Original(a1, eventId, responseId, args, argCount);
 
         // We only care about voyage results
-        if (param1 != 721343)
+        if (a1 != 721343)
             return;
 
         try

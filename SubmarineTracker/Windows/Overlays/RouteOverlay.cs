@@ -64,8 +64,7 @@ public class RouteOverlay : Window, IDisposable
                 return;
             }
 
-            var explorationBaseNode = (AtkUnitBase*) addonPtr;
-            Position = new Vector2(explorationBaseNode->X - (Size!.Value.X * ImGuiHelpers.GlobalScale), explorationBaseNode->Y + 5);
+            Position = new Vector2(addonPtr.X - (Size!.Value.X * ImGuiHelpers.GlobalScale), addonPtr.Y + 5);
             PositionCondition = ImGuiCond.Always;
 
             if (agent->MapId != Map)
