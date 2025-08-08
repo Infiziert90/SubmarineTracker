@@ -1,4 +1,3 @@
-using Dalamud.Game.Addon.Events.EventDataTypes;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
 using SubmarineTracker.Data;
@@ -91,5 +90,5 @@ public class ServerBar
 
     private void UpdateVisibility(bool shown) => DtrEntry!.Shown = shown;
 
-    private void OnClick(AddonMouseEventData _) => Plugin.OpenTracker();
+    private void OnClick(DtrInteractionEvent _) => Plugin.OpenTracker();
 }
