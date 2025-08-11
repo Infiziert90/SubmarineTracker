@@ -14,7 +14,7 @@ public partial class BuilderWindow : Window, IDisposable
 
     public BuilderWindow(Plugin plugin) : base("Builder##SubmarineTracker")
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(470, 750),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
@@ -39,6 +39,7 @@ public partial class BuilderWindow : Window, IDisposable
             if (child.Success)
             {
                 var sub = new Submarine();
+
                 using var tabBar = ImRaii.TabBar("SubBuilderTab");
                 if (tabBar.Success)
                 {
@@ -193,7 +194,7 @@ public partial class BuilderWindow : Window, IDisposable
                     CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
                 else
                     CurrentBuild.NotOptimized();
-                
+
                 ret = true;
             }
         }

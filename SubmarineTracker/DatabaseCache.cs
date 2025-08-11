@@ -199,13 +199,13 @@ public class DatabaseCache : IDisposable
 
     private void CheckFreeCompany()
     {
-        if (FCNeedsRefresh || FCRefresh < Environment.TickCount64)
-        {
-            FCRefresh = Environment.TickCount64 + ShortDelay;
-            FCNeedsRefresh = false;
+        if (!FCNeedsRefresh && FCRefresh >= Environment.TickCount64)
+            return;
 
-            Task.Run(RefreshFreeCompanies);
-        }
+        FCRefresh = Environment.TickCount64 + ShortDelay;
+        FCNeedsRefresh = false;
+
+        Task.Run(RefreshFreeCompanies);
     }
 
     private void RefreshFreeCompanies()

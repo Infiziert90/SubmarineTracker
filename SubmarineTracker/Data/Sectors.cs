@@ -9,7 +9,7 @@ public static class Sectors
     public record Breakpoint(int T2, int T3, int Normal, int Optimal, int Favor)
     {
         public static Breakpoint Empty => new(0, 0, 0, 0, 0);
-    };
+    }
 
     public static readonly Dictionary<uint, Breakpoint> MapBreakpoints = new()
     {
@@ -114,14 +114,12 @@ public static class Sectors
         { 099, new Breakpoint(225, 237, 280, 325, 227) },
         { 100, new Breakpoint(225, 238, 280, 325, 230) },
         { 101, new Breakpoint(225, 240, 280, 325, 230) },
-
         { 102, new Breakpoint(226, 241, 281, 326, 231) },
         { 103, new Breakpoint(227, 242, 282, 327, 232) },
         { 104, new Breakpoint(228, 243, 283, 328, 233) },
         { 105, new Breakpoint(229, 244, 284, 329, 234) },
         { 106, new Breakpoint(230, 245, 285, 330, 235) },
         { 107, new Breakpoint(230, 245, 285, 330, 235) },
-
         { 108, new Breakpoint(231, 246, 286, 331, 236) },
         { 109, new Breakpoint(232, 247, 287, 332, 237) },
         { 110, new Breakpoint(233, 248, 288, 333, 238) },
@@ -137,13 +135,20 @@ public static class Sectors
         { 120, new Breakpoint(237, 252, 292, 337, 242) },
         { 121, new Breakpoint(238, 253, 293, 338, 243) },
         { 122, new Breakpoint(240, 255, 295, 340, 245) },
-
         { 123, new Breakpoint(241, 256, 296, 341, 246) },
         { 124, new Breakpoint(242, 257, 297, 342, 247) },
         { 125, new Breakpoint(243, 258, 298, 343, 248) },
         { 126, new Breakpoint(244, 259, 299, 344, 249) },
         { 127, new Breakpoint(245, 260, 300, 345, 250) },
         { 128, new Breakpoint(245, 260, 300, 345, 250) },
+        // TODO prediction, replace with actual values
+        { 129, new Breakpoint(246, 261, 301, 346, 251) },
+        { 130, new Breakpoint(247, 262, 302, 347, 252) },
+        { 131, new Breakpoint(248, 263, 303, 348, 253) },
+        { 132, new Breakpoint(249, 264, 304, 349, 254) },
+        { 133, new Breakpoint(249, 264, 304, 349, 254) },
+        { 134, new Breakpoint(250, 265, 305, 350, 255) },
+        { 135, new Breakpoint(250, 266, 305, 350, 255) },
     };
 
     public static Breakpoint CalculateBreakpoint(List<uint> points)
@@ -171,16 +176,12 @@ public static class Sectors
         return new Breakpoint(t2, t3, normal, optimal, favor);
     }
 
-    public static List<(int Guaranteed, int Average, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
+    private static List<(int Guaranteed, int Average, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
     {
-        var predictedExp = new List<(int, int, int)>();
-        foreach (var sector in sectors)
-            predictedExp.Add(PredictBonusExp(sector, build));
-
-        return predictedExp;
+        return sectors.Select(sector => PredictBonusExp(sector, build)).ToList();
     }
 
-    public static (int Guaranteed, int Average, int Maximum) PredictBonusExp(uint sector, Build.SubmarineBuild build)
+    private static (int Guaranteed, int Average, int Maximum) PredictBonusExp(uint sector, Build.SubmarineBuild build)
     {
         if (!MapBreakpoints.TryGetValue(sector, out var br))
             return (0, 0, 0);
@@ -217,7 +218,7 @@ public static class Sectors
         return expGain;
     }
 
-    public static uint CalculateBonusExp(int bonus, uint exp)
+    private static uint CalculateBonusExp(int bonus, uint exp)
     {
         return bonus switch
         {

@@ -27,7 +27,7 @@ public class NextOverlay : Window, IDisposable
 
         Plugin = plugin;
 
-        UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != 9876).Key);
+        UnlockPath = Unlocks.FindUnlockPath(Unlocks.SectorToUnlock.Last(s => s.Value.Sector != SectorType.UnknownUnlock).Key);
         UnlockPath.Reverse();
     }
 
@@ -66,7 +66,7 @@ public class NextOverlay : Window, IDisposable
                 break;
             }
 
-            if (!NextSector.HasValue || Voyage.FindMapFromSector(NextSector.Value.UnlockedFrom.Sector) != agent->MapId)
+            if (!NextSector.HasValue || Voyage.FindMapFromSector((uint)NextSector.Value.UnlockedFrom.Sector) != agent->MapId)
                 return;
 
             IsOpen = true;
@@ -90,7 +90,7 @@ public class NextOverlay : Window, IDisposable
         var nextSector = NextSector.Value;
 
         var nextUnlock = Sheets.ExplorationSheet.GetRow(nextSector.Sector);
-        var unlockedFrom = Sheets.ExplorationSheet.GetRow(nextSector.UnlockedFrom.Sector);
+        var unlockedFrom = Sheets.ExplorationSheet.GetRow((uint)nextSector.UnlockedFrom.Sector);
         if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
         {
             if (ImGui.IsWindowHovered())
@@ -100,7 +100,7 @@ public class NextOverlay : Window, IDisposable
         }
 
         var isMap = false;
-        if (Unlocks.SectorToUnlock.TryGetValue(nextSector.UnlockedFrom.Sector, out var previousSector))
+        if (Unlocks.SectorToUnlock.TryGetValue((uint)nextSector.UnlockedFrom.Sector, out var previousSector))
             isMap = previousSector.Map;
 
         var unlockText = $"{Language.NextOverlayTextNextSector} {NumToLetter(nextUnlock.RowId, true)}. {UpperCaseStr(nextUnlock.Destination)}";

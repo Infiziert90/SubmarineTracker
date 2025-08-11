@@ -22,7 +22,7 @@ public class Notify
         Plugin = plugin;
     }
 
-    public void Init()
+    private void Init()
     {
         // We call this in the first framework update to ensure all subs have loaded
         IsInitialized = true;
@@ -186,7 +186,7 @@ public class Notify
             Plugin.ToastGui.ShowQuest(ShortRepairMessage(), new QuestToastOptions {IconId = 60858, PlaySound = true});
     }
 
-    public static SeString GenerateMessage(string name)
+    private static SeString GenerateMessage(string name)
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
@@ -194,7 +194,7 @@ public class Notify
                .BuiltString;
     }
 
-    public static SeString RepairMessage(string name)
+    private static SeString RepairMessage(string name)
     {
         return new SeStringBuilder()
                .AddUiForeground("[Submarine Tracker] ", 540)
@@ -202,7 +202,7 @@ public class Notify
                .BuiltString;
     }
 
-    public static SeString ShortRepairMessage()
+    private static SeString ShortRepairMessage()
     {
         return new SeStringBuilder()
                .AddUiForeground(Language.NotificationToastRepair, 43)

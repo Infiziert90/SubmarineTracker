@@ -8,6 +8,7 @@ public partial class BuilderWindow
 {
     public bool CacheValid;
     public uint VoyageInterfaceSelection;
+
     public Submarine SelectedSub = new();
 
     private void BuildTab(ref Submarine sub)
@@ -45,7 +46,7 @@ public partial class BuilderWindow
 
             var windowWidth = ImGui.GetWindowWidth() / 2;
             ImGui.SetNextItemWidth(windowWidth - (5.0f * ImGuiHelpers.GlobalScale));
-            ImGui.Combo("##existingSubs", ref CurrentBuild.OriginalSub, existingSubs, existingSubs.Length);
+            ImGui.Combo("##existingSubs", ref CurrentBuild.OriginalSub, existingSubs);
 
             // Calculate first so rank can be changed afterwards
             if (existingSubs[CurrentBuild.OriginalSub] != customTerm)

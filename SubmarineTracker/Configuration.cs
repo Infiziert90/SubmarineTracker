@@ -112,6 +112,7 @@ public class Configuration : IPluginConfiguration
             var str = path + ".tmp";
             if (File.Exists(str))
                 File.Delete(str);
+
             File.WriteAllText(str, text);
             File.Move(str, path, true);
         }

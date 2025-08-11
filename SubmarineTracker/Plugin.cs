@@ -230,9 +230,8 @@ public class Plugin : IDalamudPlugin
     }
 
     private bool IsUpserting;
-    public bool NeedsRefresh => IsUpserting || DatabaseCache.FCNeedsRefresh || DatabaseCache.SubsNeedRefresh;
-
-    public unsafe void FrameworkUpdate(IFramework _)
+    private bool NeedsRefresh => IsUpserting || DatabaseCache.FCNeedsRefresh || DatabaseCache.SubsNeedRefresh;
+    private unsafe void FrameworkUpdate(IFramework _)
     {
         // Reload stale data
         if (DatabaseCache.NewData)

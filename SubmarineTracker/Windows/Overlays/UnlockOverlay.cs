@@ -67,7 +67,7 @@ public class UnlockOverlay : Window, IDisposable
                 if (hasUnlocked)
                     continue;
 
-                fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out hasUnlocked);
+                fcSub.UnlockedSectors.TryGetValue((uint)unlockedFrom.Sector, out hasUnlocked);
                 if (hasUnlocked)
                     PossibleUnlocks.Add((sector.RowId, unlockedFrom));
             }
@@ -98,7 +98,7 @@ public class UnlockOverlay : Window, IDisposable
         {
 
             var unlocked = Sheets.ExplorationSheet.GetRow(sector);
-            var unlockedFrom = Sheets.ExplorationSheet.GetRow(from.Sector);
+            var unlockedFrom = Sheets.ExplorationSheet.GetRow((uint)from.Sector);
             if (unlockedFrom.RankReq > Plugin.BuilderWindow.CurrentBuild.Rank)
             {
                 PossibleUnlocks.Remove((sector, from));
@@ -133,7 +133,7 @@ public class UnlockOverlay : Window, IDisposable
         if (ImGui.Button(Language.TermsMustInclude))
         {
             foreach (var (_, from) in PossibleUnlocks)
-                if (Plugin.RouteOverlay.MustInclude.Add(Sheets.ExplorationSheet.GetRow(from.Sector)))
+                if (Plugin.RouteOverlay.MustInclude.Add(Sheets.ExplorationSheet.GetRow((uint)from.Sector)))
                     Plugin.RouteOverlay.Calculate = true;
         }
     }

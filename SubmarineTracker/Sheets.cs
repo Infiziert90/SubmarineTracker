@@ -33,6 +33,5 @@ public static class Sheets
     /// <param name="itemId">Specific item to get</param>
     /// <returns>Item from the sheet</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Item GetItem(uint itemId) =>
-        ItemSheet.GetRow(itemId);
+    public static Item GetItem(uint itemId) => ItemSheet.GetRow(itemId);
 }

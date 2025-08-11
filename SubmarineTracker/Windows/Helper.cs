@@ -147,7 +147,7 @@ public static class Helper
     public static void DrawComboWithArrows(string label, ref int selected, ref string[] comboArray, int id = 0)
     {
         using (ImRaii.ItemWidth((ImGui.GetWindowWidth() / 2) - ImGui.GetStyle().ItemSpacing.X))
-            ImGui.Combo(label, ref selected, comboArray, comboArray.Length);
+            ImGui.Combo(label, ref selected, comboArray);
 
         DrawArrows(ref selected, comboArray.Length, id);
     }

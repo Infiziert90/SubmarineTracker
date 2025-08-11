@@ -27,7 +27,7 @@ public partial class BuilderWindow
 
         var maps = Voyage.MapNames;
         var selectedMap = CurrentBuild.Map;
-        ImGui.Combo("##mapsSelection", ref selectedMap, maps, maps.Length);
+        ImGui.Combo("##mapsSelection", ref selectedMap, maps);
         if (selectedMap != CurrentBuild.Map)
             CurrentBuild.ChangeMap(selectedMap);
 
@@ -104,9 +104,9 @@ public partial class BuilderWindow
     private void UnlockedTooltip(SubmarineExploration location, FreeCompany fcSub, bool unlockTooltip)
     {
         if (!Unlocks.SectorToUnlock.TryGetValue(location.RowId, out var unlockedFrom))
-            unlockedFrom = new Unlocks.UnlockedFrom(9876);
+            unlockedFrom = new Unlocks.UnlockedFrom(SectorType.UnknownUnlock);
 
-        fcSub.UnlockedSectors.TryGetValue(unlockedFrom.Sector, out var otherUnlocked);
+        fcSub.UnlockedSectors.TryGetValue((uint)unlockedFrom.Sector, out var otherUnlocked);
 
         using var tooltip = ImRaii.Tooltip();
         using var textWrapPos = ImRaii.TextWrapPos(ImGui.GetFontSize() * 35.0f);
@@ -121,13 +121,13 @@ public partial class BuilderWindow
         Helper.TextColored(ImGuiColors.DalamudViolet, $"{Language.TermsUnlockedBy}: ");
         ImGui.SameLine();
 
-        if (unlockedFrom.Sector != 9876)
+        if (unlockedFrom.Sector != SectorType.UnknownUnlock)
         {
-            if (unlockedFrom.Sector != 9000)
+            if (unlockedFrom.Sector != SectorType.Begin)
             {
-                var unlockPoint = Sheets.ExplorationSheet.GetRow(unlockedFrom.Sector);
+                var unlockPoint = Sheets.ExplorationSheet.GetRow((uint)unlockedFrom.Sector);
                 var mapPoint = Voyage.FindVoyageStart(unlockPoint.RowId);
-                Helper.TextColored(otherUnlocked ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed, $"{NumToLetter(unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
+                Helper.TextColored(otherUnlocked ? ImGuiColors.HealerGreen : ImGuiColors.DalamudRed, $"{NumToLetter((uint)unlockedFrom.Sector - mapPoint)}. {UpperCaseStr(unlockPoint.Destination)}");
 
                 if (unlockedFrom.Sub)
                     Helper.TextColored(ImGuiColors.TankBlue, Language.BuilderWindowTooltipUnlocksSlot);
