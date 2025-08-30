@@ -102,6 +102,9 @@ public class DatabaseCache : IDisposable
         return ok;
     }
 
+    public (FreeCompany Fc, Submarine[] Subs) GetFcAndSubs(ulong id)
+        => (GetFreeCompanies()[id], GetSubmarines(id));
+
     private void CheckLoot()
     {
         if (LootRefresh < Environment.TickCount64)

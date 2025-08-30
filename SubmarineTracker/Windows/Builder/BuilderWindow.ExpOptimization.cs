@@ -4,6 +4,7 @@ using Dalamud.Interface.Components;
 using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.Resources;
+
 using static SubmarineTracker.Utils;
 
 namespace SubmarineTracker.Windows.Builder;

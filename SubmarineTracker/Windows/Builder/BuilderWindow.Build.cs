@@ -31,8 +31,7 @@ public partial class BuilderWindow
             Plugin.EnsureFCOrderSafety();
             var existingSubs = Plugin.GetFCOrderWithoutHidden().SelectMany(id =>
             {
-                var fc = Plugin.DatabaseCache.GetFreeCompanies()[id];
-                var subs = Plugin.DatabaseCache.GetSubmarines(id);
+                var (fc, subs) = Plugin.DatabaseCache.GetFcAndSubs(id);
                 return subs.Select(s => Plugin.NameConverter.GetSubIdentifier(s, fc));
             }).ToArray();
 

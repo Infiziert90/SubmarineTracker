@@ -244,10 +244,6 @@ public class Plugin : IDalamudPlugin
         if (local == null)
             return;
 
-        var fcId = GetFCId;
-        if (fcId == 0)
-            return;
-
         // Refresh inventory slot count
         Storage.GetFreeSlotCount();
 
@@ -285,6 +281,10 @@ public class Plugin : IDalamudPlugin
 
             return;
         }
+
+        var fcId = GetFCId;
+        if (fcId == 0)
+            return;
 
         if (Configuration.ShowStorageMessage && ShowStorageMessage)
         {
