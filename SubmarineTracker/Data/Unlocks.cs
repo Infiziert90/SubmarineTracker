@@ -155,7 +155,7 @@ public static class Unlocks
         { 131, new UnlockedFrom(129) },                         // P    South Indigo Deep 4           <-       Moonshadow Isle
         { 132, new UnlockedFrom(127) },                         // Q    South Delphinium Seashelf     <-       Saltfarer's Eye
         { 133, new UnlockedFrom(129) },                         // R    Startail Shelf                <-       Moonshadow Isle
-        { 134, new UnlockedFrom(9876) },                        // S    Cradle of the Winds           <-       Startail Shallows
+        { 134, new UnlockedFrom(132) },                         // S    Cradle of the Winds           <-       South Delphinium Seashelf
         { 135, new UnlockedFrom(133) },                         // T    Startail Trench               <-       Startail Shelf
     };
 
