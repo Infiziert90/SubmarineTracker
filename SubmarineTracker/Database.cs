@@ -2,8 +2,7 @@
 using System.Data.Common;
 using System.IO;
 using MessagePack;
-using Microsoft.Data.Sqlite;
-using DalamudUtil = Dalamud.Utility.Util;
+using System.Data.SQLite;
 
 namespace SubmarineTracker;
 
@@ -21,7 +20,7 @@ public class Database : IDisposable
 {
     private string DbPath { get; }
 
-    private SqliteConnection Connection { get; set; }
+    private SQLiteConnection Connection { get; }
 
     internal Database()
     {
@@ -53,22 +52,22 @@ public class Database : IDisposable
         return Path.Join(Plugin.PluginInterface.ConfigDirectory.FullName, "submarine-sqlite.db");
     }
 
-    private SqliteConnection Connect()
+    private SQLiteConnection Connect()
     {
-        var uriBuilder = new SqliteConnectionStringBuilder
+        var uriBuilder = new SQLiteConnectionStringBuilder()
         {
             DataSource = DbPath,
             DefaultTimeout = 5,
             Pooling = false,
-            Mode = SqliteOpenMode.ReadWriteCreate,
+            ReadOnly = false,
+
+            JournalMode = SQLiteJournalModeEnum.Wal,
+            SyncMode = SynchronizationModes.Normal,
+            CacheSize = 32768
         };
 
-        var conn = new SqliteConnection(uriBuilder.ToString());
+        var conn = new SQLiteConnection(uriBuilder.ToString());
         conn.Open();
-        conn.Execute("PRAGMA journal_mode=WAL;");
-        conn.Execute("PRAGMA synchronous=NORMAL;");
-        if (DalamudUtil.IsWine())
-            conn.Execute("PRAGMA cache_size = 32768;");
 
         return conn;
     }
@@ -130,10 +129,10 @@ public class Database : IDisposable
                        Unlocked INTEGER NOT NULL,              -- uint32
                        Date INTEGER NOT NULL,                  -- unix timestamp with second precision
                        Valid BOOLEAN NOT NULL,                  -- Bool
-                       
+
                        FOREIGN KEY (FreeCompanyId) REFERENCES freecompany(FreeCompanyId)
                    );
-       
+
                    CREATE INDEX IF NOT EXISTS idx_loot_freeCompanyid ON loot (FreeCompanyId);
                    CREATE INDEX IF NOT EXISTS idx_loot_submarineid ON loot (SubmarineId);
                    CREATE INDEX IF NOT EXISTS idx_loot_return ON loot (Return);
@@ -160,11 +159,11 @@ public class Database : IDisposable
                        SternDurability INTEGER NOT NULL,       -- ushort
                        BowDurability INTEGER NOT NULL,         -- ushort
                        BridgeDurability INTEGER NOT NULL,       -- ushort
-                       
+
                        PRIMARY KEY (FreeCompanyId, SubmarineId),
-                       FOREIGN KEY (FreeCompanyId) REFERENCES freecompany(FreeCompanyId)                      
+                       FOREIGN KEY (FreeCompanyId) REFERENCES freecompany(FreeCompanyId)
                    );
-       
+
                    CREATE INDEX IF NOT EXISTS idx_submarine_return ON submarine (Return);
                    """);
 
@@ -190,16 +189,16 @@ public class Database : IDisposable
         }
 
         Connection.Execute("""
-                           CREATE TABLE IF NOT EXISTS counters (               
-                               Key TEXT NOT NULL,               -- Counter Name                    
-                               Count INTEGER NOT NULL           -- int64                    
+                           CREATE TABLE IF NOT EXISTS counters (
+                               Key TEXT NOT NULL,               -- Counter Name
+                               Count INTEGER NOT NULL           -- int64
                            );
 
                            CREATE INDEX IF NOT EXISTS key_index ON counters(Key);
 
                            INSERT INTO counters (Key, Count) VALUES ('Loot', 0);
 
-                           CREATE TRIGGER increase_loot_counter 
+                           CREATE TRIGGER increase_loot_counter
                               AFTER INSERT ON loot
                            BEGIN
                               UPDATE counters
@@ -276,10 +275,10 @@ public class Database : IDisposable
                               $FavProc,
                               $PrimaryItem,
                               $PrimaryCount,
-                              $PrimaryHQ,                               
+                              $PrimaryHQ,
                               $AdditionalItem,
                               $AdditionalCount,
-                              $AdditionalHQ,                              
+                              $AdditionalHQ,
                               $Unlocked,
                               $Date,
                               $Valid
@@ -398,10 +397,10 @@ public class Database : IDisposable
                           INSERT INTO freecompany (
                               FreeCompanyId,
                               FreeCompanyTag,
-                              World, 
+                              World,
                               CharacterName,
                               UnlockedSectors,
-                              ExploredSectors                         
+                              ExploredSectors
                           ) VALUES (
                               $FreeCompanyId,
                               $FreeCompanyTag,
