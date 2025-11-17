@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
+using Lumina.Extensions;
 
 namespace SubmarineTracker;
 

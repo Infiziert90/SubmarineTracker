@@ -81,32 +81,6 @@ public static class Voyage
         return durations + FixedVoyageTime;
     }
 
-    public static Route[] FindAllRoutes(uint map)
-    {
-        var valid = Sheets.ExplorationSheet.Where(r => r.Map.RowId == map && !r.StartingPoint).Select(p => p.RowId).ToArray();
-
-        var startPoint = FindVoyageStartPretty(valid[0]);
-        var paths = valid.Select(t => new[] { startPoint.RowId, t } ).ToHashSet(new Utils.ArrayComparer());
-
-        var i = 1;
-        while (i++ < 5)
-        {
-            foreach (var path in paths.ToArray())
-                foreach (var validPoint in valid.Where(t => !path.Contains(t)))
-                    paths.Add(path.Append(validPoint).ToArray());
-        }
-
-        return paths.AsParallel()
-                   .Select(t => ToExplorationArray(t.Skip(1)))
-                   .Select(CalculateDistance)
-                   .Select(t => new Route
-                   {
-                       Distance = t.Distance,
-                       Sectors = t.Path.Select(s => s.RowId).ToArray(),
-                   })
-                   .ToArray();
-    }
-
     public static BestRoute FindBestRoute(RouteBuild build, uint[] unlocked, uint[] mustInclude, uint[] allowed, bool ignoreUnlocks, bool avgExpBonus)
     {
         var valid = Sheets.ExplorationSheet
@@ -139,7 +113,6 @@ public static class Voyage
         return new BestRoute(bestPath.Distance, bestPath.Path);
     }
 
-    private static readonly ConcurrentDictionary<uint, uint> Distances = new();
     public static BestRoute FindCalculatedRoute(uint[] sectors)
     {
         if (sectors.Length == 0)
@@ -150,11 +123,55 @@ public static class Voyage
                    ? new BestRoute(route.Distance, route.Sectors)
                    : BestRoute.Empty;
     }
+    #endregion
 
-    public static (uint Distance, SubmarineExploration[] Path) CalculateDistance(IEnumerable<uint> sectors) =>
-        CalculateDistance(ToExplorationArray(sectors));
+    #region CommonRoutes
+    public record CommonRoute(int Map, params uint[] Route);
+    public static readonly Dictionary<string, CommonRoute> Common = new()
+    {
+        { "Fight Club - OJ", new CommonRoute(0, 15, 10) },
+        { "Fight Club - JORZ", new CommonRoute(0, 10, 15, 18, 26) },
+        { "Fight Club - MROJZ", new CommonRoute(0, 13, 18, 15, 10, 26) },
+        { "Fight Club - JOZ", new CommonRoute(0, 10, 15, 26) },
+        { "Fight Club - MROJ", new CommonRoute(0, 13, 18, 15, 10) },
+        { "Fight Club - MOJZ", new CommonRoute(0, 13, 15, 10, 26) },
 
-    public static (uint Distance, SubmarineExploration[] Path) CalculateDistance(SubmarineExploration[] sectors)
+        { "CryPTO - AB", new CommonRoute(1, 32, 33) },
+        { "CryPTO - BACD", new CommonRoute(1, 33, 32, 34, 35) },
+        { "CryPTO - BACMN", new CommonRoute(1, 33, 32, 34, 44, 45) },
+        { "Infi - BACMQ", new CommonRoute(1, 33, 32, 34, 44, 48) },
+    };
+    #endregion
+
+    #region ExportFunction
+    public static Route[] FindAllRoutes(uint map)
+    {
+        var valid = Sheets.ExplorationSheet.Where(r => r.Map.RowId == map && !r.StartingPoint).Select(p => p.RowId).ToArray();
+
+        var startPoint = FindVoyageStartPretty(valid[0]);
+        var paths = valid.Select(t => new[] { startPoint.RowId, t } ).ToHashSet(new Utils.ArrayComparer());
+
+        var i = 1;
+        while (i++ < 5)
+        {
+            foreach (var path in paths.ToArray())
+            foreach (var validPoint in valid.Where(t => !path.Contains(t)))
+                paths.Add(path.Append(validPoint).ToArray());
+        }
+
+        return paths.AsParallel()
+            .Select(t => ToExplorationArray(t.Skip(1)))
+            .Select(CalculateDistance)
+            .Select(t => new Route
+            {
+                Distance = t.Distance,
+                Sectors = t.Path.Select(s => s.RowId).ToArray(),
+            })
+            .ToArray();
+    }
+
+    private static readonly ConcurrentDictionary<uint, uint> Distances = new();
+    private static (uint Distance, SubmarineExploration[] Path) CalculateDistance(SubmarineExploration[] sectors)
     {
         var solution = (0u, Array.Empty<SubmarineExploration>());
         if (sectors.Length is 0 or > 5)
@@ -192,23 +209,5 @@ public static class Voyage
 
         return (final.Distance, ToExplorationArray(final.Path));
     }
-    #endregion
-
-    #region CommonRoutes
-    public record CommonRoute(int Map, params uint[] Route);
-    public static readonly Dictionary<string, CommonRoute> Common = new()
-    {
-        { "Fight Club - OJ", new CommonRoute(0, 15, 10) },
-        { "Fight Club - JORZ", new CommonRoute(0, 10, 15, 18, 26) },
-        { "Fight Club - MROJZ", new CommonRoute(0, 13, 18, 15, 10, 26) },
-        { "Fight Club - JOZ", new CommonRoute(0, 10, 15, 26) },
-        { "Fight Club - MROJ", new CommonRoute(0, 13, 18, 15, 10) },
-        { "Fight Club - MOJZ", new CommonRoute(0, 13, 15, 10, 26) },
-
-        { "CryPTO - AB", new CommonRoute(1, 32, 33) },
-        { "CryPTO - BACD", new CommonRoute(1, 33, 32, 34, 35) },
-        { "CryPTO - BACMN", new CommonRoute(1, 33, 32, 34, 44, 45) },
-        { "Infi - BACMQ", new CommonRoute(1, 33, 32, 34, 44, 48) },
-    };
     #endregion
 }

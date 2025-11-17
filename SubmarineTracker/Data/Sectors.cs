@@ -141,7 +141,6 @@ public static class Sectors
         { 126, new Breakpoint(244, 259, 299, 344, 249) },
         { 127, new Breakpoint(245, 260, 300, 345, 250) },
         { 128, new Breakpoint(245, 260, 300, 345, 250) },
-        // TODO prediction, replace with actual values
         { 129, new Breakpoint(246, 261, 301, 346, 251) },
         { 130, new Breakpoint(247, 262, 302, 347, 252) },
         { 131, new Breakpoint(248, 263, 303, 348, 253) },
@@ -176,7 +175,7 @@ public static class Sectors
         return new Breakpoint(t2, t3, normal, optimal, favor);
     }
 
-    private static List<(int Guaranteed, int Average, int Max)> PredictBonusExp(List<uint> sectors, Build.SubmarineBuild build)
+    private static List<(int Guaranteed, int Average, int Max)> PredictRouteBonus(List<uint> sectors, Build.SubmarineBuild build)
     {
         return sectors.Select(sector => PredictBonusExp(sector, build)).ToList();
     }
@@ -207,7 +206,7 @@ public static class Sectors
 
     public static uint CalculateExpForSectors(SubmarineExploration[] sectors, Build.SubmarineBuild build, bool avgExpBonus = false)
     {
-        var bonusEachSector = PredictBonusExp(sectors.Select(s => s.RowId).ToList(), build);
+        var bonusEachSector = PredictRouteBonus(sectors.Select(s => s.RowId).ToList(), build);
         if (bonusEachSector.Count == 0)
             return 0u;
 

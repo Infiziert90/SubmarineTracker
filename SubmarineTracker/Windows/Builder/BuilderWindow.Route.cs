@@ -8,6 +8,7 @@ namespace SubmarineTracker.Windows.Builder;
 public partial class BuilderWindow
 {
     private int CommonSelection;
+    private int LastCalculatedLength;
 
     private void RouteTab()
     {
@@ -95,8 +96,11 @@ public partial class BuilderWindow
             }
         }
 
-        if (CurrentBuild.Sectors.Count != 0)
+        if (CurrentBuild.Sectors.Count != LastCalculatedLength)
+        {
+            LastCalculatedLength = CurrentBuild.Sectors.Count;
             CurrentBuild.UpdateOptimized(Voyage.FindCalculatedRoute(CurrentBuild.Sectors.ToArray()));
+        }
 
         CommonRoutes();
     }

@@ -330,7 +330,7 @@ public static class Build
         }
     }
 
-    public static string ToIdentifier(ushort partId)
+    private static string ToIdentifier(ushort partId)
     {
         return ((partId - 1) / 4) switch
         {
@@ -340,16 +340,12 @@ public static class Build
             3 => "C",
             4 => "Y",
 
-            5 => $"{ToIdentifier((ushort)(partId - 20))}+",
-            6 => $"{ToIdentifier((ushort)(partId - 20))}+",
-            7 => $"{ToIdentifier((ushort)(partId - 20))}+",
-            8 => $"{ToIdentifier((ushort)(partId - 20))}+",
-            9 => $"{ToIdentifier((ushort)(partId - 20))}+",
+            5 or 6 or 7 or 8 or 9 => $"{ToIdentifier((ushort)(partId - 20))}+",
             _ => Language.TermUnknown
         };
     }
 
-    public static int FromIdentifier(string s)
+    private static int FromIdentifier(string s)
     {
         var k = s[0] switch
         {

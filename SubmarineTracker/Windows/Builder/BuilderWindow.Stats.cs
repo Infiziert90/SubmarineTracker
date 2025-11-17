@@ -143,7 +143,7 @@ public partial class BuilderWindow
         }
     }
 
-    public static void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
+    private static void SelectRequiredColor(int minRequired, int current, int maxRequired = -1)
     {
         if (minRequired == 0)
         {
@@ -171,11 +171,11 @@ public partial class BuilderWindow
         }
     }
 
-    public void SelectedRoute()
+    private void SelectedRoute()
     {
-        if (CurrentBuild.OptimizedRoute.Length != 0)
-            Helper.TextColored(ImGuiColors.DalamudOrange, SectorsToPath(" -> ", CurrentBuild.OptimizedRoute.Select(s => s.RowId).ToList()));
-        else
-            Helper.TextColored(ImGuiColors.DalamudOrange, Language.BuilderStatsRouteNoSelection);
+        Helper.TextColored(ImGuiColors.DalamudOrange,
+            CurrentBuild.OptimizedRoute.Length != 0
+                ? SectorsToPath(" -> ", CurrentBuild.OptimizedRoute.Select(s => s.RowId).ToList())
+                : Language.BuilderStatsRouteNoSelection);
     }
 }

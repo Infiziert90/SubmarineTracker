@@ -106,6 +106,8 @@ public partial class ConfigWindow
         {
             Task.Run(() =>
             {
+                ImportDone = false;
+
                 var profile = Plugin.Configuration.CustomLootProfiles["Default"];
                 foreach (var file in new DirectoryInfo(InputPath).EnumerateFiles())
                 {
