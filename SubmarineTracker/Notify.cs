@@ -75,7 +75,7 @@ public class Notify
                 continue;
 
             // using just date here because subs can't come back the same day and be broken again
-            if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{Plugin.ClientState.LocalContentId}{DateTime.Now.Date}"))
+            if (FinishedNotifications.Add($"Repair{sub.Name}{sub.Register}{Plugin.PlayerState.ContentId}{DateTime.Now.Date}"))
                 SendRepair(sub, currentFC);
         }
     }

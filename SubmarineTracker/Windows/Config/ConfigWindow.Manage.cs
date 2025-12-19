@@ -127,14 +127,14 @@ public partial class ConfigWindow
             ImGui.TableNextColumn();
             if (ImGui.Button(Language.TermsAddCurrentCharacter))
             {
-                var local = Plugin.ClientState.LocalPlayer;
+                var local = Plugin.ObjectTable.LocalPlayer;
                 if (local != null)
                 {
                     var name = local.Name.TextValue;
                     var tag = local.CompanyTag.TextValue;
                     var world = local.HomeWorld.Value.Name.ExtractText();
 
-                    Plugin.Configuration.IgnoredCharacters.Add(Plugin.ClientState.LocalContentId, $"({tag}) {name}@{world}");
+                    Plugin.Configuration.IgnoredCharacters.Add(Plugin.PlayerState.ContentId, $"({tag}) {name}@{world}");
                     Plugin.Configuration.Save();
                 }
             }

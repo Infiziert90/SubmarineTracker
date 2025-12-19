@@ -36,7 +36,7 @@ public partial class BuilderWindow
             }).ToArray();
 
             var fcId = Plugin.GetFCId;
-            if (Plugin.Configuration.ShowOnlyCurrentFC && Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.ClientState.LocalContentId, out var fcSub))
+            if (Plugin.Configuration.ShowOnlyCurrentFC && Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.PlayerState.ContentId, out var fcSub))
                 existingSubs = Plugin.DatabaseCache.GetSubmarines(fcId).Select(s => Plugin.NameConverter.GetSubIdentifier(s, fcSub)).ToArray();
 
             existingSubs = existingSubs.Prepend(customTerm).ToArray();
