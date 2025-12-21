@@ -138,25 +138,34 @@ public static class Unlocks
 
         { 115, new UnlockedFrom(SectorType.Map) },                    // Map South Indigo Deep
         { 116, new UnlockedFrom(114) },                         // A    The Indigo Shallows           <-       West Dodie's Abyss
-        { 117, new UnlockedFrom(116) },                         // B    Voyagers' Reprieve            <-       The Indigo Shallows
+        { 117, new UnlockedFrom(116, main: true) },             // B    Voyagers' Reprieve            <-       The Indigo Shallows
         { 118, new UnlockedFrom(116) },                         // C    North Delphinium Seashelf     <-       The Indigo Shallows
         { 119, new UnlockedFrom(117) },                         // D    Rainbringer Rift              <-       Voyagers' Reprieve
         { 120, new UnlockedFrom(118) },                         // E    South Indigo Deep 1           <-       North Delphinium Seashelf
-        { 121, new UnlockedFrom(117) },                         // F    The Central Blue              <-       Voyagers' Reprieve
+        { 121, new UnlockedFrom(117, main: true) },             // F    The Central Blue              <-       Voyagers' Reprieve
         { 122, new UnlockedFrom(118) },                         // G    South Indigo Deep 2           <-       North Delphinium Seashelf
         { 123, new UnlockedFrom(122) },                         // H    The Talon                     <-       South Indigo Deep 2
-        { 124, new UnlockedFrom(121) },                         // I    Southern Central Blue         <-       The Central Blue
+        { 124, new UnlockedFrom(121, main: true) },             // I    Southern Central Blue         <-       The Central Blue
         { 125, new UnlockedFrom(122) },                         // J    South Indigo Deep 3           <-       South Indigo Deep 2
         { 126, new UnlockedFrom(123) },                         // K    the Talonspoint Depths        <-       The Talon
         { 127, new UnlockedFrom(124) },                         // L    Saltfarer's Eye               <-       Southern Central Blue
-        { 128, new UnlockedFrom(124) },                         // M    Startail Shallows             <-       Southern Central Blue
-        { 129, new UnlockedFrom(128) },                         // N    Moonshadow Isle               <-       Startail Shallows
+        { 128, new UnlockedFrom(124, main: true) },             // M    Startail Shallows             <-       Southern Central Blue
+        { 129, new UnlockedFrom(128, main: true) },             // N    Moonshadow Isle               <-       Startail Shallows
         { 130, new UnlockedFrom(127) },                         // O    Emerald Drop                  <-       Saltfarer's Eye
         { 131, new UnlockedFrom(129) },                         // P    South Indigo Deep 4           <-       Moonshadow Isle
         { 132, new UnlockedFrom(127) },                         // Q    South Delphinium Seashelf     <-       Saltfarer's Eye
-        { 133, new UnlockedFrom(129) },                         // R    Startail Shelf                <-       Moonshadow Isle
+        { 133, new UnlockedFrom(129, main: true) },             // R    Startail Shelf                <-       Moonshadow Isle
         { 134, new UnlockedFrom(132) },                         // S    Cradle of the Winds           <-       South Delphinium Seashelf
-        { 135, new UnlockedFrom(133) },                         // T    Startail Trench               <-       Startail Shelf
+        { 135, new UnlockedFrom(133, map: true, main: true) },  // T    Startail Trench               <-       Startail Shelf
+
+        { 136, new UnlockedFrom(SectorType.Map) },                    // Map The Northern Empty
+        { 137, new UnlockedFrom(135) },                         // A    Eastern Blackblood Wells        <-       Startail Trench
+        { 138, new UnlockedFrom(137) },                         // B    Sea Wolf Cove                   <-       Eastern Blackblood Wells
+        { 139, new UnlockedFrom(137) },                         // C    Southernmost Hanthbyrt          <-       Eastern Blackblood Wells
+        { 140, new UnlockedFrom(139) },                         // D    Oeyaseik                        <-       Southernmost Hanthbyrt
+        { 141, new UnlockedFrom(138) },                         // E    Northeast Hanthbyrt             <-      Sea Wolf Cove
+        { 142, new UnlockedFrom(140) },                         // F    Vyrstrant                       <-       Oeyaseik
+        { 143, new UnlockedFrom(SectorType.UnknownUnlock) },          // G    The Sunken Jawbone (G)          <-
     };
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)
