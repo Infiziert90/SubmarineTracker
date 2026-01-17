@@ -56,6 +56,7 @@ public static class Utils
             4 => "Sirensong",
             5 => "Lilac Sea",
             6 => "South Indigo",
+            7 => "Northern Empty",
             _ => Language.TermUnknown
         };
     }
@@ -74,6 +75,7 @@ public static class Utils
             4 => "SSS",
             5 => "TLS",
             6 => "SID",
+            7 => "TNE",
             _ => ""
         };
     }

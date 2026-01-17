@@ -2,12 +2,9 @@
 // MessagePack can't deserialize into readonly
 
 using System.Collections.Frozen;
-using System.Globalization;
 using System.IO;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 using MessagePack;
+using Newtonsoft.Json;
 
 namespace SubmarineTracker.Data;
 
@@ -110,31 +107,79 @@ public static class Importer
         }
     }
 
-    // ReSharper disable once UnusedType.Global
-    public class SectorCSV
+    [Serializable]
+    // From: https://github.com/Infiziert90/FFXIVGachaSpreadsheet/blob/master/Export/SupabaseExporter/SupabaseExporter/Structures/Exports/SubLoot.cs
+    public class SubLoot
     {
-        [Name("Sector name")] public uint Sector { get; set; }
-        [Name("T1 high surv proc")] public uint T1HighSurv { get; set; }
-        [Name("T2 high surv proc")] public string T2HighSurv { get; set; }
-        [Name("T3 high surv proc")] public string T3HighSurv { get; set; }
-        [Name("Favor high surv proc")] public string HighFavor { get; set; }
-        [Name("Favor proc chance")] public string MidFavor { get; set; }
-        [Name("T1 mid surv proc")] public string T1MidSurv { get; set; }
-        [Name("T2 mid surv proc")] public string T2MidSurv { get; set; }
+        // Used for internal cache keeping
+        public uint ProcessedId;
+
+        public int Total;
+        public Dictionary<uint, Sector> Sectors = [];
+
+        public SubLoot() { }
+
+        public class Sector
+        {
+            public int Records;
+
+            public uint Id;
+            public string Name;
+            public string Letter;
+            public uint Rank;
+            public uint Stars;
+            public uint UnlockedFrom;
+
+            public Dictionary<SurvTier, LootPool> Pools = [];
+
+            public Sector() { }
+        }
+
+        public class LootPool
+        {
+            public int Records;
+
+            public Dictionary<uint, PoolReward> Rewards = [];
+
+            public LootPool() { }
+        }
+
+        public record PoolReward
+        {
+            public uint Id;
+            public long Amount;
+            public long Total;
+
+            public Dictionary<RetTier, int[]> MinMax = [];
+
+            public PoolReward() { }
+        }
     }
 
-    // ReSharper disable once UnusedType.Global
-    public class ItemCSV
+    public enum SurvTier : uint
     {
-        [Name("SectorID")] public uint SectorId { get; set; }
-        [Name("ItemID")] public uint ItemId { get; set; }
-        [Name("Loot tier")] public string Tier { get; set; }
-        [Name("Poor min")] public double PoorMin { get; set; }
-        [Name("Poor max")] public double PoorMax { get; set; }
-        [Name("Normal min")] public double NormalMin { get; set; }
-        [Name("Normal max")] public double NormalMax { get; set; }
-        [Name("Optimal min")] public double OptimalMin { get; set; }
-        [Name("Optimal max")] public double OptimalMax { get; set; }
+        Invalid = 0,
+
+        Tier1 = 1,
+        Tier2 = 2,
+        Tier3 = 3,
+    }
+
+    public static string ToTier(this SurvTier tier) => (tier) switch
+        {
+            SurvTier.Tier1 => "T1",
+            SurvTier.Tier2 => "T2",
+            SurvTier.Tier3 => "T3",
+            _ => "Invalid"
+        };
+
+    public enum RetTier : uint
+    {
+        Invalid = 0,
+
+        Poor = 1,
+        Normal = 2,
+        Optimal = 3,
     }
 
     public static void ExportDetailed(string itemPath)
@@ -143,24 +188,44 @@ public static class Importer
         ItemDetailed.Items.Clear();
 
         using var reader = new FileInfo(itemPath).OpenText();
-        using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true });
-        foreach (var itemDetailed in csv.GetRecords<ItemCSV>())
+        var data = JsonConvert.DeserializeObject<SubLoot>(reader.ReadToEnd());
+        if (data == null)
         {
-            var itemRow = Sheets.ItemSheet.GetRow(itemDetailed.ItemId).RowId;
-            var subRow = Sheets.ExplorationSheet.GetRow(itemDetailed.SectorId).RowId;
+            Plugin.Log.Error("Item detailed import failed. Invalid json.");
+            return;
+        }
 
-            var detail = new ItemDetail
+        foreach (var sectorData in data.Sectors.Select(pair => pair.Value))
+        {
+            if (!Sheets.ExplorationSheet.HasRow(sectorData.Id))
             {
-                Sector = subRow,
-                Tier = itemDetailed.Tier,
-                Poor = $"{itemDetailed.PoorMin:N0} - {itemDetailed.PoorMax:N0}",
-                Normal = $"{itemDetailed.NormalMin:N0} - {itemDetailed.NormalMax:N0}",
-                Optimal = $"{itemDetailed.OptimalMin:N0} - {itemDetailed.OptimalMax:N0}"
+                Plugin.Log.Warning($"Invalid sector id found in data: {sectorData.Id}");
+                continue;
+            }
 
-            };
+            foreach (var (tier, pool) in sectorData.Pools)
+            {
+                foreach (var (itemId, reward) in pool.Rewards)
+                {
+                    if (!Sheets.ItemSheet.HasRow(itemId))
+                    {
+                        Plugin.Log.Warning($"Invalid item id found in data: {itemId}");
+                        continue;
+                    }
 
-            if (!ItemDetailed.Items.TryAdd(itemRow, [detail]))
-                ItemDetailed.Items[itemRow].Add(detail);
+                    var detail = new ItemDetail
+                    {
+                        Sector = sectorData.Id,
+                        Tier = tier.ToTier(),
+                        Poor = $"{reward.MinMax[RetTier.Poor][0]} - {reward.MinMax[RetTier.Poor][1]}",
+                        Normal = $"{reward.MinMax[RetTier.Normal][0]} - {reward.MinMax[RetTier.Normal][1]}",
+                        Optimal = $"{reward.MinMax[RetTier.Optimal][0]} - {reward.MinMax[RetTier.Optimal][1]}"
+                    };
+
+                    if (!ItemDetailed.Items.TryAdd(itemId, [detail]))
+                        ItemDetailed.Items[itemId].Add(detail);
+                }
+            }
         }
 
         var path = Path.Combine(Plugin.PluginDir, FilenameItem);

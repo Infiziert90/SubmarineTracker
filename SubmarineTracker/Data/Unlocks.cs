@@ -165,7 +165,7 @@ public static class Unlocks
         { 140, new UnlockedFrom(139) },                         // D    Oeyaseik                        <-       Southernmost Hanthbyrt
         { 141, new UnlockedFrom(138) },                         // E    Northeast Hanthbyrt             <-      Sea Wolf Cove
         { 142, new UnlockedFrom(140) },                         // F    Vyrstrant                       <-       Oeyaseik
-        { 143, new UnlockedFrom(SectorType.UnknownUnlock) },          // G    The Sunken Jawbone (G)          <-
+        { 143, new UnlockedFrom(142) },                         // G    The Sunken Jawbone (G)          <-
     };
 
     public static List<(uint, UnlockedFrom)> FindUnlockPath(uint finalSector)

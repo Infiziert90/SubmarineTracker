@@ -82,7 +82,7 @@ public partial class ConfigWindow
         using (var popup = ImRaii.Popup("InputPathDialogItem"))
         {
             if (popup.Success)
-                Plugin.FileDialogManager.OpenFileDialog("Pick the item file", ".csv", (b, s) => { if (b) InputPathItem = s[0]; }, 1);
+                Plugin.FileDialogManager.OpenFileDialog("Pick the item file", ".json", (b, s) => { if (b) InputPathItem = s[0]; }, 1);
         }
 
         if (ImGui.Button("Calculate Item Detailed"))

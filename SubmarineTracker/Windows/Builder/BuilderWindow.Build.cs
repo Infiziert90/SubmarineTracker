@@ -48,9 +48,9 @@ public partial class BuilderWindow
             ImGui.Combo("##existingSubs", ref CurrentBuild.OriginalSub, existingSubs);
 
             // Calculate first so rank can be changed afterwards
-            if (existingSubs[CurrentBuild.OriginalSub] != customTerm)
+            if (CurrentBuild.OriginalSub != 0)
             {
-                sub = Plugin.GetFCOrderWithoutHidden().SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub];
+                sub = Plugin.GetFCOrderWithoutHidden().SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub - 1]; // Prepend custom is not a valid sub
                 CurrentBuild.UpdateBuild(sub);
             }
 
