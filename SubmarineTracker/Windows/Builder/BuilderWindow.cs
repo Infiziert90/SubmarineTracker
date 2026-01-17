@@ -99,7 +99,7 @@ public partial class BuilderWindow : Window, IDisposable
 
                     using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGrey))
                         if (ImGui.Button(Language.TermSpreadsheet))
-                            Dalamud.Utility.Util.OpenLink("https://docs.google.com/spreadsheets/d/1eiuGRrQTjJ5n4ogybKOBxJRT7EiJLlX93fge-Z8MmD4");
+                            Dalamud.Utility.Util.OpenLink("https://gacha.infi.ovh/submarine");
                 }
 
                 Helper.MainMenuIcon();

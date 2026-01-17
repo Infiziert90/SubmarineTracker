@@ -61,7 +61,7 @@ public class Plugin : IDalamudPlugin
     public static string PluginDir => PluginInterface.AssemblyLocation.DirectoryName!;
 
     private const string GithubIssue = "https://github.com/Infiziert90/SubmarineTracker/issues";
-    private const string DiscordThread = "https://canary.discord.com/channels/581875019861328007/1094255662860599428";
+    private const string DiscordThread = "https://discord.com/channels/581875019861328007/1094255662860599428";
     private const string Crowdin = "https://crowdin.com/project/submarine-tracker";
     private const string KoFiLink = "https://ko-fi.com/infiii";
 
