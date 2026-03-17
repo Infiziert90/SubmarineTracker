@@ -284,7 +284,10 @@
         <value>选择“"无限制"”时可选择特定时间范围。</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
-        <value>时间范围: </value>
+        <value>从到:</value>
+    </data>
+  <data name="LootTabEntryCustomHours" xml:space="preserve">
+        <value>小时:</value>
     </data>
   <data name="LootTabExport" xml:space="preserve">
         <value>导出</value>
@@ -444,7 +447,7 @@
         <value>附加到航程选择界面的悬浮窗
 
 建议下一个需要解锁或探索的航路点
-满足以下条件可见: 
+满足以下条件可见:
   a) 海底图还有未解锁的航路点，或者
   b) 必须探索某个航路点才能解锁下张海底图</value>
     </data>
@@ -455,7 +458,7 @@
         <value>附加到航程选择界面的悬浮窗
 
 显示所有待解锁的航路点
-满足以下条件可见: 
+满足以下条件可见:
   a) 海底图还有未解锁的航路点</value>
     </data>
   <data name="ConfigTabCheckboxRouteOverlay" xml:space="preserve">
@@ -465,7 +468,7 @@
         <value>附加到航程选择界面的悬浮窗
 
 建议最好的航线
-满足以下条件隐藏: 
+满足以下条件隐藏:
   a) 超过最高等级阈值
   b) 未指定必须包含</value>
     </data>
@@ -710,7 +713,7 @@
         <value>调整大小</value>
     </data>
   <data name="ConfigTabTooltipLetMeResize" xml:space="preserve">
-        <value>调整部队按钮的大小, 
+        <value>调整部队按钮的大小,
 但将无法自动调整大小。</value>
     </data>
   <data name="ConfigTabEntryAllSection" xml:space="preserve">
@@ -1151,6 +1154,9 @@
     </data>
   <data name="DateLimit1Year" xml:space="preserve">
         <value>1 年</value>
+    </data>
+  <data name="DateLimitCustomHours" xml:space="preserve">
+        <value>自定义（小时）</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
         <value>默认</value>

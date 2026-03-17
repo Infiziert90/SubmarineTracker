@@ -26,6 +26,7 @@ public enum DateLimit
     M6 = 10,
     M9 = 11,
     Year = 12,
+    CustomHours = 99,
 }
 
 public static class DateUtil
@@ -72,6 +73,7 @@ public static class DateUtil
             DateLimit.M6 => Language.DateLimit6Months,
             DateLimit.M9 => Language.DateLimit9Months,
             DateLimit.Year => Language.DateLimit1Year,
+            DateLimit.CustomHours => Language.DateLimitCustomHours,
             _ => Language.TermUnknown
         };
     }
@@ -93,6 +95,7 @@ public static class DateUtil
             DateLimit.M6 => GetPreviousMonth(6),
             DateLimit.M9 => GetPreviousMonth(9),
             DateLimit.Year => GetPreviousYear(1),
+            DateLimit.CustomHours => DateTime.UtcNow.AddHours(-Math.Max(1, Plugin.Configuration.CustomLootHours)),
             _ => DateTime.UnixEpoch,
         };
     }

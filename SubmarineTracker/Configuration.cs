@@ -81,6 +81,7 @@ public class Configuration : IPluginConfiguration
     public bool ExcludeLegacy = false;
     public Dictionary<string, Dictionary<uint, int>> CustomLootProfiles = new() {{ "Default", new Dictionary<uint, int>() }};
     public DateLimit DateLimit = DateLimit.None;
+    public int CustomLootHours = 12;
 
     public bool ExportExcludeDate = true;
     public bool ExportExcludeHash;

@@ -286,6 +286,9 @@
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>期間:</value>
     </data>
+  <data name="LootTabEntryCustomHours" xml:space="preserve">
+        <value>時間:</value>
+    </data>
   <data name="LootTabExport" xml:space="preserve">
         <value>エクスポート</value>
     </data>
@@ -1151,6 +1154,9 @@ Mystic Spirit for all there work.</value>
     </data>
   <data name="DateLimit1Year" xml:space="preserve">
         <value>1年</value>
+    </data>
+  <data name="DateLimitCustomHours" xml:space="preserve">
+        <value>カスタム（時間）</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
         <value>デフォルト</value>

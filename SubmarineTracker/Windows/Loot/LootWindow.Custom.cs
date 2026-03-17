@@ -154,6 +154,25 @@ public partial class LootWindow
             }
             ImGuiComponents.HelpMarker(Language.LootTabTooltipFixed);
 
+            if (Plugin.Configuration.DateLimit == DateLimit.CustomHours)
+            {
+                ImGui.AlignTextToFramePadding();
+                Helper.TextColored(ImGuiColors.DalamudViolet, Language.LootTabEntryCustomHours);
+                ImGui.SameLine();
+
+                var hours = Math.Max(1, Plugin.Configuration.CustomLootHours);
+                if (ImGui.InputInt("##customLootHours", ref hours, 1, 12))
+                {
+                    hours = Math.Max(1, hours);
+                    if (Plugin.Configuration.CustomLootHours != hours)
+                    {
+                        LastRefreshTime = 0;
+                        Plugin.Configuration.CustomLootHours = hours;
+                        Plugin.Configuration.Save();
+                    }
+                }
+            }
+
             if (Plugin.Configuration.DateLimit == DateLimit.None)
             {
                 ImGui.AlignTextToFramePadding();

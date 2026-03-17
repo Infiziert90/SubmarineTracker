@@ -9,8 +9,8 @@
 
 namespace SubmarineTracker.Resources {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,15 +22,15 @@ namespace SubmarineTracker.Resources {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Language {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Language() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -44,7 +44,7 @@ namespace SubmarineTracker.Resources {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -58,7 +58,7 @@ namespace SubmarineTracker.Resources {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Calculate.
         /// </summary>
@@ -67,7 +67,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCalculationCalculate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not calculated ....
         /// </summary>
@@ -76,7 +76,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCalculationManualCalculation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No route found, check speed and range ....
         /// </summary>
@@ -85,7 +85,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCalculationNothingFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto Include.
         /// </summary>
@@ -94,7 +94,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCheckboxAutoInclude", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use Avg Exp Bonus.
         /// </summary>
@@ -103,7 +103,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCheckboxAvgBonus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Unlocks.
         /// </summary>
@@ -112,7 +112,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCheckboxIgnoreUnlocks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maximize Duration.
         /// </summary>
@@ -121,7 +121,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCheckboxMaximizeDuration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Disable Automatic Calculation.
         /// </summary>
@@ -130,7 +130,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPCheckboxNoAutomatic", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Duration Limit.
         /// </summary>
@@ -139,7 +139,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPEntryDurationLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hours &amp; Minutes.
         /// </summary>
@@ -148,7 +148,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPEntryHoursandMinutes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto include the next main sector, if there is one.
         /// </summary>
@@ -157,7 +157,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPTooltipAutoInclude", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This calculation takes only guaranteed bonus exp into account.
         ///With this option it will instead take the avg of possible exp bonus..
@@ -167,7 +167,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BestEXPTooltipAvgBonus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatic Selection: {0} - Rank {1}.
         /// </summary>
@@ -176,7 +176,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderBuildTabAutomaticSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To disable this behaviour head into the configuration, builder tab and uncheck &apos;Auto Select&apos;.
         /// </summary>
@@ -185,7 +185,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderBuildTooltipAutomaticSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Calculate.
         /// </summary>
@@ -194,7 +194,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingButtonCalculate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop Calculation.
         /// </summary>
@@ -203,7 +203,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingButtonStopCalculate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use Avg Exp Bonus.
         /// </summary>
@@ -212,7 +212,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingCheckboxAvgExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Build.
         /// </summary>
@@ -221,7 +221,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingCheckboxIgnoreBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Shark Parts.
         /// </summary>
@@ -230,7 +230,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingCheckboxIgnoreShark", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Unlocks.
         /// </summary>
@@ -239,7 +239,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingCheckboxIgnoreUnlocks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Unmodified Parts.
         /// </summary>
@@ -248,7 +248,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingCheckboxIgnoreUnmodified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to At Rank.
         /// </summary>
@@ -257,7 +257,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingInfoAtRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time elapsed current calculation.
         /// </summary>
@@ -266,7 +266,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingInfoElapsedCurrent", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time elapsed.
         /// </summary>
@@ -275,7 +275,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingInfoElapsedTotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Progress for current.
         /// </summary>
@@ -284,7 +284,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingInfoProgressFor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Avg Bonus:.
         /// </summary>
@@ -293,7 +293,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultAvg", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Final Rank:.
         /// </summary>
@@ -302,7 +302,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultFinal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last Calculation:.
         /// </summary>
@@ -311,7 +311,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultLast", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Leftover:.
         /// </summary>
@@ -320,7 +320,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultLeftover", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Limit:.
         /// </summary>
@@ -329,7 +329,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Maximize Limit:.
         /// </summary>
@@ -338,7 +338,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultMaximize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start Rank:.
         /// </summary>
@@ -347,7 +347,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultStart", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exp Total:.
         /// </summary>
@@ -356,7 +356,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultTotal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Unlocks:.
         /// </summary>
@@ -365,7 +365,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultUnlocks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Voyage List:.
         /// </summary>
@@ -374,7 +374,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultVoyageList", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Voyages:.
         /// </summary>
@@ -383,7 +383,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingResultVoyages", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Build:.
         /// </summary>
@@ -392,7 +392,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingStepBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exp Gained:.
         /// </summary>
@@ -401,7 +401,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingStepGained", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rank Reached:.
         /// </summary>
@@ -410,7 +410,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingStepReached", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Voyage {0}:.
         /// </summary>
@@ -419,7 +419,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingStepVoyage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This calculation normally takes only guaranteed retrieval bonus into account.
         ///With this option it will take the avg of possible bonus.
@@ -429,7 +429,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipAvgExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This will calculate every single possible build
         ///Warning: This will take a long time and you&apos;ll experience game slowdown.
@@ -439,7 +439,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipIgnoreBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Leveling expects that a shark part exists, so it takes that as priority over worse parts
         ///This option disables the behaviour
@@ -452,7 +452,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipIgnoreShark", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Leveling expects that an unmodified part exists, so it takes that as priority over any modified part if better
         ///This option disables the behaviour
@@ -463,7 +463,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipIgnoreUnmodified", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Swaps parts after X voyages if optimal..
         /// </summary>
@@ -472,7 +472,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipSwap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The rank this calculation must reach, but can overshot..
         /// </summary>
@@ -481,7 +481,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingTooltipTarget", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Warning: This will take a long time and you&apos;ll experience game slowdown.
         /// </summary>
@@ -490,7 +490,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderLevelingWarningSlow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No build found..
         /// </summary>
@@ -499,7 +499,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCalculationNothingFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Favor.
         /// </summary>
@@ -508,7 +508,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCheckboxFavor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore Breakpoints.
         /// </summary>
@@ -517,7 +517,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCheckboxIgnoreBreakpoints", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Modified Parts.
         /// </summary>
@@ -526,7 +526,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCheckboxModded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use Normal.
         /// </summary>
@@ -535,7 +535,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCheckboxNormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use T2.
         /// </summary>
@@ -544,7 +544,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipCheckboxT2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Selected Route:.
         /// </summary>
@@ -553,7 +553,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipHeaderRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select this build.
         /// </summary>
@@ -562,7 +562,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderShipTableSelect", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Selected Build:.
         /// </summary>
@@ -571,7 +571,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderStatsCategoryBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Optimized Route:.
         /// </summary>
@@ -580,7 +580,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderStatsCategoryRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Selection.
         /// </summary>
@@ -589,7 +589,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderStatsRouteNoSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} after {1} voyages.
         /// </summary>
@@ -598,7 +598,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderStatsTextRepairAfter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Best Exp.
         /// </summary>
@@ -607,7 +607,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabBestExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Build.
         /// </summary>
@@ -616,7 +616,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Builder.
         /// </summary>
@@ -625,7 +625,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabBuilder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Info.
         /// </summary>
@@ -634,7 +634,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Best Exp?.
         /// </summary>
@@ -643,7 +643,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoBestExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Breakpoints:.
         /// </summary>
@@ -652,7 +652,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoBreakpoints", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Requirement exceeded.
         /// </summary>
@@ -661,7 +661,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoGoldText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T3/Optimal/Favor reached.
         /// </summary>
@@ -670,7 +670,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoGreenText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How are these breakpoints calculated?.
         /// </summary>
@@ -679,7 +679,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoHowCalculated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T2/Normal reached, followed by T3/Optimal.
         /// </summary>
@@ -688,7 +688,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoPinkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Requirement not fulfilled, followed by requirement.
         /// </summary>
@@ -697,7 +697,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoRedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing selected or no data available.
         /// </summary>
@@ -706,7 +706,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabInfoWhiteText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Leveling.
         /// </summary>
@@ -715,7 +715,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabLeveling", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Route.
         /// </summary>
@@ -724,7 +724,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Common Routes.
         /// </summary>
@@ -733,7 +733,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabRouteCommon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select sector by clicking.
         /// </summary>
@@ -742,7 +742,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabRouteSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ship.
         /// </summary>
@@ -751,7 +751,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabShip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This tool will assist you in calculating the optimal route that can be taken to level the current build. These calculations are based on experience gained per minute and the unlocked sectors..
         /// </summary>
@@ -760,7 +760,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextBestExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Favor required for chance to get two items from a sector.
         /// </summary>
@@ -769,7 +769,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextFavor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Distance and duration are fixed calculated values. However all other breakpoints are calculated from community provided data.
         ///Special thanks to Mystic Spirit for all there work..
@@ -779,7 +779,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextHowCalculated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Retrieval required for normal retrieval level.
         /// </summary>
@@ -788,7 +788,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextNormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Retrieval required for optimal retrieval level.
         /// </summary>
@@ -797,7 +797,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextOptimal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Surveillance required for a chance to get loot from Tier 2.
         /// </summary>
@@ -806,7 +806,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextT2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Surveillance required for a chance to get loot from Tier 3.
         /// </summary>
@@ -815,7 +815,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderTabTextT3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Load.
         /// </summary>
@@ -824,7 +824,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowButtonLoad", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reset.
         /// </summary>
@@ -833,7 +833,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowButtonReset", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
@@ -842,7 +842,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowButtonSave", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save Build.
         /// </summary>
@@ -851,7 +851,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowButtonSaveBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Build with same name exists already..
         /// </summary>
@@ -860,7 +860,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowErrorSameName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Load by clicking.
         /// </summary>
@@ -869,7 +869,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowTipLoading", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Always Unlocked.
         /// </summary>
@@ -878,7 +878,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowTooltipAlwaysUnlocked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hold Control to overwrite.
         /// </summary>
@@ -887,7 +887,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowTooltipOverwrite", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to #Extra Sub Slot.
         /// </summary>
@@ -896,7 +896,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("BuilderWindowTooltipUnlocksSlot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gold.
         /// </summary>
@@ -905,7 +905,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsGold", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Green.
         /// </summary>
@@ -914,7 +914,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsGreen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pink.
         /// </summary>
@@ -923,7 +923,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsPink", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Red.
         /// </summary>
@@ -932,7 +932,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsRed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Violet.
         /// </summary>
@@ -941,7 +941,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsViolet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to White.
         /// </summary>
@@ -950,7 +950,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ColorsWhite", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Community.
         /// </summary>
@@ -959,7 +959,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigAboutTranslationCommunity", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All localizations are done by the community.
         ///If you want to help improve them, please visit Crowdin.
@@ -969,7 +969,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigAboutTranslationTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
@@ -978,7 +978,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabAbout", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All Returning Subs.
         /// </summary>
@@ -987,7 +987,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxAllReturning", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show As Date.
         /// </summary>
@@ -996,7 +996,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxAsDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically Close.
         /// </summary>
@@ -1005,7 +1005,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxAutomaticallyClose", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto Select Current Submarine.
         /// </summary>
@@ -1014,7 +1014,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxAutoSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Only Current FC.
         /// </summary>
@@ -1023,7 +1023,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxCurrentFC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Extended Parts List.
         /// </summary>
@@ -1032,7 +1032,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxExtendedParts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show First Return Time.
         /// </summary>
@@ -1041,7 +1041,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxFirstReturnTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto Include Main Sector.
         /// </summary>
@@ -1050,7 +1050,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxIncludeMain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Inventory Slot Count.
         /// </summary>
@@ -1059,7 +1059,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxInventorySlotCount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exclude Legacy Loot.
         /// </summary>
@@ -1068,7 +1068,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxLegacy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Let Me Resize.
         /// </summary>
@@ -1077,7 +1077,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxLetMeResize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Lock Position.
         /// </summary>
@@ -1086,7 +1086,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxLockPosition", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Lock Size.
         /// </summary>
@@ -1095,7 +1095,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxLockSize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Needed Repair.
         /// </summary>
@@ -1104,7 +1104,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxNeededRepair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Next Overlay.
         /// </summary>
@@ -1113,7 +1113,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxNextOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove Hidden From Numbers.
         /// </summary>
@@ -1122,7 +1122,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxNoHidden", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Submarine Name.
         /// </summary>
@@ -1131,7 +1131,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxNoSubName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use Offline Mode.
         /// </summary>
@@ -1140,7 +1140,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxOfflineMode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only Show Returned.
         /// </summary>
@@ -1149,7 +1149,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxOnlyReturned", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open On Return.
         /// </summary>
@@ -1158,7 +1158,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxOnReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open On Startup.
         /// </summary>
@@ -1167,7 +1167,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxOpenOnStartup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Repair Status After Voyage Return.
         /// </summary>
@@ -1176,7 +1176,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxRepairAfterVoyage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Repair Status.
         /// </summary>
@@ -1185,7 +1185,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxRepairStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Repair Toast.
         /// </summary>
@@ -1194,7 +1194,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxRepairToast", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Return Date.
         /// </summary>
@@ -1203,7 +1203,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxReturnDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Returning Sub.
         /// </summary>
@@ -1212,7 +1212,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxReturningSub", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Return Time.
         /// </summary>
@@ -1221,7 +1221,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxReturnTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reverse Sort.
         /// </summary>
@@ -1230,7 +1230,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxReverseSort", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Route Overlay.
         /// </summary>
@@ -1239,7 +1239,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxRouteOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Send Dispatch.
         /// </summary>
@@ -1248,7 +1248,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxSendDispatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Send Return.
         /// </summary>
@@ -1257,7 +1257,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxSendReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Returning Sub.
         /// </summary>
@@ -1266,7 +1266,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxServerBarEnabled", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show On Route And Done Numbers.
         /// </summary>
@@ -1275,7 +1275,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxServerBarNumbers", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show &apos;All&apos; Button.
         /// </summary>
@@ -1284,7 +1284,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Build.
         /// </summary>
@@ -1293,7 +1293,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Date.
         /// </summary>
@@ -1302,7 +1302,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Rank.
         /// </summary>
@@ -1311,7 +1311,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Route.
         /// </summary>
@@ -1320,7 +1320,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Storage Message.
         /// </summary>
@@ -1329,7 +1329,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowStorageMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Also Show At Startup.
         /// </summary>
@@ -1338,7 +1338,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxShowStorageStartup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sort By Lowest Time.
         /// </summary>
@@ -1347,7 +1347,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxSortTimeLowest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Both Options.
         /// </summary>
@@ -1356,7 +1356,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxTimeDateShowBoth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Time In Title.
         /// </summary>
@@ -1365,7 +1365,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxTitleTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Unlock Overlay.
         /// </summary>
@@ -1374,7 +1374,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxUnlockOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Upload Permission.
         /// </summary>
@@ -1383,7 +1383,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxUploadPermission", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All Done.
         /// </summary>
@@ -1392,7 +1392,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabColorsAllDone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to None Done.
         /// </summary>
@@ -1401,7 +1401,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabColorsNoneDone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Partly Done.
         /// </summary>
@@ -1410,7 +1410,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabColorsPartlyDone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All Section:.
         /// </summary>
@@ -1419,7 +1419,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryAllSection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Author:.
         /// </summary>
@@ -1428,7 +1428,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryAuthor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Behavior:.
         /// </summary>
@@ -1437,7 +1437,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryBehavior", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Collection Items:.
         /// </summary>
@@ -1446,7 +1446,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryCollectionItems", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Collections:.
         /// </summary>
@@ -1455,7 +1455,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryCollections", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Colors:.
         /// </summary>
@@ -1464,7 +1464,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryColors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Detailed View:.
         /// </summary>
@@ -1473,7 +1473,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryDetailedView", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord:.
         /// </summary>
@@ -1482,7 +1482,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryDiscord", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to FC Buttons:.
         /// </summary>
@@ -1491,7 +1491,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryFCButtons", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to General:.
         /// </summary>
@@ -1500,7 +1500,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryGeneral", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Localization:.
         /// </summary>
@@ -1509,7 +1509,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryLocalization", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Naming Convention:.
         /// </summary>
@@ -1518,7 +1518,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryNaming", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Notifications:.
         /// </summary>
@@ -1527,7 +1527,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryNotifications", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Options:.
         /// </summary>
@@ -1536,7 +1536,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryOptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overview:.
         /// </summary>
@@ -1545,7 +1545,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryOverview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Saved Builds:.
         /// </summary>
@@ -1554,7 +1554,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntrySavedBuilds", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Specific Submarines:.
         /// </summary>
@@ -1563,7 +1563,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntrySpecificSubmarines", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submarines:.
         /// </summary>
@@ -1572,7 +1572,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntrySubmarines", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Uploads:.
         /// </summary>
@@ -1581,7 +1581,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryUploads", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version:.
         /// </summary>
@@ -1590,7 +1590,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Webhook:.
         /// </summary>
@@ -1599,7 +1599,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryWebhook", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Window:.
         /// </summary>
@@ -1608,7 +1608,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabEntryWindow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Url is not a valid discord webhook..
         /// </summary>
@@ -1617,7 +1617,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabErrorInvalidWebhook", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
@@ -1626,7 +1626,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabGeneral", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Offline Mode Explanation.
         /// </summary>
@@ -1635,7 +1635,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHeaderOfflineLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RoleId For Ping:.
         /// </summary>
@@ -1644,7 +1644,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHeaderRoleId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to UserId For Ping:.
         /// </summary>
@@ -1653,7 +1653,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHeaderUserId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord Webhook Url:.
         /// </summary>
@@ -1662,7 +1662,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHeaderWebhookUrl", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click the button:.
         /// </summary>
@@ -1671,7 +1671,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpClickButton", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
@@ -1680,7 +1680,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Need help creating the webhook url?.
         /// </summary>
@@ -1689,7 +1689,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpText1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Need help finding your discord user id?.
         /// </summary>
@@ -1698,7 +1698,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpText2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Need help finding your discord role id?.
         /// </summary>
@@ -1707,7 +1707,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpText3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Note: Same works for user ids.
         /// </summary>
@@ -1716,7 +1716,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabHelpText4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loot.
         /// </summary>
@@ -1725,7 +1725,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabLoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage.
         /// </summary>
@@ -1734,7 +1734,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabManage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Example: .
         /// </summary>
@@ -1743,7 +1743,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabNamingExample", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Notify.
         /// </summary>
@@ -1752,7 +1752,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabNotify", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Offline mode allows you to receive return notifications while the game client is closed. For this feature to work, some data has to be uploaded to a server for processing..
         /// </summary>
@@ -1761,7 +1761,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Important Note.
         /// </summary>
@@ -1770,7 +1770,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText10", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For this feature to work, general upload permissions must have been granted..
         /// </summary>
@@ -1779,7 +1779,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText11", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to What Data?.
         /// </summary>
@@ -1788,7 +1788,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord Webhook Url.
         /// </summary>
@@ -1797,7 +1797,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submarine + FC Name [Naming Convention].
         /// </summary>
@@ -1806,7 +1806,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Return Time.
         /// </summary>
@@ -1815,7 +1815,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText5", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord UserId [If set].
         /// </summary>
@@ -1824,7 +1824,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText6", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord RoleId [If set].
         /// </summary>
@@ -1833,7 +1833,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText7", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Data Lifetime.
         /// </summary>
@@ -1842,7 +1842,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText8", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All uploaded data is removed from the database 10 minutes before the return time is reached. At this stage, all remaining memory data will automatically wiped after the return notification has been sent..
         /// </summary>
@@ -1851,7 +1851,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOfflineModeText9", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overlay.
         /// </summary>
@@ -1860,7 +1860,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Server Bar:.
         /// </summary>
@@ -1869,7 +1869,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabServerBar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Highest Rank.
         /// </summary>
@@ -1878,7 +1878,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabSliderRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically closes the overlay if all submarines are on voyage, and holds it closed.
         /// </summary>
@@ -1887,7 +1887,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipAutomaticallyClose", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically selects the current selected submarine in the games voyage interface..
         /// </summary>
@@ -1896,7 +1896,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipAutoSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shows the first returning sub in the overlay headers for each FC..
         /// </summary>
@@ -1905,7 +1905,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipFirstReturnTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hold Control to delete.
         /// </summary>
@@ -1914,7 +1914,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipIgnoredCharacterDelete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto includes the next main route sector, if there is one..
         /// </summary>
@@ -1923,7 +1923,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipIncludeMain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This allows you to resize the FC buttons,
         ///but stops them from automatically adjusting size..
@@ -1933,7 +1933,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipLetMeResize", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overlay attached to the voyage selection interface
         ///
@@ -1947,7 +1947,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipNextOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Automatically opens the overlay if a submarine has returned.
         /// </summary>
@@ -1956,7 +1956,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipOnReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opens the overlay, if it was closed before shutting down the game, on the next startup.
         /// </summary>
@@ -1965,7 +1965,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipOpenOnStartup", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No route suggestions above this rank..
         /// </summary>
@@ -1974,7 +1974,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to open discord role id guide in your browser..
         /// </summary>
@@ -1983,7 +1983,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipRoleId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overlay attached to the voyage selection interface.
         ///
@@ -1997,7 +1997,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipRouteOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deleting an FC entry will additionally remove all of its loot history.
         ///Hold Control to delete.
@@ -2007,7 +2007,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipSavedFCsDeletion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sends a webhook message on dispatch, containing a timestamp when this submarine will return..
         /// </summary>
@@ -2016,7 +2016,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipSendDispatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sends a webhook message on return..
         /// </summary>
@@ -2025,7 +2025,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipSendReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Adds an &apos;All&apos; button for easy overview of all FCs.
         ///Note: Messy with too many FCs..
@@ -2035,7 +2035,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipShowAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This option will also revert back to 1 FC in each column, if the window is too small..
         /// </summary>
@@ -2044,7 +2044,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipShowRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show a message whenever you enter the workshop, informing you about your tank and repair kit status.
         /// </summary>
@@ -2053,7 +2053,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipShowStorageMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sorts the overlay headers by return time, this overwrites FC order..
         /// </summary>
@@ -2062,7 +2062,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipSortTimeLowest", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overlay attached to the voyage selection interface
         ///
@@ -2075,7 +2075,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipUnlockOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to open discord user id guide in your browser..
         /// </summary>
@@ -2084,7 +2084,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipUserId", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to open discord webhook guide in your browser..
         /// </summary>
@@ -2093,7 +2093,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTooltipWebhook", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tracker.
         /// </summary>
@@ -2102,7 +2102,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabTracker", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Anonymously provide data about submarines.
         ///This data can&apos;t be tied to you in any way and everyone benefits!.
@@ -2112,7 +2112,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadInformation1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loot received.
         /// </summary>
@@ -2121,7 +2121,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadPoint1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sector unlocks.
         /// </summary>
@@ -2130,7 +2130,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadPoint2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exploration procs.
         /// </summary>
@@ -2139,7 +2139,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadPoint3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submarine stats.
         /// </summary>
@@ -2148,7 +2148,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadPoint4", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to What data?.
         /// </summary>
@@ -2157,7 +2157,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabUploadWhat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Collection Name.
         /// </summary>
@@ -2166,7 +2166,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTextInputCollectionName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default collection can&apos;t be deleted.
         /// </summary>
@@ -2175,7 +2175,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTooltipDefaultCollection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 Day.
         /// </summary>
@@ -2184,7 +2184,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit1Day", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 Month.
         /// </summary>
@@ -2193,7 +2193,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit1Month", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 Week.
         /// </summary>
@@ -2202,7 +2202,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit1Week", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 Year.
         /// </summary>
@@ -2211,7 +2211,16 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit1Year", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Custom (Hours).
+        /// </summary>
+        internal static string DateLimitCustomHours {
+            get {
+                return ResourceManager.GetString("DateLimitCustomHours", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to 2 Weeks.
         /// </summary>
@@ -2220,7 +2229,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit2Weeks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 3 Days.
         /// </summary>
@@ -2229,7 +2238,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit3Days", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 3 Months.
         /// </summary>
@@ -2238,7 +2247,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit3Months", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 3 Weeks.
         /// </summary>
@@ -2247,7 +2256,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit3Weeks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 4 Weeks.
         /// </summary>
@@ -2256,7 +2265,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit4Weeks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 5 Days.
         /// </summary>
@@ -2265,7 +2274,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit5Days", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 6 Months.
         /// </summary>
@@ -2274,7 +2283,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit6Months", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 9 Months.
         /// </summary>
@@ -2283,7 +2292,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DateLimit9Months", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 24 Hours.
         /// </summary>
@@ -2292,7 +2301,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DurationLimit24Hours", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 36 Hours.
         /// </summary>
@@ -2301,7 +2310,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DurationLimit36Hours", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 48 Hours.
         /// </summary>
@@ -2310,7 +2319,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DurationLimit48Hours", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
@@ -2319,7 +2328,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DurationLimitCustom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Limit.
         /// </summary>
@@ -2328,7 +2337,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("DurationLimitNoLimit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Collection with this name already exists.
         /// </summary>
@@ -2337,7 +2346,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ErrorCollectionExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to delete this entry, report this error to the author.
         /// </summary>
@@ -2346,7 +2355,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ErrorDeletionFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No data found for this character&apos;s FC
         ///Please visit your Company Workshop and access Submersible Management at the Voyage Control Panel..
@@ -2356,7 +2365,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ErrorNoData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Too Low.
         /// </summary>
@@ -2365,7 +2374,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("FavorTermLow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CSCFIFFE.
         /// </summary>
@@ -2374,7 +2383,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("FavorTermStatsEnoughButFailed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
@@ -2383,7 +2392,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("FavorTermYes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Info.
         /// </summary>
@@ -2392,7 +2401,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Colors:.
         /// </summary>
@@ -2401,7 +2410,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoColors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocked and visited.
         /// </summary>
@@ -2410,7 +2419,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoGreenText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How to unlock new maps / slots?.
         /// </summary>
@@ -2419,7 +2428,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoMapUnlock", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You must visit the unlocked sector at least once.
         ///Note: You won&apos;t see more submarines until you filled the previous slot.
@@ -2430,7 +2439,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoMapUnlockText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not unlocked.
         /// </summary>
@@ -2439,7 +2448,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoRedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How to unlock new Sectors?.
         /// </summary>
@@ -2448,7 +2457,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoSectorUnlock", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocking new sectors is RNG.
         ///By increasing the speed and frequency of voyages, you will have more chances to discover a new sector..
@@ -2458,7 +2467,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoSectorUnlockText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocked but not visited.
         /// </summary>
@@ -2467,7 +2476,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabInfoVioletText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Progression.
         /// </summary>
@@ -2476,7 +2485,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabProgression", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Storage.
         /// </summary>
@@ -2485,7 +2494,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabStorage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AllaganTools not available..
         /// </summary>
@@ -2494,7 +2503,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("HelpyTabWarningAllaganTools", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid path..
         /// </summary>
@@ -2503,7 +2512,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootExportErrorInvalidPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing to export in the selected time frame..
         /// </summary>
@@ -2512,7 +2521,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootExportErrorNothingFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Successfully exported to clipboard..
         /// </summary>
@@ -2521,7 +2530,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootExportSuccessClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Export done..
         /// </summary>
@@ -2530,7 +2539,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootExportSuccessFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Output Path: {0}.
         /// </summary>
@@ -2539,7 +2548,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootExportSuccessOutputPath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Analyse.
         /// </summary>
@@ -2548,7 +2557,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabAnalyse", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clipboard.
         /// </summary>
@@ -2557,7 +2566,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabButtonClipboard", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
@@ -2566,7 +2575,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabButtonFile", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rebuild Cache.
         /// </summary>
@@ -2575,7 +2584,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabButtonRebuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exclude Date.
         /// </summary>
@@ -2584,7 +2593,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCheckboxExcludeDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exclude Hash.
         /// </summary>
@@ -2593,7 +2602,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCheckboxExcludeHash", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Export All FCs.
         /// </summary>
@@ -2602,7 +2611,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCheckboxExportAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
@@ -2611,7 +2620,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This made you a total of {0:N0} gil..
         /// </summary>
@@ -2620,7 +2629,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomMoneyMade", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to None of the selected items have been looted.
         /// </summary>
@@ -2629,7 +2638,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomNone1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to in the time frame.
         /// </summary>
@@ -2638,7 +2647,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomNone2Timeframe", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to yet.
         /// </summary>
@@ -2647,7 +2656,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomNone2Yet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This profile has no tracked items..
         /// </summary>
@@ -2656,7 +2665,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomProfileEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can add items via the loot tab under configuration..
         /// </summary>
@@ -2665,7 +2674,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomProfileTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The above rewards have been obtained {0} from a total of {1} voyages ({2} submarines)..
         /// </summary>
@@ -2674,7 +2683,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabCustomRewardAmount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Export:.
         /// </summary>
@@ -2683,7 +2692,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabEntryExport", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fixed:.
         /// </summary>
@@ -2692,7 +2701,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabEntryFixed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to FromTo:.
         /// </summary>
@@ -2701,7 +2710,16 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabEntryFromToDateSelection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Hours:.
+        /// </summary>
+        internal static string LootTabEntryCustomHours {
+            get {
+                return ResourceManager.GetString("LootTabEntryCustomHours", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Output Folder:.
         /// </summary>
@@ -2710,7 +2728,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabEntryOutputFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Percentages:.
         /// </summary>
@@ -2719,7 +2737,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabEntryPercentages", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
@@ -2728,7 +2746,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabExport", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to History.
         /// </summary>
@@ -2737,7 +2755,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabHistory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to -Legacy Data-.
         /// </summary>
@@ -2746,7 +2764,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabHistoryLegacyData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tracking starts when you send your subs on voyage again..
         /// </summary>
@@ -2755,7 +2773,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabHistoryNotTracked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Something went wrong..
         /// </summary>
@@ -2764,7 +2782,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabHistoryWrong", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loot.
         /// </summary>
@@ -2773,7 +2791,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabLoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Routes.
         /// </summary>
@@ -2782,7 +2800,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabRoutes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Searched for.
         /// </summary>
@@ -2791,7 +2809,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabTextSearched", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pick a folder.
         /// </summary>
@@ -2800,7 +2818,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabTitlePickFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Selecting &apos;No Limit&apos; will allow you to pick a specific time frame..
         /// </summary>
@@ -2809,7 +2827,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabTooltipFixed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing found for this sector..
         /// </summary>
@@ -2818,7 +2836,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("LootTabWarningNothingFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resources:.
         /// </summary>
@@ -2827,7 +2845,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MainWindowEntryResources", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Breaks after {0} voyages.
         /// </summary>
@@ -2836,7 +2854,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MainWindowOverviewBreaksAfter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loot.
         /// </summary>
@@ -2845,7 +2863,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MainWindowTabLoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overview.
         /// </summary>
@@ -2854,7 +2872,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MainWindowTabOverview", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} kits after {1} voyages.
         /// </summary>
@@ -2863,7 +2881,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MainWindowTooltipRepair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord Thread.
         /// </summary>
@@ -2872,7 +2890,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuDiscordThread", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord Thread.
         /// </summary>
@@ -2881,7 +2899,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuEntryDiscordThread", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Issues.
         /// </summary>
@@ -2890,7 +2908,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuEntryIssues", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ko-Fi Tip.
         /// </summary>
@@ -2899,7 +2917,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuEntryKoFi", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Localization.
         /// </summary>
@@ -2908,7 +2926,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuEntryLocalization", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sync.
         /// </summary>
@@ -2917,7 +2935,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuEntrySync", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Issues.
         /// </summary>
@@ -2926,7 +2944,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuIssues", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ko-Fi Tip.
         /// </summary>
@@ -2935,7 +2953,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuKoFi", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Localization.
         /// </summary>
@@ -2944,7 +2962,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuLocalization", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the builder window..
         /// </summary>
@@ -2953,7 +2971,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipBuilder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the config window..
         /// </summary>
@@ -2962,7 +2980,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the discord support thread..
         /// </summary>
@@ -2971,7 +2989,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipDiscordThread", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the helper window..
         /// </summary>
@@ -2980,7 +2998,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipHelpy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the issue page in your browser..
         /// </summary>
@@ -2989,7 +3007,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipIssues", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the kofi page in your browser..
         /// </summary>
@@ -2998,7 +3016,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipKoFi", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the crowdin page in your browser.
         /// </summary>
@@ -3007,7 +3025,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipLocalization", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the loot window..
         /// </summary>
@@ -3016,7 +3034,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipLoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the return overlay..
         /// </summary>
@@ -3025,7 +3043,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reload all stored data from hard drive and refresh the cache..
         /// </summary>
@@ -3034,7 +3052,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipSync", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open the tracker window..
         /// </summary>
@@ -3043,7 +3061,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("MenuTooltipTracker", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Anonymized.
         /// </summary>
@@ -3052,7 +3070,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionAnon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
@@ -3061,7 +3079,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionDefault", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
@@ -3070,7 +3088,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionFullName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Initials.
         /// </summary>
@@ -3079,7 +3097,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionInitials", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only Name.
         /// </summary>
@@ -3088,7 +3106,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only Initials.
         /// </summary>
@@ -3097,7 +3115,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionOnlyInitials", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only Tag.
         /// </summary>
@@ -3106,7 +3124,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NameOptionTag", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Next Map:.
         /// </summary>
@@ -3115,7 +3133,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NextOverlayTextNextMap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Next Sector:.
         /// </summary>
@@ -3124,7 +3142,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NextOverlayTextNextSector", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Visit:.
         /// </summary>
@@ -3133,7 +3151,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NextOverlayTextVisit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your submarine is below the required level to visit the sector..
         /// </summary>
@@ -3142,7 +3160,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NextOverlayTooltipLowRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} has returned and requires repair before being dispatched again..
         /// </summary>
@@ -3151,7 +3169,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NotificationChatRepair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} has returned..
         /// </summary>
@@ -3160,7 +3178,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NotificationChatReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This plugin will collect anonymized, submarine specific data. For more information on the exact data collected please see the upload tab in the plugin configuration menu.  You can opt out of any and all forms of data collection..
         /// </summary>
@@ -3169,7 +3187,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NotificationsUploadOptOut", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Requires repair before being dispatched again.
         /// </summary>
@@ -3178,7 +3196,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("NotificationToastRepair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Discord: Overseas Casuals
         ///Recommended discord for submarines
@@ -3190,7 +3208,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("OverseasDiscordTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last Sector.
         /// </summary>
@@ -3199,7 +3217,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ProgressionTabLastSector", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 4 Submarines.
         /// </summary>
@@ -3208,7 +3226,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ProgressionTabSubmarinePath", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocks map.
         /// </summary>
@@ -3217,7 +3235,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ProgressionTabTooltipUnlocksMap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocks slot.
         /// </summary>
@@ -3226,7 +3244,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ProgressionTabTooltipUnlocksSlot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
@@ -3235,7 +3253,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("RetTermNormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Optimal.
         /// </summary>
@@ -3244,7 +3262,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("RetTermOptimal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Poor.
         /// </summary>
@@ -3253,7 +3271,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("RetTermPoor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No sub has returned..
         /// </summary>
@@ -3262,7 +3280,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ReturnOverlayInfoNoReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This submarine needs repair on return..
         /// </summary>
@@ -3271,7 +3289,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ReturnOverlayTooltipRepairNeeded", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submarine above threshold and MustInclude is empty
         ///Check your config for higher level suggestions..
@@ -3281,7 +3299,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("RouteOverlayTooltipHighRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your fleet has enough for {0} voyages and {1} combined repairs..
         /// </summary>
@@ -3290,7 +3308,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("StorageAllOkay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not enough Tanks and Repair Kits!.
         /// </summary>
@@ -3299,7 +3317,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("StorageBoth", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not enough Repair Kits!.
         /// </summary>
@@ -3308,7 +3326,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("StorageNoKits", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not enough Tanks!.
         /// </summary>
@@ -3317,7 +3335,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("StorageNoTanks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bow.
         /// </summary>
@@ -3326,7 +3344,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SubPartBow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bridge.
         /// </summary>
@@ -3335,7 +3353,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SubPartBridge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hull.
         /// </summary>
@@ -3344,7 +3362,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SubPartHull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stern.
         /// </summary>
@@ -3353,7 +3371,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SubPartStern", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T1 High.
         /// </summary>
@@ -3362,7 +3380,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT1High", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T1 Low.
         /// </summary>
@@ -3371,7 +3389,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT1Low", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T1 Mid.
         /// </summary>
@@ -3380,7 +3398,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT1Mid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T2 High.
         /// </summary>
@@ -3389,7 +3407,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT2High", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T2 Mid.
         /// </summary>
@@ -3398,7 +3416,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT2Mid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to T3 High.
         /// </summary>
@@ -3407,7 +3425,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("SurvTermT3High", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No search target selected ....
         /// </summary>
@@ -3416,7 +3434,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TabLootNoSearch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fri.
         /// </summary>
@@ -3425,7 +3443,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDayFri", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Mon.
         /// </summary>
@@ -3434,7 +3452,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDayMon", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sat.
         /// </summary>
@@ -3443,7 +3461,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDaySat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sun.
         /// </summary>
@@ -3452,7 +3470,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDaySun", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Thu.
         /// </summary>
@@ -3461,7 +3479,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDayThu", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tue.
         /// </summary>
@@ -3470,7 +3488,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDayTue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Wed.
         /// </summary>
@@ -3479,7 +3497,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermDayWed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Join Discord.
         /// </summary>
@@ -3488,7 +3506,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermJoinDiscord", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to April.
         /// </summary>
@@ -3497,7 +3515,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthApr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to August.
         /// </summary>
@@ -3506,7 +3524,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthAug", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to December.
         /// </summary>
@@ -3515,7 +3533,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthDec", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to February.
         /// </summary>
@@ -3524,7 +3542,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthFeb", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to January.
         /// </summary>
@@ -3533,7 +3551,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthJan", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to July.
         /// </summary>
@@ -3542,7 +3560,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthJul", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to June.
         /// </summary>
@@ -3551,7 +3569,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthJun", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to March.
         /// </summary>
@@ -3560,7 +3578,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthMar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to May.
         /// </summary>
@@ -3569,7 +3587,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthMay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to November.
         /// </summary>
@@ -3578,7 +3596,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthNov", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to October.
         /// </summary>
@@ -3587,7 +3605,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthOct", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to September.
         /// </summary>
@@ -3596,7 +3614,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermMonthSep", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Current Character.
         /// </summary>
@@ -3605,7 +3623,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsAddCurrentCharacter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
@@ -3614,7 +3632,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsAll", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allowed Sectors.
         /// </summary>
@@ -3623,7 +3641,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsAllowedSectors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bow.
         /// </summary>
@@ -3632,7 +3650,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsBow", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Breakpoints.
         /// </summary>
@@ -3641,7 +3659,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsBreakpoints", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bridge.
         /// </summary>
@@ -3650,7 +3668,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsBridge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Build.
         /// </summary>
@@ -3659,7 +3677,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsBuild", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cost.
         /// </summary>
@@ -3668,7 +3686,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsCost", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
@@ -3677,7 +3695,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsCustom", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
@@ -3686,7 +3704,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Del.
         /// </summary>
@@ -3695,7 +3713,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsDelete", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
@@ -3704,7 +3722,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsDone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Duration.
         /// </summary>
@@ -3713,7 +3731,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsDuration", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
@@ -3722,7 +3740,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermSearch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exp.
         /// </summary>
@@ -3731,7 +3749,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsExp", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to After.
         /// </summary>
@@ -3740,7 +3758,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsEXPAfter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Exp/Min.
         /// </summary>
@@ -3749,7 +3767,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsExpEachMin", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Favor.
         /// </summary>
@@ -3758,7 +3776,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsFavor", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to FC:.
         /// </summary>
@@ -3767,7 +3785,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsFC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fuel.
         /// </summary>
@@ -3776,7 +3794,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsFuel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hours.
         /// </summary>
@@ -3785,7 +3803,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("Termshours", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hull.
         /// </summary>
@@ -3794,7 +3812,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsHull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignored Characters.
         /// </summary>
@@ -3803,7 +3821,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsIgnoredCharacters", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Important.
         /// </summary>
@@ -3812,7 +3830,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsImportant", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Item.
         /// </summary>
@@ -3821,7 +3839,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsItem", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Kits.
         /// </summary>
@@ -3830,7 +3848,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsKits", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
@@ -3839,7 +3857,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsLoading", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Map.
         /// </summary>
@@ -3848,7 +3866,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsMap", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Must Include.
         /// </summary>
@@ -3857,7 +3875,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsMustInclude", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
@@ -3866,7 +3884,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
@@ -3875,7 +3893,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsNormal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not Hidden.
         /// </summary>
@@ -3884,7 +3902,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsNotHidden", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Voyage.
         /// </summary>
@@ -3893,7 +3911,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsNoVoyage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Voyage Data.
         /// </summary>
@@ -3902,7 +3920,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsNoVoyageData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Optimal.
         /// </summary>
@@ -3911,7 +3929,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsOptimal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
@@ -3920,7 +3938,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsOptions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pct.
         /// </summary>
@@ -3929,7 +3947,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsPercentage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Spreadsheet.
         /// </summary>
@@ -3938,7 +3956,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermSpreadsheet", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Predicted.
         /// </summary>
@@ -3947,7 +3965,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsPredicted", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Price.
         /// </summary>
@@ -3956,7 +3974,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsPrice", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Progress.
         /// </summary>
@@ -3965,7 +3983,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsProgress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Range.
         /// </summary>
@@ -3974,7 +3992,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsRange", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rank.
         /// </summary>
@@ -3983,7 +4001,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Repair.
         /// </summary>
@@ -3992,7 +4010,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsRepair", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Retrieval.
         /// </summary>
@@ -4001,7 +4019,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsRetrieval", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Route.
         /// </summary>
@@ -4010,7 +4028,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsRoute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Saved FCs.
         /// </summary>
@@ -4019,7 +4037,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSavedFCs", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sectors.
         /// </summary>
@@ -4028,7 +4046,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSectors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Speed.
         /// </summary>
@@ -4037,7 +4055,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSpeed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stats.
         /// </summary>
@@ -4046,7 +4064,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsStats", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stern.
         /// </summary>
@@ -4055,7 +4073,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsStern", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submarines.
         /// </summary>
@@ -4064,7 +4082,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSubmarines", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Surveillance.
         /// </summary>
@@ -4073,7 +4091,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSurveillance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Swap After.
         /// </summary>
@@ -4082,7 +4100,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsSwapAfter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tanks.
         /// </summary>
@@ -4091,7 +4109,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsTanks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Target Rank.
         /// </summary>
@@ -4100,7 +4118,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsTargetRank", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
@@ -4109,7 +4127,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsTime", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
@@ -4118,7 +4136,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsUnknown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocked.
         /// </summary>
@@ -4127,7 +4145,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsUnlocked", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlocked By.
         /// </summary>
@@ -4136,7 +4154,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsUnlockedBy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to URL.
         /// </summary>
@@ -4145,7 +4163,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsURL", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to - Work in Progress -.
         /// </summary>
@@ -4154,7 +4172,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermsWiP", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
@@ -4163,7 +4181,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
@@ -4172,7 +4190,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("TermUnknown", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date before {0} is not possible.
         /// </summary>
@@ -4181,7 +4199,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WarningInvalidDate", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignored Character.
         /// </summary>
@@ -4190,7 +4208,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WarningsIgnoredCharacter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Returns &lt;t:{0}:R&gt;.
         /// </summary>
@@ -4199,7 +4217,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WebhookOnDispatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Returned at &lt;t:{0}:f&gt;.
         /// </summary>
@@ -4208,7 +4226,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WebhookOnReturn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Builder.
         /// </summary>
@@ -4217,7 +4235,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WindowNameBuilder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Config.
         /// </summary>
@@ -4226,7 +4244,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WindowNameConfig", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Helpy.
         /// </summary>
@@ -4235,7 +4253,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WindowNameHelpy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loot.
         /// </summary>
@@ -4244,7 +4262,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WindowNameLoot", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overlay.
         /// </summary>
@@ -4253,7 +4271,7 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("WindowNameOverlay", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tracker.
         /// </summary>

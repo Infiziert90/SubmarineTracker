@@ -284,7 +284,10 @@ Vérifiez votre configuration pour des suggestions de niveau supérieur.</value>
         <value>Selecting 'No Limit' will allow you to pick a specific time frame.</value>
     </data>
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
-        <value>Du - au :</value>
+        <value>DeÀ:</value>
+    </data>
+  <data name="LootTabEntryCustomHours" xml:space="preserve">
+        <value>Heures :</value>
     </data>
   <data name="LootTabExport" xml:space="preserve">
         <value>Exporter</value>
@@ -1151,6 +1154,9 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
     </data>
   <data name="DateLimit1Year" xml:space="preserve">
         <value>1 an</value>
+    </data>
+  <data name="DateLimitCustomHours" xml:space="preserve">
+        <value>Personnalisé (Heures)</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
         <value>Défaut</value>

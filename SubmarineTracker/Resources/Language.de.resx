@@ -286,6 +286,9 @@ Bitte besuche die Werkstatt deiner FG und interagiere mit der Oberfläche für T
   <data name="LootTabEntryFromToDateSelection" xml:space="preserve">
         <value>Von-Bis:</value>
     </data>
+  <data name="LootTabEntryCustomHours" xml:space="preserve">
+        <value>Stunden:</value>
+    </data>
   <data name="LootTabExport" xml:space="preserve">
         <value>Export</value>
     </data>
@@ -1148,6 +1151,9 @@ Mit der Option können sie die Berechnung anweisen den Durchschnitt zu verwendet
     </data>
   <data name="DateLimit1Year" xml:space="preserve">
         <value>1 Jahr</value>
+    </data>
+  <data name="DateLimitCustomHours" xml:space="preserve">
+        <value>Benutzerdefiniert (Stunden)</value>
     </data>
   <data name="NameOptionDefault" xml:space="preserve">
         <value>Standard</value>
