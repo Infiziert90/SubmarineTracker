@@ -11,7 +11,7 @@ namespace SubmarineTracker;
 public class DatabaseCache : IDisposable
 {
     private const long ShortDelay = 5_000; // 5s;
-    private const long LongDelay = 30_000; // 30s;
+    private const long LongDelay = 5_000; // 5s;
 
     public readonly Database Database = new();
 

@@ -65,7 +65,7 @@ public partial class LootWindow
         if (fcSelection != FcSelection || currentProfile != CurrentProfileId)
             LastRefreshTime = 0;
 
-        // Rebuilds every 30s
+        // Rebuilds every 5s
         var selected = Plugin.Configuration.CustomLootProfiles[combo[CurrentProfileId]];
         BuildCache(selected);
 
@@ -233,7 +233,7 @@ public partial class LootWindow
         if (Environment.TickCount64 < LastRefreshTime)
             return;
 
-        LastRefreshTime = Environment.TickCount64 + 30_000; // 30s
+        LastRefreshTime = Environment.TickCount64 + 5_000; // 5s
 
         NumSubs = 0;
         NumVoyages = 0;
