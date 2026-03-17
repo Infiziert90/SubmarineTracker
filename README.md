@@ -1,13 +1,16 @@
 # Submarine Tracker
 
-Simple and Easy  
-+ Tracker for current builds, routes and times 
+# Build
+dotnet build .\SubmarineTracker\SubmarineTracker.csproj -c Release
+
+Simple and Easy
++ Tracker for current builds, routes and times
 + Builder to improve, solve builds and optimize EXP
-+ Configurable notification for return and repairs 
++ Configurable notification for return and repairs
 + Helpy filled useful information
 + Custom loot overview with history and export
-+ Multiple overlays to help with daily tasks 
-+ Supports multiple FCs  
++ Multiple overlays to help with daily tasks
++ Supports multiple FCs
 
 ### Tracker (/stracker)
 ![tracker](SubmarineTracker/images/tracker2.png)
