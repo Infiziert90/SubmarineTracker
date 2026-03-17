@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -7,6 +11,8 @@ namespace SubmarineTracker.Manager;
 
 public unsafe class HookManager
 {
+    private static readonly HashSet<string> SentLootProcessed = [];
+
     // Dalamud CustomTalkEventResponsePacketHandler <https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Network/Internal/NetworkHandlersAddressResolver.cs#L17>
     private const string PacketReceiverSig = "48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 49 8B D9 41 0F B6 F8 0F B7 F2 8B E9 E8 ?? ?? ?? ?? 44 0F B6 54 24 ?? 44 0F B6 CF 44 88 54 24 ?? 44 0F B7 C6 8B D5";
     private const string PacketReceiverSigCN = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 44 0F B6 46 ?? 4C 8D 4E 17";
@@ -75,6 +81,9 @@ public unsafe class HookManager
             foreach (var val in validSectors)
                 lootList.Add(new Loot(build, val) {FreeCompanyId = fcId, Register = register, Return = returnTime});
 
+            if (Plugin.Configuration.WebhookLootProcessed)
+                Task.Run(() => SendLootProcessedWebhook(lootList, fcId, register, returnTime));
+
             Task.Run(() =>
             {
                 try
@@ -91,6 +100,78 @@ public unsafe class HookManager
         catch (Exception ex)
         {
             Plugin.Log.Error(ex, "Error in packet receiver");
+        }
+    }
+
+    private static void SendLootProcessedWebhook(List<Loot> lootList, ulong fcId, uint register, uint returnTime)
+    {
+        try
+        {
+            if (!Plugin.ClientState.IsLoggedIn)
+                return;
+
+            if (Plugin.Configuration.WebhookOfflineMode)
+                return;
+
+            if (!Plugin.Configuration.WebhookUrl.StartsWith("https://"))
+                return;
+
+            // Prevent that multibox user send multiple webhook triggers
+            using var mutex = new Mutex(false, "Global\\SubmarineTrackerMutex");
+            if (!mutex.WaitOne(0, false))
+                return;
+
+            if (lootList.Count == 0)
+                return;
+
+            if (!SentLootProcessed.Add($"LootProcessed{fcId}{register}{returnTime}"))
+                return;
+
+            var profileName = Plugin.Configuration.WebhookLootProcessedProfile;
+            if (string.IsNullOrEmpty(profileName) || !Plugin.Configuration.CustomLootProfiles.TryGetValue(profileName, out var profile))
+            {
+                profileName = "Default";
+                Plugin.Configuration.CustomLootProfiles.TryGetValue(profileName, out profile);
+            }
+
+            profile ??= new Dictionary<uint, int>();
+
+            long totalValue = 0;
+            foreach (var loot in lootList)
+            {
+                if (profile.TryGetValue(loot.Primary, out var primaryValue))
+                    totalValue += (long)loot.PrimaryCount * primaryValue;
+
+                if (loot.ValidAdditional && profile.TryGetValue(loot.Additional, out var additionalValue))
+                    totalValue += (long)loot.AdditionalCount * additionalValue;
+            }
+
+            var sub = Plugin.DatabaseCache.GetSubmarines(fcId).FirstOrDefault(s => s.Register == register);
+            if (sub == null)
+                return;
+
+            if (!Plugin.DatabaseCache.TryGetFC(fcId, out var fc))
+                return;
+
+            var nameConverter = new NameConverter();
+
+            var content = new Webhook.WebhookContent();
+            content.Embeds.Add(new
+            {
+                title = nameConverter.GetSub(sub, fc),
+                description = $"Loot processed. Total value: {totalValue:N0} gil (Profile: {profileName}).",
+                color = 11027200
+            });
+
+            Webhook.PostMessage(content);
+
+            // Ensure that the other process had time to catch up
+            Thread.Sleep(500);
+            mutex.ReleaseMutex();
+        }
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Unable to send loot processed webhook");
         }
     }
 }

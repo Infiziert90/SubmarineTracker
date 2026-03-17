@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using SubmarineTracker.Resources;
@@ -52,6 +54,26 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker(Language.ConfigTabTooltipSendDispatch);
             changed |= ImGui.Checkbox(Language.ConfigTabCheckboxSendReturn, ref Plugin.Configuration.WebhookReturn);
             ImGuiComponents.HelpMarker(Language.ConfigTabTooltipSendReturn);
+
+            changed |= ImGui.Checkbox("Send Loot Processed", ref Plugin.Configuration.WebhookLootProcessed);
+            if (Plugin.Configuration.WebhookLootProcessed)
+            {
+                using var indent = ImRaii.PushIndent(10.0f);
+
+                var keys = Plugin.Configuration.CustomLootProfiles.Keys.ToArray();
+                var idx = Array.IndexOf(keys, Plugin.Configuration.WebhookLootProcessedProfile);
+                if (idx < 0)
+                    idx = 0;
+
+                ImGui.AlignTextToFramePadding();
+                ImGui.TextUnformatted("Loot Value Profile:");
+                ImGui.SameLine();
+                if (ImGui.Combo("##WebhookLootProcessedProfile", ref idx, keys, keys.Length))
+                {
+                    Plugin.Configuration.WebhookLootProcessedProfile = keys[idx];
+                    changed = true;
+                }
+            }
 
             changed |= ImGui.Checkbox(Language.ConfigTabCheckboxOfflineMode, ref Plugin.Configuration.WebhookOfflineMode);
             using (ImRaii.PushColor(ImGuiCol.Header, ImGuiColors.ParsedPurple))

@@ -55,6 +55,8 @@ public class Configuration : IPluginConfiguration
     public bool WebhookOfflineMode = false;
     public bool WebhookDispatch = true;
     public bool WebhookReturn = true;
+    public bool WebhookLootProcessed = false;
+    public string WebhookLootProcessedProfile = "Default";
     public string WebhookUrl = string.Empty;
     public ulong WebhookMention = 0;
     public ulong WebhookRoleMention = 0;
