@@ -1,6 +1,5 @@
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using SubmarineTracker.Data;
 using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
@@ -14,7 +13,7 @@ public class UnlockOverlay : Window, IDisposable
 
     private readonly List<(uint, Unlocks.UnlockedFrom)> PossibleUnlocks = [];
 
-    private ImRaii.Color PushedColor = null!;
+    private ImRaii.ColorDisposable PushedColor = null!;
 
     public UnlockOverlay(Plugin plugin) : base("Unlock Overlay##SubmarineTracker")
     {

@@ -14,7 +14,7 @@ public class NextOverlay : Window, IDisposable
     private readonly List<(uint, Unlocks.UnlockedFrom)> UnlockPath;
     private (uint Sector, Unlocks.UnlockedFrom UnlockedFrom)? NextSector;
 
-    private ImRaii.Color PushedColor = null!;
+    private ImRaii.ColorDisposable PushedColor = null!;
 
     public NextOverlay(Plugin plugin) : base("Next Overlay##SubmarineTracker")
     {

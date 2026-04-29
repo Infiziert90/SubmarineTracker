@@ -13,11 +13,11 @@ public class ReturnOverlay : Window, IDisposable
     private Submarine NextSub = new();
     private (int OnRoute, int Done) VoyageStats = (0, 0);
 
-    private ImRaii.Color PushedColor = null!;
+    private ImRaii.ColorDisposable PushedColor = null!;
 
     public ReturnOverlay(Plugin plugin) : base("Submarines: 0|0###submarineOverlay")
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(300, 140),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
