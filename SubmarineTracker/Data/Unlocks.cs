@@ -171,7 +171,7 @@ public static class Unlocks
         { 145, new UnlockedFrom(141) },                         // I    Axeblade Bight                      <-      Northeast Hanthbyrt
         { 146, new UnlockedFrom(145) },                         // J    the Puffin Assembly                 <-      Axeblade Bight
         { 147, new UnlockedFrom(144) },                         // K    southern Aerslaent Plunge           <-     the Vyrstrant Dropoff
-        { 148, new UnlockedFrom(9876) },                         // L    the Solkronn Gallery                <-
+        { 148, new UnlockedFrom(146) },                         // L    the Solkronn Gallery                <-      the Puffin Assembly
         { 149, new UnlockedFrom(144) },                         // M    central Den of the Greatsword       <-    the Vyrstrant Dropoff
     };
 
