@@ -90,9 +90,9 @@ public partial class LootWindow
                     using var table = ImRaii.Table("##customLootTable", 3);
                     if (table.Success)
                     {
-                        ImGui.TableSetupColumn("##icon", 0, 0.15f);
+                        ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthStretch, 0.15f);
                         ImGui.TableSetupColumn("##item");
-                        ImGui.TableSetupColumn("##amount", 0, 0.3f);
+                        ImGui.TableSetupColumn("##amount", ImGuiTableColumnFlags.WidthStretch, 0.3f);
 
                         foreach (var (item, count) in CachedList.OrderBy(pair => pair.Key.RowId))
                         {

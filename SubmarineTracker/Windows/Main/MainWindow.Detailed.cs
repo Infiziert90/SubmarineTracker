@@ -15,7 +15,7 @@ public partial class MainWindow
         if (!table.Success)
             return;
 
-        ImGui.TableSetupColumn("##key", 0, 0.2f);
+        ImGui.TableSetupColumn("##key", ImGuiTableColumnFlags.WidthStretch, 0.2f);
         ImGui.TableSetupColumn("##value");
 
         ImGui.TableNextColumn();

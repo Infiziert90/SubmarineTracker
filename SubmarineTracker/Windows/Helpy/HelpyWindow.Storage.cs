@@ -32,8 +32,8 @@ public partial class HelpyWindow
             if (!table.Success)
                 continue;
 
-            ImGui.TableSetupColumn("##icon", 0, 0.1f);
-            ImGui.TableSetupColumn("##count", 0, 0.15f);
+            ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthStretch, 0.1f);
+            ImGui.TableSetupColumn("##count", ImGuiTableColumnFlags.WidthStretch, 0.15f);
             ImGui.TableSetupColumn("##item");
 
             foreach (var cached in Storage.StorageCache[key].Values)

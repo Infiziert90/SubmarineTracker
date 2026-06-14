@@ -102,10 +102,10 @@ public partial class LootWindow
             if (!table.Success)
                 return;
 
-            ImGui.TableSetupColumn("##icon", 0, 0.2f);
+            ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthStretch, 0.2f);
             ImGui.TableSetupColumn("##item");
-            ImGui.TableSetupColumn("##amount", 0, 0.2f);
-            ImGui.TableSetupColumn("##survProc", 0, 0.4f);
+            ImGui.TableSetupColumn("##amount", ImGuiTableColumnFlags.WidthStretch, 0.2f);
+            ImGui.TableSetupColumn("##survProc", ImGuiTableColumnFlags.WidthStretch, 0.4f);
 
             ImGui.TableNextColumn();
             Helper.DrawScaledIcon(primaryItem.Icon, IconSize);

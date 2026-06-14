@@ -44,7 +44,7 @@ public partial class ConfigWindow
         if (table.Success)
         {
             ImGui.TableSetupColumn(Language.TermsBuild);
-            ImGui.TableSetupColumn("##Del", 0, 0.1f);
+            ImGui.TableSetupColumn("##Del", ImGuiTableColumnFlags.WidthStretch, 0.1f);
 
             ImGui.TableHeadersRow();
             var deletion = string.Empty;

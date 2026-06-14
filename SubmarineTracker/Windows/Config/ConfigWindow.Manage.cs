@@ -29,10 +29,10 @@ public partial class ConfigWindow
         if (savesTable.Success)
         {
             ImGui.TableSetupColumn(Language.TermsSavedFCs);
-            ImGui.TableSetupColumn("##OrderUp", 0, 0.07f);
-            ImGui.TableSetupColumn("##OrderDown", 0, 0.07f);
-            ImGui.TableSetupColumn("##Hidden", 0, 0.07f);
-            ImGui.TableSetupColumn("##Del", 0, 0.09f);
+            ImGui.TableSetupColumn("##OrderUp", ImGuiTableColumnFlags.WidthStretch, 0.07f);
+            ImGui.TableSetupColumn("##OrderDown", ImGuiTableColumnFlags.WidthStretch, 0.07f);
+            ImGui.TableSetupColumn("##Hidden", ImGuiTableColumnFlags.WidthStretch, 0.07f);
+            ImGui.TableSetupColumn("##Del", ImGuiTableColumnFlags.WidthStretch, 0.09f);
 
             ImGui.TableHeadersRow();
 
@@ -103,7 +103,7 @@ public partial class ConfigWindow
         if (charactersTable.Success)
         {
             ImGui.TableSetupColumn(Language.TermsIgnoredCharacters);
-            ImGui.TableSetupColumn("##CharacterDel", 0, 0.07f);
+            ImGui.TableSetupColumn("##CharacterDel", ImGuiTableColumnFlags.WidthStretch, 0.07f);
 
             ImGui.TableHeadersRow();
             foreach (var (id, name) in Plugin.Configuration.IgnoredCharacters.ToArray())

@@ -97,8 +97,8 @@ public partial class ConfigWindow
         if (table.Success)
         {
             ImGui.TableSetupColumn(Language.TermsItem);
-            ImGui.TableSetupColumn(Language.TermsPrice, 0, 0.4f);
-            ImGui.TableSetupColumn(Language.TermsDelete, 0, 0.15f);
+            ImGui.TableSetupColumn(Language.TermsPrice, ImGuiTableColumnFlags.WidthStretch, 0.4f);
+            ImGui.TableSetupColumn(Language.TermsDelete, ImGuiTableColumnFlags.WidthStretch, 0.15f);
 
             ImGui.TableHeadersRow();
 

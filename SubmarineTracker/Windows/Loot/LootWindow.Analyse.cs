@@ -98,10 +98,10 @@ public partial class LootWindow
         {
             if (table.Success)
             {
-                ImGui.TableSetupColumn("##statItemName", 0, 0.6f);
-                ImGui.TableSetupColumn("##statMin", 0, 0.1f);
-                ImGui.TableSetupColumn("##statSymbol", 0, 0.05f);
-                ImGui.TableSetupColumn("##statMax", 0, 0.1f);
+                ImGui.TableSetupColumn("##statItemName", ImGuiTableColumnFlags.WidthStretch, 0.6f);
+                ImGui.TableSetupColumn("##statMin", ImGuiTableColumnFlags.WidthStretch, 0.1f);
+                ImGui.TableSetupColumn("##statSymbol", ImGuiTableColumnFlags.WidthStretch, 0.05f);
+                ImGui.TableSetupColumn("##statMax", ImGuiTableColumnFlags.WidthStretch, 0.1f);
 
                 foreach (var statPair in statDict.OrderByDescending(pair => pair.Key))
                 {
@@ -152,7 +152,7 @@ public partial class LootWindow
 
         ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed, IconSize.X + 10.0f);
         ImGui.TableSetupColumn($"{Language.TermsItem}##item");
-        ImGui.TableSetupColumn($"{Language.TermsPercentage}##percentage", 0, 0.25f);
+        ImGui.TableSetupColumn($"{Language.TermsPercentage}##percentage", ImGuiTableColumnFlags.WidthStretch, 0.25f);
 
         using var indent = ImRaii.PushIndent(10.0f);
         foreach (var sortedEntry in sortedList)

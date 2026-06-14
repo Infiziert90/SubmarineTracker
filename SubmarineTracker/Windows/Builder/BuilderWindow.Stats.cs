@@ -67,12 +67,12 @@ public partial class BuilderWindow
         {
             if (table.Success)
             {
-                ImGui.TableSetupColumn("##stat1", 0, 0.55f);
-                ImGui.TableSetupColumn("##count1", 0, 0.72f);
-                ImGui.TableSetupColumn("##stat2", 0, 0.44f);
-                ImGui.TableSetupColumn("##count2", 0, 0.5f);
-                ImGui.TableSetupColumn("##stat3", 0, 0.4f);
-                ImGui.TableSetupColumn("##count3", 0, 0.5f);
+                ImGui.TableSetupColumn("##stat1", ImGuiTableColumnFlags.WidthStretch, 0.55f);
+                ImGui.TableSetupColumn("##count1", ImGuiTableColumnFlags.WidthStretch, 0.72f);
+                ImGui.TableSetupColumn("##stat2", ImGuiTableColumnFlags.WidthStretch, 0.44f);
+                ImGui.TableSetupColumn("##count2", ImGuiTableColumnFlags.WidthStretch, 0.5f);
+                ImGui.TableSetupColumn("##stat3", ImGuiTableColumnFlags.WidthStretch, 0.4f);
+                ImGui.TableSetupColumn("##count3", ImGuiTableColumnFlags.WidthStretch, 0.5f);
 
                 ImGui.TableNextColumn();
                 Helper.TextColored(ImGuiColors.HealerGreen, Language.TermsSurveillance);
