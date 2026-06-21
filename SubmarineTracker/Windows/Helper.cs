@@ -1,6 +1,5 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.Utility.Raii;
 using SubmarineTracker.Resources;
 
 namespace SubmarineTracker.Windows;
@@ -32,6 +31,7 @@ public static class Helper
                                          new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryLocalization, Plugin.DiscordSupport, Language.MenuTooltipLocalization),
                                          new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryIssues, Plugin.IssuePage, Language.MenuTooltipIssues),
                                          new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryKoFi, Plugin.Kofi, Language.MenuTooltipKoFi),
+                                         new PopupMenu.PopupMenuItemSelectable(Language.MenuEntryWebsite, Plugin.Website, Language.MenuTooltipWebsite),
                                          new PopupMenu.PopupMenuItemSeparator(),
                                          new PopupMenu.PopupMenuItemSelectable(Language.MenuEntrySync, plugin.Sync, Language.MenuTooltipSync)
                                      ]);

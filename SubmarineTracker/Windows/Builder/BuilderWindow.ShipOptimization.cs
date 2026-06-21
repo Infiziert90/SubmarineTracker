@@ -216,10 +216,18 @@ public partial class BuilderWindow
 
             Helper.TextColored(ImGuiColors.DalamudViolet, $"{Language.TermsOptions}:");
 
-            ImGui.Checkbox(Language.BuilderShipCheckboxT2, ref Target.UseT2);
+            if (ImGui.Checkbox(Language.BuilderShipCheckboxT1, ref Target.UseT1))
+                Target.UseT2 = false;
             ImGui.SameLine();
-            ImGui.Checkbox(Language.BuilderShipCheckboxNormal, ref Target.UseNormal);
+            if (ImGui.Checkbox(Language.BuilderShipCheckboxT2, ref Target.UseT2))
+                Target.UseT1 = false;
+
+            if (ImGui.Checkbox(Language.BuilderShipCheckboxPoor, ref Target.UsePoor))
+                Target.UseNormal = false;
             ImGui.SameLine();
+            if (ImGui.Checkbox(Language.BuilderShipCheckboxNormal, ref Target.UseNormal))
+                Target.UsePoor = false;
+
             ImGui.Checkbox(Language.BuilderShipCheckboxFavor, ref Target.IgnoreFavor);
             ImGui.SameLine();
             ImGui.Checkbox(Language.BuilderShipCheckboxModded, ref Target.NoModded);
@@ -332,7 +340,9 @@ public partial class BuilderWindow
         public int MaxRange;
         public int MaxFavor;
 
+        public bool UseT1 = false;
         public bool UseT2 = false;
+        public bool UsePoor = false;
         public bool UseNormal = false;
         public bool IgnoreFavor = false;
         public bool NoModded = false;
@@ -384,15 +394,17 @@ public partial class BuilderWindow
         public Func<Build.SubmarineBuild, bool> GetSectorFilter(List<uint> path)
         {
             var breakpoints = Sectors.CalculateBreakpoint(path);
-            var useT2 = this.UseT2;
-            var useN = this.UseNormal;
-            var ignoreF = IgnoreFavor;
+            var useT1 = UseT1;
+            var useT2 = UseT2;
+            var usePoor = UsePoor;
+            var useNormal = UseNormal;
+            var ignoreFavor = IgnoreFavor;
             var noModded = NoModded;
 
             return build =>
-                build.Surveillance >= (useT2 ? breakpoints.T2 : breakpoints.T3) &&
-                build.Retrieval >= (useN ? breakpoints.Normal : breakpoints.Optimal) &&
-                (ignoreF || build.Favor >= breakpoints.Favor) &&
+                build.Surveillance >= (useT1 ? 0 : useT2 ? breakpoints.T2 : breakpoints.T3) &&
+                build.Retrieval >= (usePoor ? 0 : useNormal ? breakpoints.Normal : breakpoints.Optimal) &&
+                (ignoreFavor || build.Favor >= breakpoints.Favor) &&
                 (!noModded || build.HighestRankPart() < 50);
         }
     }

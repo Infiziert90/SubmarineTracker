@@ -98,8 +98,14 @@
   <data name="MenuEntryKoFi" xml:space="preserve">
         <value>Ko-Fi Spenden</value>
     </data>
+  <data name="MenuEntryWebsite" xml:space="preserve">
+        <value>Website</value>
+    </data>
   <data name="MenuTooltipKoFi" xml:space="preserve">
         <value>Öffnet die Ko-Fi Spendenseite in Ihrem Browser.</value>
+    </data>
+  <data name="MenuTooltipWebsite" xml:space="preserve">
+        <value>Open the loot website in your browser.</value>
     </data>
   <data name="MenuEntrySync" xml:space="preserve">
         <value>Synchronisieren</value>
@@ -1002,8 +1008,14 @@ Mit der Option können sie die Berechnung anweisen den Durchschnitt zu verwendet
   <data name="TermsBreakpoints" xml:space="preserve">
         <value>Breakpoints</value>
     </data>
+  <data name="BuilderShipCheckboxT1" xml:space="preserve">
+        <value>Use T1</value>
+    </data>
   <data name="BuilderShipCheckboxT2" xml:space="preserve">
         <value>T2 verwenden</value>
+    </data>
+  <data name="BuilderShipCheckboxPoor" xml:space="preserve">
+        <value>Use Poor</value>
     </data>
   <data name="BuilderShipCheckboxNormal" xml:space="preserve">
         <value>Normal verwenden</value>
@@ -1274,12 +1286,15 @@ Mit der Option können sie die Berechnung anweisen den Durchschnitt zu verwendet
     </data>
   <data name="OverseasDiscordTooltip" xml:space="preserve">
         <value>Discord: Overseas Casuals
-Recommended discord for submarines
-Just select the 'Subs' channel and
-join us in '#you-dont-pay-my-sub'</value>
+Recommended discord for submarines.
+Select the 'Subs' channel and join us
+in '#you-dont-pay-my-sub'.</value>
     </data>
-  <data name="TermSpreadsheet" xml:space="preserve">
-        <value>Spreadsheet</value>
+  <data name="WebsiteTooltip" xml:space="preserve">
+        <value>Always up to date unlock and loot information.</value>
+    </data>
+  <data name="TermWebsite" xml:space="preserve">
+        <value>Website</value>
     </data>
   <data name="TermType" xml:space="preserve">
         <value>Type</value>

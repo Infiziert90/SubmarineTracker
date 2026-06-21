@@ -98,8 +98,14 @@
   <data name="MenuEntryKoFi" xml:space="preserve">
         <value>Don Ko-Fi</value>
     </data>
+  <data name="MenuEntryWebsite" xml:space="preserve">
+        <value>Website</value>
+    </data>
   <data name="MenuTooltipKoFi" xml:space="preserve">
         <value>Ouvrir la page Ko-Fi dans votre navigateur.</value>
+    </data>
+  <data name="MenuTooltipWebsite" xml:space="preserve">
+        <value>Open the loot website in your browser.</value>
     </data>
   <data name="MenuEntrySync" xml:space="preserve">
         <value>Synchroniser</value>
@@ -1005,8 +1011,14 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
   <data name="TermsBreakpoints" xml:space="preserve">
         <value>Breakpoints</value>
     </data>
+  <data name="BuilderShipCheckboxT1" xml:space="preserve">
+        <value>Use T1</value>
+    </data>
   <data name="BuilderShipCheckboxT2" xml:space="preserve">
         <value>Utiliser T2</value>
+    </data>
+  <data name="BuilderShipCheckboxPoor" xml:space="preserve">
+        <value>Use Poor</value>
     </data>
   <data name="BuilderShipCheckboxNormal" xml:space="preserve">
         <value>Utiliser Normal</value>
@@ -1276,13 +1288,16 @@ Avec cette option, il prendra la moyenne du bonus possible</value>
         <value>Rejoindre Discord</value>
     </data>
   <data name="OverseasDiscordTooltip" xml:space="preserve">
-        <value>Discord : Overseas Casuals
-Discord recommandé pour les sous-marins
-Selectionnez le canal 'Subs' et
-Rejoignez-nous dans '#you-dont-pay-my-sub'</value>
+        <value>Discord: Overseas Casuals
+Recommended discord for submarines.
+Select the 'Subs' channel and join us
+in '#you-dont-pay-my-sub'.</value>
     </data>
-  <data name="TermSpreadsheet" xml:space="preserve">
-        <value>Tableur</value>
+  <data name="WebsiteTooltip" xml:space="preserve">
+        <value>Always up to date unlock and loot information.</value>
+    </data>
+  <data name="TermWebsite" xml:space="preserve">
+        <value>Website</value>
     </data>
   <data name="TermType" xml:space="preserve">
         <value>Type</value>

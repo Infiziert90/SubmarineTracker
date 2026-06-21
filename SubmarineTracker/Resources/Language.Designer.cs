@@ -537,6 +537,24 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Poor.
+        /// </summary>
+        internal static string BuilderShipCheckboxPoor {
+            get {
+                return ResourceManager.GetString("BuilderShipCheckboxPoor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use T1.
+        /// </summary>
+        internal static string BuilderShipCheckboxT1 {
+            get {
+                return ResourceManager.GetString("BuilderShipCheckboxT1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use T2.
         /// </summary>
         internal static string BuilderShipCheckboxT2 {
@@ -2919,6 +2937,15 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        internal static string MenuEntryWebsite {
+            get {
+                return ResourceManager.GetString("MenuEntryWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issues.
         /// </summary>
         internal static string MenuIssues {
@@ -3041,6 +3068,15 @@ namespace SubmarineTracker.Resources {
         internal static string MenuTooltipTracker {
             get {
                 return ResourceManager.GetString("MenuTooltipTracker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the loot website in your browser..
+        /// </summary>
+        internal static string MenuTooltipWebsite {
+            get {
+                return ResourceManager.GetString("MenuTooltipWebsite", resourceCulture);
             }
         }
         
@@ -3181,9 +3217,9 @@ namespace SubmarineTracker.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Discord: Overseas Casuals
-        ///Recommended discord for submarines
-        ///Just select the &apos;Subs&apos; channel and
-        ///join us in &apos;#you-dont-pay-my-sub&apos;.
+        ///Recommended discord for submarines.
+        ///Select the &apos;Subs&apos; channel and join us
+        ///in &apos;#you-dont-pay-my-sub&apos;..
         /// </summary>
         internal static string OverseasDiscordTooltip {
             get {
@@ -3931,15 +3967,6 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spreadsheet.
-        /// </summary>
-        internal static string TermSpreadsheet {
-            get {
-                return ResourceManager.GetString("TermSpreadsheet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Predicted.
         /// </summary>
         internal static string TermsPredicted {
@@ -4174,6 +4201,15 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website.
+        /// </summary>
+        internal static string TermWebsite {
+            get {
+                return ResourceManager.GetString("TermWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date before {0} is not possible.
         /// </summary>
         internal static string WarningInvalidDate {
@@ -4206,6 +4242,15 @@ namespace SubmarineTracker.Resources {
         internal static string WebhookOnReturn {
             get {
                 return ResourceManager.GetString("WebhookOnReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always up to date unlock and loot information..
+        /// </summary>
+        internal static string WebsiteTooltip {
+            get {
+                return ResourceManager.GetString("WebsiteTooltip", resourceCulture);
             }
         }
         

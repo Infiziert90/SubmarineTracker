@@ -83,6 +83,12 @@ public partial class ConfigWindow : Window, IDisposable
             using (ImRaii.PushColor(ImGuiCol.Button, Helper.CustomFullyDone))
                 if (ImGui.Button(Language.MenuKoFi))
                     Plugin.Kofi();
+
+            ImGui.SameLine();
+
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudOrange))
+                if (ImGui.Button(Language.TermWebsite))
+                    Plugin.Website();
         }
 
         Helper.MainMenuIcon();
