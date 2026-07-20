@@ -3,6 +3,8 @@
 
 using System.Collections.Frozen;
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using MessagePack;
 using Newtonsoft.Json;
 
@@ -182,58 +184,73 @@ public static class Importer
         Optimal = 3,
     }
 
-    public static void ExportDetailed(string itemPath)
+    public static async Task ExportDetailed()
     {
-        Plugin.Log.Information("Start item build");
-        ItemDetailed.Items.Clear();
-
-        using var reader = new FileInfo(itemPath).OpenText();
-        var data = JsonConvert.DeserializeObject<SubLoot>(reader.ReadToEnd());
-        if (data == null)
+        const string itemDataUrl = "https://raw.githubusercontent.com/Infiziert90/FFXIVGachaSpreadsheet/refs/heads/master/website/static/data/Submarines.json";
+        try
         {
-            Plugin.Log.Error("Item detailed import failed. Invalid json.");
-            return;
-        }
+            Plugin.Log.Information("Start item build");
+            ItemDetailed.Items.Clear();
 
-        foreach (var sectorData in data.Sectors.Select(pair => pair.Value))
-        {
-            if (!Sheets.ExplorationSheet.HasRow(sectorData.Id))
+            var response = await Webhook.SharedClient.GetAsync(itemDataUrl);
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                Plugin.Log.Warning($"Invalid sector id found in data: {sectorData.Id}");
-                continue;
+                Plugin.Log.Error("Failed to get item data from GitHub.");
+                Plugin.Log.Error(await response.Content.ReadAsStringAsync());
             }
 
-            foreach (var (tier, pool) in sectorData.Pools)
+
+            var data = JsonConvert.DeserializeObject<SubLoot>(await response.Content.ReadAsStringAsync());
+            if (data == null)
             {
-                foreach (var (itemId, reward) in pool.Rewards)
+                Plugin.Log.Error("Item detailed import failed. Invalid json.");
+                return;
+            }
+
+            foreach (var sectorData in data.Sectors.Select(pair => pair.Value))
+            {
+                if (!Sheets.ExplorationSheet.HasRow(sectorData.Id))
                 {
-                    if (!Sheets.ItemSheet.HasRow(itemId))
+                    Plugin.Log.Warning($"Invalid sector id found in data: {sectorData.Id}");
+                    continue;
+                }
+
+                foreach (var (tier, pool) in sectorData.Pools)
+                {
+                    foreach (var (itemId, reward) in pool.Rewards)
                     {
-                        Plugin.Log.Warning($"Invalid item id found in data: {itemId}");
-                        continue;
+                        if (!Sheets.ItemSheet.HasRow(itemId))
+                        {
+                            Plugin.Log.Warning($"Invalid item id found in data: {itemId}");
+                            continue;
+                        }
+
+                        var detail = new ItemDetail
+                        {
+                            Sector = sectorData.Id,
+                            Tier = tier.ToTier(),
+                            Poor = $"{reward.MinMax[RetTier.Poor][0]} - {reward.MinMax[RetTier.Poor][1]}",
+                            Normal = $"{reward.MinMax[RetTier.Normal][0]} - {reward.MinMax[RetTier.Normal][1]}",
+                            Optimal = $"{reward.MinMax[RetTier.Optimal][0]} - {reward.MinMax[RetTier.Optimal][1]}"
+                        };
+
+                        if (!ItemDetailed.Items.TryAdd(itemId, [detail]))
+                            ItemDetailed.Items[itemId].Add(detail);
                     }
-
-                    var detail = new ItemDetail
-                    {
-                        Sector = sectorData.Id,
-                        Tier = tier.ToTier(),
-                        Poor = $"{reward.MinMax[RetTier.Poor][0]} - {reward.MinMax[RetTier.Poor][1]}",
-                        Normal = $"{reward.MinMax[RetTier.Normal][0]} - {reward.MinMax[RetTier.Normal][1]}",
-                        Optimal = $"{reward.MinMax[RetTier.Optimal][0]} - {reward.MinMax[RetTier.Optimal][1]}"
-                    };
-
-                    if (!ItemDetailed.Items.TryAdd(itemId, [detail]))
-                        ItemDetailed.Items[itemId].Add(detail);
                 }
             }
+
+            var path = Path.Combine(Plugin.PluginDir, FilenameItem);
+            if (File.Exists(path))
+                File.Delete(path);
+
+            await File.WriteAllBytesAsync(path, MessagePackSerializer.Serialize(ItemDetailed));
+            Plugin.Log.Information("Finished item build");
         }
-
-        var path = Path.Combine(Plugin.PluginDir, FilenameItem);
-        if (File.Exists(path))
-            File.Delete(path);
-
-        File.WriteAllBytes(path, MessagePackSerializer.Serialize(ItemDetailed));
-        Plugin.Log.Information("Finished item build");
+        catch (Exception ex)
+        {
+            Plugin.Log.Error(ex, "Error while exporting item data.");
+        }
     }
     #endif
     #endregion

@@ -7,7 +7,7 @@ namespace SubmarineTracker;
 
 public static class Webhook
 {
-    private static readonly HttpClient Client = new();
+    public static readonly HttpClient SharedClient = new();
 
     public struct WebhookContent
     {
@@ -24,7 +24,7 @@ public static class Webhook
         {
             try
             {
-                var response = await Client.PostAsync(Plugin.Configuration.WebhookUrl,new StringContent(JsonConvert.SerializeObject(webhookContent), Encoding.UTF8, "application/json"));
+                var response = await SharedClient.PostAsync(Plugin.Configuration.WebhookUrl,new StringContent(JsonConvert.SerializeObject(webhookContent), Encoding.UTF8, "application/json"));
                 if (!response.IsSuccessStatusCode)
                 {
                     Plugin.Log.Warning(response.StatusCode.ToString());

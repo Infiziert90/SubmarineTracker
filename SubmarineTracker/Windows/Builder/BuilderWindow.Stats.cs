@@ -7,7 +7,7 @@ namespace SubmarineTracker.Windows.Builder;
 
 public partial class BuilderWindow
 {
-    private void BuildStats(ref Submarine sub)
+    private void BuildStats()
     {
         using var child = ImRaii.Child("SubStats", Vector2.Zero);
         if (!child.Success)
@@ -16,7 +16,7 @@ public partial class BuilderWindow
         var build = CurrentBuild.GetSubmarineBuild;
 
         // Reset to custom build if not equal anymore
-        if (sub.IsValid() && !build.EqualsSubmarine(sub))
+        if (CurrentSubmarine.IsValid() && !build.EqualsSubmarine(CurrentSubmarine))
             CurrentBuild.OriginalSub = 0;
 
         var optimizedDuration = Voyage.CalculateDuration(CurrentBuild.OptimizedRoute, build.Speed);

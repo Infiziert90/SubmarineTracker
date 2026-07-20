@@ -205,9 +205,10 @@ Please visit your Company Workshop and access Submersible Management at the Voya
     <data name="ReturnOverlayInfoNoReturn" xml:space="preserve">
         <value>No sub has returned.</value>
     </data>
-    <data name="RouteOverlayTooltipHighRank" xml:space="preserve">
+    <data name="RouteOverlayTooltipHighRankWithTip" xml:space="preserve">
         <value>Submarine above threshold and MustInclude is empty
-Check your config for higher level suggestions.</value>
+Check your config for higher level suggestions.
+Config -> Builder -> Highest Rank</value>
     </data>
     <data name="TermsLoading" xml:space="preserve">
         <value>Loading</value>

@@ -241,7 +241,26 @@ public record FreeCompany
 
     public Dictionary<uint, bool> UnlockedSectors = new();
     public Dictionary<uint, bool> ExploredSectors = new();
-};
+
+    public static FreeCompany CreateFakeFC()
+    {
+        var fake = new FreeCompany
+        {
+            FreeCompanyId = 0,
+            Tag = "Fake",
+            CharacterName = "Fake",
+            World = "Fake",
+        };
+
+        foreach (var sector in Sheets.ExplorationSheet)
+        {
+            fake.UnlockedSectors.Add(sector.RowId, true);
+            fake.ExploredSectors.Add(sector.RowId, true);
+        }
+
+        return fake;
+    }
+}
 
 public record Submarine
 {

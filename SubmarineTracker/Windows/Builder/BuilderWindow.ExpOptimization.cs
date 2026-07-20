@@ -39,11 +39,7 @@ public partial class BuilderWindow
         if (!child.Success)
             return;
 
-        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
-        {
-            Helper.NoData();
-            return;
-        }
+        var fcSub = Plugin.DatabaseCache.GetFreeCompanies().GetValueOrDefault(Plugin.GetFCId, FakeFC);
 
         using (var pathChild = ImRaii.Child("BestPath", new Vector2(0, 170 * ImGuiHelpers.GlobalScale)))
         {

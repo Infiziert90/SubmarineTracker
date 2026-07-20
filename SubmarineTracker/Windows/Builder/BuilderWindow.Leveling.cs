@@ -299,8 +299,8 @@ public partial class BuilderWindow
         var count = 1;
         var outTree = new Dictionary<int, Journey>();
         var lastBuild = (Build: new Build.RouteBuild(), Voyages: 0);
-        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
-            return null;
+
+        var fcSub = Plugin.DatabaseCache.GetFreeCompanies().GetValueOrDefault(Plugin.GetFCId, FakeFC);
 
         var unlocked = fcSub.UnlockedSectors.Where(pair => pair.Value).Select(pair => pair.Key).ToArray();
         var hasAllowed = AllowedSectors.Count != 0;

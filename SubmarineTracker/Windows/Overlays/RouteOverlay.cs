@@ -98,7 +98,7 @@ public class RouteOverlay : Window, IDisposable
         if (Plugin.Configuration.HighestLevel < Plugin.BuilderWindow.CurrentBuild.Rank && MustInclude.Count == 0)
         {
             if (ImGui.IsWindowHovered())
-                Helper.Tooltip(Language.RouteOverlayTooltipHighRank);
+                Helper.Tooltip(Language.RouteOverlayTooltipHighRankWithTip);
 
             Calculate = false;
             return;
@@ -163,7 +163,7 @@ public class RouteOverlay : Window, IDisposable
         {
             if (combo.Success)
             {
-                foreach (var durationLimit in (DurationLimit[])Enum.GetValues(typeof(DurationLimit)))
+                foreach (var durationLimit in Enum.GetValues<DurationLimit>())
                 {
                     if (ImGui.Selectable(durationLimit.GetName()))
                     {

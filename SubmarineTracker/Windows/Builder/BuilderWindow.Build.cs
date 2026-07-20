@@ -11,7 +11,7 @@ public partial class BuilderWindow
 
     public Submarine SelectedSub = new();
 
-    private void BuildTab(ref Submarine sub)
+    private void BuildTab()
     {
         // Always refresh submarine if we have interface selection
         RefreshCache();
@@ -50,8 +50,8 @@ public partial class BuilderWindow
             // Calculate first so rank can be changed afterwards
             if (CurrentBuild.OriginalSub != 0)
             {
-                sub = Plugin.GetFCOrderWithoutHidden().SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub - 1]; // Prepend custom is not a valid sub
-                CurrentBuild.UpdateBuild(sub);
+                CurrentSubmarine = Plugin.GetFCOrderWithoutHidden().SelectMany(id => Plugin.DatabaseCache.GetSubmarines(id)).ToArray()[CurrentBuild.OriginalSub - 1]; // Prepend custom is not a valid sub
+                CurrentBuild.UpdateBuild(CurrentSubmarine);
             }
 
             ImGui.SameLine();

@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Game;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Windowing;

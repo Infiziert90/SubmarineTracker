@@ -20,11 +20,7 @@ public partial class BuilderWindow
         if (!child.Success)
             return;
 
-        if (!Plugin.DatabaseCache.GetFreeCompanies().TryGetValue(Plugin.GetFCId, out var fcSub))
-        {
-            Helper.NoData();
-            return;
-        }
+        var fcSub = Plugin.DatabaseCache.GetFreeCompanies().GetValueOrDefault(Plugin.GetFCId, FakeFC);
 
         var maps = Voyage.MapNames;
         var selectedMap = CurrentBuild.Map;

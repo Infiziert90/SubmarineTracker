@@ -73,21 +73,9 @@ public partial class ConfigWindow
             Directory.SetCurrentDirectory(pwd);
         }
 
-        Helper.TextColored(ImGuiColors.DalamudViolet, "Input Item File:");
-        ImGui.InputText("##InputPathItem", ref InputPathItem, 255);
-        ImGui.SameLine(0, 3.0f * ImGuiHelpers.GlobalScale);
-        if (ImGuiComponents.IconButton("##itemPicker", FontAwesomeIcon.FolderClosed))
-            ImGui.OpenPopup("InputPathDialogItem");
-
-        using (var popup = ImRaii.Popup("InputPathDialogItem"))
-        {
-            if (popup.Success)
-                Plugin.FileDialogManager.OpenFileDialog("Pick the item file", ".json", (b, s) => { if (b) InputPathItem = s[0]; }, 1);
-        }
-
         if (ImGui.Button("Calculate Item Detailed"))
         {
-            Importer.ExportDetailed(InputPathItem);
+            Task.Run(async() => await Importer.ExportDetailed());
         }
 
         Helper.TextColored(ImGuiColors.DalamudViolet, "Input Folder:");
@@ -102,7 +90,7 @@ public partial class ConfigWindow
                 Plugin.FileDialogManager.OpenFolderDialog("Pick the folder", (b, s) => { if (b) InputPath = s; }, null, true);
         }
 
-        if (ImGui.Button("Import Data"))
+        if (ImGui.Button("Import History Data"))
         {
             Task.Run(() =>
             {
