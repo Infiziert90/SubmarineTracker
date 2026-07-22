@@ -1460,4 +1460,7 @@ in '#you-dont-pay-my-sub'.</value>
     <data name="ConfigTabCheckboxInventorySlotCount" xml:space="preserve">
         <value>Show Inventory Slot Count</value>
     </data>
+    <data name="ConfigTabCheckboxPreventEscape" xml:space="preserve">
+        <value>Prevent ESC Closing Windows</value>
+    </data>
 </root>

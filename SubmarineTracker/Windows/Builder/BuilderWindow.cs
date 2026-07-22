@@ -24,6 +24,7 @@ public partial class BuilderWindow : Window, IDisposable
         };
 
         Plugin = plugin;
+        RespectCloseHotkey = !Plugin.Configuration.PreventEscapeClosing;
 
         InitializeShip();
         InitializeLeveling();

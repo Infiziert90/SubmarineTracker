@@ -6,9 +6,48 @@ namespace SubmarineTracker.Data;
 
 public static class Build
 {
+    public record SubRank(
+        uint RowId, ushort Capacity, uint ExpToNext,
+        byte SurveillanceBonus, byte RetrievalBonus,
+        byte SpeedBonus, byte RangeBonus, byte FavorBonus)
+    {
+        public static SubmarineRank LastValidRank => Sheets.RankSheet.GetRow(Sheets.LastRank);
+
+        public static SubRank From(uint rank)
+        {
+            // Valid current rank
+            if (rank <= Sheets.LastRank)
+            {
+                var submarineRank = Sheets.RankSheet.GetRow(rank);
+
+                return new SubRank(
+                    submarineRank.RowId,
+                    submarineRank.Capacity,
+                    submarineRank.ExpToNext,
+                    submarineRank.SurveillanceBonus,
+                    submarineRank.RetrievalBonus,
+                    submarineRank.SpeedBonus,
+                    submarineRank.RangeBonus,
+                    submarineRank.FavorBonus);
+            }
+
+            // Future prediction
+            return new SubRank(
+                rank,
+                LastValidRank.Capacity,
+                LastValidRank.ExpToNext,
+                (byte)(LastValidRank.SurveillanceBonus + (rank - LastValidRank.RowId)),
+                (byte)(LastValidRank.RetrievalBonus + (rank - LastValidRank.RowId)),
+                (byte)(LastValidRank.SpeedBonus + (rank - LastValidRank.RowId)),
+                (byte)(LastValidRank.RangeBonus + (rank - LastValidRank.RowId)),
+                (byte)(LastValidRank.FavorBonus + (rank - LastValidRank.RowId))
+            );
+        }
+    }
+
     public struct SubmarineBuild
     {
-        public SubmarineRank Bonus;
+        public SubRank Bonus;
         public readonly SubmarinePart Hull;
         public readonly SubmarinePart Stern;
         public readonly SubmarinePart Bow;
@@ -18,7 +57,7 @@ public static class Build
 
         public SubmarineBuild(int rank, int hull, int stern, int bow, int bridge) : this()
         {
-            Bonus = GetRank(rank);
+            Bonus = SubRank.From((uint)rank);
             Hull = GetPart(hull);
             Stern = GetPart(stern);
             Bow = GetPart(bow);
@@ -27,7 +66,7 @@ public static class Build
 
         public SubmarineBuild(RouteBuild build) : this()
         {
-            Bonus = GetRank(build.Rank);
+            Bonus = SubRank.From((uint)build.Rank);
             Hull = GetPart(build.Hull);
             Stern = GetPart(build.Stern);
             Bow = GetPart(build.Bow);
@@ -36,7 +75,7 @@ public static class Build
 
         public SubmarineBuild UpdateRank(int rank)
         {
-            Bonus = GetRank(rank);
+            Bonus = SubRank.From((uint)rank);
 
             return this;
         }
@@ -52,7 +91,6 @@ public static class Build
         public int HighestRankPart() => GetPartRanks().Max();
         public byte[] GetPartRanks() => [Hull.Rank, Stern.Rank, Bow.Rank, Bridge.Rank];
 
-        private SubmarineRank GetRank(int rank) => Sheets.RankSheet.GetRow((uint)rank);
         private SubmarinePart GetPart(int partId) => Sheets.PartSheet.GetRow((uint)partId);
 
         public string HullIdentifier => ToIdentifier((ushort) Hull.RowId);

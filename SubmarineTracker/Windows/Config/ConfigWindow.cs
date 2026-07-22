@@ -16,6 +16,7 @@ public partial class ConfigWindow : Window, IDisposable
         };
 
         Plugin = plugin;
+        RespectCloseHotkey = !Plugin.Configuration.PreventEscapeClosing;
 
         InitializeLoot();
         InitializeNotify();

@@ -25,6 +25,8 @@ public class Configuration : IPluginConfiguration
     public bool ShowRouteInAll = false;
     public bool ShowDateInAll = false;
 
+    public bool PreventEscapeClosing = true;
+
     public bool ShowDtrEntry = false;
     public bool DtrShowOverlayNumbers = true;
     public bool DtrShowSubmarineName = true;

@@ -14,8 +14,9 @@ public partial class MainWindow : Window, IDisposable
     public MainWindow(Plugin plugin) : base("Tracker##SubmarineTracker")
     {
         Plugin = plugin;
+        RespectCloseHotkey = !Plugin.Configuration.PreventEscapeClosing;
 
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(800, 550),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)

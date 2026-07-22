@@ -15,6 +15,11 @@ public partial class ConfigWindow
         ImGuiHelpers.ScaledDummy(5.0f);
 
         ImGui.AlignTextToFramePadding();
+        Helper.TextColored(ImGuiColors.DalamudViolet, Language.ConfigTabEntryGeneral);
+        changed |= ImGui.Checkbox(Language.ConfigTabCheckboxPreventEscape, ref Plugin.Configuration.PreventEscapeClosing);
+
+        ImGuiHelpers.ScaledDummy(5.0f);
+
         Helper.TextColored(ImGuiColors.DalamudViolet, Language.ConfigTabServerBar);
         changed |= ImGui.Checkbox(Language.ConfigTabCheckboxServerBarEnabled, ref Plugin.Configuration.ShowDtrEntry);
         if (Plugin.Configuration.ShowDtrEntry)

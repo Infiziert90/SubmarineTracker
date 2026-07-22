@@ -13,13 +13,15 @@ public partial class LootWindow : Window, IDisposable
 
     public LootWindow(Plugin plugin) : base("Custom Loot Overview##SubmarineTracker")
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(370, 600),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
         Plugin = plugin;
+        RespectCloseHotkey = !Plugin.Configuration.PreventEscapeClosing;
+
         InitializeAnalyse();
     }
 

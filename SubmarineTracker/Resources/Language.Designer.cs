@@ -1187,6 +1187,15 @@ namespace SubmarineTracker.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prevent ESC Closing Windows.
+        /// </summary>
+        internal static string ConfigTabCheckboxPreventEscape {
+            get {
+                return ResourceManager.GetString("ConfigTabCheckboxPreventEscape", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Repair Status After Voyage Return.
         /// </summary>
         internal static string ConfigTabCheckboxRepairAfterVoyage {

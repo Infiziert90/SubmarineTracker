@@ -1,6 +1,5 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Lumina.Excel.Sheets;
 using SubmarineTracker.Data;
 using SubmarineTracker.Resources;
 using static SubmarineTracker.Utils;
@@ -11,7 +10,8 @@ public partial class BuilderWindow
 {
     public static List<Build.SubmarineBuild> AllBuilds = [];
     public int SelectedRank;
-    private SubmarineRank Rank;
+    public bool FuturePrediction;
+    private Build.SubRank Rank;
     private const int PartsCount = 10;
     private TargetValues Target;
     private TargetValues LockedTarget;
@@ -22,7 +22,7 @@ public partial class BuilderWindow
     {
         AllBuilds.Clear();
 
-        Rank = Sheets.RankSheet.GetRow(Sheets.LastRank);
+        Rank = Build.SubRank.From(Sheets.LastRank);
         SelectedRank = (int) Rank.RowId;
 
         for (var hull = 0; hull < PartsCount; hull++)
@@ -118,14 +118,20 @@ public partial class BuilderWindow
         if (!tabItem.Success)
             return false;
 
-        if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int) Sheets.LastRank, $"{Language.TermsRank} %d"))
+        if (!FuturePrediction && SelectedRank > Sheets.LastRank)
+            SelectedRank = (int)Sheets.LastRank;
+
+        if (ImGui.SliderInt("##shipSliderRank", ref SelectedRank, 1, (int)Sheets.LastRank + (!FuturePrediction ? 0 : 50), $"{Language.TermsRank} %d"))
         {
-            Rank = Sheets.RankSheet.GetRow((uint) SelectedRank);
+            Rank = Build.SubRank.From((uint)SelectedRank);
             RefreshList();
         }
 
         ImGui.SameLine();
         ImGui.Checkbox(Language.BuilderShipCheckboxIgnoreBreakpoints, ref IgnoreBreakpoints);
+
+        ImGui.SameLine();
+        ImGui.Checkbox("Predict Future", ref FuturePrediction);
 
         Helper.TextColored(ImGuiColors.DalamudViolet, Language.BuilderShipHeaderRoute);
         SelectedRoute();
