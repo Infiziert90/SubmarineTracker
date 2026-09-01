@@ -23,6 +23,8 @@ public partial class ConfigWindow
             ImGuiComponents.HelpMarker(Language.ConfigTabTooltipOnReturn);
             changed |= ImGui.Checkbox(Language.ConfigTabCheckboxAutomaticallyClose, ref Plugin.Configuration.OverlayHoldClosed);
             ImGuiComponents.HelpMarker(Language.ConfigTabTooltipAutomaticallyClose);
+            changed |= ImGui.Checkbox(Language.ConfigTabCheckboxAutoExpandCollapseFCs, ref Plugin.Configuration.OverlayAutoExpandCollapseFCs);
+            ImGuiComponents.HelpMarker(Language.ConfigTabTooltipAutoExpandCollapseFCs);
         }
 
 

@@ -12,6 +12,7 @@ public class ReturnOverlay : Window, IDisposable
     private long LastRefresh;
     private Submarine NextSub = new();
     private (int OnRoute, int Done) VoyageStats = (0, 0);
+    private readonly Dictionary<ulong, bool?> FcReturnStates = new();
 
     private ImRaii.ColorDisposable PushedColor = null!;
 
@@ -103,6 +104,9 @@ public class ReturnOverlay : Window, IDisposable
 
     public override void Draw()
     {
+        if (!Plugin.Configuration.OverlayAutoExpandCollapseFCs)
+            FcReturnStates.Clear();
+
         var showLast = !Plugin.Configuration.OverlayFirstReturn;
 
         Submarine? timerSub = null;
@@ -165,6 +169,7 @@ public class ReturnOverlay : Window, IDisposable
                 continue;
 
             bool header;
+            SetFcHeaderState(fc.FreeCompanyId, subs);
             using (ImRaii.PushColor(ImGuiCol.Header, longestSub.IsDone() ? Plugin.Configuration.OverlayAllDone : anySubDone ? Plugin.Configuration.OverlayPartlyDone : Plugin.Configuration.OverlayNoneDone))
                 header = ImGui.CollapsingHeader($"{Plugin.NameConverter.GetName(fc)}###overlayFC{fc.FreeCompanyId}");
 
@@ -190,6 +195,25 @@ public class ReturnOverlay : Window, IDisposable
 
             }
             ImGui.Columns(1);
+        }
+    }
+
+    private void SetFcHeaderState(ulong fcId, IReadOnlyCollection<Submarine> subs)
+    {
+        if (!Plugin.Configuration.OverlayAutoExpandCollapseFCs)
+            return;
+
+        bool? currentState = subs.All(sub => sub.IsDone())
+                                 ? true
+                                 : subs.All(sub => !sub.IsDone())
+                                     ? false
+                                     : null;
+
+        if (!FcReturnStates.TryGetValue(fcId, out var previousState) || previousState != currentState)
+        {
+            FcReturnStates[fcId] = currentState;
+            if (currentState.HasValue)
+                ImGui.SetNextItemOpen(currentState.Value, ImGuiCond.Always);
         }
     }
 

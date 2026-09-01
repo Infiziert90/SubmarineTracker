@@ -650,6 +650,12 @@ Hold Control to delete</value>
     <data name="ConfigTabTooltipAutomaticallyClose" xml:space="preserve">
         <value>Automatically closes the overlay if all submarines are on voyage, and holds it closed</value>
     </data>
+    <data name="ConfigTabCheckboxAutoExpandCollapseFCs" xml:space="preserve">
+        <value>Automatically Expand/Collapse FCs</value>
+    </data>
+    <data name="ConfigTabTooltipAutoExpandCollapseFCs" xml:space="preserve">
+        <value>Expands an FC when all of its submarines have returned and collapses it when all have been sent out</value>
+    </data>
     <data name="ConfigTabEntryGeneral" xml:space="preserve">
         <value>General:</value>
     </data>
