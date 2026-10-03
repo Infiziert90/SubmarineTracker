@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Threading.Tasks;
+using Dalamud.Game.Inventory.InventoryEventArgTypes;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Interface.ImGuiFileDialog;
@@ -42,6 +43,7 @@ public class Plugin : IDalamudPlugin
     [PluginService] public static IDtrBar DtrBar { get; private set; } = null!;
     [PluginService] public static IPlayerState PlayerState { get; private set; } = null!;
     [PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
+    [PluginService] public static IGameInventory GameInventory { get; private set; } = null!;
 
     public static Configuration Configuration { get; private set; } = null!;
     public static FileDialogManager FileDialogManager { get; private set; } = null!;
@@ -129,7 +131,7 @@ public class Plugin : IDalamudPlugin
         Framework.Update += FrameworkUpdate;
         Framework.Update += Notify.NotifyLoop;
         ClientState.Login += StartupMessageAndStorageCheck;
-        ClientState.TerritoryChanged += StorageCheck;
+        GameInventory.InventoryChanged += StorageCheck;
 
         if (ClientState.IsLoggedIn)
             StartupMessageAndStorageCheck();
@@ -169,7 +171,7 @@ public class Plugin : IDalamudPlugin
         HookManager.Dispose();
         ServerBar.Dispose();
 
-        ClientState.TerritoryChanged -= StorageCheck;
+        GameInventory.InventoryChanged -= StorageCheck;
         ClientState.Login -= StartupMessageAndStorageCheck;
         Framework.Update -= FrameworkUpdate;
         Framework.Update -= Notify.NotifyLoop;
@@ -401,26 +403,44 @@ public class Plugin : IDalamudPlugin
         }
     }
 
-    private void StorageCheck(uint obj)
+    private void StorageCheck(IReadOnlyCollection<InventoryEventArgs> events)
     {
         try
         {
+            if (!ClientState.IsLoggedIn || ObjectTable.LocalPlayer == null)
+                return;
+
             var fcId = GetFCId;
             if (DatabaseCache.HasFC(fcId))
             {
-                var storage = new StorageData
-                {
-                    FreeCompanyId = fcId,
-                    Items = Storage.GenerateStorageData(),
-                };
+                var items = Storage.GenerateStorageData();
 
-                DatabaseCache.Database.UpsertStorage(storage);
+                if (DatabaseCache.TryGetStorage(fcId, out var stored))
+                {
+                    var equal = stored.Items.Count == items.Count;
+                    if (equal)
+                    {
+                        foreach (var (key, value) in stored.Items)
+                        {
+                            if (!items.TryGetValue(key, out var v) || v != value)
+                            {
+                                equal = false;
+                                break;
+                            }
+                        }
+
+                        if (equal)
+                            return;
+                    }
+                }
+
+                DatabaseCache.Database.UpsertStorage(new StorageData { FreeCompanyId = fcId, Items = items });
                 DatabaseCache.StorageNeedRefresh = true;
             }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Storage check on territory change failed.");
+            Log.Error(ex, "Storage check on inventory change failed.");
         }
     }
 
