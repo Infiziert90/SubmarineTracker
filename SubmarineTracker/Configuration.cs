@@ -76,6 +76,7 @@ public class Configuration : IPluginConfiguration
     public bool OverlayShowRank = false;
     public bool OverlayShowBuild = false;
     public bool OverlayHoldClosed = false;
+    public bool OverlayAutoExpandCollapseFCs = false;
     public bool OverlayTitleTime = false;
     public bool OverlayNoHidden = true;
     public Vector4 OverlayAllDone = Helper.CustomFullyDone;

@@ -1140,6 +1140,15 @@ namespace SubmarineTracker.Resources {
                 return ResourceManager.GetString("ConfigTabCheckboxNoHidden", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically Expand/Collapse FCs.
+        /// </summary>
+        internal static string ConfigTabCheckboxAutoExpandCollapseFCs {
+            get {
+                return ResourceManager.GetString("ConfigTabCheckboxAutoExpandCollapseFCs", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Show Submarine Name.
@@ -1930,6 +1939,15 @@ namespace SubmarineTracker.Resources {
         internal static string ConfigTabTooltipAutomaticallyClose {
             get {
                 return ResourceManager.GetString("ConfigTabTooltipAutomaticallyClose", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expands an FC when all of its submarines have returned and collapses it when all have been sent out.
+        /// </summary>
+        internal static string ConfigTabTooltipAutoExpandCollapseFCs {
+            get {
+                return ResourceManager.GetString("ConfigTabTooltipAutoExpandCollapseFCs", resourceCulture);
             }
         }
         
